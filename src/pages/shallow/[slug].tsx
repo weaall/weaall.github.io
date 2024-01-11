@@ -39,7 +39,6 @@ export async function getStaticProps(
 ) {
     const { slug } = ctx.params!
     const mdxFilePath = path.join(process.cwd(), "posts", `${slug}.mdx`)
-
     const postFile = fs.readFileSync(mdxFilePath, "utf-8")
 
     const mdxSource = await serialize(postFile, { parseFrontmatter: true })
