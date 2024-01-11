@@ -28,11 +28,9 @@ export default async function MdxReader() {
     const postUrl = `/shallow/${slug}`
 
     return (
-        <>
+        <Link href={postUrl}>
             <h1>{frontmatter.title}</h1>
             <h1>{frontmatter.date}</h1>
-            <Link href={postUrl}>{frontmatter.title}</Link>
-            {content}
-        </>
+        </Link>
     )
 }
