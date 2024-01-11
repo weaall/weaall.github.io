@@ -5,5 +5,3 @@ const nextConfig = {
     basePath: '',
     pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
 }
-
-module.exports = withMDX(nextConfig)

@@ -6,14 +6,12 @@ import fs from "fs"
 import { serialize } from "next-mdx-remote/serialize"
 import { MDXRemote } from "next-mdx-remote"
 import { H1, H2, P } from "@/components/mdx/components"
-import Header from "@/components/header/Header"
+import { Layout } from "@/components/layout/Layout"
 import "@/app/globals.css"
-
 
 export default function PostPage({ source }: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
-        <div>
-            <Header />
+        <Layout>
             <Head>
                 <title>{source.frontmatter.title as string}</title>
             </Head>
@@ -25,7 +23,7 @@ export default function PostPage({ source }: InferGetStaticPropsType<typeof getS
                     p: P,
                 }}
             />
-        </div>
+        </Layout>
     )
 }
 export async function getStaticPaths() {

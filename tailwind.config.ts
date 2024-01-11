@@ -16,9 +16,6 @@ const config: Config = {
                 main: "#222222",
                 "t-main": "#dddddd",
             },
-            fontFamily: {
-                sans: ["Arial", "sans-serif"],
-            },
         },
     },
     plugins: [],
