@@ -18,8 +18,9 @@ px-3 py-2 absolute transition-all ease-in duration-500 delay-500`
 export const NavDrawerSvg = tw.img`w-8 hover:scale-110`
 export const NavDirectWrap = tw.div<NavStateProps>`
 ${(p) => (p.$state === true ? "visible opacity-1 delay-1000" : "invisible opacity-0 w-[0px]")}
-min-w-[90px] w-full transition-all ease-in duration-100 text-center m-auto`
-export const NavDirectP = tw(Link)`hover:after:text-red-500 after:content-['.'] after:text-transparent`
+min-w-6 w-full transition-all ease-in duration-100 text-center m-auto`
+export const NavDirectP = tw(Link)`
+hover:after:text-red-500 after:content-['.'] after:text-transparent`
 
 export const SearchWrap = tw.div<NavStateProps>`
 ${(p) => (p.$state === true ? "w-14 duration-500" : "w-[75%] duration-1000")}

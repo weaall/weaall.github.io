@@ -1,28 +1,13 @@
 import { Layout } from "@/components/layout/Layout"
-import MdxReader from "@/components/mdx/MdxList"
-import * as tw from "./Main.styles"
+import MainBanner from "@/components/main-banner/MainBanner"
+import MdxBanner from "@/components/mdx/mdx-banner/MdxBanner"
 
 export default function Home() {
     return (
         <Layout>
-            <tw.Container>
-                <tw.BannerWrap>
-                    <tw.BannerLabel>Dong-Hyun Wi</tw.BannerLabel>
-                    <tw.BannerText>View Great, Create View</tw.BannerText>
-                    <tw.MailWrap>
-                        <tw.MailSvg alt="" src={"../../assets/svg/mail_icon.svg"} />
-                        <tw.MailText href="mailto:weaall@naver.com">weaall@naver.com</tw.MailText>
-                        <tw.MailText href="mailto:weaall88@gmail.com">weaall88@gmail.com</tw.MailText>
-                    </tw.MailWrap>
-                    <tw.BtnWrap>
-                        <tw.BannerBtn href="https://github.com/weaall" target="_blank">
-                            <tw.BtnSvg alt="" src={"../../assets/svg/github.svg"} />
-                            Github
-                        </tw.BannerBtn>
-                    </tw.BtnWrap>
-                </tw.BannerWrap>
-            </tw.Container>
-            <MdxReader />
+            <MainBanner />
+            <MdxBanner dir="Shallow" />
+            <MdxBanner dir="Deep" />
         </Layout>
     )
 }
