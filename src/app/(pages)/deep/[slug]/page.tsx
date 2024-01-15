@@ -1,7 +1,7 @@
 import { compileMDX } from "next-mdx-remote/rsc"
 import path from "path"
-import { readFile, access } from "fs/promises"
-import { H1, H2, P } from "@/components/mdx/components"
+import { readFile, access, readdir } from "fs/promises"
+import { H1, H2, P } from "@/components/mdx/mdx-components/components"
 import { notFound } from "next/navigation"
 
 const POSTS_FOLDER = path.join(process.cwd(), "posts/deep")
@@ -31,4 +31,14 @@ export default async function PostPage({ params }: { params: { slug: string } })
     })
 
     return <>{content}</>
+}
+
+export const generateStaticParams = async () => {
+    const files = await readdir(POSTS_FOLDER)
+
+    const posts = files.filter((file) => file.endsWith(".mdx")).map((file) => file.replace(/\.mdx$/, ""))
+
+    return posts.map((post) => ({
+        slug: post
+    }))
 }

@@ -1,30 +1,16 @@
-import Posts from "../../../components/post/Posts"
-import * as tw from "./Shallow.styles"
+import getPostsData from "@/components/mdx/getMdx";
+import PostList from "@/components/posts-list/PostList"
+import PostBanner from "@/components/posts-banner/PostBanner";
 
-
-export default function Page() {
+export default async function Page() {
+    const postsData = await getPostsData("shallow");
+    const sortedPostsData = postsData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    
     return (
-        <tw.Container>
-            <tw.BannerContainer>
-
-                <tw.LabelWrap>
-                    <tw.Label>Shallow Dive</tw.Label>
-                </tw.LabelWrap>
-
-                <tw.ImgWrap>
-                    <tw.BannerImg src={"../../assets/writer.svg"} />
-                </tw.ImgWrap>
-
-                <tw.BannerWrap>
-                    <tw.BannerText>
-                        I prefer lake to waves. <br />
-                        Sailing with calm rather than fluctuations.
-                    </tw.BannerText>
-                </tw.BannerWrap>
-            </tw.BannerContainer>
-
-            <Posts />
-        </tw.Container>
+        <>
+            <PostBanner />
+            <PostList props={sortedPostsData} />
+        </>
     )
 }
 
