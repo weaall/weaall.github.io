@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://weaall.github.io
+Sitemap: https://weaall.github.io/sitemap.xml
