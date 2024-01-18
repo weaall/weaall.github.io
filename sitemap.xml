@@ -26,13 +26,13 @@
 <priority>0.5</priority>
 </url>
 <url>
-<loc>https://weaall.github.io/posts/deep</loc>
+<loc>https://weaall.github.io/shallow-seo</loc>
 <lastmod>2024-01-18</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
-<loc>https://weaall.github.io/posts/shallow</loc>
+<loc>https://weaall.github.io/todo-list</loc>
 <lastmod>2024-01-18</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
