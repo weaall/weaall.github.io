@@ -8,12 +8,27 @@ export const CheckBoxWrap = tw.div`flex space-x-6 items-center my-3`
 export const CheckBoxLabel = tw.p`text-lg`
 export const H4 = tw.input`w-5 h-5 cursor-pointer outline-none accent-[#D9D9D9]/[.1]`
 
-export const P = tw.p`text-lg my-6 p-3`
+export const P = tw.p`text-lg py-3`
+
+export const A = tw.a`text-lg font-bold text-red-500`
 
 export const Hr= tw.hr`my-20 w-full h-[2px] bg-t-main`
 
-export const Pre = tw.pre``
+export const Pre = tw.pre`text-t-main text-base`
 
-export const Code = tw.div`bg-main p-6 rounded-xl text-t-main my-6 `
+export const Li = tw.li`pl-6 py-2 text-lg before:content-['-'] before:font-bold before:pr-3`
+
+export const CodeWrap = tw.div`relative bg-main rounded-xl text-t-main text-base p-6`
+export const CodeWrapC = tw.div`relative rounded-xl text-main text-base pt-8`
+export const ClassWrap = tw.div`absolute top-0 rounded-2xl py-3 px-6 bg-white w-fit ml-8` 
+export const ClassLabel = tw.p`text-2xl font-bold after:content-['.'] after:text-red-500`
+export const CodeBoxC = tw.div`bg-main p-6 pt-12 rounded-xl`
+export const Code = tw.code` rounded-xl text-t-main my-6 text-base`
 
 export const Strong = tw.strong`font-bold`
+
+export const Em = tw.em`text-base font-bold not-italic px-3 py-1 bg-rose-50 rounded-xl`
+
+export const ImgWrap = tw.div`w-full mx-auto py-6 text-center`
+export const Img = tw.img`mx-auto`
+export const ImgTitle = tw.p`text-xs text-gray-400`

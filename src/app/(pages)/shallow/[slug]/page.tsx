@@ -1,7 +1,7 @@
 import { compileMDX } from "next-mdx-remote/rsc"
 import path from "path"
 import { readFile, access, readdir } from "fs/promises"
-import { Hr, H1, H2, P, Code, Strong, Pre, H3, CheckBoxF, CheckBoxT } from "@/components/mdx/mdx-components/components"
+import { Hr, H1, H2, P, Code, Strong, Pre, H3, CheckBoxF, CheckBoxT, A, Li, Em, Img } from "@/components/mdx/mdx-components/components"
 import { notFound } from "next/navigation"
 import PostTitle from "@/components/post-title/PostTitle"
 
@@ -54,10 +54,14 @@ export default async function PostPage({ params }: { params: { slug: string } })
             h4: CheckBoxT,
             h5: CheckBoxF,
             p: P,
+            a: A,
+            li: Li,
             hr: Hr,
             pre: Pre,
             code: Code,
             strong: Strong,
+            em: Em,
+            img: Img
         },
     })
 
