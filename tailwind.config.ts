@@ -16,6 +16,10 @@ const config: Config = {
                 main: "#222222",
                 "t-main": "#dddddd",
             },
+            screens: {
+                mobile: { max: "640px" },
+                tablet: { min: "641px", max: "1024px" },
+            },
         },
     },
     plugins: [],

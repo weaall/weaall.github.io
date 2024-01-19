@@ -1,4 +1,3 @@
-import Head from "next/head"
 import * as tw from "./PostTitle.styles"
 
 interface PostData {
@@ -15,10 +14,6 @@ interface PostData {
 export default function PostTitle({ frontmatter }: PostData, content: any) {
     return (
         <>
-            <Head>
-                <title>{frontmatter.title}</title>
-                <meta name="description" content={frontmatter.subTitle}></meta>
-            </Head>
             <tw.Container>
                 <tw.ImgWrap>
                     <tw.Img></tw.Img>

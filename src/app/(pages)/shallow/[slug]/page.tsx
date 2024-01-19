@@ -4,6 +4,7 @@ import { readFile, access, readdir } from "fs/promises"
 import { Hr, H1, H2, P, Code, Strong, Pre, H3, CheckBoxF, CheckBoxT, A, Li, Em, Img } from "@/components/mdx/mdx-components/components"
 import { notFound } from "next/navigation"
 import PostTitle from "@/components/post-title/PostTitle"
+import { Metadata } from "next"
 
 interface PostData {
     label: string
@@ -18,7 +19,6 @@ const POSTS_FOLDER = path.join(process.cwd(), "posts/shallow")
 
 export const generateStaticParams = async () => {
     const files = await readdir(POSTS_FOLDER)
-
     const posts = files.filter((file) => file.endsWith(".mdx")).map((file) => file.replace(/\.mdx$/, ""))
 
     return posts.map((post) => ({
@@ -37,14 +37,14 @@ async function readPostFile(slug: string) {
     }
 }
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
-    const markdown = await readPostFile(params.slug)
+async function compilePostMarkdown(slug: string) {
+    const markdown = await readPostFile(slug)
 
     if (!markdown) {
         notFound()
     }
 
-    const { content, frontmatter } = await compileMDX<PostData>({
+    return compileMDX<PostData>({
         source: markdown,
         options: { parseFrontmatter: true },
         components: {
@@ -61,9 +61,13 @@ export default async function PostPage({ params }: { params: { slug: string } })
             code: Code,
             strong: Strong,
             em: Em,
-            img: Img
+            img: Img,
         },
     })
+}
+
+export default async function PostPage({ params }: { params: { slug: string } }) {
+    const { content, frontmatter } = await compilePostMarkdown(params.slug)
 
     return (
         <>
@@ -71,4 +75,15 @@ export default async function PostPage({ params }: { params: { slug: string } })
             {content}
         </>
     )
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+    const { frontmatter } = await compilePostMarkdown(params.slug)
+
+    const metadata: Metadata = {
+        title: frontmatter.title,
+        description: frontmatter.subTitle,
+    }
+
+    return metadata
 }
