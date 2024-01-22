@@ -1,10 +1,30 @@
 import { compileMDX } from "next-mdx-remote/rsc"
 import path from "path"
 import { readFile, access, readdir } from "fs/promises"
-import { H1, H2, P } from "@/components/mdx/mdx-components/components"
+import { Hr, H1, H2, P, Code, Strong, Pre, H3, CheckBoxF, CheckBoxT, A, Li, Em, Img } from "@/components/mdx/mdx-components/components"
 import { notFound } from "next/navigation"
+import PostTitle from "@/components/post-title/PostTitle"
+import { Metadata } from "next"
+
+interface PostData {
+    label: string
+    title: string
+    subTitle: string
+    date: string
+    tags: []
+    mins: string
+}
 
 const POSTS_FOLDER = path.join(process.cwd(), "posts/deep")
+
+export const generateStaticParams = async () => {
+    const files = await readdir(POSTS_FOLDER)
+    const posts = files.filter((file) => file.endsWith(".mdx")).map((file) => file.replace(/\.mdx$/, ""))
+
+    return posts.map((post) => ({
+        slug: post,
+    }))
+}
 
 async function readPostFile(slug: string) {
     const filePath = path.resolve(path.join(POSTS_FOLDER, `${slug}.mdx`))
@@ -17,28 +37,53 @@ async function readPostFile(slug: string) {
     }
 }
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
-    const markdown = await readPostFile(params.slug)
+async function compilePostMarkdown(slug: string) {
+    const markdown = await readPostFile(slug)
 
     if (!markdown) {
         notFound()
     }
 
-    const { content } = await compileMDX({
+    return compileMDX<PostData>({
         source: markdown,
         options: { parseFrontmatter: true },
-        components: { h1: H1, h2: H2, p: P },
+        components: {
+            h1: H1,
+            h2: H2,
+            h3: H3,
+            h4: CheckBoxT,
+            h5: CheckBoxF,
+            p: P,
+            a: A,
+            li: Li,
+            hr: Hr,
+            pre: Pre,
+            code: Code,
+            strong: Strong,
+            em: Em,
+            img: Img,
+        },
     })
-
-    return <>{content}</>
 }
 
-export const generateStaticParams = async () => {
-    const files = await readdir(POSTS_FOLDER)
+export default async function PostPage({ params }: { params: { slug: string } }) {
+    const { content, frontmatter } = await compilePostMarkdown(params.slug)
 
-    const posts = files.filter((file) => file.endsWith(".mdx")).map((file) => file.replace(/\.mdx$/, ""))
+    return (
+        <>
+            <PostTitle frontmatter={frontmatter} />
+            {content}
+        </>
+    )
+}
 
-    return posts.map((post) => ({
-        slug: post
-    }))
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+    const { frontmatter } = await compilePostMarkdown(params.slug)
+
+    const metadata: Metadata = {
+        title: frontmatter.title,
+        description: frontmatter.subTitle,
+    }
+
+    return metadata
 }

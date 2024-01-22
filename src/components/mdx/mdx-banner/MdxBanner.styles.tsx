@@ -8,7 +8,7 @@ export const Label = tw.p`text-3xl font-bold after:content-['.'] after:text-red-
 
 export const BannerWrap = tw.div`bg-t-main w-full h-1 rounded-2xl text-t-main`
 
-export const PostContainer = tw.div`flex space-x-[2%] mobile:flex-col mobile:space-y-6`
+export const PostContainer = tw.div`flex space-x-[2%] mobile:flex-col mobile:space-y-6 mobile:space-x-0`
 export const PostWrap = tw(Link)`space-y-2 h-auto w-[32%] items-center px-10 py-4 shadow-custom rounded-lg group 
 hover:shadow-custom-hover hover:translate-y-[6px] transition-all duration-300  mobile:w-full`
 

@@ -1,7 +1,23 @@
-import { useState } from "react"
-import * as tw from "../Deep.styles"
+"use client"
 
-function Posts() {
+import { useState } from "react"
+import * as tw from "./PostList.styles"
+
+interface PostData {
+    label: string
+    title: string
+    subTitle: string
+    date: string
+    tags: []
+    slug: string
+    postUrl: string
+}
+
+interface PostsProps {
+    props: PostData[]
+}
+
+export default function ShallowPostList({ props }: PostsProps) {
     const [barState, setBarState] = useState({
         allState: true,
         reactState: false,
@@ -27,32 +43,26 @@ function Posts() {
         { label: "etc", src: "etc_icon", state: barState.etcState },
     ]
 
-    const postItems = [
-        { label: "React", title: "리액트에 관련된 설명", subTitle: "리액트에 관련된 설명하기가 참어렵죠?", tags: ["리액트", "리코일", "앨리스"] },
-        { label: "React", title: "바보", subTitle: "멍충이", tags: ["위", "동", "현"] },
-        { label: "React", title: "바보", subTitle: "멍충이", tags: ["위", "동", "현"] },
-        { label: "Web", title: "바보", subTitle: "멍충이", tags: ["위", "동", "현"] },
-        { label: "Web", title: "바보", subTitle: "멍충이", tags: ["위", "동", "현"] },
-        { label: "etc", title: "바보", subTitle: "멍충이", tags: ["위", "동", "현"] },
-    ]
-
     return (
-        <tw.MainContainer>
+        <tw.Container>
             <tw.SideContainer>
                 {sideItems.map((item, index) => (
                     <tw.SideWrap $state={item.state} key={index} onClick={() => sideBarClick(item.label)}>
-                        <tw.SideSvg src={`../../../assets/svg/shallow/${item.src}.svg`}></tw.SideSvg>
+                        <tw.SideSvg src={`../../../assets/svg/${item.src}.svg`}></tw.SideSvg>
                         <tw.SideLabel>{item.label}</tw.SideLabel>
                     </tw.SideWrap>
                 ))}
             </tw.SideContainer>
 
             <tw.PostsContainer>
-                {postItems
+                {props
                     .filter((postItem) => barState.allState || postItem.label === "All" || postItem.label === sideItems.find((item) => item.state)?.label)
-                    .map((item, index) => (
-                        <tw.PostWrap key={index}>
-                            <tw.PostLabel>/ {item.label}</tw.PostLabel>
+                    .map((item) => (
+                        <tw.PostWrap href={item.postUrl} key={item.slug}>
+                            <tw.TopWrap>
+                                <tw.TopLabel>/ {item.label}</tw.TopLabel>
+                                <tw.TopLabel>{item.date}</tw.TopLabel>
+                            </tw.TopWrap>
                             <tw.Title>{item.title}</tw.Title>
                             <tw.SubTitle>{item.subTitle}</tw.SubTitle>
                             <tw.tagWrap>
@@ -63,8 +73,6 @@ function Posts() {
                         </tw.PostWrap>
                     ))}
             </tw.PostsContainer>
-        </tw.MainContainer>
+        </tw.Container>
     )
 }
-
-export default Posts

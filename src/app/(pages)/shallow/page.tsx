@@ -1,6 +1,6 @@
 import getPostsData from "@/components/mdx/getMdx";
-import PostList from "@/components/posts-list/PostList"
-import PostBanner from "@/components/posts-banner/PostBanner";
+import ShallowPostList from "@/components/posts-list/ShallowPostList"
+import ShallowBanner from "@/components/posts-banner/shallow/ShallowBanner";
 
 export default async function Page() {
     const postsData = await getPostsData("shallow");
@@ -8,8 +8,8 @@ export default async function Page() {
     
     return (
         <>
-            <PostBanner />
-            <PostList props={sortedPostsData} />
+            <ShallowBanner />
+            <ShallowPostList props={sortedPostsData} />
         </>
     )
 }

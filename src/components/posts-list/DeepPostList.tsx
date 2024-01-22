@@ -17,9 +17,10 @@ interface PostsProps {
     props: PostData[]
 }
 
-export default function PostList({ props }: PostsProps) {
+export default function DeepPostList({ props }: PostsProps) {
     const [barState, setBarState] = useState({
         allState: true,
+        databaseState: false,
         reactState: false,
         webState: false,
         etcState: false,
@@ -28,6 +29,7 @@ export default function PostList({ props }: PostsProps) {
     const sideBarClick = (clickedLabel: string): void => {
         const newStates = {
             allState: false,
+            databaseState: false,
             reactState: false,
             webState: false,
             etcState: false,
@@ -38,6 +40,7 @@ export default function PostList({ props }: PostsProps) {
 
     const sideItems = [
         { label: "All", src: "all_icon", state: barState.allState },
+        { label: "Database", src: "database_icon", state: barState.databaseState },
         { label: "React", src: "react_icon", state: barState.reactState },
         { label: "Web", src: "web_icon", state: barState.webState },
         { label: "etc", src: "etc_icon", state: barState.etcState },
@@ -48,7 +51,7 @@ export default function PostList({ props }: PostsProps) {
             <tw.SideContainer>
                 {sideItems.map((item, index) => (
                     <tw.SideWrap $state={item.state} key={index} onClick={() => sideBarClick(item.label)}>
-                        <tw.SideSvg src={`../../../assets/svg/shallow/${item.src}.svg`}></tw.SideSvg>
+                        <tw.SideSvg src={`../../../assets/svg/${item.src}.svg`}></tw.SideSvg>
                         <tw.SideLabel>{item.label}</tw.SideLabel>
                     </tw.SideWrap>
                 ))}

@@ -5,6 +5,7 @@ import { Hr, H1, H2, P, Code, Strong, Pre, H3, CheckBoxF, CheckBoxT, A, Li, Em, 
 import { notFound } from "next/navigation"
 import PostTitle from "@/components/post-title/PostTitle"
 import { Metadata } from "next"
+import { JSXElementConstructor } from "react"
 
 interface PostData {
     label: string
@@ -13,6 +14,7 @@ interface PostData {
     date: string
     tags: []
     mins: string
+    imageUrl: string
 }
 
 const POSTS_FOLDER = path.join(process.cwd(), "posts/shallow")
@@ -81,8 +83,30 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     const { frontmatter } = await compilePostMarkdown(params.slug)
 
     const metadata: Metadata = {
+        metadataBase: new URL('http://localhost:3000'),
         title: frontmatter.title,
         description: frontmatter.subTitle,
+        keywords: frontmatter.tags,
+        openGraph: {
+            title: frontmatter.title,
+            description: frontmatter.subTitle,
+            type: "article",
+            siteName: "Weaall's Dive",
+            url: params.slug,
+            publishedTime: frontmatter.date,
+            modifiedTime: frontmatter.date,
+            authors: [`https://github.com/weaall`],
+            tags: frontmatter.tags,
+            images: [
+              {
+                url: frontmatter.imageUrl,
+                alt: frontmatter.title,
+              },
+            ],
+          },
+        alternates: {
+            canonical: params.slug,
+        },
     }
 
     return metadata

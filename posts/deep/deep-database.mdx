@@ -1,0 +1,61 @@
+---
+label: Database
+title: Database의 깊은 고찰
+subTitle: 왜 SQL인가?
+date: 2024.01.22
+mins: 20
+tags: [Database, DB Query, RDB, ORM]
+imageUrl:
+---
+
+## 데이터베이스란?
+
+[오라클](https://www.oracle.com/database/what-is-database/)
+에서는 데이터베이스를 'organized collection of structured information, or data, 
+typically stored electronically in a computer system.' 이라고 정의합니다. 
+직역하면 **컴퓨터 시스템에 저장된 구조화된 정보 또는 데이터의 조직화된 모음**, 간단히는 말 그대로 
+**컴퓨터 데이터 저장소** 
+정도로 보면 좋을 것 같습니다.
+
+---
+
+## 데이터베이스의 역사
+
+![1](/post/deep-database/history_database.png "데이터베이스의 역사")
+
+### 1960's
+CODASYL 이라는 네트워크 모델과 IMS 라는 계층 모델 데이터베이스가 대중적으로 인기가 있었습니다.
+
+### 1970's
+IBM에서 근무하던 Edgar F. Codd는 논문을 통해데이터베이스의 표준 모델을 제시합니다. 
+논리적 구성(스키마)과 실제 정보 저장을 분리한 것이죠.
+Relational Database, 즉 **관계형 데이터베이스(RDB)** 의 등장입니다. 
+
+UBC에서 개발된 Ingres는 QUEL이라는 쿼리 언어를 통해 Ingres Corp., MS SQL Server, Sybase등과 같은 시스템을 탄생시켰고,
+IBN에서 개발된 System R은 SEQUEL 쿼리 언어를 통해 SQL/DS, DB2, Allbase, Oracle, Non-Stop SQL등의 개발에 기여했습니다.
+관계형 데이터베이스 관리 시스템(RDBMS) 또한 이 시기에 등장한 용어입니다. 
+
+### 1980's
+
+1987년 국제화표준기구(International Organization for Standardization) 가 **SQL**을 표준 쿼리 언어로 채택하였습니다.
+
+### 1990's
+
+이 무렵 애플리케이션 개발을 위한 새로운 클라이언트 도구(Oracle Developer, PowerBuilder, VB 등)가 출시되었고
+객체 데이터베이스 관리 시스템(ODBMS)의 프로토타입도 한참 개발중인 시기였습니다.
+
+90년대 말 인터넷의 출현은 온라인 비지니스에 대한 투자를 증가시켰고, 이 시기에 
+Front Page, Active Server Pages, Java Servlet, Oracle Developer 2000등 인터넷 커넥터에 대한 수요가 증가했습니다. 
+CGI, GCC, MySQL, Apache 및 기타 시스템을 사용, 오픈 소스 솔루션을 인터넷에 도입한 시기이기도 합니다.
+
+1998년 Carlo Strozzi는 자신의 데이터베이스 이름을 Strozzi NoSQL로 명명하면서 NoSQL이라는 용어를 등장시킵니다.
+하지만 Carlo Strozzi가 제시한 데이터베이스는 당시에는 본질적으로 여전히 RDB였죠. 
+Johan Oskarsson이 비관계형 데이터베이스에 대해 언급한 2009년 이후 NoSQL이라는 용어가 업계로 편입되었습니다.
+
+---
+
+## 관계형 데이터베이스 (RDB)
+
+
+
+

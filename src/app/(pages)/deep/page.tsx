@@ -1,32 +1,15 @@
-"use client"
+import getPostsData from "@/components/mdx/getMdx"
+import DeepPostList from "@/components/posts-list/DeepPostList"
+import DeepBanner from "@/components/posts-banner/deep/DeepBanner"
 
-import Posts from "./components/Posts"
-import * as tw from "./Deep.styles"
+export default async function Page() {
+    const postsData = await getPostsData("deep")
+    const sortedPostsData = postsData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
-
-export default function Page() {
     return (
-        <tw.Container>
-            <tw.BannerContainer>
-
-                <tw.LabelWrap>
-                    <tw.Label>Deep Dive</tw.Label>
-                </tw.LabelWrap>
-
-                <tw.ImgWrap>
-                    <tw.BannerImg src={"../../assets/diver.svg"} />
-                </tw.ImgWrap>
-
-                <tw.BannerWrap>
-                    <tw.BannerText>
-                        I prefer lake to waves. <br />
-                        Sailing with calm rather than fluctuations.
-                    </tw.BannerText>
-                </tw.BannerWrap>
-            </tw.BannerContainer>
-
-            <Posts />
-        </tw.Container>
+        <>
+            <DeepBanner />
+            <DeepPostList props={sortedPostsData} />
+        </>
     )
 }
-

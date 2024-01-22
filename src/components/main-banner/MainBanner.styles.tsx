@@ -3,7 +3,7 @@ import tw from "tailwind-styled-components"
 export const Container = tw.div``
 
 export const BannerWrap = tw.div`bg-main w-full h-auto rounded-2xl px-14 pt-12 pb-6 text-t-main space-y-1`
-export const BannerLabel = tw.p`text-7xl font-bold py-4 after:content-['.'] after:text-red-500`
+export const BannerLabel = tw.p`text-7xl font-bold py-4 after:content-['.'] after:text-red-500 mobile:text-6xl`
 export const BannerText = tw.p`text-base`
 
 export const MailWrap = tw.div`flex space-x-2`

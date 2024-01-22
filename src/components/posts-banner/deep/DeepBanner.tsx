@@ -1,14 +1,14 @@
-import * as tw from "./PostBanner.styles"
+import * as tw from "./DeepBanner.styles"
 
-export default function PostBanner() {
+export default function DeepBanner() {
     return (
         <tw.BannerContainer>
             <tw.LabelWrap>
-                <tw.Label>Shallow Dive</tw.Label>
+                <tw.Label>Deep Dive</tw.Label>
             </tw.LabelWrap>
 
             <tw.ImgWrap>
-                <tw.BannerImg src={"../../assets/writer.svg"} />
+                <tw.BannerImg src={"../../assets/diver.svg"} />
             </tw.ImgWrap>
 
             <tw.BannerWrap>

@@ -8,5 +8,5 @@ export const Label = tw.p`text-4xl font-bold after:content-['.'] after:text-red-
 export const BannerWrap = tw.div`flex bg-main w-full h-52 rounded-2xl px-14 py-12 text-t-main space-y-1 items-center`
 export const BannerText = tw.p`text-xl`
 
-export const ImgWrap = tw.div`absolute top-5 right-28 w-60`
+export const ImgWrap = tw.div`absolute top-5 right-28 w-60 mobile:hidden`
 export const BannerImg = tw.img``
