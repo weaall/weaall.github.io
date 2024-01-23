@@ -13,10 +13,10 @@ export default function Footer() {
                     <tw.GnbSvg alt="" src={"../../assets/svg/user_icon.svg"}></tw.GnbSvg>
                 </tw.LabelWrap>
                 <tw.NavWrap>
-                    <tw.NavTag href="/">Me</tw.NavTag>
+                    <tw.NavTag href="/">Main</tw.NavTag>
                     <tw.NavTag href="/shallow">Shallow</tw.NavTag>
                     <tw.NavTag href="/deep">Deep</tw.NavTag>
-                    <tw.NavTag href="/">About</tw.NavTag>
+                    <tw.NavTag href="/">Me</tw.NavTag>
                 </tw.NavWrap>
             </tw.FooterWrap>
         </tw.Container>

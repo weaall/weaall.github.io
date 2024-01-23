@@ -15,6 +15,10 @@ export default function MainBanner() {
                     <tw.BtnSvg alt="" src={"../../assets/svg/github.svg"} />
                     Github
                 </tw.BannerBtn>
+                <tw.BannerBtn href="https://github.com/weaall" target="_blank">
+                    <tw.BtnSvg alt="" src={"../../assets/svg/me.svg"} />
+                    Me
+                </tw.BannerBtn>
             </tw.BtnWrap>
         </tw.BannerWrap>
     )

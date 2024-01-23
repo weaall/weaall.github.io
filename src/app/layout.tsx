@@ -3,6 +3,7 @@ import { Noto_Sans_KR } from "next/font/google"
 import "./globals.css"
 
 import { Layout } from "@/components/layout/Layout"
+import { getBaseMetadata } from "@/util/seo"
 
 const notoSansKr = Noto_Sans_KR({
     subsets: ["latin"],
@@ -10,10 +11,7 @@ const notoSansKr = Noto_Sans_KR({
     variable: "--Noto-Sans-KR",
 })
 
-export const metadata: Metadata = {
-    title: "Weaall's Dive",
-    description: "Weaall's pretty personal idea",
-}
+export const metadata: Metadata = getBaseMetadata({ title: "Weaall's Dive" })
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
