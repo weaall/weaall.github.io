@@ -3,7 +3,6 @@ import { useState } from "react"
 import * as tw from "./Header.styles"
 
 export default function Header() {
-
     const [navState, setNavState] = useState(true)
     const [searchInput, setSearchInput] = useState("")
 
@@ -34,8 +33,8 @@ export default function Header() {
 
     return (
         <tw.Container>
-            <tw.GnbBtn href={("/")}>
-                <tw.GnbSvg alt="" src={"../../assets/svg/user_icon.svg"} ></tw.GnbSvg>
+            <tw.GnbBtn href={"/"}>
+                <tw.GnbSvg alt="" src={"../../assets/svg/user_icon.svg"}></tw.GnbSvg>
             </tw.GnbBtn>
 
             <tw.NavWrap>
@@ -45,7 +44,7 @@ export default function Header() {
                     </tw.NavDrawerBtn>
                     {navItems.map((item, index) => (
                         <tw.NavDirectWrap $state={navState} key={index}>
-                            <tw.NavDirectP href={(`${item.path}`)}>{item.label}</tw.NavDirectP>
+                            <tw.NavDirectP href={`${item.path}`}>{item.label}</tw.NavDirectP>
                         </tw.NavDirectWrap>
                     ))}
                 </tw.Nav>
@@ -58,9 +57,11 @@ export default function Header() {
                 </tw.SearchWrap>
             </tw.NavWrap>
 
-            <tw.EnBtn>
-                <tw.GnbText>en</tw.GnbText>
-            </tw.EnBtn>
+            <tw.DevBtn>
+                <a href={"/dev"}>
+                    <tw.DevLabel>dev</tw.DevLabel>
+                </a>
+            </tw.DevBtn>
         </tw.Container>
     )
 }

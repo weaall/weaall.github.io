@@ -7,9 +7,11 @@ export function H1({ children }: { children?: React.ReactNode }) {
 
 export function H2({ children }: { children?: React.ReactNode }) {
     return (
-        <tw.H2>
-            <a href={`#${(children || "")}`}>{children}</a>
-        </tw.H2>
+        <>
+            <tw.H2>
+                <a href={`#${children || ""}`}>{children}</a>
+            </tw.H2>
+        </>
     )
 }
 

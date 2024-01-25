@@ -8,7 +8,6 @@ export function Layout(props: React.PropsWithChildren) {
             <tw.ContentsWrap>
             <Header />
             {props.children}
-
             </tw.ContentsWrap>
             <Footer />
         </tw.Container>

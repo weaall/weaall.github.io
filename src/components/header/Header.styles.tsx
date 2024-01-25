@@ -35,4 +35,5 @@ export const GnbBtn = tw(Link)`bg-main min-w-14 h-12 mx-3 rounded-3xl group `
 export const GnbSvg = tw.img`w-8 h-full m-auto group-hover:scale-110`
 export const GnbText = tw.p`mb-1 group-hover:scale-110 text-xl`
 
-export const EnBtn = tw.button`bg-main min-w-14 h-12 mx-3 rounded-3xl group`
+export const DevBtn = tw.button`bg-main min-w-14 h-12 mx-3 rounded-3xl group`
+export const DevLabel = tw.p`mb-1 text-base group-hover:scale-105`
