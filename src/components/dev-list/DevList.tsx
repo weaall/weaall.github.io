@@ -45,14 +45,14 @@ export default function DevList({ props }: PostsProps) {
 
     return (
         <tw.Container>
-            <tw.SideContainer>
+            <tw.UpperContainer>
                 {sideItems.map((item, index) => (
-                    <tw.SideWrap $state={item.state} key={index} onClick={() => sideBarClick(item.label)}>
-                        <tw.SideSvg src={`../../../assets/svg/${item.src}.svg`}></tw.SideSvg>
-                        <tw.SideLabel>{item.label}</tw.SideLabel>
-                    </tw.SideWrap>
+                    <tw.UpperWrap $state={item.state} key={index} onClick={() => sideBarClick(item.label)}>
+                        <tw.UpperSvg src={`../../../assets/svg/${item.src}.svg`}></tw.UpperSvg>
+                        <tw.UpperLabel>{item.label}</tw.UpperLabel>
+                    </tw.UpperWrap>
                 ))}
-            </tw.SideContainer>
+            </tw.UpperContainer>
 
             <tw.PostsContainer>
                 {props

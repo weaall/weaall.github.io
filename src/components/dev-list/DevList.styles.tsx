@@ -5,14 +5,14 @@ interface BarProps {
     $state: boolean
 }
 
-export const Container = tw.div`flex flex-col min-h-dvh`
+export const Container = tw.div`flex flex-col min-h-dvh space-y-3`
 
-export const SideContainer = tw.div`flex h-auto mr-8 w-full mobile:w-[28%]`
-export const SideWrap = tw.div<BarProps>`flex h-14 w-full items-center pl-6 rounded-2xl cursor-pointer
+export const UpperContainer = tw.div`flex h-auto mr-8 w-full mobile:w-[28%]`
+export const UpperWrap = tw.div<BarProps>`flex h-14 w-full items-center pl-6 rounded-2xl cursor-pointer
 hover:font-bold after:content-['.'] after:text-transparent hover:after:text-red-500
 ${(p) => (p.$state === true ? "bg-[#eeeeee] font-bold after:text-red-500" : "")}`
-export const SideSvg = tw.img`w-6 mr-4`
-export const SideLabel = tw.p``
+export const UpperSvg = tw.img`w-6 mr-4`
+export const UpperLabel = tw.p``
 
 export const PostsContainer = tw.div`w-full space-y-10 h-auto flex flex-col mobile:w-[70%]`
 export const PostWrap = tw(Link)`space-y-2 h-auto w-full items-center px-10 py-4 shadow-custom rounded-lg group 
