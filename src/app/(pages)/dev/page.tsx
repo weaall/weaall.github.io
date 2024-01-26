@@ -1,5 +1,5 @@
+import DevList from "@/components/dev-list/DevList";
 import getPostsData from "@/components/mdx/getMdx";
-import ShallowPostList from "@/components/posts-list/ShallowPostList"
 
 export default async function Page() {
     const postsData = await getPostsData("shallow");
@@ -7,7 +7,7 @@ export default async function Page() {
     
     return (
         <>
-            <ShallowPostList props={sortedPostsData} />
+            <DevList props={sortedPostsData} />
         </>
     )
 }
