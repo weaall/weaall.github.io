@@ -1,0 +1,65 @@
+---
+label: Java
+title: Java) Steam 활용하기
+subTitle: Steam으로 중복요소, 특정요소 제거
+date: 2024.03.11
+mins: 2
+tags: [java, Stream]
+imageUrl:
+---
+
+
+## IntStream 활용하기
+
+```java
+import java.util.stream.*;
+
+IntStream.of(arr).filter(i -> !IntStream.of(delete_list).anyMatch(s -> s == i)).toArray();
+```
+
+1. *IntStream.of(arr)* : int[] arr를 IntStream으로 변환
+2. *filter(i -> !IntStream.of(delete_list).anyMatch(s -> s == i))* : delete_list 배열에 포함되지 않는 요소들을 필터링
+3. *toArray()* : 필터링된 결과를 배열로 변환
+---
+
+## Array.stream 활용하기
+
+```java
+import java.util.stream.*;
+
+Arrays.stream(myString.split("x")).filter(s -> !s.isEmpty()).sorted().toArray(String[]::new);
+```
+
+1. *Arrays.stream(...)* : 문자열 myString을 Arrays.stream으로 변환
+2. *myString.split("x")* : 문자열 myString을 "x"를 기준으로 분할하여 배열로 변환
+3. *filter(s -> !s.isEmpty())* : 비어 있지 않은 문자열만 필터링
+4. *sorted()* : 문자열 내림차순 정렬
+5. *toArray(String[]::new)* : 정렬된 결과를 문자열 배열로 변환
+
+```java
+import java.util.stream.*;
+
+Arrays.stream(intStrs).mapToInt(str -> Integer.parseInt(str.substring(s, s + l))).filter(s -> s > k).toArray();
+```
+
+1. *Arrays.stream(intStrs)* : 문자열 배열 intStrs를 Arrays.stream으로 변환
+2. *mapToInt(str -> Integer.parseInt(str.substring(s, s + l)))* 
+: 각 문자열을 s번 인덱스에서 시작하여 길이 l짜리 부분 문자열을 잘라내고, 해당 부분 문자열을 정수로 변환,
+이를 모든 문자열에 대해 수행한 후, 정수 스트림으로 변환
+3. *filter(s -> s > k)* : k보다 큰 정수만 필터링
+4. *toArray()* : 필터링된 결과를 배열로 변환
+---
+
+## ArrayList를 형변환 하기
+
+```java
+import java.util.stream.*;
+
+answer.stream().mapToInt(Integer::intValue).toArray();
+```
+
+1. *answer.stream()* : List인 answer를 스트림으로 변환
+2. *mapToInt(Integer::intValue)* : 각 요소를 int로 변환(Integer::intValue는 Integer를 int로 변환하는 메서드 참조)
+3. *toArray()* : 결과를 배열로 변환
+---
+

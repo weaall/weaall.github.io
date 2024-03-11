@@ -13,7 +13,7 @@ export default function Header() {
     const navItems = [
         { label: "SHALLOW", path: "/shallow" },
         { label: "DEEP", path: "/deep" },
-        { label: "TODO", path: "/todo" },
+        { label: "PRAC", path: "/prac" },
         { label: "PROJECT", path: "/project" },
     ]
 
