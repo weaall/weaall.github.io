@@ -63,3 +63,19 @@ answer.stream().mapToInt(Integer::intValue).toArray();
 3. *toArray()* : 결과를 배열로 변환
 ---
 
+## 2진바이너리스트링 매핑
+
+```java
+import java.util.stream.*;
+
+Arrays.stream(num_list).map(i -> Integer.toBinaryString(i).length() - 1).sum();
+```
+
+1. *Arrays.stream(num_list)* : num_list 배열을 스트림으로 변환
+2. *.map(i -> Integer.toBinaryString(i).length() - 1)* : 
+각 정수를 2진수로 변환한 후, 그 2진수의 길이에서 1을 뺀 값을 매핑합니다. 
+Integer.toBinaryString(i)는 정수 i를 2진수로 변환한 문자열을 반환하며, 
+.length()는 문자열의 길이를 반환합니다. 따라서 length() - 1은 2진수의 자릿수에서 1을 뺀 값을 나타냅니다.
+3. *.sum()* : 매핑된 값의 합
+---
+
