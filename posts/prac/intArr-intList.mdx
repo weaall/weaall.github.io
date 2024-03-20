@@ -79,3 +79,16 @@ Integer.toBinaryString(i)는 정수 i를 2진수로 변환한 문자열을 반�
 3. *.sum()* : 매핑된 값의 합
 ---
 
+## Integer List to int[]
+
+```java
+import java.util.stream.*;
+
+list.stream().mapToInt(Integer::intValue).toArray();
+```
+
+1. *list.stream()* : list를 스트림배으로 변환
+2. *mapToInt(Integer::intValue)* : Integer 밸류를 intValue로 수정 후 mapToInt로 매핑
+3. *toArray()* : 매핑된 값을 배열로 변환
+---
+
