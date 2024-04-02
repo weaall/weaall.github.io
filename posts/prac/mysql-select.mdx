@@ -1,0 +1,33 @@
+---
+label: MySQL
+title: MySQL) SELECT
+subTitle: SELECT 활용
+date: 2024.03.11
+mins: 2
+tags: [MySQL, SELECT, WHERE]
+imageUrl:
+---
+
+
+## WHERE + LIKE CONCATE('%','a','%')
+
+```MySQL
+WHERE title LIKE CONCAT('%','a','%');
+```
+
+1. java 의 contains 와 같은 역할. 
+2. ('%','a','%') : a 문자열 앞뒤의 문자열 상관없이 a를 포함하면 출력.
+
+---
+
+## GROUP BY + HAVING
+
+```MySQL
+GROUP BY USER_ID, PRODUCT_ID
+HAVING COUNT(USER_ID) > 1
+```
+
+1. GROUP BY를 통해 USER_ID, PRODUCT_ID 그룹화
+2. HAVING 조건식으로 그룹정보가 1개 이상일 경우 출력.
+
+---

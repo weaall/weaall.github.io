@@ -1,0 +1,48 @@
+---
+label: Java
+title: Java) String 문자열 비교
+subTitle: String 문자열 비교 활용
+date: 2024.04.02
+mins: 2
+tags: [java, String 비교]
+imageUrl:
+---
+
+## contains() 활용하기
+
+```java
+String str = "Comparision"
+str.contains("ompa") // 1. true
+str.contains("omps") // 2. false
+```
+---
+
+## startsWith() 활용하기
+
+```java
+String str = "Comparision"
+str.startsWith("Comp") // 1. true
+str.startWith("Comps") // 2. false
+```
+---
+
+## endsWith() 활용하기
+
+```java
+String str = "Comparision"
+str.endsWith("sion") // 1. true
+str.endsWith("tion") // 2. false
+```
+---
+
+## matches() 활용하기
+
+```java
+String str = "Comparision"
+str.matches("(.*)ompa(.*)") // 1. true = str.contains("ompa")
+str.matches("tion(.*)") // 2. false
+str.matches("(.*)tion") // 3. true
+```
+
+1. (.*)는 0개이상으로 이루어진 문자열
+---
