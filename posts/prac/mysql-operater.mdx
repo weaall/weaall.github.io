@@ -1,0 +1,19 @@
+---
+label: MySQL
+title: MySQL) 연산자
+subTitle: 다양한 연산자 확인
+date: 2024.04.03
+mins: 2
+tags: [MySQL, 연산자]
+imageUrl:
+---
+
+## 비트연산자 &
+
+```MySQL
+WHERE (D.SKILL_CODE & S.CODE ) > 0 AND S.NAME REGEXP 'Python|C#'
+```
+
+1. DEVELOPERS 테이블의 SKILL_CODE 열과 SKILLCODES 테이블의 CODE 열을 비트 AND 연산한 결과가 0보다 큰 경우
+2. SKILLCODES 테이블의 NAME 열이 'Python' 또는 'C#'를 정규 표현식으로 포함하는 경우
+---
