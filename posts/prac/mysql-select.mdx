@@ -9,24 +9,26 @@ imageUrl:
 ---
 
 
-## WHERE + LIKE CONCATE('%','a','%')
+## CONCAT
 
 ```MySQL
 WHERE title LIKE CONCAT('%','a','%');
 ```
 
-1. java 의 contains 와 같은 역할. 
-2. ('%','a','%') : a 문자열 앞뒤의 문자열 상관없이 a를 포함하면 출력.
+1. java 의 contains 와 같은 역할.
+2. 두개이상의 문자열, 숫자, 칼럼, 등의 연결 처리 //SELECT CONCAT(MAX(LENGTH), 'cm') AS MAX_LENGTH 
+3. ('%','a','%') : a 문자열 앞뒤의 문자열 상관없이 a를 포함하면 출력.
+4. LIKE '%a%' : 형태로도 활용 가능
 
 ---
 
-## CONCATE(문자, 숫자열)
+## BETWEEN
 
 ```MySQL
-SELECT CONCAT(MAX(LENGTH), 'cm') AS MAX_LENGTH
+WHERE HOUR(DATETIME) BETWEEN 9 AND 20
 ```
 
-1. 두개이상의 문자열, 숫자, 칼럼, 등의 연결 처리
+1. 특정숫자 사이를 WHERE로 특정할 때 사용
 
 ---
 
