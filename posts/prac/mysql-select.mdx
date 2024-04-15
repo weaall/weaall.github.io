@@ -2,17 +2,57 @@
 label: MySQL
 title: MySQL) SELECT
 subTitle: SELECT 활용
-date: 2024.03.11
+date: 2024.04.15
 mins: 2
 tags: [MySQL, SELECT, WHERE]
 imageUrl:
 ---
 
+## WITH RECURSIVE
+
+```MySQL
+WITH RECURSIVE HOURS (HOUR) AS
+(
+  SELECT 0
+  UNION ALL
+  SELECT HOUR + 1 FROM HOURS WHERE HOUR < 23
+)
+
+```
+
+1. HOURS는 재귀적인 공통 테이블 식(CTE)의 이름
+1. HOUR은 CTE에서 사용할 열 이름
+1. SELECT 0: 시작점으로 0을 반환합니다. 이것이 재귀의 기본(첫 번째) 결과
+1. UNION ALL: 재귀적으로 자기 자신을 호출하면서 HOUR + 1을 선택합니다. 이렇게 하면 HOUR 값이 1씩 증가
+1. FROM HOURS WHERE HOUR < 23: 재귀 호출을 위한 조건으로, HOUR 값이 23보다 작을 때만 재귀적으로 호출
+
+---
+
+## TRUNCATE
+
+```MySQL
+TRUNCATE(price/10000, 0) * 10000
+```
+
+1. 기본형 : *TRUNCATE(column/division num, digit)*
+1. *column*을 *division num* 으로 나눈 숫자에서 *digit* 자리수까지 나타냄.
+
+---
+
+## DISTINCT
+
+```MySQL
+COUNT(DISTINCT DB.USER_ID)
+```
+
+1. 'DB' 테이블의 USER_ID 열에서 중복을 제거 후 고유한(unique) USER_ID를 COUNT
+
+---
 
 ## CONCAT
 
 ```MySQL
-WHERE title LIKE CONCAT('%','a','%');
+WHERE title LIKE CONCAT('%','a','%')
 ```
 
 1. java 의 contains 와 같은 역할.
