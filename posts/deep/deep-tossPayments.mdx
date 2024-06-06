@@ -1,0 +1,39 @@
+---
+label: Database
+title: TossPayments의 대한 깊은 고찰
+subTitle: 결제는 몇번의 검증이 들어가야 좋을까?
+date: 2024.06.06
+mins: 20
+tags: [Toss, TossPayments, 결제연동, PG사, 보안]
+imageUrl:
+---
+
+## TossPayments
+
+[전자결제대행사](https://namu.wiki/w/%EA%B2%B0%EC%A0%9C%EB%8C%80%ED%96%89%EC%82%AC) 
+(PG / Payment Gateway)는 이커머스 결제 지불 대행 서비스를 진행하는 중개업체를 이르는 말인데,  
+**토스페이먼츠, KG이니시스, NHN KCP ** 이 3개 업체가 가장 높은 점유율을 차지한다.
+
+나는 가장 점유율이 높고, 개발자센터를 통해 쉽고 간편하게 연동할 수 있는 토스페이먼츠를 사용해보기로 했다.
+
+---
+
+## 결제 프로세스와 검증
+
+![1](/posts/deep/tossPayments/toss_payments.png "토스페이먼츠 결제 과정")
+토스페이먼츠의 결제 과정은 다음과같다.
+
+1. 토스페이먼츠에서 제공하는 결제위젯을 화면에 전시
+2. 결제하기로 요청
+3. 사용자 결제
+4. 결제승인 API요청
+5. 성공, 실패 Url로 리다이렉트
+
+이 일련의 과정속에서 가장 중요한건 MITM을 막고 데이터의 무결성을 훼손하지 않는일일 것이다. 
+
+1
+
+
+
+
+
