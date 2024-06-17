@@ -1,0 +1,154 @@
+---
+label: Java
+title: Java) Stack, Queue, Heap 활용하기
+subTitle: Stack, Queue, Heap
+date: 2024.01.01
+mins: 2
+tags: [java, Stack, Queue, Heap,LinkedList]
+imageUrl:
+---
+
+## Queue 활용
+
+```java
+import java.util.*;
+
+class Solution {
+    public int solution(int[] priorities, int location) {
+        int answer = 0; // 인쇄된 문서 수를 저장할 변수
+        int l = location; // 관심 있는 문서의 현재 위치
+
+        // 큐 초기화
+        Queue<Integer> que = new LinkedList<>();
+        for(int i : priorities){
+            que.add(i);
+        }
+
+        // 우선순위 배열을 정렬하여 높은 순서대로 정렬
+        Arrays.sort(priorities);
+        int size = priorities.length - 1; // 가장 높은 우선순위의 인덱스
+
+        // 큐가 빌 때까지 반복
+        while(!que.isEmpty()){
+            Integer i = que.poll(); // 큐의 첫 번째 요소를 꺼냄
+            if(i == priorities[size - answer]){ // 현재 우선순위가 가장 높은 문서와 비교
+                answer++; // 인쇄된 문서 수 증가
+                l--; // 관심 있는 문서의 위치 감소
+                if(l < 0)
+                    break; // 관심 있는 문서가 인쇄된 경우 루프 종료
+            } else {
+                que.add(i); // 문서를 큐의 뒤로 다시 추가
+                l--; // 관심 있는 문서의 위치 감소
+                if(l < 0)
+                    l = que.size() - 1; // 문서가 큐의 끝으로 이동
+            }
+        }
+
+        return answer; // 결과 반환
+    }
+}
+
+```
+---
+
+## Stack 활용
+
+```java
+import java.util.*;
+
+class Solution {
+    public int[] solution(int[] prices) {
+        int n = prices.length;  // 주식 가격 배열의 길이
+        int[] answer = new int[n];  // 결과를 저장할 배열
+        Stack<Integer> stack = new Stack<>();  // 인덱스를 저장할 스택
+
+        // 주식 가격 배열을 순회
+        for (int i = 0; i < n; i++) {
+            // 현재 가격이 스택에 저장된 가격보다 낮아지는 시점을 찾기
+            while (!stack.isEmpty() && prices[stack.peek()] > prices[i]) {
+                int j = stack.pop();  // 스택에서 인덱스를 꺼냄
+                answer[j] = i - j;  // 가격이 떨어진 시점까지의 기간 계산
+            }
+            stack.push(i);  // 현재 인덱스를 스택에 추가
+        }
+
+        // 순회가 끝난 후에도 스택에 남아있는 인덱스 처리
+        while (!stack.isEmpty()) {
+            int j = stack.pop();  // 스택에서 인덱스를 꺼냄
+            answer[j] = n - 1 - j;  // 끝까지 가격이 떨어지지 않은 기간 계산
+        }
+
+        return answer;  // 결과 배열 반환
+    }
+}
+
+```
+---
+
+## PriorityQueue 활용
+
+```java
+import java.util.*;
+
+class Solution {
+    public int solution(int[] scoville, int K) {
+        int answer = 0;
+        
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        
+        for(int s : scoville){
+            minHeap.add(s);
+        }
+        
+       while(minHeap.size() > 1 && minHeap.peek() < K) {
+            int firstMin = minHeap.poll(); // 가장 작은 요소 꺼내기
+            int secondMin = minHeap.poll(); // 두 번째로 작은 요소 꺼내기
+            
+            int newScoville = firstMin + (secondMin * 2); // 새로운 스코빌 지수 계산
+            minHeap.add(newScoville); // 계산된 새로운 스코빌 지수를 힙에 추가
+            answer++; // 섞은 횟수 증가
+        }
+        
+        if(minHeap.peek() < K) {
+            return -1;
+        }
+        
+        return answer;
+    }
+}
+```
+---
+
+## PriorityQueue + 
+
+```java
+import java.util.*;
+
+class Solution {
+    public int solution(int[] scoville, int K) {
+        int answer = 0;
+        
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        
+        for(int s : scoville){
+            minHeap.add(s);
+        }
+        
+       while(minHeap.size() > 1 && minHeap.peek() < K) {
+            int firstMin = minHeap.poll(); // 가장 작은 요소 꺼내기
+            int secondMin = minHeap.poll(); // 두 번째로 작은 요소 꺼내기
+            
+            int newScoville = firstMin + (secondMin * 2); // 새로운 스코빌 지수 계산
+            minHeap.add(newScoville); // 계산된 새로운 스코빌 지수를 힙에 추가
+            answer++; // 섞은 횟수 증가
+        }
+        
+        if(minHeap.peek() < K) {
+            return -1;
+        }
+        
+        return answer;
+    }
+}
+```
+---

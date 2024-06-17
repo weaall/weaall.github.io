@@ -9,7 +9,18 @@ imageUrl:
 ---
 
 
-## IntStream 활용하기
+## IntegerList to int[]
+
+```java
+import java.util.stream.*;
+
+List<Integer> list = new ArrayList<>();
+list.stream().mapToInt(i -> i).toArray();
+```
+
+1. 가장 기본적인 형변환
+
+---
 
 ```java
 import java.util.stream.*;

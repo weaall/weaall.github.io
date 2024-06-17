@@ -1,0 +1,24 @@
+---
+label: Java
+title: Java) Array 활용
+subTitle: Array
+date: 2024.01.01
+mins: 2
+tags: [java, Array]
+imageUrl:
+---
+
+## Array.sort() 정렬
+
+```java
+import java.util.*;
+
+int[] arr = {};
+
+Arrays.sort(arr); // 오름차순
+
+Integer[] arrDesc = Arrays.stream(arr).boxed().toArray(Integer[]::new); //int[]를 사용하려면 List<Integer>가 필요.
+Arrays.sort(arrDesc, Collections.reverseOrder()); // 내림차순
+```
+
+---
