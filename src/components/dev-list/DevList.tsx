@@ -55,23 +55,16 @@ export default function DevList({ props }: PostsProps) {
             </tw.UpperContainer>
 
             <tw.PostsContainer>
-                {props
-                    .filter((postItem) => barState.allState || postItem.label === "All" || postItem.label === sideItems.find((item) => item.state)?.label)
-                    .map((item) => (
-                        <tw.PostWrap href={item.postUrl} key={item.slug}>
-                            <tw.TopWrap>
-                                <tw.TopLabel>/ {item.label}</tw.TopLabel>
-                                <tw.TopLabel>{item.date}</tw.TopLabel>
-                            </tw.TopWrap>
-                            <tw.Title>{item.title}</tw.Title>
-                            <tw.SubTitle>{item.subTitle}</tw.SubTitle>
-                            <tw.tagWrap>
-                                {item.tags?.map((tag, index) => (
-                                    <tw.tag key={index}>{tag}</tw.tag>
-                                ))}
-                            </tw.tagWrap>
-                        </tw.PostWrap>
-                    ))}
+                {props.map((item) => (
+                    <tw.PostWrap href={item.postUrl} key={item.slug}>
+                        <tw.TopWrap>
+                            <tw.TopLabel>/ {item.label}</tw.TopLabel>
+                            <tw.TopLabel>{item.date}</tw.TopLabel>
+                        </tw.TopWrap>
+                        <tw.Title>{item.title}</tw.Title>
+                        <tw.SubTitle>{item.subTitle}</tw.SubTitle>
+                    </tw.PostWrap>
+                ))}
             </tw.PostsContainer>
         </tw.Container>
     )

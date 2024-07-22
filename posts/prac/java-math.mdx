@@ -18,3 +18,17 @@ for (int i = 0; i < n; i++) {
 
 1. *Math.ceil()* : 숫자를 올림하여 가장 가까운 정수로 반환.
 ---
+
+## Math.min() / Math.max() 
+
+```java
+int[][] sizes // 이차원 배열
+
+int length = 0, height = 0;
+
+for (int[] card : sizes) { // 이차원 배열 순회
+    length = Math.max(length, Math.max(card[0], card[1])); // 두값중 큰 값을 length에 넣음
+    height = Math.max(height, Math.min(card[0], card[1])); // 두값중 작은 값을 height에 넣음
+}
+```
+---
