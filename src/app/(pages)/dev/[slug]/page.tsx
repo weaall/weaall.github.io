@@ -25,6 +25,9 @@ import {
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
 import remarkGfm from "remark-gfm"
+import DevList from "@/components/dev-list/DevList"
+import getPostsData from "@/components/mdx/getMdx"
+
 
 interface PostData {
     label: string
@@ -34,6 +37,7 @@ interface PostData {
     tags: []
     mins: string
 }
+
 
 const POSTS_FOLDER = path.join(process.cwd(), "posts/dev")
 
@@ -93,8 +97,14 @@ async function compilePostMarkdown(slug: string) {
 
 export default async function PostPage({ params }: { params: { slug: string } }) {
     const { content } = await compilePostMarkdown(params.slug)
+    const postsData = await getPostsData("dev")
 
-    return <>{content}</>
+    return (
+        <div className="flex">
+            <DevList props={postsData} />
+            <div className="py-6">{content}</div>
+        </div>
+    )
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
