@@ -1,13 +1,44 @@
 ---
-label: 00.DataTable
-title: 00.DataTable
-subTitle: 00.DataTable
+label: 00. DataTable
+title: 00. DataTable
+subTitle: 00. DataTable
 date: 2024.01.01
 mins: 2
 tags: [DataTable]
 imageUrl:
 ---
 
-## DataTable
+## Error Code
 
+```
+{
+  "error": "ERROR_CODE",
+  "data": "error description"
+}
+```
 
+## 오류코드
+
+일반적으로 제공되는 오류 코드는 다음과 같다.<br/>
+
+| HTTP Status Code | Error Code          | Description                                                                 |
+|------------------|----------------------|-----------------------------------------------------------------------------|
+| 400              | BAD_REQUEST          | 클라이언트 요청의 형식이나 내용이 잘못되어 서버가 처리할 수 없는 경우     |
+| 400              | INVALID_PARAMETER    | 클라이언트에서 요청한 파라미터의 형식이나 내용에 오류가 있는 경우           |
+| 400              | INVALID_RESOURCE     | 클라이언트에서 요청한 리소스의 내용에 오류가 있는 경우                     |
+| 400              | MISSING_PARAMETER    | 필수 파라미터를 지정하지 않은 경우                                          |
+| 400              | LIMIT_EXCEEDED       | 파라미터 혹은 리소스 속성값의 제한 설정을 초과하는 경우                     |
+| 400              | OUT_OF_RANGE         | 파라미터 혹은 리소스 속성값의 범위를 벗어나는 경우                          |
+| 401              | UNAUTHORIZED         | 요구되는 인증 정보를 누락하거나 잘못 지정해 요청한 경우.<br />일반적인 인증 오류는 RFC 6749에 정의된 내용을 표시한다.                    |
+| 403              | FORBIDDEN            | 서버가 클라이언트의 요청을 이해했으나 거부하는 경우. <br />클라이언트 앱이 접근하려는 리소스에 대한 접근 권한이나 OAuth scope를 가지고 있지 않으면 접근이 거부된다.                        |
+| 403              | ACCESS_DENIED        | 클라이언트가 요청하는 리소스에 대한 접근이 제한되는 경우                   |
+| 403              | LIMIT_EXCEEDED       | 클라이언트가 요청하는 리소스의 제한 설정을 초과하는 경우                   |
+| 403              | OUT_OF_RANGE         | 클라이언트가 요청하는 리소스의 제한 범위를 벗어나는 경우                   |
+| 404              | NOT_FOUND            | 클라이언트가 요청하는 리소스를 찾을 수 없는 경우                           |
+| 404              | RESOURCE_NOT_EXIST   | 클라이언트가 요청하는 특정 리소스를 찾을 수 없는 경우                      |
+| 409              | CONFLICT             | 클라이언트가 요청하는 리소스와 충돌이 발생하는 경우                       |
+| 409              | ALREADY_EXIST        | 클라이언트가 요청하는 리소스가 이미 존재하는 경우                          |
+| 409              | RESOURCE_ALREADY_EXIST | 클라이언트가 요청하는 특정 리소스가 이미 존재하는 경우                    |
+| 410              | DELETED              | 클라이언트가 요청하는 리소스가 이미 삭제되어 서버에 존재하지 않는 경우     |
+| 500              | INTERNAL_SERVER_ERROR | 특정할 수 없는 서버의 내부 오류                                            |
+| 503              | SERVICE_UNAVAILABLE  | 일시적인 서버 오류                                                        |

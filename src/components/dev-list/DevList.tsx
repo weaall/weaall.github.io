@@ -18,54 +18,18 @@ interface PostsProps {
 }
 
 export default function DevList({ props }: PostsProps) {
-    const [barState, setBarState] = useState({
-        allState: true,
-        socialState: false,
-        webState: false,
-        etcState: false,
-    })
-
-    const sideBarClick = (clickedLabel: string): void => {
-        const newStates = {
-            allState: false,
-            socialState: false,
-            webState: false,
-            etcState: false,
-            [`${clickedLabel.toLowerCase()}State`]: true,
-        }
-        setBarState(newStates)
-    }
-
-    const sideItems = [
-        { label: "All", src: "all_icon", state: barState.allState },
-        { label: "Social", src: "react_icon", state: barState.socialState },
-        { label: "Web", src: "web_icon", state: barState.webState },
-        { label: "etc", src: "etc_icon", state: barState.etcState },
-    ]
+    const [selectedPost, setSelectedPost] = useState<PostData | null>(null)
 
     return (
         <tw.Container>
-            <tw.UpperContainer>
-                {sideItems.map((item, index) => (
-                    <tw.UpperWrap $state={item.state} key={index} onClick={() => sideBarClick(item.label)}>
-                        <tw.UpperSvg src={`../../../assets/svg/${item.src}.svg`}></tw.UpperSvg>
-                        <tw.UpperLabel>{item.label}</tw.UpperLabel>
-                    </tw.UpperWrap>
-                ))}
-            </tw.UpperContainer>
-
-            <tw.PostsContainer>
+            <tw.DrawerContainer>
                 {props.map((item) => (
-                    <tw.PostWrap href={item.postUrl} key={item.slug}>
-                        <tw.TopWrap>
-                            <tw.TopLabel>/ {item.label}</tw.TopLabel>
-                            <tw.TopLabel>{item.date}</tw.TopLabel>
-                        </tw.TopWrap>
-                        <tw.Title>{item.title}</tw.Title>
-                        <tw.SubTitle>{item.subTitle}</tw.SubTitle>
-                    </tw.PostWrap>
+                    <tw.DrawerWrap href={item.postUrl} key={item.slug} onClick={() => setSelectedPost(item)}>
+                        <tw.DrawerLabel>{item.title}</tw.DrawerLabel>
+                    </tw.DrawerWrap>
                 ))}
-            </tw.PostsContainer>
+            </tw.DrawerContainer>
+            <div></div>
         </tw.Container>
     )
 }
