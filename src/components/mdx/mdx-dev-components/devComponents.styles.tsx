@@ -37,5 +37,5 @@ export const Table = tw.table`w-full my-4 table-fixed`
 export const Thead = tw.thead`bg-gray-50 text-left border-t border-t-gray-400 border-b border-b-gray-200 `
 export const Tbody = tw.tbody``
 export const Tr = tw.tr``
-export const Th = tw.th`text-xs text-gray-500 font-medium px-5 py-3`
-export const Td = tw.td`text-sm px-5 py-3 font-medium border-b`
+export const Th = tw.th`text-5xl text-gray-500 font-medium px-5 py-3`
+export const Td = tw.td`text-6xl px-5 py-3 font-medium border-b`

@@ -20,6 +20,10 @@ const config: Config = {
                 mobile: { max: "640px" },
                 tablet: { min: "641px", max: "1024px" },
             },
+            fontSize: {
+                '5xl': '0.7rem',
+                '6xl': '0.8rem'
+            }
         },
     },
     plugins: [],

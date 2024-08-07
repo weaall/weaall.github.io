@@ -42,3 +42,25 @@ imageUrl:
 | 410              | DELETED              | 클라이언트가 요청하는 리소스가 이미 삭제되어 서버에 존재하지 않는 경우     |
 | 500              | INTERNAL_SERVER_ERROR | 특정할 수 없는 서버의 내부 오류                                            |
 | 503              | SERVICE_UNAVAILABLE  | 일시적인 서버 오류                                                        |
+
+---
+## MySQL Table
+
+### user
+
+| id | email | password | name | mobile | social | social_id | admin |
+|----|-------|----------|------|--------|--------|-----------|-------|
+| PK | UNIQ  | -        | -    | -      | -      | -         | -     |
+| INT | VARCHAR | VARCHAR | VARCHAR | VARCHAR | VARCHAR | VARCHAR | TYNYINT |
+| A_INC | (50) | (100) | (20) | (13) | (30) | (100) | default(0) |
+| - | - | - | - | - | web| null | - |
+| - | - | - | - | - | kakao, naver | social_id | - |
+
+### hotel
+
+| id | user_id | name | postcode | address| adress _detail | description | check_in | check_out | tel_num | permission |
+|----|---------|------|----------|--------|---------------|-------------|----------|-----------|---------|------------|
+| PK | FK      | -    | -        | -      | -             | -           | -        | -         | -       | -          |
+| INT | INT    | VARCHAR | INT | VARCHAR | VARCHAR    | VARCHAR     | INT      | INT       | VARCHAR     | TYNYINT    |
+| A_INC | user(id) | (30) | (5) | (300)  | (300)      | (500)       | < 25     | < 25      | 11  | default(0) 
+

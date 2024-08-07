@@ -58,7 +58,7 @@ export default function Header() {
             </tw.NavWrap>
 
             <tw.DevBtn>
-                <a href={"/dev"}>
+                <a href={"/dev/intro"}>
                     <tw.DevLabel>dev</tw.DevLabel>
                 </a>
             </tw.DevBtn>
