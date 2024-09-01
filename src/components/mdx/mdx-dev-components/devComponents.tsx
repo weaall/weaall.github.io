@@ -49,7 +49,7 @@ export function Hr({ children }: { children?: React.ReactNode }) {
     return <tw.Hr>{children}</tw.Hr>
 }
 
-export function Code({ className, children }: { className?: string; children?: React.ReactNode }) {
+export function Code({ className, children, language }: { className?: string; children?: React.ReactNode; language?: string; }) {
     return (
         <>
             {className === undefined ? (
@@ -62,7 +62,7 @@ export function Code({ className, children }: { className?: string; children?: R
                         <tw.ClassLabel>{(className || "").slice(9)}</tw.ClassLabel>
                     </tw.ClassWrap>
                     <tw.CodeBoxC>
-                        <tw.Code className={className}>{children}</tw.Code>
+                        <tw.Code className={className} data-language={language}>{children}</tw.Code>
                     </tw.CodeBoxC>
                 </tw.CodeWrapC>
             )}

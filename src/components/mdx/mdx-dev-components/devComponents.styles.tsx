@@ -16,9 +16,9 @@ export const Hr= tw.hr`my-20 w-full h-[2px] bg-t-main`
 
 export const Pre = tw.pre`text-t-main text-base`
 
-export const Li = tw.li`pl-6 py-2 text-lg before:content-['-'] before:font-bold before:pr-3`
+export const Li = tw.li`pl-4 py-1 text-base before:content-['-'] before:font-bold before:pr-3`
 
-export const CodeWrap = tw.div`relative bg-main rounded-xl text-t-main text-base p-6 mb-10`
+export const CodeWrap = tw.div`relative bg-main rounded-xl text-t-main text-base p-6 mb-12 mt-4`
 export const CodeWrapC = tw.div`relative rounded-xl text-main text-base pt-8 mb-10`
 export const ClassWrap = tw.div`absolute top-0 rounded-2xl py-3 px-6 bg-white w-fit ml-8` 
 export const ClassLabel = tw.p`text-2xl font-bold after:content-['.'] after:text-red-500`
@@ -33,7 +33,7 @@ export const ImgWrap = tw.div`w-full mx-auto py-6 text-center`
 export const Img = tw.img`mx-auto`
 export const ImgTitle = tw.p`text-xs text-gray-400`
 
-export const Table = tw.table`w-full my-4 table-fixed`
+export const Table = tw.table`w-full my-4 table-fixed mb-12`
 export const Thead = tw.thead`bg-gray-50 text-left border-t border-t-gray-400 border-b border-b-gray-200 `
 export const Tbody = tw.tbody``
 export const Tr = tw.tr``

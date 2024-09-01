@@ -10,8 +10,38 @@ imageUrl:
 
 ## AuthAPI
 
-- /v1/auth/* 
+- /api/v1/auth/* 
 
-| Method | Path | Headers | Path params | Query params | social | social_id | admin |
-|--------|------|---------|-------------|--------------|--------|-----------|-------|
-| PK | UNIQ  | -        | -    | -      | -      | -         | -     |
+| Method | Path | Headers | Path params | Query params | Body params | Request example | Response example |
+|--------|------|---------|-------------|--------------|-------------|-----------------|------------------|
+| POST   | /sign-up | -   | -           | -            | See below   | -               | -                |
+| POST   | /sign-in | -   | -           | -            | See below   | -               | -                |
+| POST   | /kakao | -     | -           | -            | See below   | -               | -                |
+| POST   | /naver /callback | - | -     | -            | See below   | -               | -                |
+| POST   | /presignedUrls | - | -       | -            | See below   | -               | -                |
+
+### /sign-up
+
+**Body params**
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| email      | string   | 이메일  <br/><br/> **maxLength : 50** <br/><br/> ex) travel<span>@</span>travel.co.kr |
+| password   | string   | 비밀번호  <br/><br/> **minLength : 8** <br/><br/> **maxLength : 16** |
+| name       | string   | 이름  <br/><br/> **minLength : 20** <br/><br/> **maxLength : 20** <br/><br/> ex) 김트레블 |
+| mobile     | string   | 전화번호 <br/><br/> **maxLength : 13** <br/><br/> ex) 010-0000-0000 |
+
+**Request Example**
+```
+{ "email": travel<span>@</span>travel.co.kr, 
+"password": Rlaxmfpqmf1!, 
+"name":김트레블,
+"mobile": 010-0000-0000,
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 201              | OK       | -           |
+| 400              | Error    | 입력값 필수요소, 조건 확인필요 |
+| 409              | Error    | 이미 존재하는 이메일 |
