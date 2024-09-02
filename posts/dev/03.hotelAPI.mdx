@@ -10,3 +10,166 @@ imageUrl:
 
 ## HotelAPI
 
+- /api/v1/hotel/* 
+
+| Method | Path | Headers | Path params | Query params | Body params | 
+|--------|------|---------|-------------|--------------|-------------|
+| GET    | /:id | -       | See below   | -            | -           |
+| GET    | /img/:id | -   | See below   | -            | -           |
+| GET    | /rating/:id | - | See below  | -            | -           |
+| GET    | /me | Authorization | -      | -            | See below   |
+| POST   | /reg | Authorization | -     | -            | See below   |
+| GET    | /mgmt/info/:id | Authorization | See below  | - | -       |
+| PUT    | /mgmt/info | Authorization | - | -          | See below   |
+| PUT    | /mgmt/serv | Authorization | - | -          | See below   |
+| PUT    | /mgmt/facil | Authorization | - | -         | See below   |
+
+---
+
+### /:id
+
+**Path params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| id         | number   | 호텔ID <br/><br/> ex) 123 |
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 404              | Error    | 호텔 없음 (ID에 해당하는 호텔 없음) |
+
+**Response Example**
+```
+{
+    체크필요
+}
+```
+
+---
+
+### /img/:id
+
+**Path params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| id         | number   | 호텔ID <br/><br/> ex) 123 |
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 404              | Error    | 호텔 없음 (ID에 해당하는 호텔 없음) |
+
+**Response Example**
+```
+{
+    체크필요
+}
+```
+
+---
+
+### /rating/:id
+
+**Path params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| id         | number   | 호텔ID <br/><br/> ex) 123 |
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 404              | Error    | 호텔 없음 (ID에 해당하는 호텔 없음) |
+
+**Response Example**
+```
+{
+    체크필요
+}
+```
+
+---
+
+### /me
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Request Example**
+```http
+GET /me HTTP/1.1
+Host: api.example.com
+Authorization: Bearer <your-jwt-token>
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+
+**Response Example**
+```
+{
+    체크필요
+}
+```
+
+---
+
+### /reg
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Body params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| name       | string   | 호텔 이름 <br/><br/> **required** <br/><br/>**minLength : 2** <br/> **maxLength : 20** <br/> **한글, 숫자, 영어** <br/><br/> ex) 트레블 호텔 |
+| postcode   | integer  | 우편번호 <br/><br/> **required** <br/><br/> **length : 5** <br/> ex) 12345 |
+| address    | string   | 주소 <br/><br/>  **required** <br/><br/> ex) 서울 특별시 트레블로 |
+| address_detail | string | 상세주소 <br/><br/> **length : 5** <br/><br/> ex) 트레블빌딩 |
+| reg_num    | string   | 사업자등록번호 <br/><br/> **required** <br/><br/> **length : 12** <br/><br/> ex) 000-00-00000 |
+| bank       | string   | 은행이름  <br/><br/> **required** <br/><br/> **length : 5** <br/><br/> ex) 트레블 은행 |
+| account    | integer  | 계좌번호  <br/><br/> **required** <br/><br/> **minLength : 10** <br/> **maxLength : 14** <br/><br/> ex) 0000000000  |
+| owner      | string   | 계좌주  <br/><br/> **required** <br/><br/> **length : 5** <br/><br/> ex) 김트레블 |
+| urls       | arry     | 이미지 주소  <br/><br/> **required** <br/><br/> **size : 2** <br/><br/> ex) <br/>[www<span>.</span>travel.io/0],  [www<span>.</span>travel.io/1] |
+
+**Request Example**
+```
+{ 
+    "name": "트레블 호텔",
+    "postcode": 12345,
+    "address": "서울 특별시 트레블로",
+    "address_detail": "트레블 빌딩" || null,
+    "reg_num": "000-00-00000",
+    "bank": "트레블 은행",
+    "account": 0000000000,
+    "owner": "김트레블",
+    "urls": [ "www.travel.io/0", "www.travel.io/1" ] 
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 201              | OK       | -           |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+
+---

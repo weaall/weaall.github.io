@@ -10,3 +10,127 @@ imageUrl:
 
 ## UserAPI
 
+- /api/v1/user/* 
+
+| Method | Path | Headers | Path params | Query params | Body params | 
+|--------|------|---------|-------------|--------------|-------------|
+| GET    | /me | Authorization | -      | -            | -           |
+| PUT    | /updateMe | Authorization | - | -           | See below   |
+| GET    | /name/:id | -  | See below   | -            | -           |
+| GET    | /email/:id | - | See below   | -            | -           |
+
+---
+
+### /me
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Request Example**
+```http
+GET /me HTTP/1.1
+Host: api.example.com
+Authorization: Bearer <your-jwt-token>
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+
+**Response Example**
+```
+{ 
+"email": "travel<span>@</span>travel.co.kr", 
+"name": "김트레블",
+"mobile": "010-0000-0000",
+}
+```
+
+---
+
+### /updateMe
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer[token] 형식** |
+
+**Body params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| email      | string   | 이메일  <br/><br/> **maxLength : 50** <br/> ex) travel<span>@</span>travel.co.kr |
+| name       | string   | 이름  <br/><br/> **minLength : 20** <br/> **maxLength : 20** <br/> ex) 김트레블 |
+| mobile     | string   | 전화번호 <br/><br/> **maxLength : 13** <br/> ex) 010-0000-0000 |
+
+**Request Example**
+```
+{
+"email": "travel<span>@</span>travel.co.kr", 
+"name": "김트레블",
+"mobile": "010-0000-0000"
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+
+---
+
+### /name/:id
+
+**Path params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| id         | number   | 유저ID <br/><br/> ex) 123 |
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+| 404              | Error    | 사용자 없음 (ID에 해당하는 사용자 없음) |
+
+**Response Example**
+```
+{
+  "name": "김트레블"
+}
+```
+
+---
+
+### /email/:id
+
+**Path params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| id         | number   | 유저ID <br/><br/> ex) 123 |
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+| 404              | Error    | 사용자 없음 (ID에 해당하는 사용자 없음) |
+
+**Response Example**
+```
+{
+    data: 1
+}
+```
