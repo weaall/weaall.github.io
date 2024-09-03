@@ -148,7 +148,7 @@ Authorization: Bearer <your-jwt-token>
 | bank       | string   | 은행이름  <br/><br/> **required** <br/><br/> **length : 5** <br/><br/> ex) 트레블 은행 |
 | account    | integer  | 계좌번호  <br/><br/> **required** <br/><br/> **minLength : 10** <br/> **maxLength : 14** <br/><br/> ex) 0000000000  |
 | owner      | string   | 계좌주  <br/><br/> **required** <br/><br/> **length : 5** <br/><br/> ex) 김트레블 |
-| urls       | arry     | 이미지 주소  <br/><br/> **required** <br/><br/> **size : 2** <br/><br/> ex) <br/>[www<span>.</span>travel.io/0],  [www<span>.</span>travel.io/1] |
+| urls       | array    | 이미지 주소  <br/><br/> **required** <br/><br/> **size : 2** <br/><br/> ex) <br/>[www<span>.</span>travel.io/0],  [www<span>.</span>travel.io/1] |
 
 **Request Example**
 ```
@@ -171,5 +171,163 @@ Authorization: Bearer <your-jwt-token>
 | 201              | OK       | -           |
 | 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
 | 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+
+---
+
+### /mgmt/info/:id
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Path params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| id         | integer  | 호텔ID <br/><br/> ex) 123 |
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+| 404              | Error    | 호텔 없음 (ID에 해당하는 호텔 없음) |
+
+**Response Example**
+```
+{
+    체크필요
+}
+```
+
+---
+
+### /mgmt/info
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Body params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| hotel_id   | integer  | 호텔ID <br/><br/> **required** <br/><br/> ex) 123 |
+| tel_num    | string   | 호텔 전화번호 <br/><br/> **required** <br/><br/> **maxLength : 15** <br/><br/> ex) 020000000 |
+| description | string  | 호텔 설명 <br/><br/> **required** <br/><br/> **maxLength : 300** <br/><br/> ex) 트레블 호텔은 참 좋아요. |
+| check_in   | integer  | 체크인 시간 <br/><br/> **required** <br/><br/> **0 &lt;= check_in &lt; 24 <br/> 24h format** <br/><br/> ex) 15 |
+| check_out  | integer  | 체크아웃 시간 <br/><br/> **required** <br/><br/> **0 &lt;= check_out &lt; 24 <br/> 24h format** <br/><br/> ex) 11 |
+| urls       | array    | 이미지 주소 목록 <br/><br/> **required** <br/><br/> **maxSize : 10** <br/><br/> ex) <br/>[www<span>.</span>travel.io/0],  [www<span>.</span>travel.io/1] |
+
+**Request Example**
+```
+{ 
+    "hotel_id": 123,
+    "tel_num": "020000000",
+    "description": "트레블 호텔은 참 좋아요.",
+    "check_in": 15,
+    "check_out": 11,
+    "urls": ["www.travel.io/0", "www.travel.io/1"]
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+| 404              | Error    | 호텔 없음 (ID에 해당하는 호텔 없음) |
+
+---
+
+### /mgmt/serv
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Body params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| hotel_id   | integer  | 호텔ID <br/><br/> **required** <br/><br/> ex) 123 |
+| wifi       | tinyint  | 와이파이 <br/><br/> **required** <br/><br/> **tinyint** <br/><br/> ex) 0 or 1 |
+| always_check_in | tinyint | 24시 체크인 <br/><br/> **required** <br/><br/> **tinyint** <br/><br/> ex) 0 or 1 |
+| breakfast  | tinyint  | 조식 <br/><br/> **required** <br/><br/> **tinyint** <br/><br/> ex) 0 or 1 |
+| breakfast_price | integer  | 조식 가격 <br/><br/> **required** <br/><br/> 1000 &lt;= 가격 &lt; 1000000 <br/><br/> ex) 10000 |
+| barbecue   | tinyint  | 바베큐 <br/><br/> **required** <br/><br/> **tinyint** <br/><br/> ex) 0 or 1 |
+
+**Request Example**
+```
+{ 
+    "hotel_id": 123,
+    "wifi": 1,
+    "always_check_in": 0,
+    "breakfast": 1,
+    "breakfast_price": 10000,
+    "barbecue": 1
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+| 404              | Error    | 호텔 없음 (ID에 해당하는 호텔 없음) |
+
+---
+
+### /mgmt/facil
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Body params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| hotel_id   | integer  | 호텔ID <br/><br/> **required** <br/><br/> ex) 123 |
+| carpark    | tinyint  | 주차장 <br/><br/> **required** <br/><br/> **tinyint** <br/><br/> ex) 0 or 1 |
+| restaurant | tinyint  | 식당 <br/><br/> **required** <br/><br/> **tinyint** <br/><br/> ex) 0 or 1 |
+| cafe       | tinyint  | 카페 <br/><br/> **required** <br/><br/> **tinyint** <br/><br/> ex) 0 or 1 |
+| swimming_pool | tinyint | 수영장 <br/><br/> **required** <br/><br/> **tinyint** <br/><br/> ex) 0 or 1 |
+| spa        | tinyint  | 스파 <br/><br/> **required** <br/><br/> **tinyint** <br/><br/> ex) 0 or 1 |
+| fitness    | tinyint  | 헬스장 <br/><br/> **required** <br/><br/> **tinyint** <br/><br/> ex) 0 or 1 |
+| convenience_store | tinyint | 편의점 <br/><br/> **required** <br/><br/> **tinyint** <br/><br/> ex) 0 or 1 |
+
+**Request Example**
+```
+{ 
+    "hotel_id": 123,
+    "carpark": 1,
+    "restaurant": 1,
+    "cafe": 0,
+    "swimming_pool": 1,
+    "spa": 0,
+    "fitness": 1,
+    "convenience_store": 1
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+| 404              | Error    | 호텔 없음 (ID에 해당하는 호텔 없음) |
 
 ---

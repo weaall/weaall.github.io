@@ -10,3 +10,353 @@ imageUrl:
 
 ## RoomAPI
 
+- /api/v1/room/* 
+
+| Method |     Path     |    Headers    | Path params | Query params | Body params | 
+|--------|--------------|---------------|-------------|--------------|-------------|
+| GET    | /bed         | -             | -           | -            | -           |
+| GET    | /view        | -             | -           | -            | -           |
+| GET    | /:id         | -             | See below   | -            | -           |
+| GET    | /img/:id     | -             | See below   | -            | -           |
+| GET    | /hotel/:id   | -             | See below   | -            | -           |
+| POST   | /reg         | Authorization | -           | -            | See below   |
+| PUT    | /info        | Authorization | -           | -            | See below   |
+| GET    | /price/:id   | -             | See below   | See below    | -           |
+| POST   | /price/date  | Authorization | -           | -            | See below   |
+| POST   | /price/month | Authorization | -           | -            | See below   |
+
+---
+
+### /bed
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+
+**Response Example**
+```
+{
+  "view_types": [
+    { "id": 1, "name": "전망없음" },
+    { "id": 2, "name": "오션뷰" },
+    { "id": 3, "name": "시티뷰" },
+    { "id": 4, "name": "하버뷰" },
+    { "id": 5, "name": "마운틴뷰" },
+    { "id": 6, "name": "리버뷰" }
+  ]
+}
+```
+
+---
+
+### /view
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+
+**Response Example**
+```
+{
+  "bed_types": [
+    { "id": 1, "name": "싱글베드 1개" },
+    { "id": 2, "name": "싱글베드 2개" },
+    { "id": 3, "name": "더블베드 1개" },
+    { "id": 4, "name": "퀸베드 1개" },
+    { "id": 5, "name": "킹베드 1개" },
+    { "id": 6, "name": "싱글베드 3개" },
+    { "id": 7, "name": "더블베드 1개 + 싱글베드 1개" },
+  ]
+}
+```
+
+---
+
+### /:id
+
+**Path params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| id         | integer  | 객실 ID     |
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 404              | Error    | 객실 없음 (ID에 해당하는 객실 없음) |
+
+**Response Example**
+```
+{
+    체크필요
+}
+```
+
+---
+
+### /img/:id
+
+**Path params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| id         | integer  | 객실 ID     |
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 404              | Error    | 객실 없음 (ID에 해당하는 객실 없음) |
+
+**Response Example**
+```
+{
+    체크필요
+}
+```
+
+---
+
+### /hotel/:id
+
+**Path params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| id         | number   | 호텔 ID |
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 404              | Error    | 호텔 없음 (ID에 해당하는 호텔 없음) |
+
+**Response Example**
+```
+{
+    체크필요
+}
+```
+
+---
+
+### /reg
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Body params**
+
+|   Property   |   Type   | Description |
+|--------------|----------|-------------|
+| hotel_id     | integer  | 호텔ID <br/><br/> **required** |
+| name         | string   | 객실 이름 <br/><br/> **required** <br/><br/>**minLength : 2** <br/> **maxLength : 20** <br/> **한글, 숫자, 영어** |
+| num          | integer  | 객실 인원 <br/><br/> **required** |
+| bed_type_id  | integer  | 침대 타입 ID  <br/><br/> **required** <br/><br/> bed_type_id |
+| view_type_id | integer  | 뷰 타입 ID  <br/><br/> **required** <br/><br/> view_type_id |
+
+
+**Request Example**
+```
+{ 
+    "hotel_id": 123,
+    "name": "트레블 더블",
+    "num": 2,
+    "bed_type_id": 1,
+    "view_type_id": 1
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 201              | OK       | -           |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+
+---
+
+### /info
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Body params**
+
+|   Property   |   Type   | Description |
+|--------------|----------|-------------|
+| hotel_id     | integer  | 호텔 ID <br/><br/> **required** |
+| room_id      | integer  | 객실 ID <br/><br/> **required** |
+| name         | string   | 객실 이름 <br/><br/> **required** <br/><br/>**minLength : 2** <br/> **maxLength : 20** <br/> **한글, 숫자, 영어** |
+| num          | integer  | 객실 인원 <br/><br/> **required** |
+| bed_type_id  | integer  | 침대 타입 ID  <br/><br/> **required** <br/><br/> bed_type_id |
+| view_type_id | integer  | 뷰 타입 ID  <br/><br/> **required** <br/><br/> view_type_id |
+| urls         | array    | 이미지 주소 목록 <br/><br/> **required** <br/><br/> **maxSize : 10** |
+
+**Request Example**
+```
+{ 
+    "hotel_id": 123,
+    "room_id": 123,
+    "name": "트레블 더블",
+    "num": 2,
+    "bed_type_id": 1,
+    "view_type_id": 1,
+    "urls": ["www.travel.io/0", "www.travel.io/1"]
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 201              | OK       | -           |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+| 404              | Error    | 호텔 없음 (ID에 해당하는 호텔 없음) |
+| 404              | Error    | 객실 없음 (ID에 해당하는 객실 없음) |
+---
+
+### /price/:id
+
+**Path params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| id         | number   | 객실 ID <br/><br/> ex) 123 |
+
+**Query params**
+
+|   Property   |   Type   | Description |
+|--------------|----------|-------------|
+| checkInDate  | string   | 체크인 <br/><br/> **required** <br/> **yy-mm-dd** |
+| checkOutDate | string   | 체크인 <br/><br/> **required** <br/> **yy-mm-dd** |
+
+**Request Example**
+```
+{ 
+    "checkInDate": "24-01-01",
+    "checkOutDate": "24-01-01",
+}
+```
+
+**Response**
+
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 404              | Error    | 객실 없음 (ID에 해당하는 객실 없음) |
+
+**Response Example**
+```
+{
+    체크필요
+}
+```
+
+---
+
+### /price/date
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Body params**
+
+|   Property   |   Type   | Description |
+|--------------|----------|-------------|
+| hotel_id     | integer  | 호텔 ID <br/><br/> **required** |
+| room_id      | integer  | 객실 ID <br/><br/> **required** |
+| year         | integer  | 년 <br/><br/> **required** |
+| month        | integer  | 월 <br/><br/> **required** |
+| date         | integer  | 일 <br/><br/> **required** |
+| price        | integer  | 객실 금액 <br/><br/> **required** <br/> **1000 &lt;= 가격 &lt; 100000000** |
+| room_limit   | integer  | 객실수 <br/><br/> **required** <br/> **객실수 &lt; 1000** |
+
+**Request Example**
+
+```
+{ 
+    "hotel_id": 123,
+    "room_id": 123,
+    "year": 2024,
+    "month": 1,
+    "date": 1,
+    "price": 100000,
+    "room_limit": 1
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 201              | OK       | -           |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+| 404              | Error    | 호텔 없음 (ID에 해당하는 호텔 없음) |
+| 404              | Error    | 객실 없음 (ID에 해당하는 객실 없음) |
+---
+
+### /price/month
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Body params**
+
+|   Property   |   Type   | Description |
+|--------------|----------|-------------|
+| hotel_id     | integer  | 호텔 ID <br/><br/> **required** |
+| room_id      | integer  | 객실 ID <br/><br/> **required** |
+| year         | integer  | 년도 (4자리) <br/><br/> **required** |
+| month        | integer  | 월 (1-12)  <br/><br/> **required** |
+| date         | integer  | 일 (1-31) <br/><br/> **required** |
+| days         | integer  | 객실 평일 금액 <br/><br/> **required** <br/> **1000 &lt;= 가격 &lt; 100000000** |
+| friday       | integer  | 객실 금요일 금액 <br/><br/> **required** <br/> **1000 &lt;= 가격 &lt; 100000000**  |
+| saturday     | integer  | 객실 토요일 금액 <br/><br/> **required** <br/> **1000 &lt;= 가격 &lt; 100000000**  |
+| room_limit   | integer  | 객실수 <br/><br/> **required** <br/> **객실수 &lt; 1000** |
+
+**Request Example**
+
+```
+{ 
+    "hotel_id": 123,
+    "room_id": 123,
+    "year": 2024,
+    "month": 1,
+    "date": 1,
+    "days": 100000,
+    "friday": 120000,
+    "saturday": 150000,
+    "room_limit": 1
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 201              | OK       | -           |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+| 404              | Error    | 호텔 없음 (ID에 해당하는 호텔 없음) |
+| 404              | Error    | 객실 없음 (ID에 해당하는 객실 없음) |
+---
+
