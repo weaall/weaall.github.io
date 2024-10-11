@@ -19,6 +19,7 @@ imageUrl:
 | POST   | /kakao | -     | -           | -            | See below   |
 | POST   | /naver /callback | - | -     | -            | See below   |
 | POST   | /presignedUrls | - | -       | -            | See below   |
+| POST   | /send /email   | - | -       | -            | See below   |
 
 ### /sign-up
 
@@ -26,17 +27,17 @@ imageUrl:
 
 |  Property  |   Type   | Description |
 |------------|----------|-------------|
-| email      | string   | 이메일  <br/><br/> **maxLength : 50** <br/> ex) travel<span>@</span>travel.co.kr |
-| password   | string   | 비밀번호  <br/><br/> **minLength : 8** <br/> **maxLength : 16** <br/> ex) Rlaxmfpqmf1! |
-| name       | string   | 이름  <br/><br/> **minLength : 20** <br/> **maxLength : 20** <br/> ex) 김트레블 |
-| mobile     | string   | 전화번호 <br/><br/> **maxLength : 13** <br/> ex) 010-0000-0000 |
+| email      | string   | 이메일  <br/><br/> **maxLength : 50** <br/> email형식 |
+| password   | string   | 비밀번호  <br/><br/> **minLength : 8** <br/> **maxLength : 16** <br/> **영문, 숫자, 특문 1자이상 포함** <br/> **서버 전송시 해시화 (CryotoJS)** |
+| name       | string   | 이름  <br/><br/> **minLength : 2** <br/> **maxLength : 20** |
+| mobile     | string   | 전화번호 <br/><br/> **maxLength : 13** |
 
 **Request Example**
 ```
 { 
-"email": "travel<span>@</span>travel.co.kr", 
-"password": "Rlaxmfpqmf1!", 
-"name": "김트레블",
+"email": "travelo@travelo.store", 
+"password": "hashed_password(travelo1!)", 
+"name": "트라벨로",
 "mobile": "010-0000-0000",
 }
 ```
@@ -44,8 +45,8 @@ imageUrl:
 **Response**
 | HTTP Status Code |   Type   | Description |
 |------------------|----------|-------------|
-| 201              | OK       | -           |
-| 400              | Error    | 입력값 필수요소, 조건 확인필요 |
+| 201              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
 | 409              | Error    | 이미 존재하는 이메일 |
 
 ### /sign-in
@@ -54,22 +55,22 @@ imageUrl:
 
 |  Property  |   Type   | Description |
 |------------|----------|-------------|
-| email      | string   | 이메일  <br/><br/> **maxLength : 50** <br/> ex) travel<span>@</span>travel.co.kr |
-| password   | string   | 비밀번호  <br/><br/> **minLength : 8** <br/> **maxLength : 16** <br/> ex) Rlaxmfpqmf1! |
+| email      | string   | 이메일  <br/><br/> **maxLength : 50** <br/> email형식 |
+| password   | string   | 비밀번호  <br/><br/> **minLength : 8** <br/> **maxLength : 16** <br/> **영문, 숫자, 특문 1자이상 포함** <br/> **서버 전송시 해시화 (CryotoJS)** |
 
 **Request Example**
 ```
 { 
-"email": "travel<span>@</span>travel.co.kr", 
-"password": "Rlaxmfpqmf1!", 
+"email": "travelo@travelo.store", 
+"password": "hashed_password(travelo1!)", 
 }
 ```
 
 **Response**
 | HTTP Status Code |   Type   | Description |
 |------------------|----------|-------------|
-| 201              | OK       | -           |
-| 400              | Error    | 입력값 필수요소, 조건 확인필요 |
+| 201              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음)  |
 | 401              | Error    | 이메일, 비밀번호 불일치 |
 
 ### /kakao
@@ -78,7 +79,7 @@ imageUrl:
 
 |  Property  |   Type   | Description |
 |------------|----------|-------------|
-| id         | integer  | 카카오유저ID  <br/><br/> **maxLength : 100** <br/> ex) 1111111 |
+| id         | integer  | 카카오유저ID  <br/><br/> **maxLength : 100** |
 
 **Request Example**
 ```
@@ -90,8 +91,8 @@ imageUrl:
 **Response**
 | HTTP Status Code |   Type   | Description |
 |------------------|----------|-------------|
-| 201              | OK       | -           |
-| 400              | Error    | 입력값 필수요소, 조건 확인필요 |
+| 201              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
 
 * [ ] : id 프론트에서 암호화된 상태로 받아 백에서 2차로 암호화 후 저장및 확인으로 수정필요
 
@@ -101,7 +102,7 @@ imageUrl:
 
 |  Property  |   Type   | Description |
 |------------|----------|-------------|
-| token      | string   | 네이버 토큰  <br/><br/> **maxLength : 100** <br/> ex) abcdefghijf |
+| token      | string   | 네이버 토큰  <br/><br/> **maxLength : 100** |
 
 **Request Example**
 ```
@@ -113,8 +114,8 @@ imageUrl:
 **Response**
 | HTTP Status Code |   Type   | Description |
 |------------------|----------|-------------|
-| 201              | OK       | -           |
-| 400              | Error    | 입력값 필수요소, 조건 확인필요 |
+| 201              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
 
 * [ ] : token 프론트에서 암호화된 상태로 받아 백에서 2차로 암호화 후 저장및 확인으로 수정필요
 
@@ -124,8 +125,8 @@ imageUrl:
 
 |  Property  |   Type   | Description |
 |------------|----------|-------------|
-| code       | string   | 네이버 로그인 콜백 코드  <br/><br/> ex) ESNRfdAWdiGXjFlZ1X |
-| state      | boolean  | 네이버 콜백 스테이트  <br/><br/> ex) false |
+| code       | string   | 네이버 로그인 콜백 코드 |
+| state      | boolean  | 네이버 콜백 스테이트 |
 
 **Request Example**
 ```
@@ -138,4 +139,26 @@ imageUrl:
 **Response**
 | HTTP Status Code |   Type   | Description |
 |------------------|----------|-------------|
-| 201              | OK       | -           |
+| 201              | JSON     | OK          |
+### /send/email
+
+**Body params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| email      | string   | 이메일  <br/><br/> **maxLength : 50** <br/> email형식 |
+| subject    | string   | 메일 제목  <br/><br/> **maxLength : 40** |
+| message    | string   | 메일 내용 |
+
+**Request Example**
+```
+{ 
+"id": 1111111, 
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 201              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
