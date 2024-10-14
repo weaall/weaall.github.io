@@ -3,7 +3,10 @@ import * as tw from "./MainBanner.styles"
 export default function MainBanner() {
     return (
         <tw.BannerWrap>
-            <tw.BannerLabel>Dong-Hyun Wi</tw.BannerLabel>
+            <tw.BannerLabelWrap>
+                <tw.BannerLabel>Dong-Hyun Wi</tw.BannerLabel>
+                <tw.BannerUnderline />
+            </tw.BannerLabelWrap>
             <tw.BannerText>View Great, Create View</tw.BannerText>
             <tw.MailWrap>
                 <tw.MailSvg alt="" src={"../../assets/svg/mail_icon.svg"} />
@@ -11,13 +14,8 @@ export default function MainBanner() {
                 <tw.MailText href="mailto:weaall88@gmail.com">weaall88@gmail.com</tw.MailText>
             </tw.MailWrap>
             <tw.BtnWrap>
-                <tw.BannerBtn href="https://github.com/weaall" target="_blank">
-                    <tw.BtnSvg alt="" src={"../../assets/svg/github.svg"} />
-                    Github
-                </tw.BannerBtn>
-                <tw.BannerBtn href="https://github.com/weaall" target="_blank">
-                    <tw.BtnSvg alt="" src={"../../assets/svg/me.svg"} />
-                    Me
+                <tw.BannerBtn href="/me">
+                    <tw.BtnSvg alt="" src={"../../assets/svg/right_icon.svg"} />
                 </tw.BannerBtn>
             </tw.BtnWrap>
         </tw.BannerWrap>

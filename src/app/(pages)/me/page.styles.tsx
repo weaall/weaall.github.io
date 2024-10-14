@@ -20,3 +20,6 @@ export const BtnWrap = tw.div`w-full flex py-3 space-x-4 justify-end`
 export const BannerBtn = tw.a`flex bg-[#D3FF55] text-main rounded-full items-center
 cursor-pointer justify-center`
 export const BtnSvg = tw.img`w-16 h-16 p-4 hover:scale-110`
+
+export const SkillWrap = tw.div`h-60 rounded-b-[60px] relative z-10` 
+export const ProjectWrap = tw.div`h-60 bg-t-main rounded-b-[60px] relative -mt-10 z-0`

@@ -13,7 +13,7 @@ const config: Config = {
                 "custom-hover": "0px 1px 0px 0px #eeeeee",
             },
             colors: {
-                main: "#222222",
+                "main": "#222222",
                 "t-main": "#dddddd",
             },
             screens: {

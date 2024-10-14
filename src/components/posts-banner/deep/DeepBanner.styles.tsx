@@ -1,6 +1,7 @@
 import tw from "tailwind-styled-components"
 
-export const BannerContainer = tw.div`relative h-60 pt-8 mb-16`
+export const Container = tw.div`bg-t-main pb-20 rounded-b-[60px] mb-10`
+export const BannerContainer = tw.div`relative h-60 pt-8 mx-6`
 
 export const LabelWrap = tw.div`absolute top-0 rounded-2xl py-3 px-6 bg-white w-fit ml-8` 
 export const Label = tw.p`text-4xl font-bold after:content-['.'] after:text-red-500`
