@@ -22,10 +22,15 @@ export default async function Page() {
             </tw.BannerWrap>
 
             <tw.SkillWrap>
-
+                <tw.Skills alt="" src={"../../assets/mono/react_mono.svg"}></tw.Skills>
+                <tw.Skills alt="" src={"../../assets/mono/nextjs_mono.svg"}></tw.Skills>
+                <tw.Skills alt="" src={"../../assets/mono/nodejs_mono.svg"}></tw.Skills>
+                <tw.Skills alt="" src={"../../assets/mono/mysql_mono.svg"}></tw.Skills>
+                <tw.Skills alt="" src={"../../assets/mono/mongodb_mono.svg"}></tw.Skills>
+                <tw.Skills alt="" src={"../../assets/mono/aws_mono.svg"}></tw.Skills>
             </tw.SkillWrap>
             <tw.ProjectWrap>
-                
+
             </tw.ProjectWrap>
         </tw.Container>
     )

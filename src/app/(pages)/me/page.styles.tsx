@@ -2,7 +2,7 @@ import tw from "tailwind-styled-components"
 
 export const Container = tw.div``
 
-export const BannerWrap = tw.div`bg-t-main w-full h-auto px-14 pt-12 pb-6 
+export const BannerWrap = tw.div`bg-t-main w-full h-auto px-14 pt-12 pb-6 relative z-20
 text-main space-y-1 group rounded-b-[60px]` 
 
 export const BannerLabelWrap = tw.div`w-fit p-2`
@@ -21,5 +21,6 @@ export const BannerBtn = tw.a`flex bg-[#D3FF55] text-main rounded-full items-cen
 cursor-pointer justify-center`
 export const BtnSvg = tw.img`w-16 h-16 p-4 hover:scale-110`
 
-export const SkillWrap = tw.div`h-60 rounded-b-[60px] relative z-10` 
+export const SkillWrap = tw.div`h-60 bg-white rounded-b-[60px] relative -mt-10 pt-10 z-10 flex px-20`
+export const Skills = tw.img`w-24 m-auto`
 export const ProjectWrap = tw.div`h-60 bg-t-main rounded-b-[60px] relative -mt-10 z-0`
