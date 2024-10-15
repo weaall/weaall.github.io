@@ -14,7 +14,7 @@ const config: Config = {
             },
             colors: {
                 "main": "#222222",
-                "t-main": "#dddddd",
+                "t-main": "#F3F2F1",
             },
             screens: {
                 mobile: { max: "640px" },
