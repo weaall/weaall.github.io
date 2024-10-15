@@ -1,6 +1,15 @@
 import * as tw from "./page.styles"
 
 export default async function Page() {
+    const skillItems = [
+        { src: "../../assets/mono/react_mono.svg", alt: "React" },
+        { src: "../../assets/mono/nextjs_mono.svg", alt: "Next.js" },
+        { src: "../../assets/mono/nodejs_mono.svg", alt: "Node.js" },
+        { src: "../../assets/mono/mysql_mono.svg", alt: "MySQL" },
+        { src: "../../assets/mono/mongodb_mono.svg", alt: "MongoDB" },
+        { src: "../../assets/mono/aws_mono.svg", alt: "AWS" },
+    ]
+
     return (
         <tw.Container>
             <tw.BannerWrap>
@@ -22,16 +31,11 @@ export default async function Page() {
             </tw.BannerWrap>
 
             <tw.SkillWrap>
-                <tw.Skills alt="" src={"../../assets/mono/react_mono.svg"}></tw.Skills>
-                <tw.Skills alt="" src={"../../assets/mono/nextjs_mono.svg"}></tw.Skills>
-                <tw.Skills alt="" src={"../../assets/mono/nodejs_mono.svg"}></tw.Skills>
-                <tw.Skills alt="" src={"../../assets/mono/mysql_mono.svg"}></tw.Skills>
-                <tw.Skills alt="" src={"../../assets/mono/mongodb_mono.svg"}></tw.Skills>
-                <tw.Skills alt="" src={"../../assets/mono/aws_mono.svg"}></tw.Skills>
+                {skillItems.map(({ src, alt }) => (
+                    <tw.Skills key={alt} alt={alt} src={src} />
+                ))}
             </tw.SkillWrap>
-            <tw.ProjectWrap>
-
-            </tw.ProjectWrap>
+            <tw.ProjectWrap></tw.ProjectWrap>
         </tw.Container>
     )
 }

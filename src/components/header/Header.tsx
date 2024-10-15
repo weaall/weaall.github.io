@@ -2,16 +2,18 @@
 import * as tw from "./Header.styles"
 
 export default function Header() {
+    const headerLayout = ["/shallow", "/deep"].includes(window.location.pathname);
 
     const navItems = [
         { label: "SHALLOW", path: "/shallow" },
         { label: "DEEP", path: "/deep" },
         { label: "PRAC", path: "/prac" },
         { label: "PROJECT", path: "/project" },
-    ]
+    ];
+
 
     return (
-        <tw.Container>
+        <tw.Container $state={headerLayout}>
             <tw.NavWrap>
                 <tw.SearchBtn>
                         <tw.SearchSvg alt="" src={"../../assets/svg/search_icon.svg"} />

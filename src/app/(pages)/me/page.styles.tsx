@@ -21,6 +21,7 @@ export const BannerBtn = tw.a`flex bg-[#D3FF55] text-main rounded-full items-cen
 cursor-pointer justify-center`
 export const BtnSvg = tw.img`w-16 h-16 p-4 hover:scale-110`
 
-export const SkillWrap = tw.div`h-60 bg-white rounded-b-[60px] relative -mt-10 pt-10 z-10 flex px-20`
-export const Skills = tw.img`w-24 m-auto`
-export const ProjectWrap = tw.div`h-60 bg-t-main rounded-b-[60px] relative -mt-10 z-0`
+export const SkillWrap = tw.div`w-full h-60 bg-white rounded-b-[60px] relative -mt-10 pt-10 z-10 flex px-20
+mobile:px-0 mobile:overflow-x-auto mobile:scrollbar-hide`
+export const Skills = tw.img`w-20 m-auto`
+export const ProjectWrap = tw.div`w-full h-60 bg-t-main rounded-b-[60px] relative -mt-16 z-0`
