@@ -18,40 +18,28 @@ interface PostsProps {
 }
 
 export default function DeepPostList({ props }: PostsProps) {
-    const [barState, setBarState] = useState({
-        allState: true,
-        databaseState: false,
-        reactState: false,
-        webState: false,
-        etcState: false,
-    })
-
-    const sideBarClick = (clickedLabel: string): void => {
-        const newStates = {
-            allState: false,
-            databaseState: false,
-            reactState: false,
-            webState: false,
-            etcState: false,
-            [`${clickedLabel.toLowerCase()}State`]: true,
-        }
-        setBarState(newStates)
-    }
+    const [activeItem, setActiveItem] = useState("All");
 
     const sideItems = [
-        { label: "All", src: "all_icon", state: barState.allState },
-        { label: "Database", src: "database_icon", state: barState.databaseState },
-        { label: "React", src: "react_icon", state: barState.reactState },
-        { label: "Web", src: "web_icon", state: barState.webState },
-        { label: "etc", src: "etc_icon", state: barState.etcState },
-    ]
+        { label: "All", src: "all" },
+        { label: "Database", src: "db" },
+        { label: "AWS", src: "aws" },
+        { label: "React", src: "react" },
+        { label: "NextJS", src: "nextjs" },
+        { label: "Web", src: "web" },
+        { label: "etc", src: "etc" },
+    ];
 
     return (
         <tw.Container>
             <tw.SideContainer>
                 {sideItems.map((item, index) => (
-                    <tw.SideWrap $state={item.state} key={index} onClick={() => sideBarClick(item.label)}>
-                        <tw.SideSvg src={`../../../assets/svg/${item.src}.svg`}></tw.SideSvg>
+                    <tw.SideWrap 
+                        $state={activeItem === item.label} 
+                        key={index} 
+                        onClick={() => setActiveItem(item.label)}
+                    >
+                        <tw.SideSvg src={`../../../assets/drawer-svg/${item.src}.svg`}></tw.SideSvg>
                         <tw.SideLabel>{item.label}</tw.SideLabel>
                     </tw.SideWrap>
                 ))}
@@ -59,7 +47,7 @@ export default function DeepPostList({ props }: PostsProps) {
 
             <tw.PostsContainer>
                 {props
-                    .filter((postItem) => barState.allState || postItem.label === "All" || postItem.label === sideItems.find((item) => item.state)?.label)
+                    .filter((postItem) => activeItem === "All" || postItem.label === activeItem)
                     .map((item) => (
                         <tw.PostWrap href={item.postUrl} key={item.slug}>
                             <tw.TopWrap>
