@@ -15,8 +15,8 @@ export const NavDirectWrap = tw.div`text-main text-xs bg-white rounded-full px-2
 export const NavDirectP = tw(Link)`
 hover:after:text-red-500 after:content-['.'] after:text-transparent`
 
-export const SearchBtn = tw.button`bg-white rounded-2xl mr-2`
-export const SearchSvg = tw.img`w-7 h-7 m-auto hover:scale-105`
+export const SearchBtn = tw.button`bg-white rounded-full mr-2 `
+export const SearchSvg = tw.img`min-w-7 min-h-7 p-0.5 m-auto hover:scale-105`
 
 export const RearWrap = tw.div`flex`
 export const DevBtn = tw.button`text-main text-xs group`

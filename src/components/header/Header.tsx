@@ -13,7 +13,6 @@ export default function Header() {
         { label: "SHALLOW", path: "/shallow" },
         { label: "DEEP", path: "/deep" },
         { label: "PRAC", path: "/prac" },
-        { label: "PROJECT", path: "/project" },
     ]
 
     return (
