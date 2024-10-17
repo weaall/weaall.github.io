@@ -1,6 +1,6 @@
 import getPostsData from "@/components/mdx/getMdx";
 import ShallowPostList from "@/components/posts-list/ShallowPostList"
-import ShallowBanner from "@/components/posts-banner/shallow/ShallowBanner";
+import ShallowBanner from "@/components/posts-banner/ShallowBanner";
 
 export default async function Page() {
     const postsData = await getPostsData("shallow");

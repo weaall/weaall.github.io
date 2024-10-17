@@ -1,11 +1,11 @@
-import * as tw from "./PracBanner.styles"
+import * as tw from "./PostBanner.styles"
 
-export default function PracBanner() {
+export default function DeepBanner() {
     return (
         <tw.Container>
             <tw.BannerContainer>
                 <tw.LabelWrap>
-                    <tw.Label>Practice</tw.Label>
+                    <tw.Label>Deep Dive</tw.Label>
                 </tw.LabelWrap>
 
                 <tw.ImgWrap>
@@ -13,7 +13,10 @@ export default function PracBanner() {
                 </tw.ImgWrap>
 
                 <tw.BannerWrap>
-                    <tw.BannerText>The group of subtle practice.</tw.BannerText>
+                    <tw.BannerText>
+                        I prefer lake to waves. <br />
+                        Sailing with calm rather than fluctuations.
+                    </tw.BannerText>
                 </tw.BannerWrap>
             </tw.BannerContainer>
         </tw.Container>

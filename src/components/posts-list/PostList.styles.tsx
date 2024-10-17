@@ -5,7 +5,7 @@ interface BarProps {
     $state: boolean
 }
 
-export const Container = tw.div`flex min-h-dvh`
+export const Container = tw.div`flex min-h-dvh px-10 mobile:px-2`
 
 export const SideContainer = tw.div` h-auto mr-8 w-72 mobile:w-[28%]`
 export const SideWrap = tw.div<BarProps>`flex h-14 w-full items-center pl-6 rounded-2xl cursor-pointer
@@ -20,6 +20,6 @@ hover:shadow-custom-hover hover:translate-y-[6px] transition-all duration-300 `
 export const TopWrap = tw.div`flex justify-between`
 export const TopLabel = tw.p`text-sm text-[#aaaaaa]`
 export const Title = tw.p`text-xl font-bold after:content-['.'] after:text-transparent group-hover:after:text-red-500 truncate`
-export const SubTitle = tw.p`text-sm font-medium text-[#aaaaaa] truncate`
+export const SubTitle = tw.p`text-sm truncate`
 export const TagWrap = tw.div`flex space-x-3 h-auto truncate`
 export const Tag = tw.div`mt-2 text-xs bg-t-main px-2 py-1 rounded-lg`

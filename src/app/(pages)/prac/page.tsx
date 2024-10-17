@@ -1,5 +1,5 @@
 import getPostsData from "@/components/mdx/getMdx";
-import PracBanner from "@/components/posts-banner/prac/PracBanner";
+import PracBanner from "@/components/posts-banner/PracBanner";
 import PracPostList from "@/components/posts-list/PracPostList";
 
 export default async function Page() {

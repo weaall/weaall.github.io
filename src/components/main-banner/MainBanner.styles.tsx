@@ -2,11 +2,11 @@ import tw from "tailwind-styled-components"
 
 export const Container = tw.div``
 
-export const BannerWrap = tw.div`bg-t-main w-full h-auto px-14 pt-12 pb-6 
-text-main space-y-1 group rounded-b-[60px]` 
+export const BannerWrap = tw.div`bg-t-main w-full h-auto px-14 pt-12 pb-6
+text-main space-y-1 group rounded-b-[60px] mobile:rounded-b-[30px] mobile:pt-0 mobile:pb-2` 
 
 export const BannerLabelWrap = tw.div`w-fit p-2`
-export const BannerLabel = tw.p`text-7xl font-bold mobile:text-4xl after:content-['.'] after:text-red-500`
+export const BannerLabel = tw.p`text-7xl font-bold mobile:text-4xl after:content-['.'] after:text-red-500 mobile:text-[3.5rem]`
 export const BannerUnderline = tw.div`w-full h-1 bg-main 
 scale-x-0 transition-transform duration-300 transform origin-left group-hover:scale-x-100` 
 

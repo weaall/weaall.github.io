@@ -9,7 +9,7 @@ interface MDXContentProps {
 
 export function DevMDXContent({ content }: MDXContentProps) {
     const [headings, setHeadings] = useState<{ id: string; text: string; level: number }[]>([]);
-    const [isIndexOpen, setIsIndexOpen] = useState<boolean>(false);
+    const [isIndexOpen, setIsIndexOpen] = useState<boolean>(true);
     const [activeId, setActiveId] = useState<string>("");
 
     useEffect(() => {

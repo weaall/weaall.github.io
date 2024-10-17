@@ -7,7 +7,7 @@ interface HeaderLayout{
 
 export const Container = tw.div<HeaderLayout>`max-w-[1080px] w-full flex items-center justify-between rounded-t-[60px] mt-4
 bg-t-main px-8 py-10 font-medium mobile:mt-0 mobile:rounded-none 
-${(p)=> (p.$state ? "rounded-[60px] mb-10" : "")}`
+${(p)=> (p.$state ? "rounded-[60px] mb-4 mobile:mb-2 mobile:rounded-b-[30px]" : "")}`
 
 export const NavWrap = tw.nav`flex w-auto justify-between items-center`
 export const Nav = tw.nav`w-auto items-center flex space-x-2`
