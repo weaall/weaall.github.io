@@ -44,7 +44,7 @@ export default function Header() {
                 </tw.DevBtn>
                 <tw.DevLabel>/</tw.DevLabel>
                 <tw.DevBtn>
-                    <a href={"/dev/intro"}>
+                    <a href="https://github.com/weaall" target="_blank" rel="noopener noreferrer">
                         <tw.DevLabel>github</tw.DevLabel>
                     </a>
                 </tw.DevBtn>

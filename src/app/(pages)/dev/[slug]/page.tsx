@@ -27,7 +27,8 @@ import { Metadata } from "next"
 import remarkGfm from "remark-gfm"
 import DevList from "@/components/dev-list/DevList"
 import getPostsData from "@/components/mdx/getMdx"
-
+import * as tw from "./page.styles"
+import { DevMDXContent } from "@/components/dev-mdx/DevMDXContent"
 
 interface PostData {
     label: string
@@ -100,10 +101,10 @@ export default async function PostPage({ params }: { params: { slug: string } })
     const postsData = await getPostsData("dev")
 
     return (
-        <div className="flex">
+        <tw.Container>
             <DevList props={postsData} />
-            <div className="py-6">{content}</div>
-        </div>
+            <DevMDXContent content={content} />
+        </tw.Container>
     )
 }
 

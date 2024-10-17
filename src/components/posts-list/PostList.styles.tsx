@@ -19,7 +19,7 @@ export const PostWrap = tw(Link)`space-y-2 h-auto w-full items-center px-10 py-4
 hover:shadow-custom-hover hover:translate-y-[6px] transition-all duration-300 `
 export const TopWrap = tw.div`flex justify-between`
 export const TopLabel = tw.p`text-sm text-[#aaaaaa]`
-export const Title = tw.p`text-2xl font-bold after:content-['.'] after:text-transparent group-hover:after:text-red-500 truncate`
-export const SubTitle = tw.p`text-base font-bold text-[#aaaaaa] truncate`
-export const tagWrap = tw.div`flex space-x-3 h-auto truncate`
-export const tag = tw.div`mt-2 text-xs bg-t-main px-2 py-1 rounded-lg`
+export const Title = tw.p`text-xl font-bold after:content-['.'] after:text-transparent group-hover:after:text-red-500 truncate`
+export const SubTitle = tw.p`text-sm font-medium text-[#aaaaaa] truncate`
+export const TagWrap = tw.div`flex space-x-3 h-auto truncate`
+export const Tag = tw.div`mt-2 text-xs bg-t-main px-2 py-1 rounded-lg`

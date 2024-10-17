@@ -6,6 +6,7 @@ import { notFound } from "next/navigation"
 import PostTitle from "@/components/post-title/PostTitle"
 import { Metadata } from "next"
 import { getArticleMetadata } from "@/util/seo"
+import { MDXContent } from "@/components/mdx/mdx-content/MDXContent"
 
 const POSTS_FOLDER = path.join(process.cwd(), "posts/shallow")
 
@@ -65,8 +66,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
     return (
         <>
-            <PostTitle frontmatter={frontmatter} />
-            {content}
+            <MDXContent content={content} frontmatter={frontmatter}  />
         </>
     )
 }

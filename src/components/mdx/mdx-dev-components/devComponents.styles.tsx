@@ -10,7 +10,7 @@ export const H4 = tw.input`w-5 h-5 cursor-pointer outline-none accent-[#D9D9D9]/
 
 export const P = tw.p`text-lg py-3`
 
-export const A = tw.a`text-lg font-bold text-red-500`
+export const A = tw.a`text-6xl`
 
 export const Hr= tw.hr`my-14 w-full h-[2px] bg-t-main`
 

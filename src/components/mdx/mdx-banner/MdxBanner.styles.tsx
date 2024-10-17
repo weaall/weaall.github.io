@@ -14,7 +14,7 @@ hover:shadow-custom-hover hover:translate-y-[6px] transition-all duration-300  m
 
 export const TopWrap = tw.div`flex justify-between`
 export const TopLabel = tw.p`text-sm text-[#aaaaaa]`
-export const Title = tw.p`text-2xl font-bold truncate after:content-['.'] after:text-transparent group-hover:after:text-red-500`
-export const SubTitle = tw.p`text-base font-bold text-[#aaaaaa] truncate`
+export const Title = tw.p`text-xl font-bold truncate after:content-['.'] after:text-transparent group-hover:after:text-red-500`
+export const SubTitle = tw.p`text-sm font-medium text-[#aaaaaa] truncate`
 export const TagWrap = tw.div`flex space-x-3 h-auto truncate`
-export const tag = tw.div`mt-2 text-xs bg-[#eeeeee] px-2 py-1 rounded-lg`
+export const tag = tw.div`mt-2 text-xs bg-t-main px-2 py-1 rounded-lg`

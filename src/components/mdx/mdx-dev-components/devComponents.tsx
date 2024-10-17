@@ -37,8 +37,12 @@ export function CheckBoxF({ children }: { children?: React.ReactNode }) {
     )
 }
 
-export function A({ href, children }: { href?: string, children?: React.ReactNode }) {
-    return <tw.A target="_blank" href={href}>{children}</tw.A>
+export function A({ href, target = "_self", children }: { href?: string, target?: string, children?: React.ReactNode }) {
+    return (
+        <tw.A href={href} target={target}>
+            {children}
+        </tw.A>
+    );
 }
 
 export function Li({ children }: { children?: React.ReactNode }) {

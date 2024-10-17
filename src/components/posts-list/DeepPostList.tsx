@@ -56,11 +56,11 @@ export default function DeepPostList({ props }: PostsProps) {
                             </tw.TopWrap>
                             <tw.Title>{item.title}</tw.Title>
                             <tw.SubTitle>{item.subTitle}</tw.SubTitle>
-                            <tw.tagWrap>
+                            <tw.TagWrap>
                                 {item.tags?.map((tag, index) => (
-                                    <tw.tag key={index}>{tag}</tw.tag>
+                                    <tw.Tag key={index}>{tag}</tw.Tag>
                                 ))}
-                            </tw.tagWrap>
+                            </tw.TagWrap>
                         </tw.PostWrap>
                     ))}
             </tw.PostsContainer>
