@@ -56,14 +56,15 @@ export function Hr({ children }: { children?: React.ReactNode }) {
 }
 
 export function Code({ className, children }: { className?: string; children?: React.ReactNode }) {
-    const language = className ? className.replace("language-", "") : ""; // className에서 언어 추출
+    const language = className ? className.replace("language-", "") : "";
 
     let highlightedCode: string;
+
     if (typeof window === "undefined") {
         if (language && hljs.getLanguage(language)) {
             highlightedCode = hljs.highlight(children?.toString() || "", { language }).value;
         } else {
-            highlightedCode = hljs.highlightAuto(children?.toString() || "").value; 
+            highlightedCode = children?.toString() || ""; 
         }
     } else {
         highlightedCode = children?.toString() || ""; 
@@ -78,7 +79,7 @@ export function Code({ className, children }: { className?: string; children?: R
             ) : (
                 <tw.CodeWrapC>
                     <tw.ClassWrap>
-                        <tw.ClassLabel>{language}</tw.ClassLabel>
+                        <tw.ClassLabel>{language || 'No class name provided'}</tw.ClassLabel>
                     </tw.ClassWrap>
                     <tw.CodeBoxC>
                         <tw.Code dangerouslySetInnerHTML={{ __html: highlightedCode }} />
@@ -88,6 +89,7 @@ export function Code({ className, children }: { className?: string; children?: R
         </>
     );
 }
+
 
 export function Pre({ className, children }: { className?: string; children?: React.ReactNode }) {
     return <tw.Pre>{children}</tw.Pre>
