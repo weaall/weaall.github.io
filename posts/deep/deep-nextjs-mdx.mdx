@@ -1,0 +1,120 @@
+---
+label: NextJS
+title: App Router에서 MDX [slug]를 통해 정적페이지 만들기
+subTitle: mdx로 정적페이지 생성 , generateStaticParams error 해결
+date: 2024.05.01
+mins: 10
+tags: [NextJS, App Router, slug, mdx, generateStaticParams]
+imageUrl:
+---
+
+### App Router 디렉토리 구조
+```
+/posts
+    /board
+/src
+    /app
+        /(pages)
+            /board
+                page.tsx
+                /[slug]
+                    page.tsx
+```
+
+### ./board/page.tsx
+
+```typescript
+import getPostsData from "@/components/mdx/getMdx"
+import PostList from "@/components/posts-list/PostList"
+
+export default async function Page() {
+    const postsData = await getPostsData("deep")
+    const sortedPostsData = postsData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+    return (
+        <>
+            <PostList props={sortedPostsData} />
+        </>
+    )
+}
+```
+
+### ./[slug]/page.tsx
+
+```typescript
+import path from "path";
+import { readFile, access, readdir } from "fs/promises";
+
+import { compileMDX } from "next-mdx-remote/rsc";
+import { notFound } from "next/navigation";
+
+import { MDXContent } from "@/components/mdx/mdx-content/MDXContent";
+import { Hr, H1, H2, P, Code, Strong, Pre, H3, CheckBoxF, CheckBoxT, A, Li, Em, Img } from "@/components/mdx/mdx-components/components";
+
+const POSTS_FOLDER = path.join(process.cwd(), "posts/borad")
+
+export const generateStaticParams = async () => {
+    const files = await readdir(POSTS_FOLDER)
+    const posts = files.filter((file) => file.endsWith(".mdx")).map((file) => file.replace(/\.mdx$/, ""))
+
+    return posts.map((post) => ({
+        slug: post,
+    }))
+}
+
+async function readPostFile(slug: string) {
+    const filePath = path.resolve(path.join(POSTS_FOLDER, `${slug}.mdx`))
+
+    try {
+        await access(filePath)
+        return await readFile(filePath, { encoding: "utf8" })
+    } catch (err) {
+        return null
+    }
+}
+
+async function compilePostMarkdown(slug: string) {
+    const markdown = await readPostFile(slug)
+
+    if (!markdown) {
+        notFound()
+    }
+
+    return compileMDX<PostData>({
+        source: markdown,
+        options: { parseFrontmatter: true },
+        components: {
+            h1: H1,
+            h2: H2,
+            h3: H3,
+            h4: CheckBoxT,
+            h5: CheckBoxF,
+            p: P,
+            a: A,
+            li: Li,
+            hr: Hr,
+            pre: Pre,
+            code: Code,
+            strong: Strong,
+            em: Em,
+            img: Img,
+        },
+    })
+}
+
+export default async function PostPage({ params }: { params: { slug: string } }) {
+    const { content, frontmatter } = await compilePostMarkdown(params.slug)
+
+    return (
+        <>
+            <MDXContent content={content} frontmatter={frontmatter}  />
+        </>
+    )
+} 
+```
+
+---
+
+
+
+
