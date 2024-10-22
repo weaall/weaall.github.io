@@ -5,6 +5,7 @@ const nextConfig = {
     basePath: "",
     output: "export",
     pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
+    reactStrictMode: false,
     
 }
 

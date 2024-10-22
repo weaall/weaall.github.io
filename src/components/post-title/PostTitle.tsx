@@ -2,6 +2,7 @@ import * as tw from "./PostTitle.styles"
 
 interface PostData {
     frontmatter: {
+        imageUrl: string
         label: string
         title: string
         subTitle: string
@@ -16,7 +17,7 @@ export default function PostTitle({ frontmatter }: PostData, content: any) {
         <>
             <tw.Container>
                 <tw.ImgWrap>
-                    <tw.Img></tw.Img>
+                    <tw.Img alt="" src={`../../${frontmatter.imageUrl}`}></tw.Img>
                 </tw.ImgWrap>
 
                 <tw.TitleWrap>

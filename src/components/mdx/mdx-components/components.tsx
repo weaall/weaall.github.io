@@ -111,3 +111,27 @@ export function Img({ title, src, children }: { title?:string; src?:string; chil
         </tw.ImgWrap>
     )
 }
+
+export function Table({ children }: { children?: React.ReactNode }) {
+    return <tw.Table>{children}</tw.Table>
+}
+
+export function Thead({ children }: { children?: React.ReactNode }) {
+    return <tw.Thead>{children}</tw.Thead>
+}
+
+export function Tbody({ children }: { children?: React.ReactNode }) {
+    return <tw.Tbody>{children}</tw.Tbody>
+}
+
+export function Tr({ children }: { children?: React.ReactNode }) {
+    return <tw.Tr>{children}</tw.Tr>
+}
+
+export function Th({ children }: { children?: React.ReactNode }) {
+    return <tw.Th>{children}</tw.Th>
+}
+
+export function Td({ children }: { children?: React.ReactNode }) {
+    return <tw.Td>{children}</tw.Td>
+}

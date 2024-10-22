@@ -1,16 +1,41 @@
 ---
 label: Database
-title: Redis 데이터의 저장형식과 불러오기
+title: Redis 저장 방식과 효율
 subTitle: Redis
-date: 2024.07.01
+date: 2024.04.12
 mins: 20
-tags: [Database, Redis, NodeJS, TypeScript]
-imageUrl:
+tags: [Redis, NodeJS, TypeScript, TTL, TimeStampe, AWS, RDS, MYSQL]
+imageUrl: /posts/deep/redis-foam/redis_foam_title.png
 ---
 
-## 데이터 저장방식
+## RDS의 접근과 비용
 
----
+REDIS 캐싱은 설계에 따라 보통 60~90%의 캐싱 효율을 보인다고 한다.
+
+### AWS RDS for MySQL
+
+| DB 크기  | 제공 IOPS | Request/s  | 소요 IOPS | 월비용       | DB 비용     |
+|----------|----------|------------|-----------|--------------|-------------|
+| 100GB    | 300      | 1000       | 700       | 약 $45.5     | $10         |
+| 100GB    | 300      | 10000      | 9700      | 약 $630.5    | $10         |
+| 1TB      | 3000     | 10000      | 7000      | 약 $455      | $102.4      |
+| 1TB      | 3000     | 100000     | 97000     | 약 $6305     | $102.4      |
+
+
+### AWS Elasticache for REDIS 
+
+| 인스턴스 타입      | vCPU | 메모리  | 네트워크 성능    | 월 비용       | 처리 성능/s    |
+|-------------------|------|---------|-----------------|---------------|----------------|
+| cache.t4g.micro   | 2    | 0.5 GiB | 최대 5 Gbps     | 약 $15        | ~500-1000      |
+| cache.t3.small    | 2    | 2 GiB   | 최대 5 Gbps     | 약 $14.98     | ~1000-2000     |
+| cache.t3.medium   | 2    | 4 GiB   | 최대 5 Gbps     | 약 $29.95     | ~2000-4000     |
+| cache.t3.large    | 2    | 8 GiB   | 최대 5 Gbps     | 약 $59.90     | ~4000-8000     |
+| cache.m5.large    | 2    | 8 GiB   | 최대 10 Gbps    | 약 $68.25     | ~8000-16000    |
+| cache.m5.xlarge   | 4    | 16 GiB  | 최대 10 Gbps    | 약 $136.50    | ~16000-32000   |
+| cache.m5.2xlarge  | 8    | 32 GiB  | 최대 10 Gbps    | 약 $273       | ~32000-64000   |
+| cache.m5.4xlarge  | 16   | 64 GiB  | 최대 12 Gbps    | 약 $546       | ~64000-128000  |
+
+
 
 
 
