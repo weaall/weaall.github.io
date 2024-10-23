@@ -1,4 +1,3 @@
-import Link from "next/link";
 import getPostsData from "../getMdx";
 import * as tw from "./MdxBanner.styles";
 
@@ -22,8 +21,7 @@ export default async function MdxBanner({ dir }: MdxBannerProps) {
 
             <tw.PostContainer>
                 {latestPosts.map((post) => (
-                    <Link className="h-auto w-[32%]" href={post.postUrl} key={post.slug} passHref>
-                        <tw.PostWrap>
+                        <tw.PostWrap href={post.postUrl} key={post.slug}>
                             <tw.TopWrap>
                                 <tw.TopLabel>/ {post.label}</tw.TopLabel>
                                 <tw.TopLabel>{post.date}</tw.TopLabel>
@@ -36,7 +34,6 @@ export default async function MdxBanner({ dir }: MdxBannerProps) {
                                 ))}
                             </tw.TagWrap>
                         </tw.PostWrap>
-                    </Link>
                 ))}
             </tw.PostContainer>
         </tw.Container>

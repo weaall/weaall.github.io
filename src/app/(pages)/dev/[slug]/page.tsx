@@ -31,6 +31,7 @@ import * as tw from "./page.styles"
 import { DevMDXContent } from "@/components/dev-mdx/DevMDXContent"
 
 interface PostData {
+    imageUrl: string;
     label: string
     title: string
     subTitle: string

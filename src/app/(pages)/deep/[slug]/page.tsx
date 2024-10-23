@@ -28,6 +28,7 @@ import remarkGfm from "remark-gfm";
 import { MDXContent } from "@/components/mdx/mdx-content/MDXContent";
 
 interface PostData {
+    imageUrl: string;
     label: string;
     title: string;
     subTitle: string;

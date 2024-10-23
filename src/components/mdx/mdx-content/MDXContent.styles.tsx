@@ -4,7 +4,7 @@ interface IndexProps{
     $active: boolean;
 }
 
-export const Container = tw.div`w-full flex space-x-6 px-10`
+export const Container = tw.div`w-full flex space-x-6 px-10 mobile:px-6`
 export const ContentWrap = tw.div`w-full`
 
 export const IndexWrap = tw.div`relative w-72 flex flex-col items-end flex-grows mobile:hidden`

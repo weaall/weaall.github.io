@@ -8,6 +8,7 @@ import * as tw from "./MDXContent.styles";
 interface MDXContentProps {
     content: React.ReactNode;
     frontmatter: {
+        imageUrl: string;
         label: string;
         title: string;
         subTitle: string;
