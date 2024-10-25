@@ -12,7 +12,7 @@ export const P = tw.p`text-base py-3`
 
 export const A = tw.a`text-base font-bold text-red-500`
 
-export const Hr= tw.hr`my-20 w-full h-[2px] bg-t-main`
+export const Hr= tw.hr`my-10 w-full h-[2px] bg-t-main`
 
 export const Pre = tw.pre`text-t-main text-base`
 
@@ -27,13 +27,13 @@ export const Code = tw.code`whitespace-pre-wrap rounded-xl text-t-main my-6 text
 
 export const Strong = tw.strong`font-bold`
 
-export const Em = tw.em`text-base font-bold not-italic px-3 py-1 bg-rose-50 rounded-xl`
+export const Em = tw.em`text-sm font-semibold not-italic px-2 py-0.5 bg-rose-50 rounded-xl`
 
 export const ImgWrap = tw.div`w-full mx-auto py-6 text-center`
 export const Img = tw.img`mx-auto`
 export const ImgTitle = tw.p`text-xs text-gray-400`
 
-export const Table = tw.table`w-full my-4 table-fixed mb-12`
+export const Table = tw.table`w-full my-4 table-fixed mb-8`
 export const Thead = tw.thead`bg-gray-50 text-left border-t border-t-gray-400 border-b border-b-gray-200 `
 export const Tbody = tw.tbody``
 export const Tr = tw.tr``
