@@ -48,3 +48,11 @@ imageUrl: /posts/deep/redis-foam/redis_foam_title.png
 | 100GiB  | 10,000    | 월 $ 39.9<br/>(7,000 IOPS)     | 월 $ 5.7<br/>(1,000 IOPS)    | 없음                         |
 | 400GiB  | 20,000    | 월 $ 45.6<br/>(8,000 IOPS)     | 없음                         | 없음                         |
 | 400GiB  | 40,000    | 월 $ 159.6<br/>(28,000 IOPS)   | 월 $ 22.8<br/>(4,000 IOPS)   | 없음                         |
+
+
+### DB 설계 전략
+
+- 최소 15%의 IOPS버퍼
+- 최소 16KiB/IOPS
+- 최소 60%의 Redis캐싱
+- 시간대별 IOPS, 쓰루풋 변경

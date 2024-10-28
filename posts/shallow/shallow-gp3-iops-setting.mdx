@@ -1,0 +1,125 @@
+---
+label: AWS
+title: 람다(Lambda)를 이용한 AWS GP3 RDS 버퍼 자동화(IOPS, Throughput)
+subTitle: 
+date: 2024.06.01
+mins: 10
+tags: [AWS, GP3, EBS, RDS, Lambda, IOPS, Throughput, CloudWatch]
+imageUrl:
+---
+
+## 서론
+
+
+### AWS Lambda 함수 생성
+- AWS Lambda 콘솔에 접속, 함수생성
+- 함수이름을 입력하고, 런타임으로 Python 3.x을 선택 후 함수 생성
+
+### IAM 역할 설정
+- 구성 -> 권한 -> 역할이름 "함수이름-role"클릭
+- 권한추가 -> 권한연결 -> "CloudWatchReadOnlyAccess" -> 권한추가
+
+### 환경변수 설정
+- 구성 -> 환경변수 -> 편집
+- "DB_INSTANCE_IDENTIFIER"를 키, RDS 인스턴스의 DB 식별자를 값으로 입력
+
+### 코드배포 
+
+```python
+import boto3
+import os
+from datetime import datetime, timedelta
+
+def lambda_handler(event, context):
+    db_instance_identifier = os.environ['DB_INSTANCE_IDENTIFIER']  # 환경 변수에서 RDS 인스턴스 ID 가져오기
+    cloudwatch = boto3.client('cloudwatch')
+    
+    # 지난 5분의 평균 IOPS와 쓰루풋 조회
+    average_iops = get_average_iops(db_instance_identifier, cloudwatch)
+    average_throughput = get_average_throughput(db_instance_identifier, cloudwatch)
+
+    # 새로운 IOPS와 쓰루풋 계산
+    new_iops = max(int(average_iops * 1.15), 3000)  # 15% 증가 및 최소 IOPS 3000
+    new_throughput = max(int(average_throughput * 1.15), 125)  # 15% 증가, 최소 125 MiB/s 제한
+
+    # 결과 반환
+    return {
+        'statusCode': 200,
+        'body': f'Calculated IOPS: {new_iops}, Calculated Throughput: {new_throughput} MiB/s'
+    }
+
+def get_average_iops(db_instance_identifier, cloudwatch):
+    end_time = datetime.utcnow()
+    start_time = end_time - timedelta(minutes=5)
+    
+    # 읽기와 쓰기 IOPS 메트릭을 가져옴
+    read_response = cloudwatch.get_metric_statistics(
+        Namespace='AWS/RDS',
+        MetricName='ReadIOPS',
+        StartTime=start_time,
+        EndTime=end_time,
+        Period=60,
+        Statistics=['Average'],
+        Dimensions=[{'Name': 'DBInstanceIdentifier', 'Value': db_instance_identifier}]
+    )
+    
+    write_response = cloudwatch.get_metric_statistics(
+        Namespace='AWS/RDS',
+        MetricName='WriteIOPS',
+        StartTime=start_time,
+        EndTime=end_time,
+        Period=60,
+        Statistics=['Average'],
+        Dimensions=[{'Name': 'DBInstanceIdentifier', 'Value': db_instance_identifier}]
+    )
+    
+    # 읽기와 쓰기 IOPS 평균을 더함
+    read_iops = sum(dp['Average'] for dp in read_response['Datapoints']) / len(read_response['Datapoints']) if read_response['Datapoints'] else 0
+    write_iops = sum(dp['Average'] for dp in write_response['Datapoints']) / len(write_response['Datapoints']) if write_response['Datapoints'] else 0
+
+    average_iops = read_iops + write_iops  # 읽기와 쓰기 IOPS 합산
+    return average_iops
+
+def get_average_throughput(db_instance_identifier, cloudwatch):
+    end_time = datetime.utcnow()
+    start_time = end_time - timedelta(minutes=5)
+    
+    # ReadThroughput과 WriteThroughput 메트릭을 가져옴
+    read_response = cloudwatch.get_metric_statistics(
+        Namespace='AWS/RDS',
+        MetricName='ReadThroughput',
+        StartTime=start_time,
+        EndTime=end_time,
+        Period=60,
+        Statistics=['Average'],
+        Dimensions=[{'Name': 'DBInstanceIdentifier', 'Value': db_instance_identifier}]
+    )
+    
+    write_response = cloudwatch.get_metric_statistics(
+        Namespace='AWS/RDS',
+        MetricName='WriteThroughput',
+        StartTime=start_time,
+        EndTime=end_time,
+        Period=60,
+        Statistics=['Average'],
+        Dimensions=[{'Name': 'DBInstanceIdentifier', 'Value': db_instance_identifier}]
+    )
+    
+    # 읽기와 쓰기 바이트 평균을 더해 Throughput을 MiB 단위로 변환
+    read_bytes = sum(dp['Average'] for dp in read_response['Datapoints']) / len(read_response['Datapoints']) if read_response['Datapoints'] else 0
+    write_bytes = sum(dp['Average'] for dp in write_response['Datapoints']) / len(write_response['Datapoints']) if write_response['Datapoints'] else 0
+
+    average_throughput_mib = (read_bytes + write_bytes) / (1024 * 1024)  # MiB 단위로 변환
+    return average_throughput_mib
+
+```
+
+### 테스트
+- 테스트 -> 기본 템플릿 -> 테스트 -> 로그확인
+
+```json
+{
+  "statusCode": 200,
+  "body": "Calculated IOPS: 3000, Calculated Throughput: 125 MiB/s"
+}
+```
