@@ -52,7 +52,23 @@ imageUrl: /posts/deep/redis-foam/redis_foam_title.png
 
 ### DB 설계 전략
 
-- 최소 15%의 IOPS버퍼
-- 최소 16KiB/IOPS
-- 최소 60%의 Redis캐싱
-- 시간대별 IOPS, 쓰루풋 변경
+- Redis를 통해 60% - 90% 캐싱
+- EventBridgeScheduler(db_auto_buffer_scheduler)를 통해 5분마다 Lambda 실행
+- CloudWatch를 통해 이전 5분 평균 IOPS와 Throughput을 측정
+- 이전 5분 이용량의 평균에서 15%의 추가 IOPS 버퍼 
+- 이전 5분 이용량의 평균에서 15%의 추가 Throughput 버퍼 
+
+| 인스턴스 클래스    | 메모리 (GiB) | 최대 IOPS  | 월 비용 (USD)  |
+|---------------------|---------------|------------|-----------------|
+| `db.t3.micro`       | 1             | 최대 3,000 | 약 15.00        |
+| `db.t3.small`       | 2             | 최대 3,000 | 약 30.00        |
+| `db.t3.medium`      | 4             | 최대 3,000 | 약 60.00        |
+| `db.t3.large`       | 8             | 최대 6,000 | 약 120.00       |
+| `db.t3.xlarge`      | 16            | 최대 12,000| 약 240.00       |
+| `db.t3.2xlarge`     | 32            | 최대 24,000| 약 480.00       |
+| `db.m5.large`       | 8             | 최대 16,000| 약 120.00       |
+| `db.m5.xlarge`      | 16            | 최대 32,000| 약 240.00       |
+| `db.m5.2xlarge`     | 32            | 최대 64,000| 약 480.00       |
+| `db.m5.4xlarge`     | 64            | 최대 128,000| 약 960.00      |
+| `db.m5.12xlarge`    | 192           | 최대 240,000| 약 1,920.00    |
+| `db.m5.24xlarge`    | 384           | 최대 480,000| 약 3,840.00    |

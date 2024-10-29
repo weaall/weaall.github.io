@@ -1,27 +1,35 @@
 ---
 label: AWS
-title: 람다(Lambda)를 이용한 AWS GP3 RDS 버퍼 자동화(IOPS, Throughput)
+title: 람다(Lambda)를 이용한 AWS GP3 RDS 버퍼 자동화 1편 (IOPS, Throughput)
 subTitle: 
 date: 2024.06.01
 mins: 10
-tags: [AWS, GP3, EBS, RDS, Lambda, IOPS, Throughput, CloudWatch]
+tags: [AWS, GP3, EBS, RDS, Lambda, IOPS, Throughput, CloudWatch, EventBridge]
 imageUrl:
 ---
 
-## 서론
+## Auto buffer
+AWS GP3 RDS를 사용할 때 IOPS와 Throughput은 스토리지 저장 비용을 제외하고도 추가적인 비용을 필요로 한다.
+Redis 캐싱은 최소 60%, 최대 90%까지 IOPS와 Throughput 접근을 줄여서, 
+IOPS와 Throughput 비용 감소와 RDS 인스턴스 비용 감소에도 도움이 되지만, 
+사용자 트래픽은 시간대별로 다르므로 실시간 관리 및 자동화 또한 비용절감에 크게 도움이된다.
+CloudWatch와 EventBridge, Lambda를 통해 비용 효율적으로 관리해보자.
 
+- CloudWatch : 기본매트릭 사용 (무료)
+- Lambda : 월 8640건 이벤트 (월 100만건 무료)
+- EventBridgeSchedule : 월 8640건 이벤트 (월 100만건 무료)
 
 ### AWS Lambda 함수 생성
 - AWS Lambda 콘솔에 접속, 함수생성
 - 함수이름을 입력하고, 런타임으로 Python 3.x을 선택 후 함수 생성
 
 ### IAM 역할 설정
-- 구성 -> 권한 -> 역할이름 "함수이름-role"클릭
-- 권한추가 -> 권한연결 -> "CloudWatchReadOnlyAccess" -> 권한추가
+- 구성 -> 권한 -> 역할이름 *함수이름-role*클릭
+- 권한추가 -> 권한연결 -> *CloudWatchReadOnlyAccess* -> 권한추가
 
 ### 환경변수 설정
 - 구성 -> 환경변수 -> 편집
-- "DB_INSTANCE_IDENTIFIER"를 키, RDS 인스턴스의 DB 식별자를 값으로 입력
+- *DB_INSTANCE_IDENTIFIER*를 키, RDS 인스턴스의 DB 식별자를 값으로 입력
 
 ### 코드배포 
 
@@ -123,3 +131,8 @@ def get_average_throughput(db_instance_identifier, cloudwatch):
   "body": "Calculated IOPS: 3000, Calculated Throughput: 125 MiB/s"
 }
 ```
+
+### Amazon EventBridge
+- 규칙 -> 규칙생성 -> 일정 -> 이벤트브릿지 스캐줄러에서 계속
+- 일정패턴 -> 반복일정 -> Rate 기반 일정 -> *rate(5 minutes)*
+- AWS Lambda -> Lambda 함수 선택
