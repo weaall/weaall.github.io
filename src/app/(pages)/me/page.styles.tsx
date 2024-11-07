@@ -2,11 +2,11 @@ import tw from "tailwind-styled-components"
 
 export const Container = tw.div``
 
-export const BannerWrap = tw.div`bg-t-main w-full h-auto px-14 pt-12 pb-6 relative z-50 relative
-text-main space-y-1 group rounded-b-[60px] relative`
+export const BannerWrap = tw.div`bg-t-main w-full h-auto px-14 pt-12 pb-6 relative z-50
+text-main space-y-1 group rounded-b-[60px]`
 
 export const BannerLabelWrap = tw.div`w-fit p-2 pb-12 h-60`
-export const BannerLabel = tw.p`text-9xl font-bold mobile:text-4xl after:content-['.'] after:text-red-500`
+export const BannerLabel = tw.p`text-9xl font-bold mobile:text-9xl after:content-['.'] after:text-red-500 z-50`
 export const BannerUnderline = tw.div`w-full h-1 bg-main 
 scale-x-0 transition-transform duration-300 transform origin-left group-hover:scale-x-100` 
 
@@ -16,9 +16,9 @@ export const MailWrap = tw.div`flex space-x-2`
 export const MailSvg = tw.img`w-5`
 export const MailText = tw.a`hover:text-white text-base after:content-['.'] after:text-red-500`
 
-export const ProfileWrap = tw.div`absolute top-0 right-0 z-0 px-20`
+export const ProfileWrap = tw.div`absolute bottom-0 right-0 z-0 px-20 mobile:px-15`
 export const ProfileBg = tw.div``
-export const ProfilePic = tw.img`w-[24rem]`
+export const ProfilePic = tw.img`w-[24rem] mobile:w-80`
 
 export const SkillWrap = tw.div`w-full h-auto flex bg-white relative rounded-b-[60px] -mt-10 pt-20 pb-10 z-40 px-20
 mobile:px-6 mobile:flex-wrap mobile:justify-between`
