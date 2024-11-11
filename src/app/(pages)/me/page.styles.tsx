@@ -8,9 +8,8 @@ text-main space-y-1 group rounded-b-[60px]`
 export const BannerLabelWrap = tw.div`w-fit p-2 pb-12 h-60`
 export const BannerLabel = tw.p`text-9xl font-bold mobile:text-9xl after:content-['.'] after:text-red-500 z-50`
 export const BannerUnderline = tw.div`w-full h-1 bg-main 
-scale-x-0 transition-transform duration-300 transform origin-left group-hover:scale-x-100` 
-
-export const BannerText = tw.p`text-base`
+scale-x-0 transition-transform duration-300 transform origin-left group-hover:scale-x-100`
+export const BannerText = tw.p`text-lg font-medium pt-2`
 
 export const MailWrap = tw.div`flex space-x-2`
 export const MailSvg = tw.img`w-5`
