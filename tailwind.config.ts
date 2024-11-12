@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-    content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
+    content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}", "./public/**/*.html",],
     theme: {
         extend: {
             backgroundImage: {
@@ -29,13 +29,13 @@ const config: Config = {
                 "shrink-down": "shrink-down 0.3s ease-in-out forwards",
             },
             keyframes: {
-                'grow-up': {
-                  '0%': { maxHeight: '0', opacity: '0' },
-                  '100%': { maxHeight: '500px', opacity: '1' },
+                "grow-up": {
+                    "0%": { maxHeight: "0", opacity: "0" },
+                    "100%": { maxHeight: "500px", opacity: "1" },
                 },
-                'shrink-down': {
-                  '0%': { maxHeight: '500px', opacity: '1' },
-                  '100%': { maxHeight: '0', opacity: '0' },
+                "shrink-down": {
+                    "0%": { maxHeight: "500px", opacity: "1" },
+                    "100%": { maxHeight: "0", opacity: "0" },
                 },
             },
         },

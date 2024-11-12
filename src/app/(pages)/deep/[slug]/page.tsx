@@ -68,7 +68,23 @@ async function compilePostMarkdown(slug: string) {
 
     return compileMDX<PostData>({
         source: markdown,
-        options: { parseFrontmatter: true, mdxOptions: { remarkPlugins: [remarkGfm] } },
+        options: {
+            parseFrontmatter: true,
+            mdxOptions: {
+                remarkPlugins: [remarkGfm],
+                rehypePlugins: [
+                    () => (tree: any) => {
+                        tree.children.forEach((node: any) => {
+                            if (node.tagName === "code" && node.properties.className) {
+                                const [langClass] = node.properties.className;
+                                const language = langClass.replace("language-", "");
+                                node.properties.lang = language;
+                            }
+                        });
+                    },
+                ],
+            },
+        },
         components: {
             h1: H1,
             h2: H2,

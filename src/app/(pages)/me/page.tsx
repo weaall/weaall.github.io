@@ -29,7 +29,7 @@ export default async function Page() {
                 <tw.BannerLabelWrap>
                     <tw.BannerLabel>Hello</tw.BannerLabel>
                     <tw.BannerUnderline />
-                    <tw.BannerText>I'm DongHyun-Wi.</tw.BannerText>
+                    <tw.BannerText>I&apos;m DongHyun-Wi.</tw.BannerText>
                 </tw.BannerLabelWrap>
             </tw.BannerWrap>
 
