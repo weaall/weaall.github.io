@@ -40,12 +40,17 @@ interface PostData {
 const POSTS_FOLDER = path.join(process.cwd(), "posts/deep");
 
 export const generateStaticParams = async () => {
-    const files = await readdir(POSTS_FOLDER);
-    const posts = files.filter((file) => file.endsWith(".mdx")).map((file) => file.replace(/\.mdx$/, ""));
-
-    return posts.map((post) => ({
-        slug: post,
-    }));
+    try {
+        const files = await readdir(POSTS_FOLDER);
+        const posts = files.filter((file) => file.endsWith(".mdx")).map((file) => file.replace(/\.mdx$/, ""));
+        
+        return posts.map((post) => ({
+            slug: post,
+        }));
+    } catch (error) {
+        console.error("Error reading posts folder:", error);
+        return [];
+    }
 };
 
 async function readPostFile(slug: string) {

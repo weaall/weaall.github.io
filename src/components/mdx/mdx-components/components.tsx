@@ -1,6 +1,8 @@
+"use client";
+
 import React from "react";
-import hljs from "highlight.js";
 import * as tw from "./components.styles";
+import { useEffect, useState } from "react";
 
 export function H1({ children }: { children?: React.ReactNode }) {
     return <tw.H1>{children}</tw.H1>;
@@ -41,7 +43,11 @@ export function P({ children }: { children?: React.ReactNode }) {
 }
 
 export function A({ href, children }: { href?: string; children?: React.ReactNode }) {
-    return <tw.A target="_blank" href={href}>{children}</tw.A>;
+    return (
+        <tw.A target="_blank" href={href}>
+            {children}
+        </tw.A>
+    );
 }
 
 export function Li({ children }: { children?: React.ReactNode }) {
@@ -54,17 +60,54 @@ export function Hr({ children }: { children?: React.ReactNode }) {
 
 export function Code({ className, children }: { className?: string; children?: React.ReactNode }) {
     const language = className ? className.replace("language-", "") : "";
-    let highlightedCode: string;
+    const [highlightedCode, setHighlightedCode] = useState(children?.toString() || "");
 
-    if (typeof window === "undefined") {
-        if (language && hljs.getLanguage(language)) {
-            highlightedCode = hljs.highlight(children?.toString() || "", { language }).value;
-        } else {
-            highlightedCode = children?.toString() || "";
+    useEffect(() => {
+        // 리로드 여부를 확인하기 위해 sessionStorage 사용
+        if (!sessionStorage.getItem('reloaded')) {
+            // 페이지 로드 시 캐시 초기화 및 새로 고침
+            if (window.localStorage) {
+                window.localStorage.clear();
+            }
+            if (window.sessionStorage) {
+                window.sessionStorage.clear();
+            }
+
+            // 브라우저 캐시 비우기
+            if ('caches' in window) {
+                caches.keys().then((cacheNames) => {
+                    cacheNames.forEach((cacheName) => {
+                        caches.delete(cacheName); // 캐시 삭제
+                    });
+                });
+            }
+
+            // 리로드 상태를 sessionStorage에 저장
+            sessionStorage.setItem('reloaded', 'true');
+
+            // 페이지를 리로드
+            window.location.reload();
         }
-    } else {
-        highlightedCode = children?.toString() || "";
-    }
+    }, []);
+
+    useEffect(() => {
+        async function loadHighlight() {
+            if (language) {
+                try {
+                    const hljs = (await import("highlight.js")).default;
+                    if (hljs.getLanguage(language)) {
+                        setHighlightedCode(
+                            hljs.highlight(children?.toString() || "", { language }).value
+                        );
+                    }
+                } catch (error) {
+                    console.error("Highlight.js 로딩 중 에러:", error);
+                    setHighlightedCode(children?.toString() || "");
+                }
+            }
+        }
+        loadHighlight();
+    }, [children, language]);
 
     return (
         <tw.CodeWrapC className="hljs">
@@ -74,7 +117,7 @@ export function Code({ className, children }: { className?: string; children?: R
                 </tw.ClassWrap>
             )}
             <tw.CodeBoxC>
-                <tw.Code dangerouslySetInnerHTML={{ __html: highlightedCode }} />
+                <tw.Code dangerouslySetInnerHTML={{ __html: highlightedCode || "" }} />
             </tw.CodeBoxC>
         </tw.CodeWrapC>
     );
