@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import * as tw from "./PostList.styles";
-import Link from "next/link";
 
 interface PostData {
     label: string;
@@ -31,6 +30,10 @@ export default function DeepPostList({ props }: PostsProps) {
         { label: "etc", src: "etc" },
     ];
 
+    const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
+        window.history.pushState(null, "", url);
+    };
+
     return (
         <tw.Container>
             <tw.SideContainer>
@@ -46,7 +49,7 @@ export default function DeepPostList({ props }: PostsProps) {
                 {props
                     .filter((postItem) => activeItem === "All" || postItem.label === activeItem)
                     .map((item) => (
-                        <Link href={item.postUrl} key={item.slug}>
+                        <a href={item.postUrl} key={item.slug} onClick={(e) => handleLinkClick(e, item.postUrl)}>
                             <tw.PostWrap>
                                 <tw.TopWrap>
                                     <tw.TopLabel>/ {item.label}</tw.TopLabel>
@@ -60,7 +63,7 @@ export default function DeepPostList({ props }: PostsProps) {
                                     ))}
                                 </tw.TagWrap>
                             </tw.PostWrap>
-                        </Link>
+                        </a>
                     ))}
             </tw.PostsContainer>
         </tw.Container>

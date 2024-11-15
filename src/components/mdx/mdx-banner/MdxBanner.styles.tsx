@@ -1,5 +1,4 @@
 import tw from "tailwind-styled-components";
-import Link from "next/link";
 
 export const Container = tw.div`relative flex flex-col w-full space-y-10 h-auto text-main my-6 px-10 mobile:px-2`
 
@@ -9,8 +8,12 @@ export const Label = tw.p`text-3xl font-bold after:content-['.'] after:text-red-
 export const BannerWrap = tw.div`bg-t-main w-full h-1 rounded-2xl text-t-main`
 
 export const PostContainer = tw.div`flex space-x-[2%] mobile:flex-col mobile:space-y-6 mobile:space-x-0`
-export const PostWrap = tw(Link)`space-y-2 h-auto  w-[32%] items-center px-10 py-4 shadow-custom rounded-lg group 
-hover:shadow-custom-hover hover:translate-y-[6px] transition-all duration-300  mobile:w-full`
+export const PostWrap = tw.a`
+  space-y-2 h-auto w-[32%] items-center px-10 py-4 shadow-custom rounded-lg group 
+  hover:shadow-custom-hover hover:translate-y-[6px] transition-all duration-300 
+  mobile:w-full
+  mobile:hover:shadow-none mobile:hover:translate-y-0
+`;
 
 export const TopWrap = tw.div`flex justify-between`
 export const TopLabel = tw.p`text-sm text-[#aaaaaa]`

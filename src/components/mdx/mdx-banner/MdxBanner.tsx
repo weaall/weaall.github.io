@@ -1,4 +1,5 @@
 import getPostsData from "../getMdx";
+import LinkHandler from "./LinkHandler";
 import * as tw from "./MdxBanner.styles";
 
 interface MdxBannerProps {
@@ -21,19 +22,19 @@ export default async function MdxBanner({ dir }: MdxBannerProps) {
 
             <tw.PostContainer>
                 {latestPosts.map((post) => (
-                        <tw.PostWrap href={post.postUrl} key={post.slug}>
-                            <tw.TopWrap>
-                                <tw.TopLabel>/ {post.label}</tw.TopLabel>
-                                <tw.TopLabel>{post.date}</tw.TopLabel>
-                            </tw.TopWrap>
-                            <tw.Title>{post.title}</tw.Title>
-                            <tw.SubTitle>{post.subTitle}</tw.SubTitle>
-                            <tw.TagWrap>
-                                {post.tags?.map((tag, index) => (
-                                    <tw.tag key={index}>{tag}</tw.tag>
-                                ))}
-                            </tw.TagWrap>
-                        </tw.PostWrap>
+                    <LinkHandler url={post.postUrl} key={post.slug}>
+                        <tw.TopWrap>
+                            <tw.TopLabel>/ {post.label}</tw.TopLabel>
+                            <tw.TopLabel>{post.date}</tw.TopLabel>
+                        </tw.TopWrap>
+                        <tw.Title>{post.title}</tw.Title>
+                        <tw.SubTitle>{post.subTitle}</tw.SubTitle>
+                        <tw.TagWrap>
+                            {post.tags?.map((tag, index) => (
+                                <tw.tag key={index}>{tag}</tw.tag>
+                            ))}
+                        </tw.TagWrap>
+                    </LinkHandler>
                 ))}
             </tw.PostContainer>
         </tw.Container>

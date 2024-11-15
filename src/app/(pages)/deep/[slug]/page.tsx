@@ -77,17 +77,6 @@ async function compilePostMarkdown(slug: string) {
             parseFrontmatter: true,
             mdxOptions: {
                 remarkPlugins: [remarkGfm],
-                rehypePlugins: [
-                    () => (tree: any) => {
-                        tree.children.forEach((node: any) => {
-                            if (node.tagName === "code" && node.properties.className) {
-                                const [langClass] = node.properties.className;
-                                const language = langClass.replace("language-", "");
-                                node.properties.lang = language;
-                            }
-                        });
-                    },
-                ],
             },
         },
         components: {
