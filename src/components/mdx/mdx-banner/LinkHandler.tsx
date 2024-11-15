@@ -10,7 +10,6 @@ interface LinkHandlerProps {
 
 export default function LinkHandler({ url, children }: LinkHandlerProps) {
     const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        e.preventDefault();
         window.history.pushState(null, "", url);
     };
 
