@@ -1,6 +1,6 @@
 import tw from "tailwind-styled-components";
 
-export const Container = tw.div`w-full border-t mt-20 text-t-main`
+export const Container = tw.div`w-full border-t mt-20 text-text-main`
 
 export const FooterWrap = tw.div`mx-auto max-w-[1080px] h-40 justify-between flex mobile:flex-col mobile:h-52`
 

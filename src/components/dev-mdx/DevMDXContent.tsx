@@ -67,25 +67,24 @@ export function DevMDXContent({ content }: MDXContentProps) {
 
     return (
         <tw.Container>
-            <tw.ContentWrap>
-                {content}
-            </tw.ContentWrap>
+            <tw.ContentWrap>{content}</tw.ContentWrap>
             <tw.IndexWrap>
-                    <tw.IndexBtn onClick={onClickIndexBtn}>index</tw.IndexBtn>
-                    <tw.IndexList $active={isIndexOpen}>
-                        {headings.map((heading) => (
-                            <tw.IndexLabel $active={heading.id === activeId}
-                                key={heading.id}
-                                style={{
-                                    marginLeft: `${(heading.level - 1) * 10}px`,
-                                }}
-                                onClick={() => handleHeadingClick(heading.id)}
-                            >
-                                {heading.text}
-                            </tw.IndexLabel>
-                        ))}
-                    </tw.IndexList>
-                </tw.IndexWrap>
+                <tw.IndexBtn onClick={onClickIndexBtn}>index</tw.IndexBtn>
+                <tw.IndexList $active={isIndexOpen}>
+                    {headings.map((heading) => (
+                        <tw.IndexLabel
+                            $active={heading.id === activeId}
+                            key={heading.id}
+                            style={{
+                                marginLeft: `${(heading.level - 1) * 10}px`,
+                            }}
+                            onClick={() => handleHeadingClick(heading.id)}
+                        >
+                            {heading.text}
+                        </tw.IndexLabel>
+                    ))}
+                </tw.IndexList>
+            </tw.IndexWrap>
         </tw.Container>
     );
 }
