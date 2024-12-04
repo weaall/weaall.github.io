@@ -7,6 +7,7 @@ export default function Home() {
             <MainBanner />
             <MdxBanner dir="Shallow" />
             <MdxBanner dir="Deep" />
+            <MdxBanner dir="Prac" />
         </>
     )
 }
