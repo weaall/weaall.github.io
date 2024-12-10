@@ -51,7 +51,7 @@ export default function Header() {
                 <tw.DevLabel>/</tw.DevLabel>
                 <tw.DevBtn>
                     <a href={"/dev/intro"}>
-                        <tw.DevLabel>development</tw.DevLabel>
+                        <tw.DevLabel>dev</tw.DevLabel>
                     </a>
                 </tw.DevBtn>
             </tw.RearWrap>
