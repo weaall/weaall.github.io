@@ -1,6 +1,8 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
+
+import hljs from "highlight.js";
+
 import * as tw from "./components.styles";
-import hljs from "highlight.js";  
 
 export default function Code({ className, children }: { className?: string; children?: React.ReactNode }) {
     const language = className ? className.replace("language-", "") : "";
@@ -12,7 +14,7 @@ export default function Code({ className, children }: { className?: string; chil
         } else {
             setHighlightedCode(children?.toString() || "");
         }
-    }, [children, language]); 
+    }, [children, language]);
 
     return (
         <tw.CodeWrapC className="hljs">

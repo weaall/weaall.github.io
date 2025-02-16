@@ -1,0 +1,142 @@
+---
+label: Web
+title: 검색기능의 다양화 I - 실시간 검색어 순위 (Redis)
+subTitle: Redis zincrby와 zrevrange의 활용
+date: 2025.02.01
+mins: 10
+tags: [Redis, zincrby, zrevrange, 검색어 순위]
+imageUrl:
+---
+
+## 검색창의 다양화
+
+- I: 실시간 검색어 순위 - [Link](https://weaall.github.io//deep/deep-search-function1) 
+- II: 최근 검색어 - [Link](https://weaall.github.io//deep/deep-search-function2) 
+- III: 검색어 찾기 - [Link](https://weaall.github.io//deep/deep-search-function3) 
+
+---
+
+## 실시간 검색어 순위
+
+![1](/posts/deep/search-function1/map.png "실시간 검색어 순위 구조")
+
+- 백엔드로 검색API요청이 오면 해당 검색어를 레디스 *saveSearchValue*를 통해 저장
+- *key*를 통해 매시간마다 다른 키를 생성해서 *Sorted Set*을 생성 **(expire을 통해 12시간동안 유지)**
+- *ZINCRBY*를 통해 해당시간 *Sorted Set*에 속한 검색어의 조회횟수를 1회씩 증가가
+- *setSearchRank*를 통해 최근 12시간 동안의 검색어 순위를 조회 **(점수를 합산하여 정렬)**
+- 가장 최근 12시간 검색어의 **실시간성** 유지 + **휘발성 데이터 자동관리**
+
+
+### ./Redis.utils.tsx
+
+```typescript
+export async function saveSearchValue(value: string): Promise<void> {
+    const now = new Date();
+    const key = `popular:${now.toISOString().slice(0, 13)}`;
+    await client.zincrby(key, 1, value);
+
+    await client.expire(key, 43200);
+}
+
+export async function getSearchRank(): Promise<{ term: string; score: number }[]> {
+    const now = new Date();
+    const keys: string[] = [];
+    const limit = 10;
+
+    for (let i = 0; i < 12; i++) {
+        const pastDate = new Date(now.getTime() - i * 3600 * 1000);
+        const key = `popular:${pastDate.toISOString().slice(0, 13)}`;
+        keys.push(key);
+    }
+
+    const allScores: Map<string, number> = new Map();
+    for (const key of keys) {
+        const results = await client.zrevrange(key, 0, -1, "WITHSCORES");
+        for (let i = 0; i < results.length; i += 2) {
+            const term = results[i];
+            const score = parseInt(results[i + 1]);
+            allScores.set(term, (allScores.get(term) || 0) + score);
+        }
+    }
+
+    const sortedScores = Array.from(allScores.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit);
+
+    return sortedScores.map(([term, score]) => ({ term, score }));
+}
+```
+
+### ./SearchController.tsx
+```typescript
+async getRank(req: Request, res: Response) {
+        try {
+            const currentKey: string = `/SearchRank`;
+            const pastKey: string = `/SearchRank/Past`;
+            const tempKey: string = `/SearchRank/Temp`;
+    
+            const currentRedisData = JSON.parse(await getRedis(currentKey));
+            const pastRedisData = JSON.parse(await getRedis(pastKey));
+            const temRedisData = JSON.parse(await getRedis(tempKey));
+    
+            if (redisData === null) {
+                const data = await getSearchRank();
+
+                setRedis1H(pastKey,tempRedisData)
+                setRedis1H(currentKey, data);
+                setRedis2H(tempKey, data);
+    
+                res.status(200).json({
+                    error: null,
+                    data: {
+                        past: temRedisData || [],
+                        current: data || [],
+                    }
+                });
+            } else {
+                res.status(200).json({
+                    error: null,
+                    data: {
+                        past: pastRedisData || [],
+                        current: currentRedisData || [],
+                    }
+                });
+            }
+        } catch (error) {
+            res.status(200).json({
+                error: null,
+                data: {
+                    past: [],
+                    current: []
+                }
+            });
+        }
+    }
+```
+
+### ./SearchDropDown.tsx
+```typescript
+const [currentRankList, setCurrentRankList] = useState([{ term: "-", score: 0 }]);
+const [pastRankList, setPastRankList] = useState([{ term: "-", score: 0 }]);
+
+const fetchSearch = useCallback(async () => {
+        setLoading(true);
+        try {
+            const { data } = await axiosInstance.get("/search/rank");
+            setCurrentRankList(data.data.current);
+            setPastRankList(data.data.past);
+        } catch (error) {
+            handleAxiosError(error, navigate);
+        } finally {
+            setLoading(false);
+        }
+    }, [navigate]);
+
+const getRankStatus = (term: string, index: number) => {
+    const pastIndex = pastRankList.findIndex((item) => item.term === term);
+    if (pastIndex === -1) return "new";
+    if (pastIndex < index) return "↑";
+    if (pastIndex > index) return "↓";
+    return "-";
+};
+```
