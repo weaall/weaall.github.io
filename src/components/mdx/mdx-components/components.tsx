@@ -22,24 +22,6 @@ export function H3({ children }: { children?: React.ReactNode }) {
     return <tw.H3>{children}</tw.H3>;
 }
 
-export function CheckBoxT({ children }: { children?: React.ReactNode }) {
-    return (
-        <tw.CheckBoxWrap>
-            <tw.H4 type="checkbox" defaultChecked={true} disabled />
-            <tw.CheckBoxLabel>{children}</tw.CheckBoxLabel>
-        </tw.CheckBoxWrap>
-    );
-}
-
-export function CheckBoxF({ children }: { children?: React.ReactNode }) {
-    return (
-        <tw.CheckBoxWrap>
-            <tw.H4 type="checkbox" defaultChecked={false} disabled />
-            <tw.CheckBoxLabel>{children}</tw.CheckBoxLabel>
-        </tw.CheckBoxWrap>
-    );
-}
-
 export function P({ children }: { children?: React.ReactNode }) {
     return <tw.P>{children}</tw.P>;
 }

@@ -5,22 +5,22 @@ subTitle: Redis zincrby와 zrevrange의 활용
 date: 2025.02.01
 mins: 10
 tags: [Redis, zincrby, zrevrange, 검색어 순위]
-imageUrl: /posts/deep/search-function1/map.png
+imageUrl: /posts/shallow/search-function1/map.png
 ---
 
 ## 검색창의 다양화
 
-![1](/posts/deep/search-function1/layout.png "레이아웃 예시")
+![1](/posts/shallow/search-function1/layout.png "레이아웃 예시")
 
-- I: 실시간 검색어 순위 - [Link](https://weaall.github.io/deep/deep-search-function1) 
-- II: 최근 검색어 - [Link](https://weaall.github.io/deep/deep-search-function2) 
-- III: 검색어 찾기 - [Link](https://weaall.github.io/deep/deep-search-function3) 
+- I: 실시간 검색어 순위 - [Link](https://weaall.github.io/shallow/search-function1) 
+- II: 최근 검색어 - [Link](https://weaall.github.io/shallow/search-function2) 
+- III: 검색어 찾기 - [Link](https://weaall.github.io/shallow/search-function3) 
 
 ---
 
 ## 실시간 검색어 순위
 
-![2](/posts/deep/search-function1/map.png "실시간 검색어 순위 구조")
+![2](/posts/shallow/search-function1/map.png "실시간 검색어 순위 구조")
 
 - 백엔드로 검색API요청이 오면 해당 검색어를 레디스 *saveSearchValue*를 통해 저장
 - *key*를 통해 매시간마다 다른 키를 생성해서 *Sorted Set*을 생성 **(expire을 통해 12시간동안 유지)**

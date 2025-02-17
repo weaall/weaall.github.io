@@ -3,12 +3,9 @@ import tw from "tailwind-styled-components";
 export const H1 = tw.h1`text-2xl font-bold`
 export const H2 = tw.h2`text-xl font-bold mt-2 mb-4 after:content-['.'] after:text-red-500 cursor-pointer`
 export const H3 = tw.h3`text-lg font-bold`
-
-export const CheckBoxWrap = tw.div`flex space-x-6 items-center my-3`
-export const CheckBoxLabel = tw.p`text-base`
 export const H4 = tw.input`w-5 h-5 cursor-pointer outline-none accent-[#D9D9D9]/[.1]`
 
-export const P = tw.p`text-base py-3`
+export const P = tw.span`text-base py-3`
 
 export const A = tw.a`text-base font-bold text-red-500`
 
@@ -31,7 +28,7 @@ export const Em = tw.em`text-sm font-semibold not-italic px-2 py-0.5 bg-rose-50 
 
 export const ImgWrap = tw.div`w-full mx-auto py-6 text-center`
 export const Img = tw.img`mx-auto`
-export const ImgTitle = tw.p`text-xs text-gray-400`
+export const ImgTitle = tw.span`text-xs text-gray-400`
 
 export const Table = tw.table`w-full my-4 table-fixed mb-8`
 export const Thead = tw.thead`bg-gray-50 text-left border-t border-t-gray-400 border-b border-b-gray-200 `

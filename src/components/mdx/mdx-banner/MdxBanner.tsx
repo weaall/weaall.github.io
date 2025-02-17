@@ -31,7 +31,7 @@ export default async function MdxBanner({ dir }: MdxBannerProps) {
                         <tw.SubTitle>{post.subTitle}</tw.SubTitle>
                         <tw.TagWrap>
                             {post.tags?.map((tag, index) => (
-                                <tw.tag key={index}>{tag}</tw.tag>
+                                <tw.Tag key={index}>{tag}</tw.Tag>
                             ))}
                         </tw.TagWrap>
                     </LinkHandler>

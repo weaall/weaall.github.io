@@ -1,7 +1,7 @@
 import { compileMDX } from "next-mdx-remote/rsc"
 import path from "path"
 import { readFile, access, readdir } from "fs/promises"
-import { Hr, H1, H2, P, Code, Strong, Pre, H3, CheckBoxF, CheckBoxT, A, Li, Em, Img } from "@/components/mdx/mdx-components/components"
+import { Hr, H1, H2, P, Code, Strong, Pre, H3, A, Li, Em, Img } from "@/components/mdx/mdx-components/components"
 import { notFound } from "next/navigation"
 import PostTitle from "@/components/post-title/PostTitle"
 import { Metadata } from "next"
@@ -43,8 +43,6 @@ async function compilePostMarkdown(slug: string) {
             h1: H1,
             h2: H2,
             h3: H3,
-            h4: CheckBoxT,
-            h5: CheckBoxF,
             p: P,
             a: A,
             li: Li,
