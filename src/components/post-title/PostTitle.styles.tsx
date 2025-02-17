@@ -1,11 +1,11 @@
 import tw from "tailwind-styled-components"
 
-export const Container = tw.div`pb-20`
+export const Container = tw.div`pb-12`
 
 export const PostWrap = tw.div`flex flex-col w-[75%] p-5 h-auto`
 
 export const ImgWrap = tw.div`w-full bg-main h-96 rounded-xl mobile:h-60 content-center flex justify-center p-6 `
-export const Img = tw.img`rounded-xl h-full w-auto`
+export const Img = tw.img`rounded-xl h-full w-full object-contain`
 
 export const TitleWrap = tw.div`py-8 space-y-3 border-b-2`
 export const Title = tw.h1`text-2xl text-main font-bold after:content-['.'] after:text-red-500`

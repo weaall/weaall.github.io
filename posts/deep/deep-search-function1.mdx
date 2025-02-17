@@ -5,27 +5,32 @@ subTitle: Redis zincrby와 zrevrange의 활용
 date: 2025.02.01
 mins: 10
 tags: [Redis, zincrby, zrevrange, 검색어 순위]
-imageUrl:
+imageUrl: /posts/deep/search-function1/map.png
 ---
 
 ## 검색창의 다양화
 
-- I: 실시간 검색어 순위 - [Link](https://weaall.github.io//deep/deep-search-function1) 
-- II: 최근 검색어 - [Link](https://weaall.github.io//deep/deep-search-function2) 
-- III: 검색어 찾기 - [Link](https://weaall.github.io//deep/deep-search-function3) 
+![1](/posts/deep/search-function1/layout.png "레이아웃 예시")
+
+- I: 실시간 검색어 순위 - [Link](https://weaall.github.io/deep/deep-search-function1) 
+- II: 최근 검색어 - [Link](https://weaall.github.io/deep/deep-search-function2) 
+- III: 검색어 찾기 - [Link](https://weaall.github.io/deep/deep-search-function3) 
 
 ---
 
 ## 실시간 검색어 순위
 
-![1](/posts/deep/search-function1/map.png "실시간 검색어 순위 구조")
+![2](/posts/deep/search-function1/map.png "실시간 검색어 순위 구조")
 
 - 백엔드로 검색API요청이 오면 해당 검색어를 레디스 *saveSearchValue*를 통해 저장
 - *key*를 통해 매시간마다 다른 키를 생성해서 *Sorted Set*을 생성 **(expire을 통해 12시간동안 유지)**
-- *ZINCRBY*를 통해 해당시간 *Sorted Set*에 속한 검색어의 조회횟수를 1회씩 증가가
+- *ZINCRBY*를 통해 해당시간 *Sorted Set*에 속한 검색어의 조회횟수를 1회씩 증가
 - *setSearchRank*를 통해 최근 12시간 동안의 검색어 순위를 조회 **(점수를 합산하여 정렬)**
 - 가장 최근 12시간 검색어의 **실시간성** 유지 + **휘발성 데이터 자동관리**
 
+
+<br />
+<br />
 
 ### ./Redis.utils.tsx
 
@@ -66,6 +71,9 @@ export async function getSearchRank(): Promise<{ term: string; score: number }[]
     return sortedScores.map(([term, score]) => ({ term, score }));
 }
 ```
+
+<br />
+<br />
 
 ### ./SearchController.tsx
 ```typescript
@@ -113,6 +121,9 @@ async getRank(req: Request, res: Response) {
         }
     }
 ```
+
+<br />
+<br />
 
 ### ./SearchDropDown.tsx
 ```typescript
