@@ -2,12 +2,7 @@ import type { Config } from "tailwindcss";
 import type { PluginAPI } from "tailwindcss/types/config";
 
 const config: Config = {
-    content: [
-        "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-        "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-        "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-        "./public/**/*.html",
-    ],
+    content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}", "./public/**/*.html"],
     theme: {
         extend: {
             backgroundImage: {
@@ -49,13 +44,18 @@ const config: Config = {
     },
     plugins: [
         function (api: PluginAPI) {
-            const { addUtilities } = api; // 타입이 PluginAPI로 자동 추론됩니다.
+            const { addUtilities } = api;
             const newUtilities = {
                 ".text-shadow-custom": {
                     "text-shadow": "-1px 0px #F3F2F1, 0px 1px #F3F2F1, 1px 0px white, 0px -1px #F3F2F1",
                 },
                 ".custom-border-radius": {
                     "border-radius": "12px",
+                },
+                ".text-gradient": {
+                    background: "linear-gradient(75deg, #000000,rgb(74, 74, 74),rgb(195, 195, 195))",
+                    "-webkit-background-clip": "text",
+                    "-webkit-text-fill-color": "transparent",
                 },
             };
             addUtilities(newUtilities);

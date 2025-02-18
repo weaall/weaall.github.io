@@ -27,19 +27,21 @@ export const Skills = tw.img`w-20 h-auto m-auto hover:scale-105 mobile:w-1/3 mob
 
 export const PartsWrap = tw.div`w-full h-auto flex flex-col bg-t-main rounded-b-[60px] relative -mt-36 pt-40 pb-10 px-20 z-30
 mobile:px-20`
-export const PartsWrapTitle = tw.h2`text-center font-semibold text-2xl py-10`
-export const PartList = tw.div`w-full flex mobile:flex-col`
+export const PartsWrapTitle = tw.h2`text-center font-semibold text-3xl pt-10 pb-6
+text-gradient`
+export const PartsLine = tw.div`h-[1px] w-auto my-10 mx-20 bg-black/[0.1]`
+export const PartList = tw.div`w-full flex mobile:flex-col px-14`
 export const PartWrap = tw.div`flex flex-col m-auto w-1/4 px-8 mobile:w-full py-4`
 export const PartSvg = tw.img`w-8`
-export const PartLabel = tw.label`text-sm font-semibold py-2`
+export const PartLabel = tw.label`text-sm font-medium py-3`
 export const PartText = tw.p`text-xs`
 
-export const ProjectsWrap = tw.div`w-full h-auto bg-white rounded-b-[60px] relative -mt-36 pt-40 pb-10 px-20 z-20
+export const ProjectsWrap = tw.div`w-full h-auto bg-white rounded-b-[60px] relative -mt-36 pt-40 pb-10 px-12 z-20
 mobile:px-6`
 export const ProjectWrap = tw.div`flex flex-col gap-3 py-10`
 export const ProjectTitle = tw.h2`text-center font-semibold text-2xl`
 export const ProjectSubTitle = tw.label``
 export const ProjectImg = tw.img``
 
-export const RearWrap = tw.div`w-full h-60 bg-t-main rounded-b-[60px] relative -mt-36 pt-40 z-10`
+export const RearWrap = tw.div`w-full min-h-60 bg-t-main rounded-b-[60px] relative -mt-36 pt-40 px-20 z-10`
 

@@ -1,10 +1,19 @@
 import * as tw from "./MainBanner.styles"
 
+import { Roboto } from "next/font/google";
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-roboto",
+});
+
+
 export default function MainBanner() {
     return (
-        <tw.BannerWrap>
+        <tw.BannerWrap className={roboto.className}>
             <tw.BannerLabelWrap>
-                <tw.BannerLabel>Dong-Hyun Wi</tw.BannerLabel>
+                <tw.BannerLabel >Dong-Hyun Wi</tw.BannerLabel>
                 <tw.BannerUnderline />
             </tw.BannerLabelWrap>
             <tw.BannerText>View Great, Create View</tw.BannerText>

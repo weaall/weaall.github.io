@@ -1,5 +1,14 @@
 import * as tw from "./page.styles"
 
+import { Roboto } from "next/font/google";
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-roboto",
+});
+
+
 export default async function Page() {
     const skillItems = [
         { src: "../../assets/mono/react_mono.svg", alt: "React" },
@@ -14,7 +23,7 @@ export default async function Page() {
         { src: "../../assets/part/ux_ui.svg", alt: "UX & UI", exp: "사용자 경험을 중시하는 UX/UI 설계를 통해 실용성과 직관성을 추구합니다." },
         { src: "../../assets/part/web_mobile.svg", alt: "Web & Mobile", exp: "아이디어를 웹/모바일 경험에 알맞게 최적화합니다." },
         { src: "../../assets/part/be.svg", alt: "Backend", exp: "보안과 효율성을 가장 중심으로한 백엔드 설계를 지향합니다." },
-        { src: "../../assets/part/dev_ops.svg", alt: "DevOps", exp: "AWS 기반으로 자동화, 모니터링, 그리고 비용 효율적인 설계를 제공합니다." },
+        { src: "../../assets/part/dev_ops.svg", alt: "DevOps", exp: "AWS 기반으로한 자동화 서비스, 모니터링 서비스, 비용 효율적인 설계를 제공합니다." },
     ];
 
     return (
@@ -26,9 +35,9 @@ export default async function Page() {
                     </tw.ProfileBg>
                 </tw.ProfileWrap>
                 <tw.BannerLabelWrap>
-                    <tw.BannerLabel>Hello</tw.BannerLabel>
+                    <tw.BannerLabel >Hello</tw.BannerLabel>
                     <tw.BannerUnderline />
-                    <tw.BannerText>I&apos;m DongHyun-Wi.</tw.BannerText>
+                    <tw.BannerText className={roboto.className}>I&apos;m DongHyun-Wi.</tw.BannerText>
                 </tw.BannerLabelWrap>
             </tw.BannerWrap>
 
@@ -39,12 +48,13 @@ export default async function Page() {
             </tw.SkillWrap>
 
             <tw.PartsWrap>
-                <tw.PartsWrapTitle>What do I strive for?</tw.PartsWrapTitle>
+                <tw.PartsWrapTitle className={roboto.className}>What do I strive for?</tw.PartsWrapTitle>
+                <tw.PartsLine />
                 <tw.PartList>
                     {partItems.map(({ src, alt, exp }) => (
                         <tw.PartWrap key={alt}>
                             <tw.PartSvg key={alt} alt={alt} src={src} />
-                            <tw.PartLabel>{alt}</tw.PartLabel>
+                            <tw.PartLabel className={roboto.className}>{alt}</tw.PartLabel>
                             <tw.PartText>{exp}</tw.PartText>
                         </tw.PartWrap>
                     ))}
@@ -52,6 +62,7 @@ export default async function Page() {
             </tw.PartsWrap>
 
             <tw.ProjectsWrap>
+                <tw.ProjectTitle></tw.ProjectTitle>
                 <tw.ProjectWrap>
                     <a href="https://www.travelo.store" target="_blank" rel="noopener noreferrer">
                         <tw.ProjectImg src="../../assets/portfolio/main.png" loading="lazy" />

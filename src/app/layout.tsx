@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { Noto_Sans_KR } from "next/font/google"
-import "./globals.css" // globals.css에서 atom-one-dark.css 포함됨
+import "./globals.css"
 
 import { Layout } from "@/components/layout/Layout"
 import { getBaseMetadata } from "@/util/seo"

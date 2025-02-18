@@ -1,12 +1,12 @@
 import tw from "tailwind-styled-components";
 
-export const Container = tw.div`w-full border-t mt-20 text-text-main`
+export const Container = tw.div`w-full border-t mt-20 text-[#888888]`
 
 export const FooterWrap = tw.div`mx-auto max-w-[1080px] h-40 justify-between flex mobile:flex-col mobile:h-52`
 
 export const LabelWrap = tw.div`flex flex-col m-auto text-center space-y-1 w-[33%]`
 export const NameTag = tw.p`font-bold text-2xl`
-export const EmailTag = tw.p`text-sm`
+export const EmailTag = tw.a`text-sm`
 
 export const GnbSvg = tw.img`w-8 h-full m-auto group-hover:scale-110`
 
