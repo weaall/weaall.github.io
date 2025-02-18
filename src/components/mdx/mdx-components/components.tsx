@@ -12,9 +12,7 @@ export function H1({ children }: { children?: React.ReactNode }) {
 
 export function H2({ children }: { children?: React.ReactNode }) {
     return (
-        <tw.H2>
-            <a href={`#${children || ""}`}>{children}</a>
-        </tw.H2>
+        <tw.H2>{children}</tw.H2>
     );
 }
 
@@ -57,7 +55,7 @@ export function Em({ children }: { children?: React.ReactNode }) {
 export function Img({ title, src, children }: { title?: string; src?: string; children?: React.ReactNode }) {
     return (
         <tw.ImgWrap>
-            <tw.Img src={src}>{children}</tw.Img>
+            <tw.Img src={src} loading="lazy">{children}</tw.Img>
             <tw.ImgTitle>{title}</tw.ImgTitle>
         </tw.ImgWrap>
     );

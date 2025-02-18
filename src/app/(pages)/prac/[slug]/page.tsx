@@ -3,9 +3,9 @@ import path from "path"
 import { readFile, access, readdir } from "fs/promises"
 import { Hr, H1, H2, P, Code, Strong, Pre, H3, A, Li, Em, Img } from "@/components/mdx/mdx-components/components"
 import { notFound } from "next/navigation"
-import PostTitle from "@/components/post-title/PostTitle"
 import { Metadata } from "next"
 import { getArticleMetadata } from "@/util/seo"
+import PracTitle from "@/components/post-title/PracTitle"
 
 const POSTS_FOLDER = path.join(process.cwd(), "posts/prac")
 
@@ -63,7 +63,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
     return (
         <>
-            <PostTitle frontmatter={frontmatter} />
+            <PracTitle frontmatter={frontmatter} />
             {content}
         </>
     )

@@ -4,7 +4,7 @@ interface BarProps {
     $state: boolean
 }
 
-export const Container = tw.div`flex min-h-dvh px-10 mobile:px-2`
+export const Container = tw.div`flex px-10 mobile:px-2`
 
 export const SideContainer = tw.div` h-auto mr-8 w-72 mobile:w-[28%]`
 export const SideWrap = tw.div<BarProps>`flex h-14 w-full items-center pl-6 rounded-2xl cursor-pointer

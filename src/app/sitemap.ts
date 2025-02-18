@@ -25,7 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }
     })
 
-    const routes = ["", "/shallow", "/deep", "/todo", "/project"].map((route) => ({
+    const routes = ["", "/shallow", "/deep", "/prac"].map((route) => ({
         url: `https://weaall.github.io${route}`,
         lastModified: new Date().toISOString().split("T")[0],
         priority: 0.5,

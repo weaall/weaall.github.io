@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as tw from "./PostList.styles";
 
 interface PostData {
@@ -19,6 +19,8 @@ interface PostsProps {
 
 export default function ShallowPostList({ props }: PostsProps) {
     const [activeItem, setActiveItem] = useState("All");
+    const [visibleCount, setVisibleCount] = useState(3);
+    const observerRef = useRef<HTMLDivElement | null>(null);
 
     const sideItems = [
         { label: "All", src: "all" },
@@ -30,41 +32,62 @@ export default function ShallowPostList({ props }: PostsProps) {
         { label: "etc", src: "etc" },
     ];
 
-    const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
-        window.history.pushState(null, "", url);
-    };
+    const filteredPosts = props.filter((postItem) => activeItem === "All" || postItem.label === activeItem);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    setVisibleCount((prev) => Math.min(prev + 3, filteredPosts.length));
+                }
+            },
+            { threshold: 1.0 },
+        );
+
+        if (observerRef.current) {
+            observer.observe(observerRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [filteredPosts]);
 
     return (
         <tw.Container>
             <tw.SideContainer>
                 {sideItems.map((item, index) => (
-                    <tw.SideWrap $state={activeItem === item.label} key={index} onClick={() => setActiveItem(item.label)}>
-                        <tw.SideSvg src={`../../../assets/drawer-svg/${item.src}.svg`}></tw.SideSvg>
+                    <tw.SideWrap
+                        $state={activeItem === item.label}
+                        key={index}
+                        onClick={() => {
+                            setActiveItem(item.label);
+                            setVisibleCount(3);
+                        }}
+                    >
+                        <tw.SideSvg src={`../../../assets/drawer-svg/${item.src}.svg`} />
                         <tw.SideLabel>{item.label}</tw.SideLabel>
                     </tw.SideWrap>
                 ))}
             </tw.SideContainer>
 
             <tw.PostsContainer>
-                {props
-                    .filter((postItem) => activeItem === "All" || postItem.label === activeItem)
-                    .map((item) => (
-                        <a href={item.postUrl} key={item.slug} onClick={(e) => handleLinkClick(e, item.postUrl)}>
-                            <tw.PostWrap>
-                                <tw.TopWrap>
-                                    <tw.TopLabel>/ {item.label}</tw.TopLabel>
-                                    <tw.TopLabel>{item.date}</tw.TopLabel>
-                                </tw.TopWrap>
-                                <tw.Title>{item.title}</tw.Title>
-                                <tw.SubTitle>{item.subTitle}</tw.SubTitle>
-                                <tw.TagWrap>
-                                    {item.tags?.map((tag, index) => (
-                                        <tw.Tag key={index}>{tag}</tw.Tag>
-                                    ))}
-                                </tw.TagWrap>
-                            </tw.PostWrap>
-                        </a>
-                    ))}
+                {filteredPosts.slice(0, visibleCount).map((item) => (
+                    <a href={item.postUrl} key={item.slug}>
+                        <tw.PostWrap>
+                            <tw.TopWrap>
+                                <tw.TopLabel>/ {item.label}</tw.TopLabel>
+                                <tw.TopLabel>{item.date}</tw.TopLabel>
+                            </tw.TopWrap>
+                            <tw.Title>{item.title}</tw.Title>
+                            <tw.SubTitle>{item.subTitle}</tw.SubTitle>
+                            <tw.TagWrap>
+                                {item.tags?.map((tag, index) => (
+                                    <tw.Tag key={index}>{tag}</tw.Tag>
+                                ))}
+                            </tw.TagWrap>
+                        </tw.PostWrap>
+                    </a>
+                ))}
+                {visibleCount < filteredPosts.length && <div ref={observerRef} />}
             </tw.PostsContainer>
         </tw.Container>
     );
