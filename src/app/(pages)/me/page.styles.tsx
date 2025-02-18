@@ -23,7 +23,14 @@ export const MailText = tw.a`hover:text-white text-base after:content-['.'] afte
 
 export const SkillWrap = tw.div`w-full h-auto flex bg-white relative rounded-b-[60px] -mt-10 pt-20 pb-10 z-40 px-20
 mobile:px-6 mobile:flex-wrap mobile:justify-between`
-export const Skills = tw.img`w-20 h-auto m-auto hover:scale-105 mobile:w-1/3 mobile:px-12`
+export const Skills = tw.img`
+  bg-white
+  h-24
+  w-24
+  m-auto
+  mobile:w-1/3 
+  mobile:px-12
+`
 
 export const PartsWrap = tw.div`w-full h-auto flex flex-col bg-t-main rounded-b-[60px] relative -mt-36 pt-40 pb-10 px-20 z-30
 mobile:px-20`
@@ -41,7 +48,8 @@ mobile:px-6`
 export const ProjectWrap = tw.div`flex flex-col gap-3 py-10`
 export const ProjectTitle = tw.h2`text-center font-semibold text-2xl`
 export const ProjectSubTitle = tw.label``
-export const ProjectImg = tw.img``
+export const ProjectImg = tw.img`project-image opacity-0 transform scale-95 transition-all duration-500 ease-in-out
+`;
 
 export const RearWrap = tw.div`w-full min-h-60 bg-t-main rounded-b-[60px] relative -mt-36 pt-40 px-20 z-10`
 

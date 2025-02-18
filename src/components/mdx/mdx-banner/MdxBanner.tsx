@@ -1,3 +1,4 @@
+import { roboto } from "@/util/font";
 import getPostsData from "../getMdx";
 import LinkHandler from "./LinkHandler";
 import * as tw from "./MdxBanner.styles";
@@ -15,7 +16,7 @@ export default async function MdxBanner({ dir }: MdxBannerProps) {
     return (
         <tw.Container>
             <tw.LabelWrap>
-                <tw.Label>{dir} Dive</tw.Label>
+                <tw.Label className={roboto.className} >{dir} Dive</tw.Label>
             </tw.LabelWrap>
 
             <tw.BannerWrap />

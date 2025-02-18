@@ -1,13 +1,52 @@
-import * as tw from "./page.styles"
+"use client";
 
+import { useEffect, useRef, useState } from "react";
+import * as tw from "./page.styles";
 import { Roboto } from "next/font/google";
 
 const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
-  variable: "--font-roboto",
+    subsets: ["latin"],
+    weight: ["300", "400", "500", "700"],
+    variable: "--font-roboto",
 });
 
+interface ImageProps {
+    src: string;
+    alt: string;
+}
+
+
+const ImageWithTransition = ({ src, alt }: ImageProps) => {
+    const [isVisible, setIsVisible] = useState(false);
+    const imgRef = useRef<HTMLImageElement | null>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setIsVisible(true);
+                    }
+                });
+            },
+            {
+                threshold: 0.6,
+            },
+        );
+
+        if (imgRef.current) {
+            observer.observe(imgRef.current);
+        }
+
+        return () => {
+            if (imgRef.current) {
+                observer.unobserve(imgRef.current);
+            }
+        };
+    }, []);
+
+    return <tw.ProjectImg ref={imgRef} className={` ${isVisible ? "opacity-100 scale-100" : ""}`} src={src} alt={alt} loading="lazy" />;
+};
 
 export default async function Page() {
     const skillItems = [
@@ -35,7 +74,7 @@ export default async function Page() {
                     </tw.ProfileBg>
                 </tw.ProfileWrap>
                 <tw.BannerLabelWrap>
-                    <tw.BannerLabel >Hello</tw.BannerLabel>
+                    <tw.BannerLabel>Hello</tw.BannerLabel>
                     <tw.BannerUnderline />
                     <tw.BannerText className={roboto.className}>I&apos;m DongHyun-Wi.</tw.BannerText>
                 </tw.BannerLabelWrap>
@@ -43,7 +82,7 @@ export default async function Page() {
 
             <tw.SkillWrap>
                 {skillItems.map(({ src, alt }) => (
-                    <tw.Skills key={alt} alt={alt} src={src} />
+                        <tw.Skills key={alt} alt={alt} src={src} />
                 ))}
             </tw.SkillWrap>
 
@@ -65,13 +104,13 @@ export default async function Page() {
                 <tw.ProjectTitle></tw.ProjectTitle>
                 <tw.ProjectWrap>
                     <a href="https://www.travelo.store" target="_blank" rel="noopener noreferrer">
-                        <tw.ProjectImg src="../../assets/portfolio/main.png" loading="lazy" />
+                        <ImageWithTransition src="../../assets/portfolio/main.png" alt="Main Image" />
                     </a>
-                    <tw.ProjectImg src="../../assets/portfolio/core1.png" loading="lazy" />
-                    <tw.ProjectImg src="../../assets/portfolio/core2.png" loading="lazy" />
-                    <tw.ProjectImg src="../../assets/portfolio/arch1.png" loading="lazy" />
-                    <tw.ProjectImg src="../../assets/portfolio/arch2.png" loading="lazy" />
-                    <tw.ProjectImg src="../../assets/portfolio/sub.png" loading="lazy" />
+                    <ImageWithTransition src="../../assets/portfolio/core1.png" alt="Core Image 1" />
+                    <ImageWithTransition src="../../assets/portfolio/core2.png" alt="Core Image 2" />
+                    <ImageWithTransition src="../../assets/portfolio/arch1.png" alt="Arch Image 1" />
+                    <ImageWithTransition src="../../assets/portfolio/arch2.png" alt="Arch Image 2" />
+                    <ImageWithTransition src="../../assets/portfolio/sub.png" alt="Sub Image" />
                 </tw.ProjectWrap>
             </tw.ProjectsWrap>
 

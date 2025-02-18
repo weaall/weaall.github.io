@@ -1,11 +1,12 @@
+import { roboto } from "@/util/font"
 import * as tw from "./PostBanner.styles"
 
 export default function DeepBanner() {
     return (
-        <tw.Container>
+        <tw.Container className={roboto.className}>
             <tw.BannerContainer>
                 <tw.LabelWrap>
-                    <tw.Label>Deep Dive</tw.Label>
+                    <tw.Label >Deep Dive</tw.Label>
                 </tw.LabelWrap>
 
                 <tw.ImgWrap>

@@ -16,9 +16,9 @@ export const getBaseMetadata = ({ title }: { title: string }): Metadata => {
     const { description } = siteConfig
 
     return {
-        metadataBase: new URL("http://weaall.github.io"),
-        title,
-        description,
+        metadataBase: new URL("https://weaall.github.io"), 
+        title: `${title} - Weaall's Dive`, 
+        description: description, 
         openGraph: {
             title,
             description,
@@ -30,7 +30,12 @@ export const getBaseMetadata = ({ title }: { title: string }): Metadata => {
                     url: siteConfig.profile,
                     alt: title,
                 },
+                {
+                    url: "https://weaall.github.io/another-image.jpg", 
+                    alt: "보조 이미지 설명",
+                },
             ],
+            locale: "ko_KR", 
         },
         alternates: {
             canonical: siteConfig.url,
@@ -42,18 +47,17 @@ export const getArticleMetadata = (postData: PostData, url: string): Metadata =>
     const dateTime = new Date(postData.date).toISOString()
 
     return {
-        metadataBase: new URL("http://weaall.github.io"),
-        title: postData.title,
+        metadataBase: new URL("https://weaall.github.io"),
+        title: `${postData.title} - Weaall's Dive`, 
         description: postData.subTitle,
-        keywords: postData.tags,
+        keywords: postData.tags.join(", "), 
         openGraph: {
             title: postData.title,
             description: postData.subTitle,
             type: "article",
-            siteName: "Weaall's Dive",
+            siteName: siteConfig.title,
             url: url,
             publishedTime: dateTime,
-            modifiedTime: dateTime,
             authors: [`https://github.com/weaall`],
             tags: postData.tags,
             images: [
@@ -62,6 +66,7 @@ export const getArticleMetadata = (postData: PostData, url: string): Metadata =>
                     alt: postData.title,
                 },
             ],
+            locale: "ko_KR",
         },
         alternates: {
             canonical: url,
@@ -82,6 +87,14 @@ export const JSONLD = (postData: PostData, url: string) => {
             nationality: {
                 "@type": "Country",
                 name: "South Korea",
+            },
+        },
+        publisher: {
+            "@type": "Organization",
+            name: siteConfig.title,
+            logo: {
+                "@type": "ImageObject",
+                url: siteConfig.profile,
             },
         },
         image: siteConfig.profile,
