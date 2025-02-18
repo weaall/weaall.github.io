@@ -16,7 +16,8 @@ export const MailWrap = tw.div`flex space-x-2`
 export const MailSvg = tw.img`w-5`
 export const MailText = tw.a`hover:text-white text-base after:content-['.'] after:text-red-500`
 
-export const BtnWrap = tw.div`w-full flex py-3 space-x-4 justify-end`
-export const BannerBtn = tw.a`flex bg-[#D3FF55] text-main rounded-full items-center
-cursor-pointer justify-center`
-export const BtnSvg = tw.img`w-16 h-16 p-4 hover:scale-110`
+export const BtnWrap = tw.div`w-full flex py-3 space-x-4 justify-end mobile:justify-center mobile:py-10`
+export const BannerBtn = tw.a`flex w-32 h-12 bg-main text-main rounded-full items-center flex gap-x-2
+cursor-pointer justify-center hover:bg-main/[0.8]`
+export const BtnLabel = tw.label`text-white text-xs font-medium cursor-pointer`
+export const BtnSvg = tw.img`w-4 h-4`

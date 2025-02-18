@@ -6,13 +6,7 @@ export function H1({ children }: { children?: React.ReactNode }) {
 }
 
 export function H2({ children }: { children?: React.ReactNode }) {
-    return (
-        <>
-            <tw.H2>
-                <a href={`#${children || ""}`}>{children}</a>
-            </tw.H2>
-        </>
-    )
+    return <tw.H2>{children}</tw.H2>;
 }
 
 export function H3({ children }: { children?: React.ReactNode }) {

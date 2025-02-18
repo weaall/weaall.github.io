@@ -15,9 +15,10 @@ export default function MainBanner() {
             </tw.MailWrap>
             <tw.BtnWrap>
                 <tw.BannerBtn href="/me">
-                    <tw.BtnSvg alt="" src={"../../assets/svg/right_icon.svg"} />
+                    <tw.BtnLabel>About Me</tw.BtnLabel>
+                    <tw.BtnSvg alt="" src={"../../assets/svg/select.svg"} />
                 </tw.BannerBtn>
             </tw.BtnWrap>
         </tw.BannerWrap>
-    )
+    );
 }

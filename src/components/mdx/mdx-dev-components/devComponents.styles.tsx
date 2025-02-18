@@ -10,7 +10,7 @@ export const CheckBoxWrap = tw.div`flex space-x-6 items-center my-3`
 export const CheckBoxLabel = tw.p`text-lg`
 export const H4 = tw.input`w-5 h-5 cursor-pointer outline-none accent-[#D9D9D9]/[.1]`
 
-export const P = tw.p`text-lg py-3
+export const P = tw.span`text-lg py-3
 mobile:text-base`
 
 export const A = tw.a`text-6xl`
@@ -28,7 +28,7 @@ export const CodeWrapC = tw.div`relative rounded-xl text-main text-base pt-8 mb-
 mobile:text-xs mobile:pt-5 mobile:mb-6`
 export const ClassWrap = tw.div`absolute top-0 right-0 rounded-2xl py-3 px-6 bg-white w-fit mr-8
 mobile:py-1.5 mobile:px-4` 
-export const ClassLabel = tw.p`text-2xl font-bold after:content-['.'] after:text-red-500
+export const ClassLabel = tw.span`text-2xl font-bold after:content-['.'] after:text-red-500
 mobile:text-lg`
 export const CodeBoxC = tw.div`bg-main p-6 pt-12 rounded-xl
 mobile:pt-6`
@@ -39,9 +39,9 @@ mobile:text-sm`
 
 export const Em = tw.em`text-base font-bold not-italic px-3 py-1 bg-rose-50 rounded-xl`
 
-export const ImgWrap = tw.div`w-full mx-auto py-6 text-center`
+export const ImgWrap = tw.span`w-full mx-auto py-6 text-center`
 export const Img = tw.img`mx-auto`
-export const ImgTitle = tw.p`text-xs text-gray-400`
+export const ImgTitle = tw.span`text-xs text-gray-400`
 
 export const Table = tw.table`w-full my-4 table-fixed mb-12
 mobile:mb-6 mobile:text-xs`

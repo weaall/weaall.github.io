@@ -36,7 +36,7 @@ export const PartText = tw.p`text-xs`
 
 export const ProjectsWrap = tw.div`w-full h-auto bg-white rounded-b-[60px] relative -mt-36 pt-40 pb-10 px-20 z-20
 mobile:px-6`
-export const ProjectWrap = tw.div`flex flex-col py-10`
+export const ProjectWrap = tw.div`flex flex-col gap-3 py-10`
 export const ProjectTitle = tw.h2`text-center font-semibold text-2xl`
 export const ProjectSubTitle = tw.label``
 export const ProjectImg = tw.img``
