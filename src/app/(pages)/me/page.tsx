@@ -66,13 +66,79 @@ const ImageWithTransition = ({ src, alt, project, type }: ImageProps) => {
             {isModalOpen && (
                 <tw.ModalOverlay onClick={() => setIsModalOpen(false)}>
                     <tw.ModalContent>
-                        <img src={src} alt={alt} className="w-full h-auto scale-150" />
+                        <img src={src} alt={alt} className="w-full h-auto scale-150 mobile:rotate-90 mobile:scale-[1.7]" />
                     </tw.ModalContent>
                 </tw.ModalOverlay>
             )}
         </>
     );
 };
+
+const images = [
+    { src: "../../assets/portfolio/main.png", alt: "Image 1" },
+    { src: "../../assets/portfolio/core1.png", alt: "Image 2" },
+    { src: "../../assets/portfolio/core2.png", alt: "Image 3" },
+    { src: "../../assets/portfolio/arch1.png", alt: "Image 4" },
+    { src: "../../assets/portfolio/arch2.png", alt: "Image 5" },
+    { src: "../../assets/portfolio/sub.png", alt: "Image 6" },
+  ];
+  
+  const ImageSlider = () => {
+      const [currentIndex, setCurrentIndex] = useState(1);
+
+      const nextSlide = () => {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+      };
+
+      const prevSlide = () => {
+          setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+      };
+
+      return (
+          <div className="flex justify-center items-center w-full h-screen bg-gray-100">
+              <div className="relative w-full max-w-4xl h-full bg-white shadow-xl rounded-xl overflow-hidden">
+                  <div className="absolute w-full h-full flex justify-center items-center top-20">
+                      <div
+                          className="flex flex-col transition-transform duration-500 ease-in-out"
+                          style={{
+                              transform: `translateY(-${currentIndex * 100}%)`,
+                              height: `${images.length * 16.66666}%`,
+                          }}
+                      >
+                          {images.map((image, index) => {
+                              const scale = index === currentIndex ? 1 : 0.4; // 가운데 이미지 크게, 나머지 작게
+
+                              return (
+                                  <div
+                                      key={index}
+                                      className="relative w-auto flex-shrink-0 h-full rounded-xl overflow-hidden transition-transform duration-500 ease-in-out"
+                                      style={{
+                                          transform: `scale(${scale})`,
+                                      }}
+                                  >
+                                      <img src={image.src} alt={image.alt} className="w-auto h-auto object-cover" />
+                                  </div>
+                              );
+                          })}
+                      </div>
+                  </div>
+                  <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-4">
+                      <button onClick={prevSlide} className="text-white bg-gray-800 p-2 rounded-full hover:bg-gray-600">
+                          &lt;
+                      </button>
+                      <button onClick={nextSlide} className="text-white bg-gray-800 p-2 rounded-full hover:bg-gray-600">
+                          &gt;
+                      </button>
+                  </div>
+              </div>
+          </div>
+      );
+  };
+  
+  
+  
+
+  
 
 export default async function Page() {
     const skillItems = [
@@ -164,6 +230,8 @@ export default async function Page() {
                     <ImageWithTransition src="../../assets/portfolio/sub.png" alt="Project Index" project="weaall.github.io" type="sub" />
                 </tw.ProjectWrap>
             </tw.ProjectsWrap>
+
+            {/* <ImageSlider /> */}
 
         </tw.Container>
     );

@@ -47,9 +47,9 @@ mobile:px-6`;
 
 export const ProjectWrap = tw.div`flex flex-col gap-3 py-10`;
 export const ProjectImgWrap = tw.div`
-    relative w-full h-[54px] overflow-hidden cursor-pointer 
+    relative w-full h-[60px] overflow-hidden cursor-pointer 
     transition-all duration-500 ease-in-out
-    hover:h-[120px]
+    hover:h-[529px] mobile:h-auto mobile:hover:h-auto
 `;
 export const ProjectImgOuterWrap = tw.div`w-full h-full bg-main p-1 rounded-xl`
 export const ProjectImgHeader = tw.div`h-8 w-full flex justify-between items-center bg-main px-4 relative`;
@@ -58,7 +58,7 @@ export const ProjectImgLeftText = tw.p`text-xs text-gradient-gray`;
 export const ProjectImgRightText = tw.p`text-xs text-gradient-gray`;
 
 export const ProjectImg = tw.img`
-    object-top object-cover w-full h-full transition-all duration-500 ease-in-out
+    object-top object-cover w-full h-auto
 `;
 
 export const ModalOverlay = tw.div`
@@ -66,7 +66,7 @@ export const ModalOverlay = tw.div`
 `;
 
 export const ModalContent = tw.div`
-    bg-white p-4 rounded-lg max-w-4xl w-full
+    p-4 rounded-lg max-w-4xl w-full
 `;
 
 
