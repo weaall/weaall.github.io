@@ -1,7 +1,7 @@
 import { roboto } from "@/util/font";
 import getPostsData from "../getMdx";
-import LinkHandler from "./LinkHandler";
 import * as tw from "./MdxBanner.styles";
+import PostsList from "./MdxBannerPosts";
 
 interface MdxBannerProps {
     dir: string;
@@ -16,28 +16,12 @@ export default async function MdxBanner({ dir }: MdxBannerProps) {
     return (
         <tw.Container>
             <tw.LabelWrap>
-                <tw.Label className={roboto.className} >{dir} Dive</tw.Label>
+                <tw.Label className={roboto.className}>{dir} Dive</tw.Label>
             </tw.LabelWrap>
 
             <tw.BannerWrap />
 
-            <tw.PostContainer>
-                {latestPosts.map((post) => (
-                    <LinkHandler url={post.postUrl} key={post.slug}>
-                        <tw.TopWrap>
-                            <tw.TopLabel>/ {post.label}</tw.TopLabel>
-                            <tw.TopLabel>{post.date}</tw.TopLabel>
-                        </tw.TopWrap>
-                        <tw.Title>{post.title}</tw.Title>
-                        <tw.SubTitle>{post.subTitle}</tw.SubTitle>
-                        <tw.TagWrap>
-                            {post.tags?.map((tag, index) => (
-                                <tw.Tag key={index}>{tag}</tw.Tag>
-                            ))}
-                        </tw.TagWrap>
-                    </LinkHandler>
-                ))}
-            </tw.PostContainer>
+            <PostsList latestPosts={latestPosts} />
         </tw.Container>
     );
 }

@@ -2,50 +2,76 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as tw from "./page.styles";
-import { Roboto } from "next/font/google";
-
-const roboto = Roboto({
-    subsets: ["latin"],
-    weight: ["300", "400", "500", "700"],
-    variable: "--font-roboto",
-});
+import { roboto } from "@/util/font";
 
 interface ImageProps {
     src: string;
     alt: string;
+    project: string;
+    type: string;
 }
 
-
-const ImageWithTransition = ({ src, alt }: ImageProps) => {
-    const [isVisible, setIsVisible] = useState(false);
-    const imgRef = useRef<HTMLImageElement | null>(null);
+const AnimatedText = ({ text }: { text: string }) => {
+    const [letters, setLetters] = useState<string[]>([]);
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        setIsVisible(true);
-                    }
-                });
-            },
-            {
-                threshold: 0.6,
-            },
-        );
+        setLetters(text.split(""));
+    }, [text]);
 
-        if (imgRef.current) {
-            observer.observe(imgRef.current);
+    return (
+        <tw.BannerLabel>
+            {letters.map((letter, index) => (
+                <span key={index} className="inline-block animate-reveal" style={{ animationDelay: `${index * 0.15}s` }}>
+                    {letter}
+                </span>
+            ))}
+            <span
+                className="relative inline-block after:content-['.'] after:text-red-500 animate-fallBounce opacity-0"
+                style={{
+                    animationDelay: `${letters.length * 0.15 + 0.3}s`,
+                }}
+            />
+        </tw.BannerLabel>
+    );
+};
+
+const ImageWithTransition = ({ src, alt, project, type }: ImageProps) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    useEffect(() => {
+        if (isModalOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
         }
 
         return () => {
-            if (imgRef.current) {
-                observer.unobserve(imgRef.current);
-            }
+            document.body.style.overflow = "auto";
         };
-    }, []);
+    }, [isModalOpen]);
 
-    return <tw.ProjectImg ref={imgRef} className={` ${isVisible ? "opacity-100 scale-100" : ""}`} src={src} alt={alt} loading="lazy" />;
+    return (
+        <>
+            <tw.ProjectImgWrap onClick={() => setIsModalOpen(true)}>
+                <tw.ProjectImgOuterWrap>
+                    <tw.ProjectImgHeader>
+                        <tw.ProjectImgLeftText>{project}</tw.ProjectImgLeftText>
+                        <tw.ProjectImgLabel>{alt}</tw.ProjectImgLabel>
+                        <tw.ProjectImgRightText>{type}</tw.ProjectImgRightText>
+                    </tw.ProjectImgHeader>
+                    <tw.ProjectImg src={src} alt={alt} loading="lazy" />
+                </tw.ProjectImgOuterWrap>
+            </tw.ProjectImgWrap>
+
+            {isModalOpen && (
+                <tw.ModalOverlay onClick={() => setIsModalOpen(false)}>
+                    <tw.ModalContent>
+                        <img src={src} alt={alt} className="w-full h-auto scale-150" />
+                    </tw.ModalContent>
+                </tw.ModalOverlay>
+            )}
+        </>
+    );
 };
 
 export default async function Page() {
@@ -65,24 +91,49 @@ export default async function Page() {
         { src: "../../assets/part/dev_ops.svg", alt: "DevOps", exp: "AWS 기반으로한 자동화 서비스, 모니터링 서비스, 비용 효율적인 설계를 제공합니다." },
     ];
 
+    
+
     return (
         <tw.Container>
             <tw.BannerWrap>
                 <tw.ProfileWrap>
                     <tw.ProfileBg>
-                        <tw.ProfilePic alt="" src={"../../assets/portfolio/me.png"} />
+                        <tw.ProfilePic
+                            style={{
+                                animationDelay: "1.5s",
+                            }}
+                            alt=""
+                            src={"../../assets/portfolio/me.png"}
+                        />
                     </tw.ProfileBg>
                 </tw.ProfileWrap>
                 <tw.BannerLabelWrap>
-                    <tw.BannerLabel>Hello</tw.BannerLabel>
+                    <tw.BannerLabelBox>
+                        <AnimatedText text="Hello" />
+                    </tw.BannerLabelBox>
                     <tw.BannerUnderline />
-                    <tw.BannerText className={roboto.className}>I&apos;m DongHyun-Wi.</tw.BannerText>
+                    <tw.BannerText
+                        className={roboto.className}
+                        style={{
+                            animationDelay: "1s",
+                        }}
+                    >
+                        I&apos;m DongHyun-Wi.
+                    </tw.BannerText>
                 </tw.BannerLabelWrap>
             </tw.BannerWrap>
 
             <tw.SkillWrap>
-                {skillItems.map(({ src, alt }) => (
-                        <tw.Skills key={alt} alt={alt} src={src} />
+                {skillItems.map(({ src, alt }, index) => (
+                    <tw.BorderRotateWrap
+                        key={alt}
+                        style={{
+                            animationDelay: `${index * 0.2 + 1.8}s`,
+                        }}
+                    >
+                        <tw.Skills alt={alt} src={src} />
+                        <tw.BorderRotate />
+                    </tw.BorderRotateWrap>
                 ))}
             </tw.SkillWrap>
 
@@ -100,21 +151,20 @@ export default async function Page() {
                 </tw.PartList>
             </tw.PartsWrap>
 
-            <tw.ProjectsWrap>
-                <tw.ProjectTitle></tw.ProjectTitle>
+            <tw.ProjectsWrap className={roboto.className}>
                 <tw.ProjectWrap>
-                    <a href="https://www.travelo.store" target="_blank" rel="noopener noreferrer">
-                        <ImageWithTransition src="../../assets/portfolio/main.png" alt="Main Image" />
-                    </a>
-                    <ImageWithTransition src="../../assets/portfolio/core1.png" alt="Core Image 1" />
-                    <ImageWithTransition src="../../assets/portfolio/core2.png" alt="Core Image 2" />
-                    <ImageWithTransition src="../../assets/portfolio/arch1.png" alt="Arch Image 1" />
-                    <ImageWithTransition src="../../assets/portfolio/arch2.png" alt="Arch Image 2" />
-                    <ImageWithTransition src="../../assets/portfolio/sub.png" alt="Sub Image" />
+                    {/* <a href="https://www.travelo.store" target="_blank" rel="noopener noreferrer">
+                        travelo.store
+                    </a> */}
+                    <ImageWithTransition src="../../assets/portfolio/main.png" alt="Project Index" project="travelo.store" type="main" />
+                    <ImageWithTransition src="../../assets/portfolio/core1.png" alt="Core Design1" project="travelo.store" type="main" />
+                    <ImageWithTransition src="../../assets/portfolio/core2.png" alt="Core Design2" project="travelo.store" type="main" />
+                    <ImageWithTransition src="../../assets/portfolio/arch1.png" alt="Service Arch" project="travelo.store" type="main" />
+                    <ImageWithTransition src="../../assets/portfolio/arch2.png" alt="AWS Arch" project="travelo.store" type="main" />
+                    <ImageWithTransition src="../../assets/portfolio/sub.png" alt="Project Index" project="weaall.github.io" type="sub" />
                 </tw.ProjectWrap>
             </tw.ProjectsWrap>
 
-            <tw.RearWrap></tw.RearWrap>
         </tw.Container>
     );
 }
