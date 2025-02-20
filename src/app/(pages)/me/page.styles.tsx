@@ -1,6 +1,6 @@
 import tw from "tailwind-styled-components";
 
-export const Container = tw.div``;
+export const Container = tw.div`select-none`;
 
 export const BannerWrap = tw.div`bg-t-main w-full h-auto px-14 pt-12 pb-6 relative z-50
 text-main space-y-1 group rounded-b-[60px]`;
@@ -42,8 +42,8 @@ export const PartSvg = tw.img`w-8`;
 export const PartLabel = tw.label`text-sm font-medium py-3`;
 export const PartText = tw.p`text-xs`;
 
-export const ProjectsWrap = tw.div`w-full h-auto bg-white rounded-b-[60px] relative -mt-36 pt-40 pb-10 px-12
-mobile:px-6`;
+export const ProjectsWrap = tw.div`hidden w-full h-auto bg-white rounded-b-[60px] relative -mt-36 pt-40 pb-10 px-12
+mobile:px-6 mobile:block`;
 
 export const ProjectWrap = tw.div`flex flex-col gap-3 py-10`;
 export const ProjectImgWrap = tw.div`
@@ -53,9 +53,9 @@ export const ProjectImgWrap = tw.div`
 `;
 export const ProjectImgOuterWrap = tw.div`w-full h-full bg-main p-1 rounded-xl`
 export const ProjectImgHeader = tw.div`h-8 w-full flex justify-between items-center bg-main px-4 relative`;
-export const ProjectImgLabel = tw.label`absolute left-1/2 transform -translate-x-1/2 text-sm font-medium text-white`;
-export const ProjectImgLeftText = tw.p`text-xs text-gradient-gray`;
-export const ProjectImgRightText = tw.p`text-xs text-gradient-gray`;
+export const ProjectImgLabel = tw.label`absolute left-1/2 transform -translate-x-1/2 text-sm font-medium text-white select-none`;
+export const ProjectImgLeftText = tw.p`text-xs text-gradient-gray select-none`;
+export const ProjectImgRightText = tw.p`text-xs text-gradient-gray select-none`;
 
 export const ProjectImg = tw.img`
     object-top object-cover w-full h-auto
@@ -69,5 +69,6 @@ export const ModalContent = tw.div`
     p-4 rounded-lg max-w-4xl w-full
 `;
 
+export const IamgeSliderWrap = tw.div`py-12`
 
 export const RearWrap = tw.div`w-full min-h-60 bg-t-main rounded-b-[60px] relative -mt-36 pt-40 px-20 z-10`;

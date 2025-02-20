@@ -75,65 +75,122 @@ const ImageWithTransition = ({ src, alt, project, type }: ImageProps) => {
 };
 
 const images = [
-    { src: "../../assets/portfolio/main.png", alt: "Image 1" },
-    { src: "../../assets/portfolio/core1.png", alt: "Image 2" },
-    { src: "../../assets/portfolio/core2.png", alt: "Image 3" },
-    { src: "../../assets/portfolio/arch1.png", alt: "Image 4" },
-    { src: "../../assets/portfolio/arch2.png", alt: "Image 5" },
-    { src: "../../assets/portfolio/sub.png", alt: "Image 6" },
-  ];
+    { src: "../../assets/portfolio/main.png", alt: "Project Index", project: "travelo.store", type: "main" },
+    { src: "../../assets/portfolio/core1.png", alt: "Core Design1", project: "travelo.store", type: "main" },
+    { src: "../../assets/portfolio/core2.png", alt: "Core Design2", project: "travelo.store", type: "main" },
+    { src: "../../assets/portfolio/arch1.png", alt: "Service Arch", project: "travelo.store", type: "main" },
+    { src: "../../assets/portfolio/arch2.png", alt: "AWS Arch", project: "travelo.store", type: "main" },
+    { src: "../../assets/portfolio/sub.png", alt: "Project Index", project: "weaall.github.io", type: "sub" },
+].reverse();
   
-  const ImageSlider = () => {
-      const [currentIndex, setCurrentIndex] = useState(1);
+const ImageSlider = () => {
+    const [currentIndex, setCurrentIndex] = useState<number>(images.length - 1);
+    const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [startY, setStartY] = useState<number>(0);
+    const [endY, setEndY] = useState<number>(0);
+    const sliderRef = useRef<HTMLDivElement | null>(null);
 
-      const nextSlide = () => {
-          setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-      };
+    const nextSlide = (): void => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    };
 
-      const prevSlide = () => {
-          setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
-      };
+    const prevSlide = (): void => {
+        setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+    };
 
-      return (
-          <div className="flex justify-center items-center w-full h-screen bg-gray-100">
-              <div className="relative w-full max-w-4xl h-full bg-white shadow-xl rounded-xl overflow-hidden">
-                  <div className="absolute w-full h-full flex justify-center items-center top-20">
-                      <div
-                          className="flex flex-col transition-transform duration-500 ease-in-out"
-                          style={{
-                              transform: `translateY(-${currentIndex * 100}%)`,
-                              height: `${images.length * 16.66666}%`,
-                          }}
-                      >
-                          {images.map((image, index) => {
-                              const scale = index === currentIndex ? 1 : 0.4; // 가운데 이미지 크게, 나머지 작게
+    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>): void => {
+        setIsDragging(true);
+        setStartY(e.clientY); 
+    };
 
-                              return (
-                                  <div
-                                      key={index}
-                                      className="relative w-auto flex-shrink-0 h-full rounded-xl overflow-hidden transition-transform duration-500 ease-in-out"
-                                      style={{
-                                          transform: `scale(${scale})`,
-                                      }}
-                                  >
-                                      <img src={image.src} alt={image.alt} className="w-auto h-auto object-cover" />
-                                  </div>
-                              );
-                          })}
-                      </div>
-                  </div>
-                  <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-4">
-                      <button onClick={prevSlide} className="text-white bg-gray-800 p-2 rounded-full hover:bg-gray-600">
-                          &lt;
-                      </button>
-                      <button onClick={nextSlide} className="text-white bg-gray-800 p-2 rounded-full hover:bg-gray-600">
-                          &gt;
-                      </button>
-                  </div>
-              </div>
-          </div>
-      );
-  };
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>): void => {
+        if (!isDragging) return;
+        setEndY(e.clientY);
+    };
+
+    const handleMouseUp = (): void => {
+        if (isDragging) {
+            if (startY > endY + 50) {
+                nextSlide();
+            } else if (startY < endY - 50) {
+                prevSlide();
+            }
+            setIsDragging(false);
+        }
+    };
+
+    return (
+        <div className="relative flex justify-center items-center w-full h-[700px] px-20">
+            <div
+                className="relative w-full max-w-4xl h-full bg-white overflow-hidden"
+                ref={sliderRef}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={() => setIsDragging(false)}
+            >
+                <div className="absolute w-full h-full flex justify-center items-center top-56" >
+                    <div
+                        className="flex flex-col w-full h-auto transition-transform duration-[1000ms] ease-in-out gap-0"
+                        style={{
+                            transform: `translateY(calc(${(images.length - currentIndex + 1) * 50}px - 50%))`
+                        }}
+                    >
+                        {images.map((image, index) => {
+                            const isActive = index === currentIndex;
+                            const indexDiff = Math.abs(currentIndex - index);
+                            const scale = indexDiff > 3 || currentIndex < index ? 0 : isActive ? 1 : 1 - indexDiff * 0.1;
+                            const maxHeight = indexDiff > 3 ? "0px" : isActive ? "489px" : "50px";
+
+                            
+                            return (
+                                <div
+                                    key={index}
+                                    className="relative w-full my-0 rounded-xl transition-all duration-[1000ms] ease-in-out overflow-hidden"
+                                    style={{
+                                        transform: `scale(${scale})`,
+                                        maxHeight,
+                                    }}
+                                >
+                                    <div className="w-full h-auto bg-main p-1 rounded-xl select-none">
+                                        <tw.ProjectImgHeader>
+                                            <tw.ProjectImgLeftText>{image.project}</tw.ProjectImgLeftText>
+                                            <tw.ProjectImgLabel>{image.alt}</tw.ProjectImgLabel>
+                                            <tw.ProjectImgRightText>{index}{image.type}</tw.ProjectImgRightText>
+                                        </tw.ProjectImgHeader>
+                                        <img
+                                            src={image.src}
+                                            alt={image.alt}
+                                            className="w-full h-full object-top object-cover select-none"
+                                            draggable="false"
+                                            onDragStart={(e) => e.preventDefault()}
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+            <div className="absolute top-10 end-10 flex gap-4">
+                    <button
+                        onClick={nextSlide}
+                        className="text-white bg-gray-800 p-2 rounded-full hover:bg-gray-600"
+                    >
+                        &lt;
+                    </button>
+                    <button
+                        onClick={prevSlide}
+                        className="text-white bg-gray-800 p-2 rounded-full hover:bg-gray-600"
+                    >
+                        &gt;
+                    </button>
+                </div>
+        </div>
+    );
+};
+
+
   
   
   
@@ -231,8 +288,9 @@ export default async function Page() {
                 </tw.ProjectWrap>
             </tw.ProjectsWrap>
 
-            {/* <ImageSlider /> */}
-
+            <tw.IamgeSliderWrap>
+                <ImageSlider />
+            </tw.IamgeSliderWrap>
         </tw.Container>
     );
 }
