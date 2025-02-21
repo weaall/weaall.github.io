@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import LinkHandler from "./LinkHandler";
 import * as tw from "./MdxBanner.styles";
+import { roboto } from "@/util/font";
 
 interface PostData {
     label: string;
@@ -52,19 +53,27 @@ export default function PostsList({ latestPosts }: PostListProps) {
             className={`transition-opacity duration-700 ease-in-out ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
         >
             {latestPosts.map((post) => (
-                <LinkHandler url={post.postUrl} key={post.slug}>
-                    <tw.TopWrap>
-                        <tw.TopLabel>/ {post.label}</tw.TopLabel>
-                        <tw.TopLabel>{post.date}</tw.TopLabel>
-                    </tw.TopWrap>
-                    <tw.Title>{post.title}</tw.Title>
-                    <tw.SubTitle>{post.subTitle}</tw.SubTitle>
-                    <tw.TagWrap>
-                        {post.tags?.map((tag, index) => (
-                            <tw.Tag key={index}>{tag}</tw.Tag>
-                        ))}
-                    </tw.TagWrap>
-                </LinkHandler>
+                <tw.PostOuterWrap>
+                    <LinkHandler url={post.postUrl} key={post.slug}>
+                        <tw.PostInnerWrap>
+                            <tw.TopWrap>
+                                <tw.TopLabel>/ {post.label}</tw.TopLabel>
+                                <tw.TopLabel>{post.date}</tw.TopLabel>
+                            </tw.TopWrap>
+                            <tw.Title>{post.title}</tw.Title>
+                            <tw.SubTitle>{post.subTitle}</tw.SubTitle>
+                            <tw.TagWrap className={roboto.className}>
+                                {post.tags?.map((tag, index) => (
+                                    <tw.Tag key={index}>{tag}</tw.Tag>
+                                ))}
+                            </tw.TagWrap>
+                        </tw.PostInnerWrap>
+                        <tw.SpanWrap>
+                            <tw.Span />
+                            <tw.Span />
+                        </tw.SpanWrap>
+                    </LinkHandler>
+                </tw.PostOuterWrap>
             ))}
         </tw.PostContainer>
     );

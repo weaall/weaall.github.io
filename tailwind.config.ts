@@ -21,7 +21,7 @@ const config: Config = {
                 "custom-hover": "0px 1px 0px 0px #F3F2F1",
             },
             colors: {
-                main: "#222222",
+                main: "#333333",
                 "t-main": "#F3F2F1",
                 "text-main": "#dddddd",
             },

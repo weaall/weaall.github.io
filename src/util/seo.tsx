@@ -17,7 +17,7 @@ export const getBaseMetadata = ({ title }: { title: string }): Metadata => {
 
     return {
         metadataBase: new URL("https://weaall.github.io"), 
-        title: `${title} - Weaall's Dive`, 
+        title: `${title}`, 
         description: description, 
         openGraph: {
             title,
@@ -48,7 +48,7 @@ export const getArticleMetadata = (postData: PostData, url: string): Metadata =>
 
     return {
         metadataBase: new URL("https://weaall.github.io"),
-        title: `${postData.title} - Weaall's Dive`, 
+        title: `${postData.title}`, 
         description: postData.subTitle,
         keywords: postData.tags.join(", "), 
         openGraph: {

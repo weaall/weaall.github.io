@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import * as tw from "./page.styles";
 import { roboto } from "@/util/font";
+import { WebImageSlider } from "./components/ImageSlider/ImageSlider";
+import { ImageWithTransition } from "./components/ImageWithTransition/ImageWithTransition";
 
 interface ImageProps {
     src: string;
@@ -35,45 +37,6 @@ const AnimatedText = ({ text }: { text: string }) => {
     );
 };
 
-const ImageWithTransition = ({ src, alt, project, type }: ImageProps) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    useEffect(() => {
-        if (isModalOpen) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "auto";
-        }
-
-        return () => {
-            document.body.style.overflow = "auto";
-        };
-    }, [isModalOpen]);
-
-    return (
-        <>
-            <tw.ProjectImgWrap onClick={() => setIsModalOpen(true)}>
-                <tw.ProjectImgOuterWrap>
-                    <tw.ProjectImgHeader>
-                        <tw.ProjectImgLeftText>{project}</tw.ProjectImgLeftText>
-                        <tw.ProjectImgLabel>{alt}</tw.ProjectImgLabel>
-                        <tw.ProjectImgRightText>{type}</tw.ProjectImgRightText>
-                    </tw.ProjectImgHeader>
-                    <tw.ProjectImg src={src} alt={alt} loading="lazy" />
-                </tw.ProjectImgOuterWrap>
-            </tw.ProjectImgWrap>
-
-            {isModalOpen && (
-                <tw.ModalOverlay onClick={() => setIsModalOpen(false)}>
-                    <tw.ModalContent>
-                        <img src={src} alt={alt} className="w-full h-auto scale-150 mobile:rotate-90 mobile:scale-[1.7]" />
-                    </tw.ModalContent>
-                </tw.ModalOverlay>
-            )}
-        </>
-    );
-};
-
 const images = [
     { src: "../../assets/portfolio/main.png", alt: "Project Index", project: "travelo.store", type: "main" },
     { src: "../../assets/portfolio/core1.png", alt: "Core Design1", project: "travelo.store", type: "main" },
@@ -82,120 +45,6 @@ const images = [
     { src: "../../assets/portfolio/arch2.png", alt: "AWS Arch", project: "travelo.store", type: "main" },
     { src: "../../assets/portfolio/sub.png", alt: "Project Index", project: "weaall.github.io", type: "sub" },
 ].reverse();
-  
-const ImageSlider = () => {
-    const [currentIndex, setCurrentIndex] = useState<number>(images.length - 1);
-    const [isDragging, setIsDragging] = useState<boolean>(false);
-    const [startY, setStartY] = useState<number>(0);
-    const [endY, setEndY] = useState<number>(0);
-    const sliderRef = useRef<HTMLDivElement | null>(null);
-
-    const nextSlide = (): void => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    };
-
-    const prevSlide = (): void => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
-    };
-
-    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>): void => {
-        setIsDragging(true);
-        setStartY(e.clientY); 
-    };
-
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>): void => {
-        if (!isDragging) return;
-        setEndY(e.clientY);
-    };
-
-    const handleMouseUp = (): void => {
-        if (isDragging) {
-            if (startY > endY + 50) {
-                nextSlide();
-            } else if (startY < endY - 50) {
-                prevSlide();
-            }
-            setIsDragging(false);
-        }
-    };
-
-    return (
-        <div className="relative flex justify-center items-center w-full h-[700px] px-20">
-            <div
-                className="relative w-full max-w-4xl h-full bg-white overflow-hidden"
-                ref={sliderRef}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={() => setIsDragging(false)}
-            >
-                <div className="absolute w-full h-full flex justify-center items-center top-56" >
-                    <div
-                        className="flex flex-col w-full h-auto transition-transform duration-[1000ms] ease-in-out gap-0"
-                        style={{
-                            transform: `translateY(calc(${(images.length - currentIndex + 1) * 50}px - 50%))`
-                        }}
-                    >
-                        {images.map((image, index) => {
-                            const isActive = index === currentIndex;
-                            const indexDiff = Math.abs(currentIndex - index);
-                            const scale = indexDiff > 3 || currentIndex < index ? 0 : isActive ? 1 : 1 - indexDiff * 0.1;
-                            const maxHeight = indexDiff > 3 ? "0px" : isActive ? "489px" : "50px";
-
-                            
-                            return (
-                                <div
-                                    key={index}
-                                    className="relative w-full my-0 rounded-xl transition-all duration-[1000ms] ease-in-out overflow-hidden"
-                                    style={{
-                                        transform: `scale(${scale})`,
-                                        maxHeight,
-                                    }}
-                                >
-                                    <div className="w-full h-auto bg-main p-1 rounded-xl select-none">
-                                        <tw.ProjectImgHeader>
-                                            <tw.ProjectImgLeftText>{image.project}</tw.ProjectImgLeftText>
-                                            <tw.ProjectImgLabel>{image.alt}</tw.ProjectImgLabel>
-                                            <tw.ProjectImgRightText>{index}{image.type}</tw.ProjectImgRightText>
-                                        </tw.ProjectImgHeader>
-                                        <img
-                                            src={image.src}
-                                            alt={image.alt}
-                                            className="w-full h-full object-top object-cover select-none"
-                                            draggable="false"
-                                            onDragStart={(e) => e.preventDefault()}
-                                        />
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            </div>
-            <div className="absolute top-10 end-10 flex gap-4">
-                    <button
-                        onClick={nextSlide}
-                        className="text-white bg-gray-800 p-2 rounded-full hover:bg-gray-600"
-                    >
-                        &lt;
-                    </button>
-                    <button
-                        onClick={prevSlide}
-                        className="text-white bg-gray-800 p-2 rounded-full hover:bg-gray-600"
-                    >
-                        &gt;
-                    </button>
-                </div>
-        </div>
-    );
-};
-
-
-  
-  
-  
-
-  
 
 export default async function Page() {
     const skillItems = [
@@ -288,8 +137,8 @@ export default async function Page() {
                 </tw.ProjectWrap>
             </tw.ProjectsWrap>
 
-            <tw.IamgeSliderWrap>
-                <ImageSlider />
+            <tw.IamgeSliderWrap className={roboto.className}>
+                <WebImageSlider images={images} />
             </tw.IamgeSliderWrap>
         </tw.Container>
     );
