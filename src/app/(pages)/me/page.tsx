@@ -6,11 +6,14 @@ import { roboto } from "@/util/font";
 import { WebImageSlider } from "./components/ImageSlider/ImageSlider";
 import { ImageWithTransition } from "./components/ImageWithTransition/ImageWithTransition";
 
-interface ImageProps {
+interface PartItem {
     src: string;
     alt: string;
-    project: string;
-    type: string;
+    exp: string;
+}
+
+interface PartItems {
+    partItems: PartItem[];
 }
 
 const AnimatedText = ({ text }: { text: string }) => {
@@ -34,6 +37,52 @@ const AnimatedText = ({ text }: { text: string }) => {
                 }}
             />
         </tw.BannerLabel>
+    );
+};
+
+const AnimatedPart = ({ partItems }: PartItems) => {
+    const [isVisible, setIsVisible] = useState(false);
+
+    const containerRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setIsVisible(true);
+                    }
+                });
+            },
+            { threshold: 0.8 },
+        );
+
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+        }
+
+        return () => {
+            if (containerRef.current) {
+                observer.unobserve(containerRef.current);
+            }
+        };
+    }, []);
+
+    return (
+        <tw.PartList ref={containerRef}>
+            {partItems.map(({ src, alt, exp }, index) => (
+                <tw.PartWrap
+                    key={alt}
+                    style={{ animationDelay: `${index * 0.15 + 0.3}s` }}
+                    className={` ease-in-out 
+                        ${isVisible ? "animate-reveal" : "opacity-0"}`}
+                >
+                    <tw.PartSvg alt={alt} src={src} />
+                    <tw.PartLabel className={roboto.className}>{alt}</tw.PartLabel>
+                    <tw.PartText>{exp}</tw.PartText>
+                </tw.PartWrap>
+            ))}
+        </tw.PartList>
     );
 };
 
@@ -112,15 +161,7 @@ export default async function Page() {
             <tw.PartsWrap>
                 <tw.PartsWrapTitle className={roboto.className}>What do I strive for?</tw.PartsWrapTitle>
                 <tw.PartsLine />
-                <tw.PartList>
-                    {partItems.map(({ src, alt, exp }) => (
-                        <tw.PartWrap key={alt}>
-                            <tw.PartSvg key={alt} alt={alt} src={src} />
-                            <tw.PartLabel className={roboto.className}>{alt}</tw.PartLabel>
-                            <tw.PartText>{exp}</tw.PartText>
-                        </tw.PartWrap>
-                    ))}
-                </tw.PartList>
+                <AnimatedPart partItems={partItems} />
             </tw.PartsWrap>
 
             <tw.ProjectsWrap className={roboto.className}>

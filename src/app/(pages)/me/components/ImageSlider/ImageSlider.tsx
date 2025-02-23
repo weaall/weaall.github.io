@@ -53,19 +53,19 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
             setIsDragging(false);
 
             setIsLocked(true);
-            setTimeout(() => setIsLocked(false), 1000);
+            setTimeout(() => setIsLocked(false), 800);
         }
     };
     return (
         <tw.ContainerWrap>
-            <tw.Container>
-                <tw.OuterWrap
-                    ref={sliderRef}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                    onMouseLeave={() => setIsDragging(false)}
-                >
+            <tw.Container
+                ref={sliderRef}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={() => setIsDragging(false)}
+            >
+                <tw.OuterWrap>
                     <tw.InnderWrap>
                         <tw.SliderWrap
                             style={{

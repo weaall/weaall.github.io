@@ -4,7 +4,6 @@ import * as tw from "./MdxBanner.styles";
 import PostsList from "./MdxBannerPosts";
 import Link from "next/link";
 
-
 interface MdxBannerProps {
     dir: string;
 }
@@ -17,17 +16,11 @@ export default async function MdxBanner({ dir }: MdxBannerProps) {
 
     return (
         <tw.Container>
-            <tw.LabelWrap className={roboto.className}>
-                <tw.LabelFlex>
+            <Link href={`./${dir.toLowerCase()}`} passHref>
+                <tw.LabelWrap className={roboto.className}>
                     <tw.Label>{dir} dive</tw.Label>
-                    <Link href={`./${dir.toLowerCase()}`} passHref>
-                        <tw.DirectBtn>
-                            <tw.BtnP>Go To {dir}</tw.BtnP>
-                            {/* <tw.BtnImg alt="" src={"../../assets/svg/go.svg"} /> */}
-                        </tw.DirectBtn>
-                    </Link>
-                </tw.LabelFlex>
-            </tw.LabelWrap>
+                </tw.LabelWrap>
+            </Link>
 
             <tw.BannerWrap />
 

@@ -1,14 +1,21 @@
 import tw from "tailwind-styled-components";
 
-export const Container = tw.div`w-full border-t mt-20 text-[#888888]`
+export const Container = tw.div`flex flex-col w-full h-full border-t mt-20 text-main pt-16 px-28 select-none
+`
 
-export const FooterWrap = tw.div`mx-auto max-w-[1080px] h-40 justify-between flex mobile:flex-col mobile:h-52`
+export const FooterWrap = tw.div`flex max-w-[1080px] justify-between flex mobile:flex-col
+pb-10`
 
-export const LabelWrap = tw.div`flex flex-col m-auto text-center space-y-1 w-[33%]`
-export const NameTag = tw.p`font-bold text-2xl`
-export const EmailTag = tw.a`text-sm`
+export const LeftWrap = tw.div`flex flex-col text-left items-start w-[50%]`
+export const MainLabel = tw.p`font-semibold text-main text-lg py-2`
+export const MainP = tw.p`text-xs py-0.5`
+export const LogoSvg = tw.img`w-10 w-10`
 
-export const GnbSvg = tw.img`w-8 h-full m-auto group-hover:scale-110`
+export const RightWrap = tw.div`flex justify-end space-x-16 w-[50%]`
+export const ColWrap = tw.div`flex flex-col space-y-2.5 text-left`
+export const TopLabel = tw.label`text-xs font-semibold`
+export const Index = tw.a`text-xs`
 
-export const NavWrap = tw.div`flex m-auto space-x-4 w-[33%] justify-center`
-export const NavTag = tw.a`font-bold text-base`
+export const NavWrap = tw.div`flex border-t border-main w-full py-6 justify-end items-center space-x-6`
+export const NavBtn = tw.a`w-5 h-5`
+export const NavImg = tw.img`w-full h-full`

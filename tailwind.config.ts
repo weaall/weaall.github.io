@@ -62,6 +62,10 @@ const config: Config = {
                     "0%": { opacity: "0", transform: "translateY(10px)" },
                     "100%": { opacity: "1", transform: "translateY(0)" },
                 },
+                revealY: {
+                    "0%": { transform: "translateY(10px)" },
+                    "100%": {transform: "translateY(0)" },
+                },
                 fallBounce: {
                     "0%": { transform: "translateY(-100%)", opacity: "0", "animation-timing-function": "ease-in" },
                     "16%": { transform: "translateY(0)", "animation-timing-function": "ease-out" },
@@ -90,6 +94,7 @@ const config: Config = {
                 riseUpDiagonal: "riseUpDiagonal 1s ease-out forwards",
                 reveal: "reveal 0.5s ease-out forwards",
                 fallBounce: "fallBounce 2.5s ease-out forwards",
+                revealY: "reveal 0.5s ease-out forwards",
             },
         },
     },
