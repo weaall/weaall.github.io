@@ -27,7 +27,8 @@ export default function Footer() {
                     </tw.ColWrap>
                     <tw.ColWrap>
                         <tw.TopLabel>TRAVELO</tw.TopLabel>
-                        <tw.Index href="/dev/intro">dev</tw.Index>
+                        <tw.Index href="https://travelo.store/">Web</tw.Index>
+                        <tw.Index href="/dev/intro">Dev</tw.Index>
                     </tw.ColWrap>
                 </tw.RightWrap>
             </tw.FooterWrap>

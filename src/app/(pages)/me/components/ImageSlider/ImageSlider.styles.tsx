@@ -35,5 +35,5 @@ export const ModalOverlay = tw.div`
 `;
 
 export const ModalContent = tw.div`
-    p-4 rounded-lg max-w-4xl w-full
+    p-4 rounded-lg w-full px-10
 `;

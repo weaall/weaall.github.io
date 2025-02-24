@@ -23,7 +23,6 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
     const sliderRef = useRef<HTMLDivElement | null>(null);
     const [isLocked, setIsLocked] = useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
 
     const nextSlide = (): void => {
         if (isLocked) return;
@@ -66,8 +65,7 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
         };
     }, [isModalOpen]);
 
-    const handleEnlargeClick = (image: ImageData) => {
-        setSelectedImage(image);
+    const handleEnlargeClick = () => {
         setIsModalOpen(true);
     };
 
@@ -133,7 +131,7 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
                                                 <tw.EnlargeBtn
                                                     onClick={(e) => {
                                                         e.stopPropagation(); 
-                                                        handleEnlargeClick(image);
+                                                        handleEnlargeClick();
                                                     }}
                                                     onMouseDown={(e) => e.stopPropagation()} 
                                                     onMouseMove={(e) => e.stopPropagation()} 
@@ -164,13 +162,13 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
                 </tw.BtnWrap>
             </tw.ContainerWrap>
 
-            {isModalOpen && selectedImage && (
-                <tw.ModalOverlay onClick={() => setIsModalOpen(false)}>
-                    <tw.ModalContent>
-                        <img src={selectedImage.src} alt={selectedImage.alt} className="w-full h-auto scale-150" />
-                    </tw.ModalContent>
-                </tw.ModalOverlay>
-            )}
+            {isModalOpen && (
+    <tw.ModalOverlay onClick={() => setIsModalOpen(false)}>
+        <tw.ModalContent>
+            <img src={images[currentIndex].src} alt={images[currentIndex].alt} className="w-full h-auto" />
+        </tw.ModalContent>
+    </tw.ModalOverlay>
+)}
         </>
     );
 };
