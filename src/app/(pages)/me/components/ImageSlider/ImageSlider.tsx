@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import * as tw from "./ImageSlider.styles";
 
@@ -22,6 +22,8 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
     const [endY, setEndY] = useState<number>(0);
     const sliderRef = useRef<HTMLDivElement | null>(null);
     const [isLocked, setIsLocked] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
 
     const nextSlide = (): void => {
         if (isLocked) return;
@@ -56,79 +58,119 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
             setTimeout(() => setIsLocked(false), 800);
         }
     };
+
+    useEffect(() => {
+        document.body.style.overflow = isModalOpen ? "hidden" : "auto";
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, [isModalOpen]);
+
+    const handleEnlargeClick = (image: ImageData) => {
+        setSelectedImage(image);
+        setIsModalOpen(true);
+    };
+
     return (
-        <tw.ContainerWrap>
-            <tw.Container
-                ref={sliderRef}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={() => setIsDragging(false)}
-            >
-                <tw.OuterWrap>
-                    <tw.InnderWrap>
-                        <tw.SliderWrap
-                            style={{
-                                transform: `translateY(calc(${
-                                    (currentIndex === 0 ? images.length - 1 : currentIndex === 1 ? images.length - 1 : images.length - currentIndex + 1) * 70
-                                }px - 50%))`,
-                            }}
-                        >
-                            {images.map((image, index) => {
-                                const isActive = index === currentIndex;
-                                const indexDiff = Math.abs(currentIndex - index);
-                                const shouldKeepScale = currentIndex - index < 0;
-                                const scale = shouldKeepScale ? 1.1 : isActive ? 1 : 1 - indexDiff * 0.1;
-                                const maxHeight = indexDiff > 3 ? "0px" : isActive ? "495.25px" : "70px";
-                                const translate = 70 * (1 - scale) * indexDiff;
-                                const isInvisible = indexDiff > 3 || currentIndex < index;
+        <>
+            <tw.ContainerWrap>
+                <tw.Container
+                    ref={sliderRef}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={() => setIsDragging(false)}
+                >
+                    <tw.OuterWrap>
+                        <tw.InnderWrap>
+                            <tw.SliderWrap
+                                style={{
+                                    transform: `translateY(calc(${
+                                        (currentIndex === 0 ? images.length - 1 : currentIndex === 1 ? images.length - 1 : images.length - currentIndex + 1) *
+                                        70
+                                    }px - 50%))`,
+                                }}
+                            >
+                                {images.map((image, index) => {
+                                    const isActive = index === currentIndex;
+                                    const indexDiff = Math.abs(currentIndex - index);
+                                    const shouldKeepScale = currentIndex - index < 0;
+                                    const scale = shouldKeepScale ? 1.1 : isActive ? 1 : 1 - indexDiff * 0.1;
+                                    const maxHeight = indexDiff > 3 ? "0px" : isActive ? "495.25px" : "70px";
+                                    const translate = 70 * (1 - scale) * indexDiff;
+                                    const isInvisible = indexDiff > 3 || currentIndex < index;
 
-                                return (
-                                    <tw.ImagesWrap
-                                        key={index}
-                                        style={{
-                                            transform: `scale(${scale}) translateY(${translate}px)`,
-                                            maxHeight,
-                                            transformOrigin: "top",
-                                            borderBottomLeftRadius: isActive ? "10px" : "0px",
-                                            borderBottomRightRadius: isActive ? "10px" : "0px",
-                                            visibility: isInvisible ? "hidden" : "visible",
-                                        }}
-                                    >
-                                        <tw.ImageWrap>
-                                            <tw.ProjectImgHeader>
-                                                <tw.ProjectImgLeftText>
-                                                    <a href="https://www.travelo.store" target="_blank" rel="noopener noreferrer">
+                                    return (
+                                        <tw.ImagesWrap
+                                            key={index}
+                                            style={{
+                                                transform: `scale(${scale}) translateY(${translate}px)`,
+                                                maxHeight,
+                                                transformOrigin: "top",
+                                                borderBottomLeftRadius: isActive ? "10px" : "0px",
+                                                borderBottomRightRadius: isActive ? "10px" : "0px",
+                                                visibility: isInvisible ? "hidden" : "visible",
+                                            }}
+                                        >
+                                            <tw.ImageWrap>
+                                                <tw.ProjectImgHeader>
+                                                    <tw.ProjectImgLeftText>
+                                                        <a href="https://www.travelo.store" target="_blank" rel="noopener noreferrer">
+                                                            {image.project}
+                                                        </a>
                                                         {image.project}
-                                                    </a>
-                                                    {image.project}
-                                                </tw.ProjectImgLeftText>
-                                                <tw.ProjectImgLabel>{image.alt}</tw.ProjectImgLabel>
-                                                <tw.ProjectImgRightText>{image.type}</tw.ProjectImgRightText>
-                                            </tw.ProjectImgHeader>
-                                            <tw.Img src={image.src} alt={image.alt} draggable="false" onDragStart={(e) => e.preventDefault()} loading="lazy" />
-                                        </tw.ImageWrap>
-                                    </tw.ImagesWrap>
-                                );
-                            })}
-                        </tw.SliderWrap>
-                    </tw.InnderWrap>
-                </tw.OuterWrap>
-            </tw.Container>
-            <tw.BtnWrap>
-                <tw.Btn onClick={nextSlide}></tw.Btn>
-                <tw.StateBarWrap>
-                    {[...images].reverse().map((_, index) => (
-                        <div key={index} className="w-[1px] h-[5px] bg-gray-400" />
-                    ))}
+                                                    </tw.ProjectImgLeftText>
+                                                    <tw.ProjectImgLabel>{image.alt}</tw.ProjectImgLabel>
+                                                    <tw.ProjectImgRightText>{image.type}</tw.ProjectImgRightText>
+                                                </tw.ProjectImgHeader>
+                                                <tw.Img
+                                                    src={image.src}
+                                                    alt={image.alt}
+                                                    draggable="false"
+                                                    onDragStart={(e) => e.preventDefault()}
+                                                    loading="lazy"
+                                                />
+                                                <tw.EnlargeBtn
+                                                    onClick={(e) => {
+                                                        e.stopPropagation(); 
+                                                        handleEnlargeClick(image);
+                                                    }}
+                                                    onMouseDown={(e) => e.stopPropagation()} 
+                                                    onMouseMove={(e) => e.stopPropagation()} 
+                                                    onMouseUp={(e) => e.stopPropagation()} 
+                                                >
+                                                    <tw.EnlageImg alt="확대" src={"../../../assets/svg/enlarge.svg"} />
+                                                </tw.EnlargeBtn>
+                                            </tw.ImageWrap>
+                                        </tw.ImagesWrap>
+                                    );
+                                })}
+                            </tw.SliderWrap>
+                        </tw.InnderWrap>
+                    </tw.OuterWrap>
+                </tw.Container>
+                <tw.BtnWrap>
+                    <tw.Btn onClick={nextSlide}></tw.Btn>
+                    <tw.StateBarWrap>
+                        {[...images].reverse().map((_, index) => (
+                            <div key={index} className="w-[1px] h-[5px] bg-gray-400" />
+                        ))}
+                        <div
+                            className="absolute top-[5px] h-[10px] w-[2px] bg-gray-500 transition-transform duration-300"
+                            style={{ transform: `translateX(${(images.length - 1 - currentIndex) * 11}px)` }}
+                        />
+                    </tw.StateBarWrap>
+                    <tw.Btn onClick={prevSlide}></tw.Btn>
+                </tw.BtnWrap>
+            </tw.ContainerWrap>
 
-                    <div
-                        className="absolute top-[5px] h-[10px] w-[2px] bg-gray-500 transition-transform duration-300"
-                        style={{ transform: `translateX(${(images.length - 1 - currentIndex) * 11}px)` }}
-                    />
-                </tw.StateBarWrap>
-                <tw.Btn onClick={prevSlide}></tw.Btn>
-            </tw.BtnWrap>
-        </tw.ContainerWrap>
+            {isModalOpen && selectedImage && (
+                <tw.ModalOverlay onClick={() => setIsModalOpen(false)}>
+                    <tw.ModalContent>
+                        <img src={selectedImage.src} alt={selectedImage.alt} className="w-full h-auto scale-150" />
+                    </tw.ModalContent>
+                </tw.ModalOverlay>
+            )}
+        </>
     );
 };

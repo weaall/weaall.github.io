@@ -11,7 +11,7 @@ export const SliderWrap = tw.div`flex flex-col w-full h-auto transition-transfor
 
 export const ImagesWrap = tw.div`w-full mt-0 transition-all duration-[1000ms] ease-in-out overflow-hidden`
 
-export const ImageWrap = tw.div`w-full h-auto bg-main p-1 rounded-[10px] select-none mt-0 pb-[10px]`
+export const ImageWrap = tw.div`relative w-full h-auto bg-main p-1 rounded-[10px] select-none mt-0 pb-[10px] group`
 
 export const ProjectImgHeader = tw.div`h-8 w-full flex justify-between items-center bg-main px-4 relative`;
 export const ProjectImgLabel = tw.label`absolute left-1/2 transform -translate-x-1/2 text-sm font-medium text-white select-none`;
@@ -25,3 +25,15 @@ export const Btn = tw.div`text-white bg-gray-800 w-2 h-2 flex justify-center ite
 hover:bg-gray-600 cursor-pointer`
 
 export const StateBarWrap = tw.div`flex gap-x-[10px] items-center relative h-[20px]`
+
+export const EnlargeBtn = tw.button`absolute top-12 right-4 bg-main w-12 h-12 p-2.5 rounded-2xl z-10 opacity-0
+group-hover:opacity-[50%]`
+export const EnlageImg = tw.img``
+
+export const ModalOverlay = tw.div`
+    fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50
+`;
+
+export const ModalContent = tw.div`
+    p-4 rounded-lg max-w-4xl w-full
+`;
