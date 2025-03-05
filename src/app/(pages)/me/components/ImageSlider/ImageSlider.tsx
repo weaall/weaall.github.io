@@ -129,13 +129,14 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
                                                     loading="lazy"
                                                 />
                                                 <tw.EnlargeBtn
+                                                    style={{ display: isActive ? "block" : "none" }}
                                                     onClick={(e) => {
-                                                        e.stopPropagation(); 
+                                                        e.stopPropagation();
                                                         handleEnlargeClick();
                                                     }}
-                                                    onMouseDown={(e) => e.stopPropagation()} 
-                                                    onMouseMove={(e) => e.stopPropagation()} 
-                                                    onMouseUp={(e) => e.stopPropagation()} 
+                                                    onMouseDown={(e) => e.stopPropagation()}
+                                                    onMouseMove={(e) => e.stopPropagation()}
+                                                    onMouseUp={(e) => e.stopPropagation()}
                                                 >
                                                     <tw.EnlageImg alt="확대" src={"../../../assets/svg/enlarge.svg"} />
                                                 </tw.EnlargeBtn>
