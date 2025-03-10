@@ -94,7 +94,7 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
                                     const indexDiff = Math.abs(currentIndex - index);
                                     const shouldKeepScale = currentIndex - index < 0;
                                     const scale = shouldKeepScale ? 1.1 : isActive ? 1 : 1 - indexDiff * 0.1;
-                                    const maxHeight = indexDiff > 3 ? "0px" : isActive ? "495.25px" : "70px";
+                                    const maxHeight = indexDiff > 5 ? "0px" : isActive ? "545.25px" : "70px";
                                     const translate = 70 * (1 - scale) * indexDiff;
                                     const isInvisible = indexDiff > 3 || currentIndex < index;
 
@@ -116,7 +116,6 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
                                                         <a href="https://www.travelo.store" target="_blank" rel="noopener noreferrer">
                                                             {image.project}
                                                         </a>
-                                                        {image.project}
                                                     </tw.ProjectImgLeftText>
                                                     <tw.ProjectImgLabel>{image.alt}</tw.ProjectImgLabel>
                                                     <tw.ProjectImgRightText>{image.type}</tw.ProjectImgRightText>

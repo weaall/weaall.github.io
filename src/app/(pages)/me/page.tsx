@@ -87,12 +87,14 @@ const AnimatedPart = ({ partItems }: PartItems) => {
 };
 
 const images = [
+    { src: "../../assets/portfolio/aboutme.png", alt: "Me", project: "weaall.github.io", type: "me" },
     { src: "../../assets/portfolio/main.png", alt: "Project Index", project: "travelo.store", type: "main" },
     { src: "../../assets/portfolio/core1.png", alt: "Core Design1", project: "travelo.store", type: "main" },
     { src: "../../assets/portfolio/core2.png", alt: "Core Design2", project: "travelo.store", type: "main" },
     { src: "../../assets/portfolio/arch1.png", alt: "Service Arch", project: "travelo.store", type: "main" },
     { src: "../../assets/portfolio/arch2.png", alt: "AWS Arch", project: "travelo.store", type: "main" },
     { src: "../../assets/portfolio/sub.png", alt: "Project Index", project: "weaall.github.io", type: "sub" },
+    { src: "../../assets/portfolio/moding.png", alt: "Sub Project", project: "moding", type: "sub" },
 ].reverse();
 
 export default async function Page() {
