@@ -97,6 +97,17 @@ const images = [
     { src: "../../assets/portfolio/moding.png", alt: "Sub Project", project: "moding", type: "sub" },
 ].reverse();
 
+const mobileImages = [
+    { src: "../../assets/portfolio/aboutme.png", alt: "Me", project: "weaall.github.io", type: "me" },
+    { src: "../../assets/portfolio/main.png", alt: "Project Index", project: "travelo.store", type: "main" },
+    { src: "../../assets/portfolio/core1.png", alt: "Core Design1", project: "travelo.store", type: "main" },
+    { src: "../../assets/portfolio/core2.png", alt: "Core Design2", project: "travelo.store", type: "main" },
+    { src: "../../assets/portfolio/arch1.png", alt: "Service Arch", project: "travelo.store", type: "main" },
+    { src: "../../assets/portfolio/arch2.png", alt: "AWS Arch", project: "travelo.store", type: "main" },
+    { src: "../../assets/portfolio/sub.png", alt: "Project Index", project: "weaall.github.io", type: "sub" },
+    { src: "../../assets/portfolio/moding.png", alt: "Sub Project", project: "moding", type: "sub" },
+]
+
 export default async function Page() {
     const skillItems = [
         { src: "../../assets/mono/react_mono.svg", alt: "React" },
@@ -113,8 +124,6 @@ export default async function Page() {
         { src: "../../assets/part/be.svg", alt: "Backend", exp: "보안과 효율성을 가장 중심으로한 백엔드 설계를 지향합니다." },
         { src: "../../assets/part/dev_ops.svg", alt: "DevOps", exp: "AWS 기반으로한 자동화 서비스, 모니터링 서비스, 비용 효율적인 설계를 제공합니다." },
     ];
-
-    
 
     return (
         <tw.Container>
@@ -168,15 +177,9 @@ export default async function Page() {
 
             <tw.ProjectsWrap className={roboto.className}>
                 <tw.ProjectWrap>
-                    {/* <a href="https://www.travelo.store" target="_blank" rel="noopener noreferrer">
-                        travelo.store
-                    </a> */}
-                    <ImageWithTransition src="../../assets/portfolio/main.png" alt="Project Index" project="travelo.store" type="main" />
-                    <ImageWithTransition src="../../assets/portfolio/core1.png" alt="Core Design1" project="travelo.store" type="main" />
-                    <ImageWithTransition src="../../assets/portfolio/core2.png" alt="Core Design2" project="travelo.store" type="main" />
-                    <ImageWithTransition src="../../assets/portfolio/arch1.png" alt="Service Arch" project="travelo.store" type="main" />
-                    <ImageWithTransition src="../../assets/portfolio/arch2.png" alt="AWS Arch" project="travelo.store" type="main" />
-                    <ImageWithTransition src="../../assets/portfolio/sub.png" alt="Project Index" project="weaall.github.io" type="sub" />
+                    {mobileImages.map((img, index) => (
+                        <ImageWithTransition key={index} src={img.src} alt={img.alt} project={img.project} type={img.type} />
+                    ))}
                 </tw.ProjectWrap>
             </tw.ProjectsWrap>
 
