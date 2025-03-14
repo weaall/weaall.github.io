@@ -113,7 +113,7 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
                                             <tw.ImageWrap>
                                                 <tw.ProjectImgHeader>
                                                     <tw.ProjectImgLeftText>
-                                                        <a href="https://www.travelo.store" target="_blank" rel="noopener noreferrer">
+                                                        <a href="https://travelo.store" target="_blank" rel="noopener noreferrer">
                                                             {image.project}
                                                         </a>
                                                     </tw.ProjectImgLeftText>
