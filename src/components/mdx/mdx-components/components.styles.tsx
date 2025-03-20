@@ -1,10 +1,10 @@
 import tw from "tailwind-styled-components";
 
-export const H1 = tw.h1`text-2xl font-bold`
-export const H2 = tw.h2`text-xl font-bold mt-2 mb-4 after:content-['.'] after:text-red-500 cursor-pointer`
-export const H3 = tw.h3`text-lg font-bold`
+export const H1 = tw.h1`text-2xl font-bold py-2`
+export const H2 = tw.h2`text-[1.75rem] font-bold py-4 after:content-['.'] after:text-red-500 cursor-pointer`
+export const H3 = tw.h3`text-[1.25rem] font-bold pt-4 ml-2`
 
-export const P = tw.span`text-base py-3`
+export const P = tw.span`ml-4 text-base py-3`
 
 export const A = tw.a`text-base font-bold text-red-500`
 
@@ -15,7 +15,7 @@ export const Pre = tw.pre`text-t-main text-base`
 export const Li = tw.li`pl-6 py-1 text-base before:content-['-'] before:font-bold before:pr-3`
 
 export const CodeWrap = tw.div`relative bg-main rounded-xl text-t-main text-base p-6 tracking-tight leading-tight`
-export const CodeWrapC = tw.div`relative rounded-xl text-base pt-6  tracking-tight leading-tight`
+export const CodeWrapC = tw.div`relative rounded-xl text-base pt-5 pb-3 tracking-tight leading-tight ml-2`
 export const ClassWrap = tw.div`absolute right-4 top-0 text-main rounded-2xl py-2 px-4 bg-white w-fit mr-4` 
 export const ClassLabel = tw.span`text-xl font-bold after:content-['.'] after:text-red-500`
 export const CodeBoxC = tw.div`bg-main p-6 pt-6 rounded-xl`

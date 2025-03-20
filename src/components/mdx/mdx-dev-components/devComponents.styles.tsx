@@ -1,9 +1,9 @@
 import tw from "tailwind-styled-components";
 
 export const H1 = tw.h1`text-3xl font-bold`
-export const H2 = tw.h2`text-[1.8rem] font-bold mt-0 mb-9 after:content-['.'] after:text-red-500 cursor-pointer
+export const H2 = tw.h2`text-[1.8rem] font-bold mt-6 mb-2 after:content-['.'] after:text-red-500 cursor-pointer
 mobile:text-xl mobile:mb-4`
-export const H3 = tw.h3`text-[1.4rem] font-bold mt-9 mb-6
+export const H3 = tw.h3`text-[1.4rem] font-bold mt-6 mb-4
 mobile:text-lg mobile:mb-4`
 
 export const CheckBoxWrap = tw.div`flex space-x-6 items-center my-3`
@@ -22,17 +22,17 @@ export const Pre = tw.pre`text-t-main text-base`
 export const Li = tw.li`pl-4 py-1 text-base before:content-['-'] before:font-bold before:pr-3
 mobile:text-sm`
 
-export const CodeWrap = tw.div`relative bg-main rounded-xl text-t-main text-sm p-6 mb-12 mt-4
+export const CodeWrap = tw.div`relative bg-main rounded-xl text-t-main text-base p-6 tracking-tight leading-tight
 mobile:text-xs`
-export const CodeWrapC = tw.div`relative rounded-xl text-main text-base pt-8 mb-10 
+export const CodeWrapC = tw.div`relative rounded-xl text-base pt-6  tracking-tight leading-tight
 mobile:text-xs mobile:pt-5 mobile:mb-6`
-export const ClassWrap = tw.div`absolute top-0 right-0 rounded-2xl py-3 px-6 bg-white w-fit mr-8
+export const ClassWrap = tw.div`absolute right-4 top-0 text-main rounded-2xl py-2 px-4 bg-white w-fit mr-4
 mobile:py-1.5 mobile:px-4` 
-export const ClassLabel = tw.span`text-2xl font-bold after:content-['.'] after:text-red-500
+export const ClassLabel = tw.span`text-xl font-bold after:content-['.'] after:text-red-500
 mobile:text-lg`
-export const CodeBoxC = tw.div`bg-main p-6 pt-12 rounded-xl
+export const CodeBoxC = tw.div`bg-main p-6 pt-6 rounded-xl
 mobile:pt-6`
-export const Code = tw.code` rounded-xl text-t-main my-6 text-sm`
+export const Code = tw.code` whitespace-pre-wrap rounded-xl text-t-main my-6 text-xs`
 
 export const Strong = tw.strong`font-bold
 mobile:text-sm`
@@ -43,7 +43,7 @@ export const ImgWrap = tw.span`w-full mx-auto py-6 text-center`
 export const Img = tw.img`mx-auto`
 export const ImgTitle = tw.span`text-xs text-gray-400`
 
-export const Table = tw.table`w-full my-4 table-fixed mb-12
+export const Table = tw.table`w-full my-2 table-fixed mb-4
 mobile:mb-6 mobile:text-xs`
 export const Thead = tw.thead`bg-gray-50 text-left border-t border-t-gray-400 border-b border-b-gray-200 `
 export const Tbody = tw.tbody``

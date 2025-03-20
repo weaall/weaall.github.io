@@ -1,0 +1,315 @@
+---
+label: MindsAI
+title: MindsAI
+subTitle: MindsAI
+date: 2024.01.01
+mins: 
+tags: []
+imageUrl:
+---
+## API
+
+| Method | Path                                      | Headers | Path params | Query params | Body params |
+|--------|-------------------------------------------|---------|-------------|--------------|-------------|
+| POST   | /users                                    | -       | -           | -            | See below   |
+| GET    | /users                                    | -       | -           | -            | -           |
+| GET    | /users/me                           | Authorization | -           | -            | -           |
+| PUT    | /users/me                           | Authorization | -           | -            | See below   |
+| DELETE | /users/me                           | Authorization | -           | -            | -           |
+| POST   | /auth/login                               | -       | -           | -            | See below   |
+
+### POST: /users 
+
+**Body params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| name       | string   | 이름  <br/><br/> **minLength : 2** <br/> **maxLength : 50** |
+| email      | string   | 이메일 <br/><br/> **email형식** |
+| password   | string   | 비밀번호  <br/><br/> **minLength : 8** <br/> **숫자,문자 포함** <br/> **해쉬화 후 저장 (bcrypt)** |
+
+**Request Example**
+```json
+{
+    "name": "DongHyun-Wi",
+    "email": "weaall@naver.com",
+    "password": "asdf1234"
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 201              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 409              | Error    | 이미 존재하는 이메일 |
+
+**Response Example**
+<br/>
+
+**201**
+```json
+{
+    "name": "DongHyun-Wi",
+    "email": "weaall@naver.com",
+    "id": 1,
+    "createdAt": "2025-03-19T05:47:19.940Z"
+}
+```
+
+**400**
+```json
+{
+    "message": "Password must be at least 8 characters long and contain both letters and numbers",
+    "error": "Bad Request",
+    "statusCode": 400
+}
+```
+
+**409**
+```json
+{
+    "message": "Email already exists",
+    "error": "Conflict",
+    "statusCode": 409
+}
+```
+
+### GET: /users 
+
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 200              | JSON     | OK          |
+
+**Response Example**
+<br/>
+
+**200**
+```json
+[
+    {
+        "id": 1,
+        "name": "DongHyun-Wi",
+        "email": "weaall@naver.com",
+        "createdAt": "2025-03-19T05:47:19.940Z"
+    },
+    {
+        "id": 2,
+        "name": "DongHyun-Wi",
+        "email": "weaall@naver.net",
+        "createdAt": "2025-03-19T05:16:31.450Z"
+    },
+    {
+        "id": 3,
+        "name": "DongHyun-Wi",
+        "email": "weaall@naver.io",
+        "createdAt": "2025-03-19T05:16:35.927Z"
+    },
+]
+```
+
+### GET: /users/me
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Request Example**
+```http
+GET /me HTTP/1.1
+Host: api.example.com
+Authorization: Bearer <your-jwt-token>
+```
+
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 201              | JSON     | OK          |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+
+**Response Example**
+<br/>
+
+**200**
+```json
+{
+    "id": 1,
+    "name": "DongHyun-Wi",
+    "email": "weaall@naver.com",
+    "createdAt": "2025-03-19T05:47:19.940Z"
+}
+```
+
+**401**
+```json
+{
+    "message": "Unauthorized",
+    "statusCode": 401
+}
+```
+
+### PUT: /users/me
+
+**Body params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| name       | string   | 이름  <br/><br/> **minLength : 2** <br/> **maxLength : 50** |
+| password   | string   | 비밀번호  <br/><br/> **minLength : 8** <br/> **숫자,문자 포함** <br/> **해쉬화 후 저장 (bcrypt)** |
+
+**Request Example**
+```json
+{
+    "name": "DongDong-Wi",
+    "password": "asdf1234"
+}
+```
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Request Example**
+```http
+GET /me HTTP/1.1
+Host: api.example.com
+Authorization: Bearer <your-jwt-token>
+```
+
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 201              | JSON     | OK          |
+| 400              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+
+**Response Example**
+<br/>
+
+**200**
+```json
+{
+    "message": "Name and password updated successfully",
+    "data": {
+        "id": 1,
+        "name": "DongDong-Wi",
+        "email": "weaall@naver.iodsd",
+        "createdAt": "2025-03-19T05:47:19.940Z"
+    }
+}
+```
+
+**400**
+```json
+{
+    "message": "Invalid fields: email",
+    "error": "Bad Request",
+    "statusCode": 400
+}
+```
+
+**401**
+```json
+{
+    "message": "Unauthorized",
+    "statusCode": 401
+}
+```
+
+### DELETE: /users/me
+
+**Headers**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| Authorization | string | JWT 토큰 <br/><br/> **Bearer [token] 형식** |
+
+**Request Example**
+```http
+GET /me HTTP/1.1
+Host: api.example.com
+Authorization: Bearer <your-jwt-token>
+```
+
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 204              | JSON     | OK          |
+| 401              | Error    | 인증 실패 (토큰 유효하지 않음) |
+
+**Response Example**
+<br/>
+
+**204**
+```json
+```
+
+**401**
+```json
+{
+    "message": "Unauthorized",
+    "statusCode": 401
+}
+```
+
+### POST: /auth/login
+
+**Body params**
+
+|  Property  |   Type   | Description |
+|------------|----------|-------------|
+| email      | string   | 이메일 <br/><br/> **email형식** |
+| password   | string   | 비밀번호  <br/><br/> **minLength : 8** <br/> **숫자,문자 포함** <br/> **해쉬화 후 저장 (bcrypt)** |
+
+**Request Example**
+```json
+{
+    "email": "weaall@naver.com",
+    "password": "asdf1234"
+}
+```
+
+**Response**
+| HTTP Status Code |   Type   | Description |
+|------------------|----------|-------------|
+| 201              | JSON     | OK          |
+| 401              | Error    | 잘못된 요청 (입력 데이터 유효하지 않음) |
+
+**Response Example**
+<br/>
+
+**201**
+```json
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IndlYWFsbEBuYXZlc
+                    i5pb2RzZCIsInN1YiI6NSwiaWF0IjoxNzQyMzY0MTQ1LCJleHAiOjE3NDI0NTA1NDV
+                    9.bdc65BamviNFxfo-zcwbkCOxPxfbT95EIZallNy3Dcs"
+}
+```
+
+**400**
+```json
+{
+    "message": "Password must be at least 8 characters long and contain both letters and numbers",
+    "error": "Bad Request",
+    "statusCode": 400
+}
+```
+
+**401**
+```json
+{
+    "message": "Invalid credentials",
+    "error": "Unauthorized",
+    "statusCode": 401
+}
+```

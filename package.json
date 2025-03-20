@@ -7,8 +7,8 @@
         "predeploy": "npm run build",
         "deploy": "echo. > out/.nojekyll && gh-pages -d out --dotfiles",
         "build": "next build",
-        "dev": "next dev -p 3001",
-        "start": "next start -p 3001",
+        "dev": "next dev -p 3003",
+        "start": "next start -p 3003",
         "lint": "next lint"
     },
     "dependencies": {

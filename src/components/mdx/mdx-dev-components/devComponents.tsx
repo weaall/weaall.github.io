@@ -1,5 +1,10 @@
-import React from "react"
+"use client";
+
+import React from "react";
+import dynamic from "next/dynamic"; 
 import * as tw from "./devComponents.styles"
+
+export const Code = dynamic(() => import("./Code"), { ssr: false });
 
 export function H1({ children }: { children?: React.ReactNode }) {
     return <tw.H1>{children}</tw.H1>
@@ -45,27 +50,6 @@ export function Li({ children }: { children?: React.ReactNode }) {
 
 export function Hr({ children }: { children?: React.ReactNode }) {
     return <tw.Hr>{children}</tw.Hr>
-}
-
-export function Code({ className, children, language }: { className?: string; children?: React.ReactNode; language?: string; }) {
-    return (
-        <>
-            {className === undefined ? (
-                <tw.CodeWrap>
-                    <tw.Code className={className}>{children}</tw.Code>
-                </tw.CodeWrap>
-            ) : (
-                <tw.CodeWrapC>
-                    <tw.ClassWrap>
-                        <tw.ClassLabel>{(className || "").slice(9)}</tw.ClassLabel>
-                    </tw.ClassWrap>
-                    <tw.CodeBoxC>
-                        <tw.Code className={className} data-language={language}>{children}</tw.Code>
-                    </tw.CodeBoxC>
-                </tw.CodeWrapC>
-            )}
-        </>
-    )
 }
 
 export function Pre({ className, children }: { className?: string; children?: React.ReactNode }) {
