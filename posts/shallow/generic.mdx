@@ -123,3 +123,53 @@ public class Main {
 - 런타임이 아닌 **컴파일타임**에 **타입 체크**
 - 기본 타입 *(primitive type, int, double 등)* 은 사용 불가능 -> 래퍼 클래스 *(Integer, Double 등)*
 
+
+```Typescript
+import { compileMDX } from "next-mdx-remote/rsc";
+import fs from "fs";
+import path from "path";
+
+interface PostData {
+    label: string;
+    title: string;
+    subTitle: string;
+    date: string;
+    tags: [];
+    slug: string;
+    postUrl: string;
+}
+
+export default async function getPostsData(dir: string) {
+    const lowerDir = dir.toLowerCase();
+    const postsDirectory = path.join(process.cwd(), `posts/${lowerDir}`);
+    const mdxFiles = fs.readdirSync(postsDirectory);
+
+    const postsData = await Promise.all(
+        mdxFiles.map(async (filename) => {
+            const filePath = path.join(postsDirectory, filename);
+            const mdxContent = fs.readFileSync(filePath, "utf-8");
+
+            const { frontmatter } = await compileMDX<PostData>({
+                source: mdxContent,
+                options: { parseFrontmatter: true },
+            });
+
+            const slug = filename.slice(0, -4);
+            const postUrl = `/${lowerDir}/${slug}`;
+
+            return {
+                label: frontmatter.label,
+                title: frontmatter.title,
+                subTitle: frontmatter.subTitle,
+                date: frontmatter.date,
+                tags: frontmatter.tags,
+                slug,
+                postUrl,
+            };
+        }),
+    );
+
+    return postsData;
+}
+```
+

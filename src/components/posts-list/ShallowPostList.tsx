@@ -26,7 +26,7 @@ export default function ShallowPostList({ props }: PostsProps) {
         { label: "All", src: "all" },
         { label: "Database", src: "db" },
         { label: "AWS", src: "aws" },
-        { label: "TypeScript", src: "TypeScript" },
+        { label: "Typescript", src: "typescript" },
         { label: "React", src: "react" },
         { label: "NextJS", src: "nextjs" },
         { label: "Web", src: "web" },
