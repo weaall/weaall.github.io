@@ -1,8 +1,9 @@
 import { roboto } from "@/util/font";
 import getPostsData from "../getMdx";
-import * as tw from "./MdxBanner.styles";
 import PostsList from "./MdxBannerPosts";
 import Link from "next/link";
+
+import * as tw from "./MdxBanner.styles";
 
 interface MdxBannerProps {
     dir: string;
