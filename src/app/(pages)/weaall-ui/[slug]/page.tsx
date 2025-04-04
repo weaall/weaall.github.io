@@ -23,10 +23,11 @@ import {
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
 import remarkGfm from "remark-gfm"
-import DevList from "@/components/dev-list/DevList"
 import getPostsData from "@/components/mdx/getMdx"
 import * as tw from "./page.styles"
-import { DevMDXContent } from "@/components/dev-mdx/DevMDXContent"
+import WuiHeader from "@/components/weaall-ui/wui-header/WuiHeader"
+import WuiMdxList from "@/components/weaall-ui/wui-mdxList/WuiMdxList"
+import { WuiMdxContent } from "@/components/weaall-ui/wui-mdx-content/WuiMdxContent"
 
 interface PostData {
     imageUrl: string;
@@ -39,7 +40,7 @@ interface PostData {
 }
 
 
-const POSTS_FOLDER = path.join(process.cwd(), "posts/dev")
+const POSTS_FOLDER = path.join(process.cwd(), "posts/weaall-ui")
 
 export const generateStaticParams = async () => {
     const files = await readdir(POSTS_FOLDER)
@@ -94,15 +95,18 @@ async function compilePostMarkdown(slug: string) {
 }
 
 export default async function PostPage({ params }: { params: { slug: string } }) {
-    const { content } = await compilePostMarkdown(params.slug)
-    const postsData = await getPostsData("dev")
+    const { content } = await compilePostMarkdown(params.slug);
+    const postsData = await getPostsData("weaall-ui");
 
     return (
-        <tw.Container>
-            <DevList props={postsData} />
-            <DevMDXContent content={content} />
-        </tw.Container>
-    )
+        <>
+            <WuiHeader />
+            <tw.Container>
+                <WuiMdxList props={postsData} />
+                <WuiMdxContent content={content} />
+            </tw.Container>
+        </>
+    );
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {

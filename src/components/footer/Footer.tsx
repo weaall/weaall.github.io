@@ -1,8 +1,14 @@
+"use client";
+
 import { roboto } from "@/util/font";
+import { usePathname } from "next/navigation";
 
 import * as tw from "./Footer.styles";
 
 export default function Footer() {
+    const pathname = usePathname();
+
+    if (pathname.startsWith("/weaall-ui")) return null;
     return (
         <tw.Container>
             <tw.FooterWrap>
@@ -34,13 +40,13 @@ export default function Footer() {
             </tw.FooterWrap>
             <tw.NavWrap>
                 <tw.NavBtn className="w-9 h-9" href="https://github.com/weaall" target="_blank" rel="noopener noreferrer">
-                    <tw.NavImg alt="" src={"../../assets/footer/github.png"}/>
+                    <tw.NavImg alt="" src={"../../assets/footer/github.png"} />
                 </tw.NavBtn>
                 <tw.NavBtn href="https://www.instagram.com/wea_all/" target="_blank" rel="noopener noreferrer">
-                    <tw.NavImg alt="" src={"../../assets/footer/instagram.png"}/>
+                    <tw.NavImg alt="" src={"../../assets/footer/instagram.png"} />
                 </tw.NavBtn>
                 <tw.NavBtn className="w-7 h-7" href="https://travelo.store/" target="_blank" rel="noopener noreferrer">
-                    <tw.NavImg alt="" src={"../../assets/footer/travelo.png"}/>
+                    <tw.NavImg alt="" src={"../../assets/footer/travelo.png"} />
                 </tw.NavBtn>
             </tw.NavWrap>
         </tw.Container>

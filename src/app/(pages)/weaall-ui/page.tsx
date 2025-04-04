@@ -1,14 +1,14 @@
-import DevList from "@/components/dev-list/DevList";
 import getPostsData from "@/components/mdx/getMdx";
 import WuiHeader from "@/components/weaall-ui/wui-header/WuiHeader";
+import WuiMdxList from "@/components/weaall-ui/wui-mdxList/WuiMdxList";
 
 export default async function Page() {
-    const postsData = await getPostsData("dev");
+    const postsData = await getPostsData("weaall-ui");
 
     return (
         <>
             <WuiHeader />
-            <DevList props={postsData} />
+            <WuiMdxList props={postsData} />
         </>
     );
 }

@@ -1,8 +1,10 @@
 import tw from "tailwind-styled-components"
 import Link from 'next/link'
 
-export const Container = tw.div`w-full flex items-center justify-between border-b
-px-2 pt-4 pb-2 font-medium mobile:mt-0 mobile:rounded-none`
+export const Container = tw.div`w-full relative h-[65px]`
+
+export const FixedContainer = tw.div`max-w-[1024px] w-full flex items-center justify-between border-b
+px-2 pt-4 pb-2 font-medium mobile:mt-0 mobile:rounded-none fixed bg-white/[0.5]`
 
 export const LeftWrap = tw.div`flex w-full justify-start items-center space-x-4`
 export const Label = tw.label`text-base font-bold`
