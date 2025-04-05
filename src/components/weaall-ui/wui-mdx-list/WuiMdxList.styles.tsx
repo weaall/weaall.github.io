@@ -5,7 +5,7 @@ interface BarProps {
     $state: boolean
 }
 
-export const Container = tw.div`flex min-h-dvh space-y-3 mobile:px-2 relative`
+export const Container = tw.div`min-w-60 flex min-h-dvh space-y-3 mobile:px-2 relative`
 
 export const DrawerContainer = tw.div`fixed
   flex flex-col 

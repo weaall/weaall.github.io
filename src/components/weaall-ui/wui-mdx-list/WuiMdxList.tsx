@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { roboto } from "@/util/font";
 import * as tw from "./WuiMdxList.styles";
+import { useWuiMdxListStore } from "./wuiMdxListStore";
 
 interface PostsProps {
     props: PostData[];
@@ -11,26 +11,19 @@ interface PostsProps {
 interface PostData {
     label: string;
     title: string;
-    date: string;
+    index: number;
     slug: string;
     postUrl: string;
 }
 
 export default function WuiMdxList({ props }: PostsProps) {
-    const [openLabels, setOpenLabels] = useState<{ [key: string]: boolean }>({});
+    const { openLabels, toggleLabel } = useWuiMdxListStore();
 
     const groupedPosts = props.reduce((acc, post) => {
         if (!acc[post.label]) acc[post.label] = [];
         acc[post.label].push(post);
         return acc;
     }, {} as Record<string, PostData[]>);
-
-    const toggleLabel = (label: string) => {
-        setOpenLabels((prev) => ({
-            ...prev,
-            [label]: !prev[label],
-        }));
-    };
 
     return (
         <tw.Container className={roboto.className}>

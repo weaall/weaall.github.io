@@ -1,9 +1,9 @@
-import getPostsData from "@/components/mdx/getMdx";
+import WuiGetMdx from "@/components/weaall-ui/wui-getmdx/WuiGetMdx";
 import WuiHeader from "@/components/weaall-ui/wui-header/WuiHeader";
-import WuiMdxList from "@/components/weaall-ui/wui-mdxList/WuiMdxList";
+import WuiMdxList from "@/components/weaall-ui/wui-mdx-list/WuiMdxList";
 
 export default async function Page() {
-    const postsData = await getPostsData("weaall-ui");
+    const postsData = await WuiGetMdx("weaall-ui");
 
     return (
         <>
