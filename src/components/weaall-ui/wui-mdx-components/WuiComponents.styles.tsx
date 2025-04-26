@@ -19,8 +19,9 @@ export const Li = tw.li`pl-6 py-1 text-base before:content-['-'] before:font-bol
 
 export const CodeWrap = tw.div`relative bg-main rounded-xl text-t-main text-base p-6 tracking-tight leading-tight`
 
-export const CodeWrapC = tw.div`rounded-b-xl text-base p-4 tracking-tight leading-tight bg-main`
-export const Code = tw.code`whitespace-pre-wrap rounded-xl text-t-main my-6 text-xs`
+export const CodeMidWrap = tw.div`w-full h-10 text-base p-2 border-y border-gray-300 bg-main`
+export const CodeWrapC = tw.div`rounded-b-xl p-4 text-base tracking-tight leading-tight bg-main`
+export const Code = tw.code`text-xs`
 
 export const Strong = tw.strong`font-bold`
 

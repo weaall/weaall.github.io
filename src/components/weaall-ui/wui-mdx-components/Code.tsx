@@ -17,8 +17,11 @@ export default function Code({ className, children }: { className?: string; chil
     }, [children, language]);
 
     return (
+        <>
+        <tw.CodeMidWrap></tw.CodeMidWrap>
         <tw.CodeWrapC className="hljs">
             <tw.Code dangerouslySetInnerHTML={{ __html: highlightedCode || "" }} />
         </tw.CodeWrapC>
+        </>
     );
 }
