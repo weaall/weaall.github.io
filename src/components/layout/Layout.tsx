@@ -5,8 +5,8 @@ import * as tw from "./Layout.styles";
 export function Layout(props: React.PropsWithChildren) {
     return (
         <tw.Container>
+            <Header />
             <tw.ContentsWrap>
-                <Header />
                 {props.children}
                 <Footer />
             </tw.ContentsWrap>

@@ -5,20 +5,19 @@ interface HeaderLayout{
     $state: boolean;
 }
 
-export const Container = tw.div<HeaderLayout>`max-w-[1080px] w-full flex items-center justify-between rounded-t-[60px] mt-4
-bg-t-main px-8 py-10 font-medium mobile:mt-0 mobile:rounded-none 
-${(p)=> (p.$state ? "rounded-[60px] mb-4 mobile:mb-2 mobile:rounded-b-[30px]" : "")}`
+export const Container = tw.div<HeaderLayout>`w-full px-6 py-2 flex items-center justify-between mb-4
+${(p) => (p.$state ? "" : "")}`;
 
-export const NavWrap = tw.nav`flex w-auto justify-between items-center`
-export const Nav = tw.nav`w-auto items-center flex space-x-2`
-export const NavDirectWrap = tw.div`text-main text-xs bg-white rounded-full px-2 py-1.5 items-center`
-export const NavDirectP = tw(Link)`
-hover:after:text-red-500 after:content-['.'] after:text-transparent`
+export const LogoWrap = tw.div`flex w-1/3 items-center justify-start`;
+export const LogoBtn = tw.button`w-10 h-10 bg-white rounded-full mr-2 `;
+export const Svg = tw.img`w-full h-full m-auto`;
 
-export const SearchBtn = tw.button`bg-white rounded-full mr-2 `
-export const SearchSvg = tw.img`min-w-7 min-h-7 p-0.5 m-auto hover:scale-105`
+export const NavWrap = tw.nav`flex w-1/3 justify-center items-center`;
+export const Nav = tw.nav`w-auto items-center flex space-x-2`;
+export const NavDirectWrap = tw.div`text-main text-xs bg-white rounded px-3 py-1.5 items-center hover:bg-gray-100`;
+export const NavDirectP = tw(Link)`text-sm font-medium`;
 
-export const RearWrap = tw.div`flex`
-export const DevBtn = tw.button`text-main text-xs group`
+export const RearWrap = tw.div`flex w-1/3 items-center justify-end`;
+export const DevBtn = tw.button`text-main text-xs group`;
 export const DevLabel = tw.p`px-0.5 group-hover:scale-105
-hover:after:text-red-500 after:content-['.'] after:text-transparent`
+hover:after:text-red-500 after:content-['.'] after:text-transparent`;

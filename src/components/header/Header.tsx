@@ -1,29 +1,32 @@
-"use client"
-import { usePathname } from 'next/navigation';
+"use client";
+import { usePathname } from "next/navigation";
 
-import * as tw from "./Header.styles"
+import * as tw from "./Header.styles";
 
 export default function Header() {
-    const pathname = usePathname()
-    
+    const pathname = usePathname();
+
     if (pathname.startsWith("/weaall-ui")) return null;
 
-    const validPaths = ["/shallow", "/deep", "/dev", "/prac", "/project"]
+    const validPaths = ["/shallow", "/deep", "/dev", "/prac", "/project"];
 
-    const headerLayout = validPaths.some((path) => pathname.startsWith(path))
+    const headerLayout = validPaths.some((path) => pathname.startsWith(path));
 
     const navItems = [
         { label: "SHALLOW", path: "/shallow" },
         { label: "DEEP", path: "/deep" },
         { label: "PRAC", path: "/prac" },
-    ]
+    ];
 
     return (
         <tw.Container $state={headerLayout}>
+            <tw.LogoWrap>
+                <tw.LogoBtn>
+                    <tw.Svg alt="" src={"../../assets/weaall-ui.png"} />
+                </tw.LogoBtn>
+            </tw.LogoWrap>
+
             <tw.NavWrap>
-                <tw.SearchBtn>
-                    <tw.SearchSvg alt="" src={"../../assets/svg/search_icon.svg"} />
-                </tw.SearchBtn>
                 <tw.Nav>
                     {navItems.map((item, index) => (
                         <tw.NavDirectWrap key={index}>
@@ -59,5 +62,5 @@ export default function Header() {
                 </tw.DevBtn>
             </tw.RearWrap>
         </tw.Container>
-    )
+    );
 }
