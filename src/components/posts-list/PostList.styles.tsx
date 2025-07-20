@@ -17,15 +17,15 @@ export const CategoryArrow = tw.span`
 export const CategoryList = tw.ul`ml-2 gap-1`;
 export const CategoryItem = tw.li`mb-[2px]`;
 export const PostLink = tw(Link)<{ $active?: boolean }>`
-  text-sm truncate max-w-[200px] block px-2 py-1.5 rounded hover:bg-white/[0.1] font-medium
+  flex items-center max-w-[200px] px-2 py-1.5 rounded hover:bg-white/[0.1] font-medium overflow-hidden
   ${({ $active }) =>
     $active
-      ? "bg-white/[0.1] text-white"
+      ? "bg-white/[0.2] text-white"
       : ""}
 `;
-export const PostIcon = tw.img`
-  inline-block w-4 h-4 mr-2 align-middle transition-all duration-150
-`;
+
+export const SvgWrap = tw.div`w-5 h-5 flex-shrink-0 mr-2 flex items-center justify-center text-white/20`
+export const Label = tw.span`text-sm truncate block whitespace-nowrap`
 
 
 export const PostsContainer = tw.div`w-full space-y-10 h-auto flex flex-col mobile:w-[70%]`;

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import * as tw from "./PostList.styles";
+import { DocIcon, RightIcon } from "./SvgDrawer";
 
 interface PostData {
     label: string;
@@ -23,6 +24,7 @@ export default function ShallowPostList({ props }: PostsProps) {
     const activeCategory = props.find((post) => post.postUrl === pathname)?.label || null;
     const [openCategory, setOpenCategory] = useState<string | null>(activeCategory);
     const isFirstRender = useRef(true);
+    const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
 
     useEffect(() => {
         if (isFirstRender.current) {
@@ -49,10 +51,16 @@ export default function ShallowPostList({ props }: PostsProps) {
                             <tw.CategoryList>
                                 {posts.map((post) => {
                                     const isActive = pathname === post.postUrl;
+                                    const isHover = hoveredSlug === post.slug;
                                     return (
-                                        <tw.CategoryItem key={post.slug}>
+                                        <tw.CategoryItem
+                                            key={post.slug}
+                                            onMouseEnter={() => setHoveredSlug(post.slug)}
+                                            onMouseLeave={() => setHoveredSlug(null)}
+                                        >
                                             <tw.PostLink href={post.postUrl} $active={isActive}>
-                                                {post.title}
+                                                <tw.SvgWrap>{isHover ? <RightIcon color="currentColor" /> : <DocIcon color="currentColor" />}</tw.SvgWrap>
+                                                <tw.Label>{post.title}</tw.Label>
                                             </tw.PostLink>
                                         </tw.CategoryItem>
                                     );
