@@ -1,23 +1,16 @@
-import tw from "tailwind-styled-components"
+import tw from "tailwind-styled-components";
 
-export const Container = tw.div``
+export const Container = tw.div`w-full h-auto flex m:flex-col-reverse`;
 
-export const BannerWrap = tw.div`bg-t-main w-full h-auto px-14 pt-12 pb-6
-text-main space-y-1 group rounded-b-[60px] mobile:rounded-b-[30px] mobile:pt-0 mobile:pb-2` 
+export const StartWrap = tw.div`w-1/2 flex flex-col gap-6 m:w-full m:items-center m:gap-4`;
+export const Title = tw.h1`text-[4rem] font-semibold text-gray-900 tracking-tighter leading-none m:text-[2.5rem]`;
+export const SubTitle = tw.p`text-[1.3rem] font-medium leading-none m:text-[1rem] m:leading-normal`;
+export const BtnWrap = tw.div`flex items-start gap-4 text-base font-medium`;
+export const SubBtn = tw.button`px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors`;
+export const ReqBtn = tw.button`px-6 py-3 bg-blue-50 text-blue-900 rounded-lg hover:bg-blue-100 transition-colors`;
 
-export const BannerLabelWrap = tw.div`w-fit p-2`
-export const BannerLabel = tw.p`text-7xl font-bold mobile:text-4xl after:content-['.'] after:text-red-500 mobile:text-[3.5rem]`
-export const BannerUnderline = tw.div`w-full h-1 bg-main 
-scale-x-0 transition-transform duration-300 transform origin-left group-hover:scale-x-100` 
-
-export const BannerText = tw.p`text-base`
-
-export const MailWrap = tw.div`flex space-x-2`
-export const MailSvg = tw.img`w-5`
-export const MailText = tw.a`hover:text-white text-base after:content-['.'] after:text-red-500`
-
-export const BtnWrap = tw.div`w-full flex py-3 space-x-4 justify-end mobile:justify-center mobile:py-10 px-2`
-export const BannerBtn = tw.a`flex w-32 h-12 bg-main text-main rounded-full items-center flex gap-x-2
-cursor-pointer justify-center hover:bg-main/[0.8]`
-export const BtnLabel = tw.label`text-white text-xs font-medium cursor-pointer`
-export const BtnSvg = tw.img`w-4 h-4`
+export const EndWrap = tw.div`w-1/2 h-auto flex flex-col items-center justify-start m:w-full m:pb-12`;
+export const ImgContainer = tw.div`flex w-full justify-center items-center my-auto mx-auto gap-4`;
+export const ImgWrap = tw.div`w-40 h-40 flex items-center justify-center m:w-28 m:h-28`;
+export const Img = tw.img`w-full h-full object-cover`;
+export const BottomLabel = tw.span`w-full border-b border-gray-400 pb-2 m:hidden`;

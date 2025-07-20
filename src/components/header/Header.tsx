@@ -16,12 +16,15 @@ export default function Header() {
         { label: "SHALLOW", path: "/shallow" },
         { label: "DEEP", path: "/deep" },
         { label: "PRAC", path: "/prac" },
+        { label: "ME", path: "/me" },
+        { label: "GITHUB", path: "https://github.com/weaall" },
+        { label: "DEV", path: "/dev/intro" },
     ];
 
     return (
         <tw.Container $state={headerLayout}>
             <tw.LogoWrap>
-                <tw.LogoBtn>
+                <tw.LogoBtn onClick={() => (window.location.href = "/")}>
                     <tw.Svg alt="" src={"../../assets/weaall-ui.png"} />
                 </tw.LogoBtn>
             </tw.LogoWrap>
@@ -29,37 +32,18 @@ export default function Header() {
             <tw.NavWrap>
                 <tw.Nav>
                     {navItems.map((item, index) => (
-                        <tw.NavDirectWrap key={index}>
-                            <tw.NavDirectP href={`${item.path}`}>{item.label}</tw.NavDirectP>
-                        </tw.NavDirectWrap>
+                        <tw.NavDirectP key={index} href={`${item.path}`}>
+                            {item.label}
+                        </tw.NavDirectP>
                     ))}
                 </tw.Nav>
             </tw.NavWrap>
 
             <tw.RearWrap>
-                <tw.DevBtn>
-                    <a href={"/"}>
-                        <tw.DevLabel>home</tw.DevLabel>
-                    </a>
-                </tw.DevBtn>
-                <tw.DevLabel>/</tw.DevLabel>
-                <tw.DevBtn>
-                    <a href={"/me"}>
-                        <tw.DevLabel>me</tw.DevLabel>
-                    </a>
-                </tw.DevBtn>
-                <tw.DevLabel>/</tw.DevLabel>
-                <tw.DevBtn>
-                    <a href="https://github.com/weaall" target="_blank" rel="noopener noreferrer">
-                        <tw.DevLabel>github</tw.DevLabel>
-                    </a>
-                </tw.DevBtn>
-                <tw.DevLabel>/</tw.DevLabel>
-                <tw.DevBtn>
-                    <a href={"/dev/intro"}>
-                        <tw.DevLabel>dev</tw.DevLabel>
-                    </a>
-                </tw.DevBtn>
+                <tw.Nav>
+                    <tw.NavDirectP href="/login">로그인</tw.NavDirectP>
+                    <tw.SubBtn href="/weaall-hub">Weaall Hub 이용하기</tw.SubBtn>
+                </tw.Nav>
             </tw.RearWrap>
         </tw.Container>
     );

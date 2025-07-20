@@ -24,6 +24,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import remarkGfm from "remark-gfm";
 import { MDXContent } from "@/components/mdx/mdx-content/MDXContent";
+import ShallowPostList from '@/components/posts-list/ShallowPostList';
 
 interface PostData {
     imageUrl: string;
@@ -33,6 +34,8 @@ interface PostData {
     date: string;
     tags: [];
     mins: string;
+    slug: string;
+    postUrl: string;
 }
 
 const POSTS_FOLDER = path.join(process.cwd(), "posts/shallow")
@@ -103,10 +106,33 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
     if (!content) notFound()
 
+    // shallow 폴더의 모든 mdx 파일을 읽어서 PostList에 넘길 데이터 생성
+    const files = await readdir(POSTS_FOLDER);
+    const posts = await Promise.all(
+        files.filter((file) => file.endsWith('.mdx')).map(async (file) => {
+            const slug = file.replace(/\.mdx$/, "");
+            const markdown = await readPostFile(slug);
+            if (!markdown) return null;
+            const { frontmatter } = await compileMDX<PostData>({
+                source: markdown,
+                options: { parseFrontmatter: true },
+            });
+            return {
+                ...frontmatter,
+                slug,
+                postUrl: `/shallow/${slug}`,
+            };
+        })
+    );
+    const postList = posts.filter(Boolean) as PostData[];
+
     return (
-        <>
-            <MDXContent content={content} frontmatter={frontmatter}  />
-        </>
+        <div style={{ display: 'flex' }}>
+            <ShallowPostList props={postList} />
+            <div style={{ flex: 1, marginLeft: 320 }}>
+                <MDXContent content={content} frontmatter={frontmatter} />
+            </div>
+        </div>
     )
 }
 

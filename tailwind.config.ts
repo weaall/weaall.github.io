@@ -12,22 +12,14 @@ const config: Config = {
                 "90": "90",
                 "100": "100",
             },
-            backgroundImage: {
-                "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-                "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-            },
-            boxShadow: {
-                custom: "0px 7px 0px 0px #F3F2F1",
-                "custom-hover": "0px 1px 0px 0px #F3F2F1",
-            },
             colors: {
                 main: "#333333",
                 "t-main": "#F3F2F1",
                 "text-main": "#dddddd",
+                drawer: "#202020"
             },
             screens: {
-                mobile: { max: "640px" },
-                tablet: { min: "641px", max: "1024px" },
+                m: { max: "1024px" },
             },
             fontSize: {
                 "5xl": "0.7rem",

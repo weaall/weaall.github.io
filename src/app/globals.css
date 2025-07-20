@@ -22,11 +22,4 @@ body {
 
 
 html {
-  @screen mobile {
-    font-size: 10px;
-  }
-
-  @screen tablet {
-    font-size: 13px;
-  }
 }
