@@ -1,30 +1,3 @@
----
-label: NextJS
-title: App Router에서 MDX [slug]를 통해 정적페이지 만들기
-subTitle: mdx로 정적페이지 생성 , generateStaticParams error 해결
-date: 2024.05.01
-mins: 10
-tags: [NextJS, App Router, slug, mdx, generateStaticParams]
-imageUrl: /posts/shallow/nextjs/nextjs.svg
----
-
-### App Router 디렉토리 구조
-
-```Directory
-/posts
-    /board
-/src
-    /app
-        /(pages)
-            /board
-                page.tsx
-                /[slug]
-                    page.tsx
-```
-
-### ./board/page.tsx
-
-```typescript
 import { compileMDX } from "next-mdx-remote/rsc";
 import path from "path";
 import { readFile, access, readdir } from "fs/promises";
@@ -51,6 +24,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import remarkGfm from "remark-gfm";
 import { MDXContent } from "@/components/mdx/mdx-content/MDXContent";
+import ShallowPostList from '@/components/posts-list/PostList';
 
 interface PostData {
     imageUrl: string;
@@ -60,9 +34,11 @@ interface PostData {
     date: string;
     tags: [];
     mins: string;
+    slug: string;
+    postUrl: string;
 }
 
-const POSTS_FOLDER = path.join(process.cwd(), "posts/deep");
+const POSTS_FOLDER = path.join(process.cwd(), "posts/post")
 
 export const generateStaticParams = async () => {
     try {
@@ -125,15 +101,38 @@ async function compilePostMarkdown(slug: string) {
         },
     });
 }
-
 export default async function PostPage({ params }: { params: { slug: string } }) {
-    const { content, frontmatter } = await compilePostMarkdown(params.slug);
+    const { content, frontmatter } = await compilePostMarkdown(params.slug)
+
+    if (!content) notFound()
+
+    const files = await readdir(POSTS_FOLDER);
+    const posts = await Promise.all(
+        files.filter((file) => file.endsWith('.mdx')).map(async (file) => {
+            const slug = file.replace(/\.mdx$/, "");
+            const markdown = await readPostFile(slug);
+            if (!markdown) return null;
+            const { frontmatter } = await compileMDX<PostData>({
+                source: markdown,
+                options: { parseFrontmatter: true },
+            });
+            return {
+                ...frontmatter,
+                slug,
+                postUrl: `/post/${slug}`,
+            };
+        })
+    );
+    const postList = posts.filter(Boolean) as PostData[];
 
     return (
-        <>
-            <MDXContent content={content} frontmatter={frontmatter} />
-        </>
-    );
+        <div style={{ display: 'flex' }}>
+            <ShallowPostList props={postList} />
+            <div style={{ flex: 1, marginLeft: 320 }}>
+                <MDXContent content={content} frontmatter={frontmatter} />
+            </div>
+        </div>
+    )
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
@@ -146,11 +145,3 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
     return metadata;
 }
-
-```
-
----
-
-
-
-

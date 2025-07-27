@@ -1,6 +1,6 @@
 import { roboto } from "@/util/font";
 import getPostsData from "../getMdx";
-import PostsList from "./MdxBannerPosts";
+import PostsList from "../mdx-map/MdxMap";
 import Link from "next/link";
 
 import * as tw from "./MdxBanner.styles";

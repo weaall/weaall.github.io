@@ -1,3 +1,30 @@
+---
+label: NextJS
+title: App Router에서 MDX [slug]를 통해 정적페이지 만들기
+subTitle: mdx로 정적페이지 생성 , generateStaticParams error 해결
+date: 2024.05.01
+mins: 10
+tags: [NextJS, App Router, slug, mdx, generateStaticParams]
+imageUrl: /posts/post/nextjs/nextjs.svg
+---
+
+### App Router 디렉토리 구조
+
+```Directory
+/posts
+    /board
+/src
+    /app
+        /(pages)
+            /board
+                page.tsx
+                /[slug]
+                    page.tsx
+```
+
+### ./board/page.tsx
+
+```typescript
 import { compileMDX } from "next-mdx-remote/rsc";
 import path from "path";
 import { readFile, access, readdir } from "fs/promises";
@@ -119,3 +146,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
     return metadata;
 }
+
+```
+
+---
+
+
+
+

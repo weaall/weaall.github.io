@@ -12,7 +12,7 @@ export const DocIcon = ({ color = "#000", width = "100%", height = "100%" }) => 
     </svg>
 );
 
-export const RightIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+export const RightIcon = ({ color = "#000", width = "90%", height = "90%" }) => (
     <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 6L15 12L9 18" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
@@ -36,7 +36,7 @@ export const SlashIcon = ({ color = "#000", width = "100%", height = "100%" }) =
     </svg>
 );
 
-export const PlustIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+export const PlusIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
     <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M6 12H18M12 6V18" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
@@ -48,6 +48,11 @@ export const TrashIcon = ({ color = "#000", width = "100%", height = "100%" }) =
     </svg>
 );
 
+export const DotListIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 12H18.01M12 12H12.01M6 12H6.01M13 12C13 12.5523 12.5523 13 12 13C11.4477 13 11 12.5523 11 12C11 11.4477 11.4477 11 12 11C12.5523 11 13 11.4477 13 12ZM19 12C19 12.5523 18.5523 13 18 13C17.4477 13 17 12.5523 17 12C17 11.4477 17.4477 11 18 11C18.5523 11 19 11.4477 19 12ZM7 12C7 12.5523 6.55228 13 6 13C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11C6.55228 11 7 11.4477 7 12Z" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+);
 
 
 

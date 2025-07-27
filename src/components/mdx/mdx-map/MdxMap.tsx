@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import LinkHandler from "./LinkHandler";
+import LinkHandler from "../mdx-banner/LinkHandler";
 import * as tw from "./MdxBanner.styles";
 import { roboto } from "@/util/font";
 
@@ -19,7 +19,7 @@ interface PostListProps {
     latestPosts: PostData[];
 }
 
-export default function PostsList({ latestPosts }: PostListProps) {
+export default function MdxMap({ latestPosts }: PostListProps) {
     const [isVisible, setIsVisible] = useState(false);
 
     const containerRef = useRef<HTMLDivElement | null>(null);

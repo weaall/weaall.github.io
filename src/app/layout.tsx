@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <meta name="google-site-verification" content="EB5qLPhkvA7mD6Yz6VpiZaMErWP4KIB7Aj_rR-xqdsA" />
                 <link rel="icon" href="/favicon.ico" />
             </head>
-            <body className={notoSansKr.className}>
+            <body>
                 <Layout>{children}</Layout>
             </body>
         </html>

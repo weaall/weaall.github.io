@@ -22,6 +22,7 @@ const config: Config = {
                 m: { max: "1024px" },
             },
             fontSize: {
+                "2xs": "0.7rem",
                 "5xl": "0.7rem",
                 "6xl": "0.8rem",
             },

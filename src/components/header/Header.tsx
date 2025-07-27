@@ -8,13 +8,12 @@ export default function Header() {
 
     if (pathname.startsWith("/weaall-ui")) return null;
 
-    const validPaths = ["/shallow", "/deep", "/dev", "/prac", "/project"];
+    const validPaths = ["/post", "/dev", "/prac", "/project"];
 
     const headerLayout = validPaths.some((path) => pathname.startsWith(path));
 
     const navItems = [
-        { label: "SHALLOW", path: "/shallow" },
-        { label: "DEEP", path: "/deep" },
+        { label: "POST", path: "/post" },
         { label: "PRAC", path: "/prac" },
         { label: "ME", path: "/me" },
         { label: "GITHUB", path: "https://github.com/weaall" },

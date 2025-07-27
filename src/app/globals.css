@@ -4,22 +4,37 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://static.toss.im/tps/main.css');
+@import url('https://static.toss.im/tps/others.css');
+
 :root {
-  --foreground-rgb: 0, 0, 0;
+  --main-color: linear-gradient(135deg, #222222, #555555);
+  --main-color-hover: linear-gradient(135deg, rgba(34, 34, 34, 0.8), rgba(85, 85, 85, 0.8));
+  --main-color-btn: #222222;
+  --main-color-btn-hover:#222222cc;
+  --font-noto-sans-kr: var(--font-noto-sans-kr);
+
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-  }
+  :root {}
 }
 
+html,
 body {
   margin: 0;
   padding: 0;
   color: rgb(var(--foreground-rgb));
 }
 
-
-html {
+body {
+  color: black;
 }
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: 'Toss Product Sans';
+}
+
