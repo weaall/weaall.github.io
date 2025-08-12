@@ -1,7 +1,7 @@
 import tw from "tailwind-styled-components";
 
-export const PostContainer = tw.div`flex space-x-[2%] mobile:flex-col mobile:space-y-6 mobile:space-x-0`;
-export const PostWrap = tw.a`space-y-2 h-auto  w-[32%] items-center px-6 py-4 shadow-custom rounded-lg group 
+export const PostContainer = tw.div`flex space-x-[2%] mobile:flex-col mobile:space-y-6 mobile:space-x-0 bg-black`;
+export const PostWrap = tw.a`space-y-2 h-auto w-[200px] items-center px-6 py-4 shadow-custom rounded-lg group 
 hover:shadow-custom-hover hover:translate-y-[6px] transition-all duration-300 mobile:w-full`;
 
 export const TopWrap = tw.div`flex justify-between`;

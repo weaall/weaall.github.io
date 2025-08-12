@@ -24,7 +24,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import remarkGfm from "remark-gfm";
 import { MDXContent } from "@/components/mdx/mdx-content/MDXContent";
-import ShallowPostList from '@/components/posts-list/PostList';
+import ShallowPostList from '@/components/PostListDrawer/PostListDrawer';
 
 interface PostData {
     imageUrl: string;

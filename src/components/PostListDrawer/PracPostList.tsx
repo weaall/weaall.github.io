@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import * as tw from "./PostList.styles";
+import * as tw from "./PostListDrawer.styles";
 
 interface PostData {
     label: string;

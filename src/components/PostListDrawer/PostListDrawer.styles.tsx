@@ -4,8 +4,8 @@ import Link from "next/link";
 
 export const Container = tw.div`flex px-10 relative`;
 export const SideContainer = tw.div`
-  h-auto mr-8 w-72 w-[240px] bg-drawer py-4 px-2 text-white/[0.4] flex flex-col gap-1
-  fixed top-16 left-0 z-20 min-h-screen
+  h-auto mr-8 w-72 w-[260px] bg-dark1 py-4 px-2 text-white/[0.4] flex flex-col gap-1
+  fixed top-0 left-0 z-20 min-h-screen
 `;
 export const CategoryButton = tw.button`
   text-2xs font-semibold mb-[1px] focus:outline-none flex items-center w-full rounded px-2 py-1 transition-colors
@@ -14,7 +14,7 @@ export const CategoryButton = tw.button`
 export const CategoryList = tw.ul``;
 export const CategoryItem = tw.li`mb-[1px]`;
 export const PostLink = tw(Link)<{ $active?: boolean }>`
-  flex items-center max-w-[224px] px-2 py-1.5 rounded hover:bg-white/[0.1] font-medium overflow-hidden
+  flex items-center max-w-[240px] px-2 py-1.5 rounded hover:bg-white/[0.1] font-medium overflow-hidden
   ${({ $active }) =>
     $active
       ? "bg-white/[0.1] text-white"

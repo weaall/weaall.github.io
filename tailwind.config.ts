@@ -16,7 +16,8 @@ const config: Config = {
                 main: "#333333",
                 "t-main": "#F3F2F1",
                 "text-main": "#dddddd",
-                drawer: "#202020"
+                dark1: "#202020",
+                darkbg: "#191919",
             },
             screens: {
                 m: { max: "1024px" },

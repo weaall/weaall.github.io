@@ -60,7 +60,7 @@ export default function MdxMap({ latestPosts }: PostListProps) {
                     </tw.TopWrap>
                     <tw.Title>{post.title}</tw.Title>
                     <tw.SubTitle>{post.subTitle}</tw.SubTitle>
-                    <tw.TagWrap className={roboto.className}>
+                    <tw.TagWrap>
                         {post.tags?.map((tag, index) => (
                             <tw.Tag key={index}>{tag}</tw.Tag>
                         ))}
