@@ -1,8 +1,8 @@
 import getPostsData from "@/components/mdx/getMdx";
-import PostListLayout from "./PostListLayout";
+import NewPageLayout from "./NewPageLayout";
 
 export default async function Page() {
     const postsData = await getPostsData("post");
     
-    return <PostListLayout postsData={postsData} />;
+    return <NewPageLayout postsData={postsData} />;
 }

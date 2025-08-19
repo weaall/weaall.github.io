@@ -11,7 +11,7 @@ const notoSansKr = Noto_Sans_KR({
     variable: "--Noto-Sans-KR",
 })
 
-export const metadata: Metadata = getBaseMetadata({ title: "Weaall's Dive" })
+export const metadata: Metadata = getBaseMetadata({ title: "Weaall Hub" })
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (

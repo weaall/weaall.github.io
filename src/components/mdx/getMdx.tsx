@@ -10,6 +10,7 @@ interface PostData {
     tags: [];
     slug: string;
     postUrl: string;
+    imageUrl: string;
 }
 
 export default async function getPostsData(dir: string) {
@@ -38,6 +39,7 @@ export default async function getPostsData(dir: string) {
                 tags: frontmatter.tags,
                 slug,
                 postUrl,
+                imageUrl: frontmatter.imageUrl
             };
         }),
     );

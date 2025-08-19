@@ -1,15 +1,16 @@
-import * as tw from "./PostTitle.styles"
+import { BookIcon, CalendarIcon } from "../ui/hover-header/svg/PostsSvg";
+import * as tw from "./PostTitle.styles";
 
 interface PostData {
     frontmatter: {
-        imageUrl: string
-        label: string
-        title: string
-        subTitle: string
-        date: string
-        tags: string[]
-        mins: string
-    }
+        imageUrl: string;
+        label: string;
+        title: string;
+        subTitle: string;
+        date: string;
+        tags: string[];
+        mins: string;
+    };
 }
 
 export default function PostTitle({ frontmatter }: PostData, content: any) {
@@ -24,18 +25,22 @@ export default function PostTitle({ frontmatter }: PostData, content: any) {
                     <tw.Title>{frontmatter.title}</tw.Title>
                     <tw.SubTitle>{frontmatter.subTitle}</tw.SubTitle>
                     <tw.SubWrap>
-                        <tw.SubSvg alt="" src="../../assets/svg/calendar_icon.svg" />
+                        <tw.SubSvg>
+                            <CalendarIcon color={"#ffffffcf"} />
+                        </tw.SubSvg>
                         <tw.SubText>{frontmatter.date}</tw.SubText>
-                        <tw.SubSvg alt="" src="../../assets/svg/book_icon.svg" />
+                        <tw.SubSvg>
+                            <BookIcon color={"#ffffffcf"} />
+                        </tw.SubSvg>
                         <tw.SubText>{frontmatter.mins}mins</tw.SubText>
                     </tw.SubWrap>
                     <tw.TagWrap>
                         {frontmatter.tags.map((tag, index) => (
-                            <tw.Tag key={index}>{tag}</tw.Tag>
+                            <tw.Tag key={index}>#{tag}</tw.Tag>
                         ))}
                     </tw.TagWrap>
                 </tw.TitleWrap>
             </tw.Container>
         </>
-    )
+    );
 }

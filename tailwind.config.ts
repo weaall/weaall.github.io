@@ -18,14 +18,24 @@ const config: Config = {
                 "text-main": "#dddddd",
                 dark1: "#202020",
                 darkbg: "#191919",
+                darktext: "#ffffffcf",
             },
             screens: {
                 m: { max: "1024px" },
             },
             fontSize: {
                 "2xs": "0.7rem",
-                "5xl": "0.7rem",
-                "6xl": "0.8rem",
+                basic: "17px",
+                "3xs": "0.65rem",
+                "4xs": "0.5rem",
+            },
+            borderRadius: {
+                basic: "12px",
+            },
+            padding: {
+                "3px": "3px",
+                "5px": "5px",
+                "7px": "7px",
             },
             keyframes: {
                 fadeIn: {
@@ -58,7 +68,7 @@ const config: Config = {
                 },
                 revealY: {
                     "0%": { transform: "translateY(10px)" },
-                    "100%": {transform: "translateY(0)" },
+                    "100%": { transform: "translateY(0)" },
                 },
                 fallBounce: {
                     "0%": { transform: "translateY(-100%)", opacity: "0", "animation-timing-function": "ease-in" },

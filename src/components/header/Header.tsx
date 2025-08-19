@@ -6,7 +6,7 @@ import * as tw from "./Header.styles";
 export default function Header() {
     const pathname = usePathname();
 
-    if (pathname.startsWith("/weaall-ui") || pathname.startsWith("/post")) return null;
+    if (pathname.startsWith("/weaall-ui") || pathname.startsWith("/post") || pathname.startsWith("/newpage")) return null;
 
     const validPaths = ["/dev", "/prac", "/project"];
 

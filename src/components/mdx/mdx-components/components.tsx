@@ -20,6 +20,10 @@ export function H3({ children }: { children?: React.ReactNode }) {
     return <tw.H3>{children}</tw.H3>;
 }
 
+export function H4({ children }: { children?: React.ReactNode }) {
+    return <tw.H4>{children}</tw.H4>;
+}
+
 export function P({ children }: { children?: React.ReactNode }) {
     return <tw.P>{children}</tw.P>;
 }

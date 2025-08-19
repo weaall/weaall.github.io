@@ -2,8 +2,9 @@
 
 import { usePathname } from "next/navigation";
 import * as tw from "./PostListDrawer.styles";
-import { DocIcon, DotListIcon, PlusIcon, ReduceIcon, RightIcon } from "./SvgDrawer";
+import { DocIcon, DotListIcon, HomeIcon, PlusIcon, PostIcon, ReduceIcon, RightIcon, SearchIcon } from "./SvgDrawer";
 import { useEffect, useState } from "react";
+import { AddDockIcon } from "../ui/hover-header/svg/PostsSvg";
 
 interface PostData {
     label: string;
@@ -46,10 +47,18 @@ export default function PostListDrawer({ props, collapsed, setCollapsed }: Posts
 
     const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
 
+    // 카테고리별 그룹핑
     const grouped = props.reduce((acc, post) => {
         (acc[post.label] = acc[post.label] || []).push(post);
         return acc;
     }, {} as Record<string, PostData[]>);
+
+    // 카테고리 정렬: 각 카테고리 내 최신 포스트 날짜 기준 내림차순
+    const sortedCategories = Object.entries(grouped).sort(([, postsA], [, postsB]) => {
+        const latestA = postsA.reduce((max, p) => (new Date(p.date) > new Date(max.date) ? p : max), postsA[0]);
+        const latestB = postsB.reduce((max, p) => (new Date(p.date) > new Date(max.date) ? p : max), postsB[0]);
+        return new Date(latestB.date).getTime() - new Date(latestA.date).getTime();
+    });
 
     const handleCategoryClick = (category: string) => {
         setOpenCategory((prev) => (prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]));
@@ -64,20 +73,49 @@ export default function PostListDrawer({ props, collapsed, setCollapsed }: Posts
                     transition: "all 0.2s",
                 }}
             >
-                <div className="flex items-center justify-end" style={{ height: 32 }}>
-                    <button
-                        type="button"
-                        aria-label={collapsed ? "사이드바 확장" : "사이드바 축소"}
-                        onClick={() => setCollapsed(!collapsed)}
-                        className="w-8 h-8 flex items-center justify-center rounded hover:bg-white/10 transition-colors"
-                    >
-                        {collapsed ? <RightIcon color="currentColor" width="20" height="20" /> : <ReduceIcon color="currentColor" width="20" height="20" />}
-                    </button>
-                </div>
+                <tw.Fixedwrap>
+                    <div className="flex items-center justify-end tracking-tight">
+                        <tw.IconBtn onClick={() => setCollapsed(!collapsed)}>
+                            {collapsed ? <RightIcon color="currentColor" width="20" height="20" /> : <ReduceIcon color="currentColor" width="20" height="20" />}
+                        </tw.IconBtn>
+                    </div>
+                    <tw.PostLink href="/" $active={pathname === "/"}>
+                        <tw.SvgWrap>
+                            <HomeIcon color="currentColor" width="20" height="20" />
+                        </tw.SvgWrap>
+                        <tw.LabelWrap>
+                            <tw.Label>홈</tw.Label>
+                        </tw.LabelWrap>
+                    </tw.PostLink>
+                    <tw.PostLink href="/post">
+                        <tw.SvgWrap>
+                            <PostIcon color="currentColor" width="20" height="20" />
+                        </tw.SvgWrap>
+                        <tw.LabelWrap>
+                            <tw.Label>게시물</tw.Label>
+                        </tw.LabelWrap>
+                    </tw.PostLink>
+                    <tw.PostLink href="/search" $active={pathname === "/search"}>
+                        <tw.SvgWrap>
+                            <SearchIcon color="currentColor" width="20" height="20" />
+                        </tw.SvgWrap>
+                        <tw.LabelWrap>
+                            <tw.Label>검색</tw.Label>
+                        </tw.LabelWrap>
+                    </tw.PostLink>
+                    <tw.PostLink href="/newpage" $active={pathname === "/newpage"}>
+                        <tw.SvgWrap>
+                            <AddDockIcon color="currentColor" width="20" height="20" />
+                        </tw.SvgWrap>
+                        <tw.LabelWrap>
+                            <tw.Label>새 페이지 추가</tw.Label>
+                        </tw.LabelWrap>
+                    </tw.PostLink>
+                </tw.Fixedwrap>
                 {!collapsed &&
-                    Object.entries(grouped).map(([category, posts]) => (
+                    sortedCategories.map(([category, posts]) => (
                         <div key={category}>
-                            <tw.CategoryButton style={{ minHeight: 32 }} onClick={() => handleCategoryClick(category)}>
+                            <tw.CategoryButton onClick={() => handleCategoryClick(category)}>
                                 <span>{category}</span>
                             </tw.CategoryButton>
                             {openCategory.includes(category) && (
