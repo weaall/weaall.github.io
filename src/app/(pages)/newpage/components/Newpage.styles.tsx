@@ -1,30 +1,47 @@
-import Link from "next/link";
 import tw from "tailwind-styled-components";
 
-export const Container = tw.div`w-full flex justify-center py-16
-  flex-1 w-full min-h-screen
+export const Container = tw.div`
+  w-full flex justify-center py-16 flex-1 min-h-screen
 `;
 
-export const BlockWrap = tw.div`
-  my-4
+export const BlockWrap = tw.div` flex items-center relative transition-colors
 `;
 
-export const Input = tw.input` text-white
-  border-b outline-none w-full bg-transparent 
+export const InputWrap = tw.div`
+  flex-1 transition-colors px-2
+  rounded-md
 `;
 
-export const PlusWrap = tw.div`
-  relative mt-6
+export const Input = tw.input`
+  outline-none w-full bg-transparent text-white
+  focus:border-none
+  border-none
 `;
 
 export const PlusButton = tw.button`
-  w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xl
+  w-[18px] h-[24px] rounded bg-[#252525] flex items-center justify-center text-xl mr-2
 `;
 
 export const Menu = tw.div`
-  absolute left-10 top-0 bg-white border rounded shadow p-2 z-10
+  absolute left-10 top-0 bg-[#252525] border rounded shadow p-2 z-10
 `;
 
 export const MenuButton = tw.button`
   block px-4 py-2 hover:bg-gray-100 w-full text-left
+`;
+
+export const PBlock = tw.div`
+  text-base py-1
+`;
+
+export const H1Block = tw.div`
+  text-3xl font-bold py-1
+`;
+
+export const H2Block = tw.div`
+  text-2xl font-semibold py-1
+`;
+
+export const H3Block = tw.div`
+  text-xl font-medium py-1
 `;
