@@ -38,3 +38,9 @@ body {
   font-family: 'Toss Product Sans';
 }
 
+[contenteditable][placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: #999; /* 플레이스홀더 색상 */
+  /* 필요에 따라 추가적인 스타일링 가능 (폰트 크기 등) */
+}
+
