@@ -76,6 +76,8 @@ export const EditablePBlock = tw.div`
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
+  text-[16px]
+  font-medium
   relative
   [&:empty]:before:content-['텍스트']
   [&:empty]:before:text-[#5a5a5a]
@@ -95,6 +97,7 @@ export const EditableH1Block = tw.div`
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
+  text-[30px] font-bold
   relative
   [&:empty]:before:content-['제목1']
   [&:empty]:before:text-[#5a5a5a]
@@ -114,6 +117,7 @@ export const EditableH2Block = tw.div`
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
+  text-[24px] font-semibold
   relative
   [&:empty]:before:content-['제목2']
   [&:empty]:before:text-[#5a5a5a]
@@ -134,6 +138,7 @@ export const EditableH3Block = tw.div`
   outline-none
   cursor-text
   relative
+  text-[20px] font-medium
   [&:empty]:before:content-['제목3']
   [&:empty]:before:text-[#5a5a5a]
   [&:empty]:before:pointer-events-none

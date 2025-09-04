@@ -6,15 +6,17 @@ interface TypeMenuModalProps {
     open: boolean;
     position: { top: number; left: number } | null;
     onSelect: (type: string) => void;
+    onColorSelect?: (color: string) => void;
+    onDeleteBlock?: () => void;
     onClose: () => void;
     elements: {
-        icon: ReactNode;
+        icon: React.ReactNode;
         label: string;
         type: string;
     }[];
 }
 
-export default function TypeMenuModal({ open, position, onSelect, onClose, elements }: TypeMenuModalProps) {
+export default function TypeMenuModal({ open, position, onSelect, onColorSelect, onDeleteBlock, onClose, elements }: TypeMenuModalProps) {
     const [showDrawer, setShowDrawer] = useState<"전환" | "색" | null>(null);
 
     const handleMenuButtonMouseEnter = (type: string) => {
@@ -80,7 +82,7 @@ export default function TypeMenuModal({ open, position, onSelect, onClose, eleme
                         </tw.SvgWrap>
                     </tw.MenuButton>
                     <tw.MenuButton onMouseEnter={() => handleMenuButtonMouseEnter("옮기기")}>옮기기</tw.MenuButton>
-                    <tw.MenuButton onMouseEnter={() => handleMenuButtonMouseEnter("삭제")}>삭제</tw.MenuButton>
+                    <tw.MenuButton onMouseEnter={() => handleMenuButtonMouseEnter("삭제")} onClick={onDeleteBlock}>삭제</tw.MenuButton>
                 </tw.Menu>
                 {/* 전환 드로워 */}
                 {showDrawer === "전환" && (
@@ -105,7 +107,7 @@ export default function TypeMenuModal({ open, position, onSelect, onClose, eleme
                         onMouseLeave={handleDrawerMouseLeave}
                     >
                         <tw.Label>텍스트 색상</tw.Label>
-                        <tw.MenuButton onClick={() => {/* 색상 선택 로직 */}}>
+                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#ffffffcf")}> {/* 기본 텍스트 */}
                             <tw.LabelWrap>
                                 <tw.SvgWrap>
                                     <FontIcon color="#ffffffcf" />
@@ -113,7 +115,7 @@ export default function TypeMenuModal({ open, position, onSelect, onClose, eleme
                                 기본 텍스트
                             </tw.LabelWrap>
                         </tw.MenuButton>
-                        <tw.MenuButton onClick={() => {/* 색상 선택 로직 */}}>
+                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#e65b58")}> {/* 빨간색 텍스트 */}
                             <tw.LabelWrap>
                                 <tw.SvgWrap>
                                     <FontIcon color="#e65b58" />
@@ -121,7 +123,7 @@ export default function TypeMenuModal({ open, position, onSelect, onClose, eleme
                                 빨간색 텍스트
                             </tw.LabelWrap>
                         </tw.MenuButton>
-                        <tw.MenuButton onClick={() => {/* 색상 선택 로직 */}}>
+                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#529e72")}> {/* 초록색 텍스트 */}
                             <tw.LabelWrap>
                                 <tw.SvgWrap>
                                     <FontIcon color="#529e72" />
@@ -129,7 +131,7 @@ export default function TypeMenuModal({ open, position, onSelect, onClose, eleme
                                 초록색 텍스트
                             </tw.LabelWrap>
                         </tw.MenuButton>
-                        <tw.MenuButton onClick={() => {/* 색상 선택 로직 */}}>
+                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#379ad3")}> {/* 파랑색 텍스트 */}
                             <tw.LabelWrap>
                                 <tw.SvgWrap>
                                     <FontIcon color="#379ad3" />

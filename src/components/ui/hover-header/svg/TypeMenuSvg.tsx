@@ -39,7 +39,7 @@ export const FontIcon = ({ color = "#000", width = "100%", height = "100%" }) =>
         <path
             d="M22 12V21M2 21L8 3L14 21M11 14H5M19 21C17.3431 21 16 19.6569 16 18V15C16 13.3431 17.3431 12 19 12C20.6569 12 22 13.3431 22 15V18C22 19.6569 20.6569 21 19 21Z"
             stroke={color}
-            stroke-width="2"
+            stroke-width="2.5"
             stroke-linecap="round"
             stroke-linejoin="round"
         />
