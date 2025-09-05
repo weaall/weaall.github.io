@@ -4,16 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://static.toss.im/tps/main.css');
-@import url('https://static.toss.im/tps/others.css');
-
 :root {
   --main-color: linear-gradient(135deg, #222222, #555555);
   --main-color-hover: linear-gradient(135deg, rgba(34, 34, 34, 0.8), rgba(85, 85, 85, 0.8));
   --main-color-btn: #222222;
   --main-color-btn-hover:#222222cc;
   --font-noto-sans-kr: var(--font-noto-sans-kr);
-
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,12 +31,10 @@ body {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  font-family: 'Toss Product Sans';
 }
 
-[contenteditable][placeholder]:empty::before {
+[contenteditable][placeholder]:empty::after {
   content: attr(data-placeholder);
-  color: #999; /* 플레이스홀더 색상 */
-  /* 필요에 따라 추가적인 스타일링 가능 (폰트 크기 등) */
+  color: #999;
 }
 

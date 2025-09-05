@@ -1,15 +1,20 @@
 import type { Metadata } from "next"
-import { Noto_Sans_KR } from "next/font/google"
+import { Inter, Noto_Sans_KR } from "next/font/google"
 import "./globals.css"
 
 import { Layout } from "@/components/layout/Layout"
 import { getBaseMetadata } from "@/util/seo"
 
+const inter = Inter({
+    subsets: ["latin"],
+    weight: ["100", "300", "400", "500", "700", "900"],
+    variable: "--Inter",
+});
 const notoSansKr = Noto_Sans_KR({
     subsets: ["latin"],
     weight: ["100", "300", "400", "500", "700", "900"],
     variable: "--Noto-Sans-KR",
-})
+});
 
 export const metadata: Metadata = getBaseMetadata({ title: "Weaall Hub" })
 
@@ -21,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <meta name="google-site-verification" content="EB5qLPhkvA7mD6Yz6VpiZaMErWP4KIB7Aj_rR-xqdsA" />
                 <link rel="icon" href="/favicon.ico" />
             </head>
-            <body>
+            <body className={`${inter.className} ${notoSansKr.className}`}>
                 <Layout>{children}</Layout>
             </body>
         </html>

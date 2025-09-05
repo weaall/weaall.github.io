@@ -42,6 +42,7 @@ export const MenuButton = tw.button`
   cursor-pointer
   hover:bg-[#313131]
 `;
+
 export const LabelWrap = tw.div`
   flex
   items-center
@@ -51,7 +52,11 @@ export const LabelWrap = tw.div`
 export const SvgWrap = tw.div`
   h-4
   w-4
-  text-white
+`;
+
+export const ExpLabel = tw.div`
+  text-[#ffffff48]
+  text-[12px]
 `;
 
 export const DrawerMenu = tw.div`

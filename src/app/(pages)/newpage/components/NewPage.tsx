@@ -1,50 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import * as tw from "./Newpage.styles";
 import { GripDotsIcon, PlusIcon } from "@/components/ui/hover-header/svg/PostsSvg";
-import TypeMenuModal from "./menu/TypeMenu.modal";
-import { ELEMENTS } from "./menu/TypeElement";
+import TypeMenuModal from "./menu-modal/TypeMenu.modal";
+import { ELEMENTS } from "./menu-modal/TypeElement";
+import ContentEditableBlock from "./editable-block/ContentEditableBlock";
 
-interface ContentEditableBlockProps {
+interface Block {
+    id: string;
     type: string;
     content: string;
-    onContentChange: (value: string) => void;
 }
-
-const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: string }> = ({ type, content, onContentChange, color }) => {
-    const ref = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        if (ref.current && ref.current.textContent !== content) {
-            ref.current.textContent = content;
-        }
-    }, [content]);
-
-    const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
-        const newContent = e.currentTarget.textContent ?? "";
-        onContentChange(newContent);
-    };
-
-    const commonProps = {
-        ref: ref,
-        contentEditable: true, // 항상 입력 가능
-        suppressContentEditableWarning: true,
-        spellCheck: true, // 항상 맞춤법 검사
-        className: "notranslate",
-        onInput: handleInput,
-        style: { color },
-    };
-
-    switch (type) {
-        case "h1":
-            return <tw.EditableH1Block {...commonProps} />;
-        case "h2":
-            return <tw.EditableH2Block {...commonProps} />;
-        case "h3":
-            return <tw.EditableH3Block {...commonProps} />;
-        default:
-            return <tw.EditablePBlock {...commonProps} />;
-    }
-};
 
 function blocksToMDX(
     blocks: Block[],
@@ -57,7 +22,6 @@ function blocksToMDX(
         tags?: string[];
         imageUrl?: string;
     },
-    blockColors?: { [id: string]: string },
 ) {
     let frontmatter = "";
     if (meta) {
@@ -71,32 +35,48 @@ function blocksToMDX(
         if (meta.imageUrl) frontmatter += `imageUrl: ${meta.imageUrl}\n`;
         frontmatter += `---\n\n`;
     }
+    
+    let numberedListCounter = 1;
+    
     const body = blocks
         .filter((b) => b.content.trim() !== "")
-        .map((b) => {
-            const color = blockColors?.[b.id];
-            const style = color ? ` style={{color: '${color}'}}` : "";
+        .map((b, index) => {
             switch (b.type) {
                 case "h1":
-                    return `<h1${style}>${b.content}</h1>`;
+                    numberedListCounter = 1; // 리셋
+                    return `# ${b.content}`;
                 case "h2":
-                    return `<h2${style}>${b.content}</h2>`;
+                    numberedListCounter = 1; // 리셋
+                    return `## ${b.content}`;
                 case "h3":
-                    return `<h3${style}>${b.content}</h3>`;
+                    numberedListCounter = 1; // 리셋
+                    return `### ${b.content}`;
                 case "p":
-                    return `<p${style}>${b.content}</p>`;
+                    numberedListCounter = 1; // 리셋
+                    return b.content;
+                case "ul":
+                    numberedListCounter = 1; // 리셋
+                    return `- ${b.content}`;
+                case "numberedList":
+                    const prevBlock = blocks.filter(block => block.content.trim() !== "")[index - 1];
+                    if (!prevBlock || prevBlock.type !== "numberedList") {
+                        numberedListCounter = 1;
+                    }
+                    const currentNumber = numberedListCounter++;
+                    return `${currentNumber}. ${b.content}`;
+                case "checkedList":
+                    numberedListCounter = 1; // 리셋
+                    return `- [ ] ${b.content}`;
+                case "divider":
+                    numberedListCounter = 1; // 리셋
+                    return "---";
                 default:
-                    return `<p${style}>${b.content}</p>`;
+                    numberedListCounter = 1; // 리셋
+                    return b.content;
             }
         })
         .join("\n\n");
     return frontmatter + body;
-}
-
-interface Block {
-    id: string;
-    type: string;
-    content: string;
 }
 
 export default function NewPage({ collapsed }: { collapsed: boolean }) {
@@ -118,7 +98,26 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     });
 
     const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
+    const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
     const [insertLineIdx, setInsertLineIdx] = useState<number | null>(null);
+
+    // 번호 리스트의 순번을 계산하는 함수
+    const getListNumber = (currentIndex: number): number => {
+        let counter = 1;
+        for (let i = 0; i <= currentIndex; i++) {
+            if (blocks[i].type === "numberedList") {
+                // 이전 블록이 numberedList가 아니면 카운터 리셋
+                if (i === 0 || blocks[i - 1].type !== "numberedList") {
+                    counter = 1;
+                }
+                if (i === currentIndex) {
+                    return counter;
+                }
+                counter++;
+            }
+        }
+        return 1;
+    };
 
     useEffect(() => {
         if (divRef.current && (!divRef.current.textContent || divRef.current.textContent === "")) {
@@ -136,19 +135,15 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     };
 
     const handleExport = () => {
-        const mdx = blocksToMDX(
-            blocks,
-            {
-                label: meta.label || "",
-                title: meta.title || "",
-                subTitle: meta.subTitle || "",
-                date: meta.date || new Date().toISOString().slice(0, 10),
-                mins: meta.mins || 2,
-                tags: meta.tags.length ? meta.tags : [""],
-                imageUrl: meta.imageUrl || "",
-            },
-            blockColors,
-        );
+        const mdx = blocksToMDX(blocks, {
+            label: meta.label || "",
+            title: meta.title || "",
+            subTitle: meta.subTitle || "",
+            date: meta.date || new Date().toISOString().slice(0, 10),
+            mins: meta.mins || 2,
+            tags: meta.tags.length ? meta.tags : [""],
+            imageUrl: meta.imageUrl || "",
+        });
         alert(mdx);
     };
 
@@ -171,12 +166,43 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         const newBlocks = [...blocks];
         newBlocks[idx].content = value;
         setBlocks(newBlocks);
+    };
 
-        const allBlocksNotEmpty = newBlocks.every((block) => block.content.trim() !== "");
+    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, idx: number) => {
+        e.stopPropagation();
+        setDraggingIdx(idx);
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", `${idx}`);
+    };
 
-        if (allBlocksNotEmpty) {
-            setBlocks([...newBlocks, { id: crypto.randomUUID(), type: "p", content: "" }]);
+    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>, idx: number, isIndicator: boolean) => {
+        e.preventDefault();
+        setDragOverIdx(idx);
+        if (isIndicator) {
+            setInsertLineIdx(idx);
+        } else {
+            setInsertLineIdx(null);
         }
+    };
+
+    const handleDragEnd = () => {
+        if (draggingIdx !== null && insertLineIdx !== null) {
+            const newBlocks = [...blocks];
+            const [draggedItem] = newBlocks.splice(draggingIdx, 1);
+            let targetIdx = insertLineIdx;
+            if (draggingIdx < insertLineIdx) {
+                targetIdx = insertLineIdx - 1;
+            }
+            newBlocks.splice(targetIdx, 0, draggedItem);
+            setBlocks(newBlocks);
+        }
+        setDraggingIdx(null);
+        setDragOverIdx(null);
+        setInsertLineIdx(null);
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
     };
 
     const handleDeleteBlock = (idx: number) => {
@@ -187,85 +213,81 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         setMenuPos(null);
     };
 
-    // Drag and Drop handlers
-    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, idx: number) => {
-        e.stopPropagation();
-        setDraggingIdx(idx);
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", `${idx}`);
-        // 드래그 시 블록 전체가 따라 움직이도록 dragImage 설정
-        const dragImage = (e.currentTarget.parentNode as HTMLElement);
-        if (dragImage) {
-            e.dataTransfer.setDragImage(dragImage, 0, 0);
-        }
-    };
-
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>, idx: number) => {
-        e.preventDefault();
-        if (draggingIdx === null || draggingIdx === idx) return;
-
-        const rect = e.currentTarget.getBoundingClientRect();
-        const y = e.clientY - rect.top;
-        const middle = rect.height / 2;
-
-        if (y < middle) {
-            setInsertLineIdx(idx);
-        } else {
-            setInsertLineIdx(idx + 1);
-        }
-    };
-
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>, dropIdx: number) => {
-        e.preventDefault();
-        if (draggingIdx !== null && insertLineIdx !== null) {
-            const newBlocks = [...blocks];
-            const [draggedItem] = newBlocks.splice(draggingIdx, 1);
-            let targetIdx = insertLineIdx;
-            
-            if (draggingIdx < insertLineIdx) {
-                targetIdx = insertLineIdx - 1;
-            }
-
-            if (targetIdx !== draggingIdx) {
-                newBlocks.splice(targetIdx, 0, draggedItem);
-                setBlocks(newBlocks);
-            }
-        }
-        setDraggingIdx(null);
-        setInsertLineIdx(null);
-    };
-
-    const handleDragEnd = () => {
-        setDraggingIdx(null);
-        setInsertLineIdx(null);
-    };
-
     const handlePlusClick = (idx: number) => {
-    setMenuIdx(idx);
-    setTimeout(() => {
-        const btn = plusRefs.current[idx];
-        if (btn) {
-            const rect = btn.getBoundingClientRect();
+        setMenuIdx(idx);
+        setTimeout(() => {
+            const btn = plusRefs.current[idx];
+            if (btn) {
+                const rect = btn.getBoundingClientRect();
+                const menuWidth = 265;
+                const newLeft = rect.left + window.scrollX - menuWidth - 45;
+                const newTop = rect.top + window.scrollY - 70;
+                setMenuPos({
+                    top: newTop,
+                    left: newLeft,
+                });
+            }
+        }, 0);
+    };
 
-            const menuWidth = 265;
-            const menuHeight = 100;
-
-            const newLeft = rect.left - menuWidth - 490;
-
-            const newTop = rect.top + (rect.height / 2) - (menuHeight / 2) - 80;
-
-            setMenuPos({
-                top: newTop,
-                left: newLeft,
-            });
+    useEffect(() => {
+        if (menuIdx !== null) {
+            const updateMenuPos = () => {
+                const btn = plusRefs.current[menuIdx];
+                if (btn) {
+                    const rect = btn.getBoundingClientRect();
+                    const menuWidth = 265;
+                    const newLeft = rect.left + window.scrollX - menuWidth - 45;
+                    const newTop = rect.top + window.scrollY - 70;
+                    setMenuPos({
+                        top: newTop,
+                        left: newLeft,
+                    });
+                }
+            };
+            updateMenuPos();
+            window.addEventListener("resize", updateMenuPos);
+            return () => {
+                window.removeEventListener("resize", updateMenuPos);
+            };
         }
-    }, 0);
-};
+    }, [menuIdx]);
 
     const handleAddBlock = (idx: number) => {
         const newBlocks = [...blocks];
-        newBlocks.splice(idx + 1, 0, { id: crypto.randomUUID(), type: "p", content: "" });
+        const newBlockId = crypto.randomUUID();
+        const newBlock = { id: newBlockId, type: "p", content: "" };
+        newBlocks.splice(idx + 1, 0, newBlock);
         setBlocks(newBlocks);
+
+        setTimeout(() => {
+            const newBlockElement = document.getElementById(newBlockId);
+            if (newBlockElement) {
+                newBlockElement.focus();
+            }
+        }, 0);
+    };
+
+    const handleAddBlockAfterBullet = (idx: number) => {
+        const newBlocks = [...blocks];
+        const newBlockId = crypto.randomUUID();
+        const currentBlockType = blocks[idx].type;
+        
+        // 현재 블록의 타입과 동일한 타입으로 새 블록 생성
+        const newBlock = { id: newBlockId, type: currentBlockType, content: "" };
+        newBlocks.splice(idx + 1, 0, newBlock);
+        setBlocks(newBlocks);
+
+        setTimeout(() => {
+            const newBlockElement = document.getElementById(newBlockId);
+            if (newBlockElement) {
+                newBlockElement.focus();
+            }
+        }, 0);
+    };
+
+    const handleTypeChange = (idx: number, newType: string) => {
+        changeBlockType(idx, newType);
     };
 
     return (
@@ -275,7 +297,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                 transition: "padding-left 0.2s",
             }}
         >
-            <div className="w-full gap-2 max-w-[712px]" style={{ position: "relative" }}>
+            <div className="w-full max-w-[712px]" style={{ position: "relative" }}>
                 <tw.BlockWrap>
                     <tw.TitleBlock>
                         <tw.EditableTitle
@@ -284,12 +306,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                             suppressContentEditableWarning
                             spellCheck={true}
                             className="notranslate"
-                            onInput={() => {
-                                setMeta((prev) => ({ ...prev, title: divRef.current?.textContent ?? "" }));
-                            }}
-                            onBlur={() => {
-                                setMeta((prev) => ({ ...prev, title: divRef.current?.textContent ?? "" }));
-                            }}
+                            onInput={handleTitleInput}
                         />
                     </tw.TitleBlock>
                 </tw.BlockWrap>
@@ -312,96 +329,118 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                     }}
                     elements={ELEMENTS}
                 />
-                
+
                 {blocks.map((block, idx) => (
-                    <tw.BlockWrap
-                        key={block.id}
-                        className={`group relative ${draggingIdx === idx ? 'opacity-50' : ''} 
-                            ${insertLineIdx !== null && insertLineIdx === idx && draggingIdx !== idx ? 'border-t-2 border-blue-500' : ''} 
-                            ${insertLineIdx !== null && insertLineIdx === idx + 1 && draggingIdx !== idx ? 'border-b-2 border-blue-500' : ''}`}
-                        style={{ position: "relative" }}
-                        onMouseEnter={() => setHoverIdx(idx)}
-                        onMouseLeave={(e) => {
-                            const related = e.relatedTarget as HTMLElement | null;
-                            if (related && related.closest && related.closest(`[data-btn-idx="${idx}"]`)) {
-                                return;
-                            }
-                            setHoverIdx(null);
-                        }}
-                        onDragOver={(e) => handleDragOver(e, idx)}
-                        onDrop={(e) => handleDrop(e, idx)}
-                        onDragLeave={() => setInsertLineIdx(null)}
-                    >
+                    <React.Fragment key={block.id}>
                         <div
-                            style={{
-                                position: "absolute",
-                                left: -56,
-                                top: 0,
-                                width: 56,
-                                height: "100%",
-                                zIndex: 5,
-                                cursor: block.content.trim() !== '' ? 'grab' : 'default', // 내용이 있을 때만 grab 커서 표시
-                            }}
-                            draggable={block.content.trim() !== ''} // 내용이 있을 때만 드래그 가능
-                            onDragStart={(e) => handleDragStart(e, idx)}
+                            className={`h-1 rounded ${insertLineIdx === idx ? "bg-blue-500/50" : "bg-transparent"}`}
+                            onDragEnter={(e) => handleDragEnter(e, idx, true)}
+                            onDragOver={handleDragOver}
                             onDragEnd={handleDragEnd}
                         />
-                        {(hoverIdx === idx || menuIdx === idx) && (
+                        <tw.BlockWrap
+                            className={`group ${draggingIdx === idx ? "opacity-50" : ""}`}
+                            style={{ position: "relative" }}
+                            onMouseLeave={(e) => {
+                                const related = e.relatedTarget as HTMLElement | null;
+                                if (related && related.closest && related.closest(`[data-btn-idx="${idx}"]`)) {
+                                    return;
+                                }
+                                setHoverIdx(null);
+                            }}
+                            onDragEnter={(e) => handleDragEnter(e, idx, false)}
+                            onDragOver={handleDragOver}
+                        >
                             <div
-                                data-btn-idx={idx}
                                 style={{
                                     position: "absolute",
                                     left: -56,
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    zIndex: 10,
+                                    top: 0,
                                     width: 56,
                                     height: "100%",
+                                    zIndex: 5,
+                                    cursor: "pointer",
                                 }}
                                 onMouseEnter={() => setHoverIdx(idx)}
                                 onMouseLeave={(e) => {
                                     const related = e.relatedTarget as HTMLElement | null;
-                                    if (related && related.closest && related.closest(".group")) {
+                                    if (related && related.closest && related.closest(`[data-btn-idx="${idx}"]`)) {
+                                        return;
+                                    }
+                                    setHoverIdx(null);
+                                }}
+                            />
+                            {(hoverIdx === idx || menuIdx === idx) && (
+                                <div
+                                    data-btn-idx={idx}
+                                    style={{
+                                        position: "absolute",
+                                        left: -56,
+                                        top: "50%",
+                                        transform: "translateY(-50%)",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        zIndex: 10,
+                                        width: 56,
+                                        height: "100%",
+                                    }}
+                                    onMouseEnter={() => setHoverIdx(idx)}
+                                    onMouseLeave={(e) => {
+                                        const related = e.relatedTarget as HTMLElement | null;
+                                        if (related && related.closest && related.closest(".group")) {
+                                            return;
+                                        }
+                                        setHoverIdx(null);
+                                    }}
+                                    draggable
+                                    onDragStart={(e) => handleDragStart(e, idx)}
+                                    onDragEnd={handleDragEnd}
+                                >
+                                    <tw.PlusButton ref={(el) => (plusRefs.current[idx] = el)} onClick={() => handleAddBlock(idx)}>
+                                        <PlusIcon color={"#616161"} />
+                                    </tw.PlusButton>
+                                    <tw.DotButton
+                                        ref={(el) => (plusRefs.current[idx] = el)}
+                                        className={`${menuIdx === idx ? "bg-[#252525]" : ""}`}
+                                        onClick={() => handlePlusClick(idx)}
+                                    >
+                                        <GripDotsIcon color={"#616161"} />
+                                    </tw.DotButton>
+                                </div>
+                            )}
+                            <tw.InputWrap
+                                className={menuIdx === idx ? "bg-gray-800" : ""}
+                                onMouseEnter={() => setHoverIdx(idx)}
+                                onMouseLeave={(e) => {
+                                    const related = e.relatedTarget as HTMLElement | null;
+                                    if (related && (related.closest(`[data-btn-idx="${idx}"]`) || related.closest(".group"))) {
                                         return;
                                     }
                                     setHoverIdx(null);
                                 }}
                             >
-                                <tw.PlusButton ref={(el) => (plusRefs.current[idx] = el)} onClick={() => handleAddBlock(idx)}>
-                                    <PlusIcon color={"#616161"} />
-                                </tw.PlusButton>
-                                <tw.DotButton
-                                    ref={(el) => (plusRefs.current[idx] = el)}
-                                    className={`${menuIdx === idx ? "bg-[#252525]" : ""}`}
-                                    onClick={() => handlePlusClick(idx)}
-                                >
-                                    <GripDotsIcon color={"#616161"} />
-                                </tw.DotButton>
-                            </div>
-                        )}
-                        <tw.InputWrap
-                            className={menuIdx === idx ? "bg-gray-800" : ""}
-                            onMouseEnter={() => setHoverIdx(idx)}
-                            onMouseLeave={(e) => {
-                                const related = e.relatedTarget as HTMLElement | null;
-                                if (related && (related.closest(`[data-btn-idx="${idx}"]`) || related.closest(".group"))) {
-                                    return;
-                                }
-                                setHoverIdx(null);
-                            }}
-                        >
-                            <ContentEditableBlock
-                                key={`${block.id}-${block.type}`}
-                                type={block.type}
-                                content={block.content}
-                                onContentChange={(value) => handleContentChange(idx, value)}
-                                color={blockColors[block.id]}
-                            />
-                        </tw.InputWrap>
-                    </tw.BlockWrap>
+                                <ContentEditableBlock
+                                    key={`${block.id}-${block.type}`}
+                                    type={block.type}
+                                    content={block.content}
+                                    onContentChange={(value) => handleContentChange(idx, value)}
+                                    onTypeChange={(newType) => handleTypeChange(idx, newType)}
+                                    onAddBlock={() => handleAddBlock(idx)}
+                                    onAddBlockAfterBullet={() => handleAddBlockAfterBullet(idx)}
+                                    color={blockColors[block.id]}
+                                    id={block.id}
+                                    listNumber={block.type === "numberedList" ? getListNumber(idx) : undefined}
+                                />
+                            </tw.InputWrap>
+                        </tw.BlockWrap>
+                    </React.Fragment>
                 ))}
+                <div
+                    className={`h-[4px] rounded ${insertLineIdx === blocks.length ? "bg-blue-500/50" : "bg-transparent"}`}
+                    onDragEnter={(e) => handleDragEnter(e, blocks.length, true)}
+                    onDragOver={handleDragOver}
+                    onDragEnd={handleDragEnd}
+                />
             </div>
             <div className="fixed bottom-8 right-8 z-50">
                 <button className="px-6 py-3 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition" onClick={handleExport}>

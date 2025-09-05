@@ -5,6 +5,8 @@ export const Container = tw.div`flex px-10 relative border-r border-white/[0.45]
 export const SideContainer = tw.div`
   h-auto mr-8 w-72 w-[260px] bg-dark1 py-1.5 px-2 text-white/[0.4] flex flex-col gap-1
   fixed top-0 left-0 z-40 min-h-screen overflow-y-auto
+  border-[rgb(48,48,46)] 
+  border-r
 `;
 
 export const Fixedwrap = tw.div`flex flex-col gap-[1px] pb-4 tracking-tight`;
