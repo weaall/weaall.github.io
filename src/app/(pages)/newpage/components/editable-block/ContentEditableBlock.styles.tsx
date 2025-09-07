@@ -111,12 +111,12 @@ export const EditableUlBlock = tw.div`
 
 export const EditableNumberedListBlockWrap = tw.div`flex items-start justify-start`;
 export const EditableNumberedListBlockTag = tw.div`
+  pt-[3px] 
   before:content-[attr(data-number)'.']
   before:pr-[10px]
   before:text-[14px]
   before:font-medium
   before:px-[10px]
-  before:mt-[3px]
   before:h-[24px]
 `;
 export const EditableNumberedListBlock = tw.div`
@@ -156,7 +156,6 @@ export const EditableCheckbox = tw.input`
   focus:outline-none
   mt-[7px]
 
-  // 체크 마크 스타일 (SVG)
   checked:after:content-['']
   checked:after:absolute
   checked:after:left-[4px]

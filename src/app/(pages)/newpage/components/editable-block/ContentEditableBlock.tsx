@@ -77,6 +77,11 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         if (isComposingRef.current) return;
 
         const newContent = e.currentTarget.innerText ?? "";
+        // 이모지 검색 중에 띄어쓰기가 입력되면 모달 닫기
+        if (showEmojiModal && /\s$/.test(newContent)) {
+            setShowEmojiModal(false);
+            setEmojiSearch("");
+        }
 
         if (newContent.length === 0 || newContent.trim() === "") {
             if (ref.current) {
@@ -251,10 +256,10 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                             search={emojiSearch}
                             onClose={() => setShowEmojiModal(false)}
                             onSelect={(emoji: string, label: string) => {
-                                // :검색어 부분을 이모지로 치환
                                 if (ref.current) {
                                     const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w*)$/, emoji);
+                                    // :검색어와 뒤의 공백까지 이모지로 치환
+                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
                                     ref.current.innerText = replaced;
                                     onContentChange(replaced);
                                 }
@@ -278,7 +283,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                             onSelect={(emoji: string, label: string) => {
                                 if (ref.current) {
                                     const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w*)$/, emoji);
+                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
                                     ref.current.innerText = replaced;
                                     onContentChange(replaced);
                                 }
@@ -302,7 +307,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                             onSelect={(emoji: string, label: string) => {
                                 if (ref.current) {
                                     const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w*)$/, emoji);
+                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
                                     ref.current.innerText = replaced;
                                     onContentChange(replaced);
                                 }
@@ -327,7 +332,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                             onSelect={(emoji: string, label: string) => {
                                 if (ref.current) {
                                     const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w*)$/, emoji);
+                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
                                     ref.current.innerText = replaced;
                                     onContentChange(replaced);
                                 }
@@ -355,7 +360,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                             onSelect={(emoji: string, label: string) => {
                                 if (ref.current) {
                                     const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w*)$/, emoji);
+                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
                                     ref.current.innerText = replaced;
                                     onContentChange(replaced);
                                 }
@@ -384,7 +389,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                             onSelect={(emoji: string, label: string) => {
                                 if (ref.current) {
                                     const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w*)$/, emoji);
+                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
                                     ref.current.innerText = replaced;
                                     onContentChange(replaced);
                                 }
@@ -411,7 +416,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                             onSelect={(emoji: string, label: string) => {
                                 if (ref.current) {
                                     const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w*)$/, emoji);
+                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
                                     ref.current.innerText = replaced;
                                     onContentChange(replaced);
                                 }
