@@ -1,75 +1,23 @@
 import tw from "tailwind-styled-components";
 
-export const Menu = tw.div`
-  absolute left-10 top-0
-  bg-[#252525]
+export const ModalWrap = tw.div`
+	fixed z-[2000] shadow-xl min-w-[220px] max-w-[480px] bg-[#252525] py-2
   border-[rgb(48,48,46)] 
   border
   rounded-[10px]
-  p-[4px]
-  z-10
-  w-[265px]
-  gap-[1px]
-  flex flex-col
 `;
-
-export const Label = tw.p`
-  flex
-  items-center
-  gap-[8px]
-  px-[8px]
-  mt-[6px]
-  mb-[8px]
-  text-[12px]
-  font-[500]
-  leading-[120%]
-  text-[rgba(255,255,255,0.46)]
-  user-select-none
+export const ModalDesc = tw.div`
+	text-xs text-[#aaa] px-3 py-2
 `;
-
-export const MenuButton = tw.button`
-  flex items-center
-  justify-between
-  w-full
-  h-[28px]
-  px-[8px]
-  text-left
-  text-[14px]
-  text-[#ffffffcf]
-  rounded-[6px]
-  user-select-none
-  transition-[background] duration-75 ease-in
-  cursor-pointer
-  hover:bg-[#313131]
+export const EmojiListWrap = tw.div`
+	flex flex-wrap gap-2 overflow-y-auto max-h-[168px] px-4
 `;
-
-export const LabelWrap = tw.div`
-  flex
-  items-center
-  gap-[8px]
+export const EmojiButton = tw.button`
+	flex cursor-pointer flex-col items-center border-none bg-none p-1 text-xl
 `;
-
-export const SvgWrap = tw.div`
-  h-4
-  w-4
+export const NoResult = tw.div`
+	text-xs text-[#aaa] py-2
 `;
-
-export const ExpLabel = tw.div`
-  text-[#ffffff48]
-  text-[12px]
-`;
-
-export const DrawerMenu = tw.div`
-  gap-[1px]
-  w-[205px]
-  absolute
-  left-[calc(100%+42px)]
-  top-0
-  bg-[#252525]
-  border-[rgb(48,48,46)] 
-  border
-  rounded-[10px]
-  p-[4px]
-  z-[1100]
-  flex flex-col
+export const CloseButton = tw.button`
+	mt-2 w-full cursor-pointer rounded-md border-none bg-[#313131] px-0 py-1.5 text-white
 `;

@@ -84,7 +84,7 @@ export const EditableUlBlockWrap = tw.div`flex items-start justify-start`;
 export const EditableUlBlockTag = tw.div`
   before:content-['●']
   before:px-[10px]
-  before:text-[14px]
+  before:text-[8px]
   before:font-medium
   before:mt-[3px]
   before:h-[24px]
@@ -114,8 +114,7 @@ export const EditableNumberedListBlockTag = tw.div`
   pt-[3px] 
   before:content-[attr(data-number)'.']
   before:pr-[10px]
-  before:text-[14px]
-  before:font-medium
+  before:text-[16px]
   before:px-[10px]
   before:h-[24px]
 `;

@@ -8,7 +8,7 @@
   --main-color: linear-gradient(135deg, #222222, #555555);
   --main-color-hover: linear-gradient(135deg, rgba(34, 34, 34, 0.8), rgba(85, 85, 85, 0.8));
   --main-color-btn: #222222;
-  --main-color-btn-hover:#222222cc;
+  --main-color-btn-hover: #222222cc;
   --font-noto-sans-kr: var(--font-noto-sans-kr);
 }
 
@@ -25,6 +25,30 @@ body {
 
 body {
   color: black;
+  /* Google Dark Mode style scrollbar */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #5f6368 transparent; /* For Firefox */
+}
+
+/* For WebKit browsers (Chrome, Safari, Edge) */
+body::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background-color: transparent;
+}
+
+body::-webkit-scrollbar-track {
+  background-color: transparent; /* Changed to transparent */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #5f6368;
+  border-radius: 8px;
+  border: 4px solid transparent; /* Changed border color to transparent for floating effect */
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #767a7e;
 }
 
 * {
@@ -37,4 +61,3 @@ body {
   content: attr(data-placeholder);
   color: #999;
 }
-

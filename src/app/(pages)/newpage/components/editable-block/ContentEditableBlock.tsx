@@ -1,5 +1,3 @@
-// ContentEditableBlock.tsx
-
 import * as tw from "./ContentEditableBlock.styles";
 import EmojiModal from "../emoji-modal/Emoji.modal";
 import { useRef, useEffect, useState } from "react";
@@ -12,11 +10,13 @@ interface ContentEditableBlockProps {
     onTypeChange: (newType: string) => void;
     onAddBlock: () => void;
     onAddBlockAfterBullet: () => void;
+    onDeleteBlock: () => void;
     id: string;
-    listNumber?: number; // 번호 리스트의 경우 순번 추가
-    // 체크리스트 상태 추가
-    isChecked?: boolean; 
+    listNumber?: number;
+    isChecked?: boolean;
     onToggleChecked?: (id: string, isChecked: boolean) => void;
+    onFocusNext?: (currentId: string, targetX: number) => void; // targetX 추가
+    onFocusPrev?: (currentId: string, targetX: number) => void; // targetX 추가
 }
 
 const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: string }> = ({
@@ -26,104 +26,122 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
     onTypeChange,
     onAddBlock,
     onAddBlockAfterBullet,
+    onDeleteBlock,
     color,
     id,
-    listNumber, // listNumber 매개변수 추가
-    isChecked, // isChecked 매개변수 추가
-    onToggleChecked, // onToggleChecked 매개변수 추가
+    listNumber,
+    isChecked,
+    onToggleChecked,
+    onFocusNext,
+    onFocusPrev,
 }) => {
     const ref = useRef<HTMLDivElement | null>(null);
     const isComposingRef = useRef(false);
     const [isFocused, setIsFocused] = useState(false);
 
-    // 이모지 모달 상태 및 위치 관리
     const [showEmojiModal, setShowEmojiModal] = useState(false);
     const [emojiModalPosition, setEmojiModalPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
     const [emojiSearch, setEmojiSearch] = useState("");
 
-    // 커서 위치 저장
     const savedSelection = useRef<Range | null>(null);
 
-    // 내부에서 체크 상태를 관리합니다. (외부 prop이 있다면 초기값으로 사용)
+    // 캐럿(커서)의 정확한 위치를 계산하는 함수
+    const getCaretPosition = (editableDiv: HTMLDivElement | null) => {
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) return null;
+        const range = selection.getRangeAt(0).cloneRange();
+        range.collapse(true);
+        const rects = range.getClientRects();
+        if (rects.length > 0) {
+            const rect = rects[0];
+            return { top: rect.bottom + window.scrollY, left: rect.left + window.scrollX };
+        }
+        return null;
+    };
+
     const [internalIsChecked, setInternalIsChecked] = useState(isChecked || false);
 
+    const isContentEmpty = (element: HTMLDivElement | null): boolean => {
+        if (!element) return true;
+        const text = element.innerText || element.textContent || "";
+        const trimmedText = text.trim();
+        return trimmedText === "" || trimmedText === "\n";
+    };
+
+    const cleanEmptyContent = (element: HTMLDivElement) => {
+        if (isContentEmpty(element)) {
+            element.innerHTML = "";
+        }
+    };
+
     useEffect(() => {
-        // content prop이 변경될 때마다 DOM을 동기화합니다.
-        // 단, 실제로 외부에서 강제로 바꿀 때만 동기화 (사용자 입력 시에는 건드리지 않음)
-        if (ref.current) {
-            // 플레이스홀더/초기화 상황만 innerHTML을 비움
-            if (content === "" && ref.current.textContent !== "") {
+        if (ref.current && ref.current.textContent !== content && document.activeElement !== ref.current) {
+            if (content === "") {
                 ref.current.innerHTML = "";
-            } else if (ref.current.textContent !== content && document.activeElement !== ref.current) {
-                // 현재 포커스가 없을 때만 동기화
+            } else {
                 ref.current.textContent = content;
             }
         }
     }, [content]);
 
-    // 외부 isChecked prop이 변경될 때 내부 상태도 업데이트
     useEffect(() => {
         setInternalIsChecked(isChecked || false);
     }, [isChecked]);
 
-
     useEffect(() => {
-        if (content === "") {
-            ref.current?.focus();
+        if (content === "" && ref.current) {
+            ref.current.focus();
         }
     }, [content]);
 
     const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
         if (isComposingRef.current) return;
-
-        const newContent = e.currentTarget.innerText ?? "";
-        // 이모지 검색 중에 띄어쓰기가 입력되면 모달 닫기
-        if (showEmojiModal && /\s$/.test(newContent)) {
-            setShowEmojiModal(false);
-            setEmojiSearch("");
-        }
-
-        if (newContent.length === 0 || newContent.trim() === "") {
-            if (ref.current) {
-                ref.current.innerHTML = "";
-            }
+        const element = e.currentTarget;
+        if (isContentEmpty(element)) {
+            cleanEmptyContent(element);
             onContentChange("");
             setShowEmojiModal(false);
             setEmojiSearch("");
             return;
         }
-
-        // :검색어 패턴 감지 (텍스트 내 어디든)
-        const match = newContent.match(/:(\w+)/);
-        if (match) {
-            // 커서 위치 저장
-            const selection = window.getSelection();
-            if (selection && selection.rangeCount > 0) {
-                savedSelection.current = selection.getRangeAt(0).cloneRange();
+        const newContent = element.innerText ?? "";
+        onContentChange(newContent);
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0 && ref.current) {
+            const range = selection.getRangeAt(0);
+            let textBeforeCursor = "";
+            try {
+                const beforeRange = document.createRange();
+                beforeRange.setStart(ref.current, 0);
+                beforeRange.setEnd(range.startContainer, range.startOffset);
+                textBeforeCursor = beforeRange.toString();
+            } catch {
+                textBeforeCursor = range.startContainer.textContent?.substring(0, range.startOffset) || "";
             }
-            // 모달 위치 계산 (블록 아래)
-            if (ref.current) {
-                const rect = ref.current.getBoundingClientRect();
-                setEmojiModalPosition({
-                    top: rect.bottom + window.scrollY,
-                    left: rect.left + window.scrollX + 24,
-                });
+            const lastColonIndex = textBeforeCursor.lastIndexOf(":");
+            if (lastColonIndex !== -1) {
+                const searchTerm = textBeforeCursor.substring(lastColonIndex + 1);
+                if (searchTerm && !/[\s\n]/.test(searchTerm)) {
+                    savedSelection.current = selection.getRangeAt(0).cloneRange();
+                    if (!showEmojiModal) {
+                        const caretPos = getCaretPosition(ref.current);
+                        if (caretPos) {
+                            setEmojiModalPosition(caretPos);
+                        }
+                    }
+                    setShowEmojiModal(true);
+                    setEmojiSearch(searchTerm);
+                    return;
+                }
             }
-            setShowEmojiModal(true);
-            setEmojiSearch(match[1]); // 검색어만 저장
-        } else {
-            setShowEmojiModal(false);
-            setEmojiSearch("");
         }
-
+        setShowEmojiModal(false);
+        setEmojiSearch("");
         const trimmedContent = newContent.trim();
         if (trimmedContent === "---" && type !== "divider") {
             onTypeChange("divider");
             onContentChange("");
-            return;
         }
-
-        onContentChange(newContent);
     };
 
     const handleCompositionStart = () => {
@@ -132,7 +150,13 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
 
     const handleCompositionEnd = (e: React.FormEvent<HTMLDivElement>) => {
         isComposingRef.current = false;
-        onContentChange(e.currentTarget.innerText ?? "");
+        const element = e.currentTarget;
+        if (isContentEmpty(element)) {
+            cleanEmptyContent(element);
+            onContentChange("");
+        } else {
+            onContentChange(element.innerText ?? "");
+        }
     };
 
     const getPlaceholderText = (blockType: string): string => {
@@ -155,59 +179,97 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         }
     };
 
+    const emojiModalRef = useRef<any>(null);
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === "Enter" && e.shiftKey) {
-            // 쉬프트+엔터는 기본 동작(줄바꿈)을 허용
+        const element = ref.current;
+        if (!element) return;
+        
+        // 이모지 모달이 열려 있을 때 키 이벤트 전달
+        if (showEmojiModal && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"].includes(e.key)) {
+            e.preventDefault();
+            if (emojiModalRef.current && emojiModalRef.current.handleKeyEvent) {
+                emojiModalRef.current.handleKeyEvent(e);
+            }
             return;
         }
-        if (e.key === "Enter") {
+        
+        const selection = window.getSelection();
+        const range = selection?.getRangeAt(0);
+        const currentText = element.innerText;
+        const isAtStartOfBlock = selection?.anchorOffset === 0;
+        const isAtEndOfBlock = selection?.anchorOffset === currentText.length;
+        
+        // 커서 위치가 특정 행의 시작/끝에 있는지 확인하는 로직 (줄바꿈 포함)
+        const isAtStartOfLine = () => {
+            if (!range || !range.startContainer || range.startContainer.nodeType !== Node.TEXT_NODE) return false;
+            const textBeforeCursor = range.startContainer.textContent?.substring(0, range.startOffset) || '';
+            return textBeforeCursor.endsWith('\n') || range.startOffset === 0;
+        };
+
+        const isAtEndOfLine = () => {
+            if (!range || !range.startContainer || range.startContainer.nodeType !== Node.TEXT_NODE) return false;
+            const textAfterCursor = range.startContainer.textContent?.substring(range.startOffset) || '';
+            return textAfterCursor.startsWith('\n') || range.startOffset === range.startContainer.textContent?.length;
+        };
+        
+        // 방향키로 다음/이전 블록 이동
+        if (e.key === "ArrowDown") {
+            // 줄바꿈이 없는 단일 라인 블록이거나, 여러 줄 중 마지막 줄의 끝에 있을 때
+            if (currentText.indexOf('\n') === -1 || isAtEndOfLine()) {
+                e.preventDefault();
+                const caretPos = getCaretPosition(element);
+                if (caretPos) {
+                    onFocusNext?.(id, caretPos.left);
+                } else {
+                    onFocusNext?.(id, 0); // fallback
+                }
+            }
+        } else if (e.key === "ArrowUp") {
+             // 줄바꿈이 없는 단일 라인 블록이거나, 여러 줄 중 첫 번째 줄의 시작에 있을 때
+            if (currentText.indexOf('\n') === -1 || isAtStartOfLine()) {
+                e.preventDefault();
+                const caretPos = getCaretPosition(element);
+                if (caretPos) {
+                    onFocusPrev?.(id, caretPos.left);
+                } else {
+                    onFocusPrev?.(id, 0); // fallback
+                }
+            }
+        } else if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             if (type === "ul" || type === "numberedList" || type === "checkedList") {
                 onAddBlockAfterBullet();
             } else {
                 onAddBlock();
             }
-        } else if (e.key === ":") {
-            // ':' 입력 시 이모지 모달 띄우기
-            // 커서 위치 저장
-            const selection = window.getSelection();
-            if (selection && selection.rangeCount > 0) {
-                savedSelection.current = selection.getRangeAt(0).cloneRange();
+        } else if (e.key === "Backspace" && isAtStartOfBlock) {
+            const isEmpty = isContentEmpty(element);
+            if (isEmpty) {
+                e.preventDefault();
+                if (type === "h1" || type === "h2" || type === "h3" || type === "ul" || type === "numberedList" || type === "checkedList") {
+                    onTypeChange("p");
+                } else if (type === "p") {
+                    onDeleteBlock();
+                }
+            } else if (type === "p" && isAtStartOfBlock) {
+                const text = element.innerText;
+                if (text.length === 0 || (text.length === 1 && text.charCodeAt(0) === 10)) {
+                    e.preventDefault();
+                    onDeleteBlock();
+                }
             }
-            // 모달 위치 계산 (블록 아래)
-            if (ref.current) {
-                const rect = ref.current.getBoundingClientRect();
-                setEmojiModalPosition({
-                    top: rect.bottom + window.scrollY,
-                    left: rect.left + window.scrollX + 24, // 약간 오른쪽
-                });
-            }
-            setShowEmojiModal(true);
-            setEmojiSearch("");
         } else if (e.key === " " && ref.current?.innerText === "-") {
             e.preventDefault();
             onTypeChange("ul");
             onContentChange("");
         } else if (e.key === " " && ref.current?.innerText.match(/^\d+\.$/)) {
-            // "1." 형태로 입력했을 때 번호 리스트로 변환
             e.preventDefault();
             onTypeChange("numberedList");
             onContentChange("");
         } else if (e.key === " " && (ref.current?.innerText === "[]" || ref.current?.innerText === "[ ]")) {
-            // "[]" 또는 "[ ]" 형태로 입력했을 때 체크 리스트로 변환
             e.preventDefault();
             onTypeChange("checkedList");
             onContentChange("");
-        } else if (e.key === "Backspace" && ref.current?.innerText === "") {
-            e.preventDefault();
-            if (type === "ul" || type === "numberedList" || type === "checkedList") {
-                onTypeChange("p");
-            } else {
-                if (ref.current) {
-                    ref.current.innerHTML = "";
-                }
-                onContentChange("");
-            }
         }
     };
 
@@ -217,6 +279,12 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
 
     const handleBlur = () => {
         setIsFocused(false);
+        if (ref.current && isContentEmpty(ref.current)) {
+            cleanEmptyContent(ref.current);
+            if (content !== "") {
+                onContentChange("");
+            }
+        }
     };
 
     const handleCheckboxToggle = () => {
@@ -232,7 +300,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         contentEditable: true,
         suppressContentEditableWarning: true,
         spellCheck: true,
-        className: `notranslate ${internalIsChecked ? 'line-through' : ''}`,
+        className: `notranslate ${internalIsChecked ? "line-through" : ""}`,
         onInput: handleInput,
         onKeyDown: handleKeyDown,
         onCompositionStart: handleCompositionStart,
@@ -244,78 +312,89 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         "data-placeholder": getPlaceholderText(type),
     };
 
+    const renderEmojiModal = () =>
+        showEmojiModal && (
+            <EmojiModal
+                ref={emojiModalRef}
+                open={showEmojiModal}
+                position={emojiModalPosition}
+                search={emojiSearch}
+                onClose={() => setShowEmojiModal(false)}
+                onSelect={(emoji: string, label: string) => {
+                    if (ref.current && savedSelection.current) {
+                        const element = ref.current;
+                        const selection = window.getSelection();
+                        if (!selection || selection.rangeCount === 0) return;
+                        selection.removeAllRanges();
+                        selection.addRange(savedSelection.current);
+                        try {
+                            const range = selection.getRangeAt(0);
+                            const textNode = range.startContainer;
+                            if (textNode.nodeType === Node.TEXT_NODE) {
+                                const textContent = textNode.textContent || "";
+                                const cursorOffset = range.startOffset;
+                                const textBeforeCursor = textContent.substring(0, cursorOffset);
+                                const lastColonIndex = textBeforeCursor.lastIndexOf(":");
+                                if (lastColonIndex !== -1) {
+                                    const beforeColon = textContent.substring(0, lastColonIndex);
+                                    const afterCursor = textContent.substring(cursorOffset);
+                                    const newTextContent = beforeColon + emoji + afterCursor;
+                                    textNode.textContent = newTextContent;
+                                    const newCursorPosition = lastColonIndex + emoji.length;
+                                    const newRange = document.createRange();
+                                    newRange.setStart(textNode, newCursorPosition);
+                                    newRange.collapse(true);
+                                    selection.removeAllRanges();
+                                    selection.addRange(newRange);
+                                    onContentChange(element.innerText || "");
+                                }
+                            }
+                        } catch (error) {
+                            console.error("이모지 삽입 중 오류:", error);
+                            const fullText = element.innerText || "";
+                            const lines = fullText.split("\n");
+                            for (let i = lines.length - 1; i >= 0; i--) {
+                                const line = lines[i];
+                                const lastColonIndex = line.lastIndexOf(":");
+                                if (lastColonIndex !== -1) {
+                                    const searchTerm = line.substring(lastColonIndex + 1);
+                                    if (searchTerm === emojiSearch) {
+                                        lines[i] = line.substring(0, lastColonIndex) + emoji + line.substring(lastColonIndex + 1 + searchTerm.length);
+                                        break;
+                                    }
+                                }
+                            }
+                            const newText = lines.join("\n");
+                            element.innerText = newText;
+                            onContentChange(newText);
+                        }
+                    }
+                    setShowEmojiModal(false);
+                    setEmojiSearch("");
+                }}
+            />
+        );
+
     switch (type) {
         case "h1":
             return (
                 <>
                     <tw.EditableH1Block {...commonProps} />
-                    {showEmojiModal && (
-                        <EmojiModal
-                            open={showEmojiModal}
-                            position={emojiModalPosition}
-                            search={emojiSearch}
-                            onClose={() => setShowEmojiModal(false)}
-                            onSelect={(emoji: string, label: string) => {
-                                if (ref.current) {
-                                    const text = ref.current.innerText ?? "";
-                                    // :검색어와 뒤의 공백까지 이모지로 치환
-                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
-                                    ref.current.innerText = replaced;
-                                    onContentChange(replaced);
-                                }
-                                setShowEmojiModal(false);
-                                setEmojiSearch("");
-                            }}
-                        />
-                    )}
+                    {renderEmojiModal()}
                 </>
             );
         case "h2":
             return (
                 <>
                     <tw.EditableH2Block {...commonProps} />
-                    {showEmojiModal && (
-                        <EmojiModal
-                            open={showEmojiModal}
-                            position={emojiModalPosition}
-                            search={emojiSearch}
-                            onClose={() => setShowEmojiModal(false)}
-                            onSelect={(emoji: string, label: string) => {
-                                if (ref.current) {
-                                    const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
-                                    ref.current.innerText = replaced;
-                                    onContentChange(replaced);
-                                }
-                                setShowEmojiModal(false);
-                                setEmojiSearch("");
-                            }}
-                        />
-                    )}
+                    {renderEmojiModal()}
                 </>
             );
         case "h3":
             return (
                 <>
                     <tw.EditableH3Block {...commonProps} />
-                    {showEmojiModal && (
-                        <EmojiModal
-                            open={showEmojiModal}
-                            position={emojiModalPosition}
-                            search={emojiSearch}
-                            onClose={() => setShowEmojiModal(false)}
-                            onSelect={(emoji: string, label: string) => {
-                                if (ref.current) {
-                                    const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
-                                    ref.current.innerText = replaced;
-                                    onContentChange(replaced);
-                                }
-                                setShowEmojiModal(false);
-                                setEmojiSearch("");
-                            }}
-                        />
-                    )}
+                    {renderEmojiModal()}
                 </>
             );
         case "ul":
@@ -323,81 +402,23 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                 <tw.EditableUlBlockWrap>
                     <tw.EditableUlBlockTag style={{ color: color || "#ffffffcf" }} />
                     <tw.EditableUlBlock {...commonProps} />
-                    {showEmojiModal && (
-                        <EmojiModal
-                            open={showEmojiModal}
-                            position={emojiModalPosition}
-                            search={emojiSearch}
-                            onClose={() => setShowEmojiModal(false)}
-                            onSelect={(emoji: string, label: string) => {
-                                if (ref.current) {
-                                    const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
-                                    ref.current.innerText = replaced;
-                                    onContentChange(replaced);
-                                }
-                                setShowEmojiModal(false);
-                                setEmojiSearch("");
-                            }}
-                        />
-                    )}
+                    {renderEmojiModal()}
                 </tw.EditableUlBlockWrap>
             );
         case "numberedList":
             return (
                 <tw.EditableNumberedListBlockWrap>
-                    <tw.EditableNumberedListBlockTag 
-                        style={{ color: color || "#ffffffcf" }}
-                        data-number={listNumber || 1}
-                    />
+                    <tw.EditableNumberedListBlockTag style={{ color: color || "#ffffffcf" }} data-number={listNumber || 1} />
                     <tw.EditableNumberedListBlock {...commonProps} />
-                    {showEmojiModal && (
-                        <EmojiModal
-                            open={showEmojiModal}
-                            position={emojiModalPosition}
-                            search={emojiSearch}
-                            onClose={() => setShowEmojiModal(false)}
-                            onSelect={(emoji: string, label: string) => {
-                                if (ref.current) {
-                                    const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
-                                    ref.current.innerText = replaced;
-                                    onContentChange(replaced);
-                                }
-                                setShowEmojiModal(false);
-                                setEmojiSearch("");
-                            }}
-                        />
-                    )}
+                    {renderEmojiModal()}
                 </tw.EditableNumberedListBlockWrap>
             );
         case "checkedList":
             return (
                 <tw.EditableCheckedListBlockWrap>
-                    <tw.EditableCheckbox 
-                        type="checkbox" 
-                        checked={internalIsChecked} 
-                        onChange={handleCheckboxToggle} 
-                    />
+                    <tw.EditableCheckbox type="checkbox" checked={internalIsChecked} onChange={handleCheckboxToggle} />
                     <tw.EditableCheckedListBlock {...commonProps} />
-                    {showEmojiModal && (
-                        <EmojiModal
-                            open={showEmojiModal}
-                            position={emojiModalPosition}
-                            search={emojiSearch}
-                            onClose={() => setShowEmojiModal(false)}
-                            onSelect={(emoji: string, label: string) => {
-                                if (ref.current) {
-                                    const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
-                                    ref.current.innerText = replaced;
-                                    onContentChange(replaced);
-                                }
-                                setShowEmojiModal(false);
-                                setEmojiSearch("");
-                            }}
-                        />
-                    )}
+                    {renderEmojiModal()}
                 </tw.EditableCheckedListBlockWrap>
             );
         case "divider":
@@ -407,24 +428,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             return (
                 <>
                     <tw.EditablePBlock {...commonProps} />
-                    {showEmojiModal && (
-                        <EmojiModal
-                            open={showEmojiModal}
-                            position={emojiModalPosition}
-                            search={emojiSearch}
-                            onClose={() => setShowEmojiModal(false)}
-                            onSelect={(emoji: string, label: string) => {
-                                if (ref.current) {
-                                    const text = ref.current.innerText ?? "";
-                                    const replaced = text.replace(/:(\w+)\s?$/, emoji + (text.match(/:(\w+)\s$/) ? " " : ""));
-                                    ref.current.innerText = replaced;
-                                    onContentChange(replaced);
-                                }
-                                setShowEmojiModal(false);
-                                setEmojiSearch("");
-                            }}
-                        />
-                    )}
+                    {renderEmojiModal()}
                 </>
             );
     }

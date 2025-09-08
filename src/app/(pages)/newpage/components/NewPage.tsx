@@ -39,39 +39,39 @@ function blocksToMDX(
     let numberedListCounter = 1;
     
     const body = blocks
-        .filter((b) => b.content.trim() !== "")
+        .filter((b) => b.content.trim() !== "" || b.type === "divider")
         .map((b, index) => {
             switch (b.type) {
                 case "h1":
-                    numberedListCounter = 1; // 리셋
+                    numberedListCounter = 1;
                     return `# ${b.content}`;
                 case "h2":
-                    numberedListCounter = 1; // 리셋
+                    numberedListCounter = 1;
                     return `## ${b.content}`;
                 case "h3":
-                    numberedListCounter = 1; // 리셋
+                    numberedListCounter = 1;
                     return `### ${b.content}`;
                 case "p":
-                    numberedListCounter = 1; // 리셋
+                    numberedListCounter = 1;
                     return b.content;
                 case "ul":
-                    numberedListCounter = 1; // 리셋
+                    numberedListCounter = 1;
                     return `- ${b.content}`;
                 case "numberedList":
-                    const prevBlock = blocks.filter(block => block.content.trim() !== "")[index - 1];
+                    const prevBlock = blocks.filter(block => block.content.trim() !== "" || block.type === "divider")[index - 1];
                     if (!prevBlock || prevBlock.type !== "numberedList") {
                         numberedListCounter = 1;
                     }
                     const currentNumber = numberedListCounter++;
                     return `${currentNumber}. ${b.content}`;
                 case "checkedList":
-                    numberedListCounter = 1; // 리셋
+                    numberedListCounter = 1;
                     return `- [ ] ${b.content}`;
                 case "divider":
-                    numberedListCounter = 1; // 리셋
+                    numberedListCounter = 1;
                     return "---";
                 default:
-                    numberedListCounter = 1; // 리셋
+                    numberedListCounter = 1;
                     return b.content;
             }
         })
@@ -101,12 +101,10 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
     const [insertLineIdx, setInsertLineIdx] = useState<number | null>(null);
 
-    // 번호 리스트의 순번을 계산하는 함수
     const getListNumber = (currentIndex: number): number => {
         let counter = 1;
         for (let i = 0; i <= currentIndex; i++) {
             if (blocks[i].type === "numberedList") {
-                // 이전 블록이 numberedList가 아니면 카운터 리셋
                 if (i === 0 || blocks[i - 1].type !== "numberedList") {
                     counter = 1;
                 }
@@ -135,13 +133,14 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     };
 
     const handleExport = () => {
+        const exportedTags = meta.tags.length > 0 ? meta.tags : ["default-tag"];
         const mdx = blocksToMDX(blocks, {
             label: meta.label || "",
             title: meta.title || "",
             subTitle: meta.subTitle || "",
             date: meta.date || new Date().toISOString().slice(0, 10),
             mins: meta.mins || 2,
-            tags: meta.tags.length ? meta.tags : [""],
+            tags: exportedTags,
             imageUrl: meta.imageUrl || "",
         });
         alert(mdx);
@@ -153,6 +152,21 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         setBlocks(newBlocks);
         setMenuIdx(null);
         setMenuPos(null);
+        
+        setTimeout(() => {
+            const blockElement = document.getElementById(newBlocks[idx].id);
+            if (blockElement) {
+                blockElement.focus();
+                const selection = window.getSelection();
+                if (selection) {
+                    const range = document.createRange();
+                    range.selectNodeContents(blockElement);
+                    range.collapse(false);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            }
+        }, 0);
     };
 
     const handleColorChange = (idx: number, color: string) => {
@@ -211,6 +225,34 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         setBlocks(newBlocks);
         setMenuIdx(null);
         setMenuPos(null);
+    };
+
+    const handleDeleteBlockAndFocusPrevious = (idx: number) => {
+        if (blocks.length <= 1) {
+            return;
+        }
+        
+        const newBlocks = [...blocks];
+        const prevBlockIdx = idx > 0 ? idx - 1 : 0;
+        const prevBlockId = blocks[prevBlockIdx].id;
+
+        newBlocks.splice(idx, 1);
+        setBlocks(newBlocks);
+
+        setTimeout(() => {
+            const prevBlockElement = document.getElementById(prevBlockId);
+            if (prevBlockElement) {
+                prevBlockElement.focus();
+                const selection = window.getSelection();
+                if (selection) {
+                    const range = document.createRange();
+                    range.selectNodeContents(prevBlockElement);
+                    range.collapse(false);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            }
+        }, 0);
     };
 
     const handlePlusClick = (idx: number) => {
@@ -273,7 +315,6 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         const newBlockId = crypto.randomUUID();
         const currentBlockType = blocks[idx].type;
         
-        // 현재 블록의 타입과 동일한 타입으로 새 블록 생성
         const newBlock = { id: newBlockId, type: currentBlockType, content: "" };
         newBlocks.splice(idx + 1, 0, newBlock);
         setBlocks(newBlocks);
@@ -290,6 +331,83 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         changeBlockType(idx, newType);
     };
 
+    const setCaretPosition = (element: HTMLDivElement, offset: number) => {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.setStart(element.childNodes[0] || element, offset);
+        range.collapse(true);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+    };
+
+    const handleFocusNext = (currentId: string, targetX: number) => {
+        const currentIdx = blocks.findIndex((block) => block.id === currentId);
+        if (currentIdx < blocks.length - 1) {
+            const nextBlock = document.getElementById(blocks[currentIdx + 1].id) as HTMLDivElement;
+            if (nextBlock) {
+                const contentText = nextBlock.innerText;
+                let closestOffset = 0;
+                let minDistance = Infinity;
+
+                if (nextBlock.childNodes[0]?.nodeType === Node.TEXT_NODE) {
+                    const textNode = nextBlock.childNodes[0] as Text;
+                    const text = textNode.data;
+                    for (let i = 0; i <= text.length; i++) {
+                        const range = document.createRange();
+                        range.setStart(textNode, i);
+                        range.collapse(true);
+                        const rects = range.getClientRects();
+                        if (rects.length > 0) {
+                            const rect = rects[0];
+                            const distance = Math.abs(rect.left + window.scrollX - targetX);
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                closestOffset = i;
+                            }
+                        }
+                    }
+                }
+                
+                nextBlock.focus();
+                setCaretPosition(nextBlock, closestOffset);
+            }
+        }
+    };
+
+    const handleFocusPrev = (currentId: string, targetX: number) => {
+        const currentIdx = blocks.findIndex((block) => block.id === currentId);
+        if (currentIdx > 0) {
+            const prevBlock = document.getElementById(blocks[currentIdx - 1].id) as HTMLDivElement;
+            if (prevBlock) {
+                const contentText = prevBlock.innerText;
+                let closestOffset = contentText.length;
+                let minDistance = Infinity;
+                
+                if (prevBlock.childNodes[0]?.nodeType === Node.TEXT_NODE) {
+                    const textNode = prevBlock.childNodes[0] as Text;
+                    const text = textNode.data;
+                    for (let i = text.length; i >= 0; i--) {
+                        const range = document.createRange();
+                        range.setStart(textNode, i);
+                        range.collapse(true);
+                        const rects = range.getClientRects();
+                        if (rects.length > 0) {
+                            const rect = rects[0];
+                            const distance = Math.abs(rect.left + window.scrollX - targetX);
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                closestOffset = i;
+                            }
+                        }
+                    }
+                }
+
+                prevBlock.focus();
+                setCaretPosition(prevBlock, closestOffset);
+            }
+        }
+    };
+    
     return (
         <tw.Container
             style={{
@@ -369,6 +487,9 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                     }
                                     setHoverIdx(null);
                                 }}
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, idx)}
+                                onDragEnd={handleDragEnd}
                             />
                             {(hoverIdx === idx || menuIdx === idx) && (
                                 <div
@@ -427,9 +548,12 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                     onTypeChange={(newType) => handleTypeChange(idx, newType)}
                                     onAddBlock={() => handleAddBlock(idx)}
                                     onAddBlockAfterBullet={() => handleAddBlockAfterBullet(idx)}
+                                    onDeleteBlock={() => handleDeleteBlockAndFocusPrevious(idx)}
                                     color={blockColors[block.id]}
                                     id={block.id}
                                     listNumber={block.type === "numberedList" ? getListNumber(idx) : undefined}
+                                    onFocusNext={handleFocusNext}
+                                    onFocusPrev={handleFocusPrev}
                                 />
                             </tw.InputWrap>
                         </tw.BlockWrap>
