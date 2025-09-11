@@ -258,7 +258,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                     onDeleteBlock();
                 }
             }
-        } else if (e.key === " " && ref.current?.innerText === "-") {
+        } else if (e.key === " " && (ref.current?.innerText === "-" || ref.current?.innerText === "*" || ref.current?.innerText === "+")) {
             e.preventDefault();
             onTypeChange("ul");
             onContentChange("");

@@ -1,92 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
-import * as tw from "./Newpage.styles";
-import { GripDotsIcon, PlusIcon } from "@/components/ui/hover-header/svg/PostsSvg";
+
 import TypeMenuModal from "./menu-modal/TypeMenu.modal";
 import { ELEMENTS } from "./menu-modal/TypeElement";
+import { Block, blocksToMDX } from "./helper/BlocksToMdx";
 import ContentEditableBlock from "./editable-block/ContentEditableBlock";
 
-interface Block {
-    id: string;
-    type: string;
-    content: string;
-}
-
-function blocksToMDX(
-    blocks: Block[],
-    meta?: {
-        label?: string;
-        title?: string;
-        subTitle?: string;
-        date?: string;
-        mins?: number;
-        tags?: string[];
-        imageUrl?: string;
-    },
-) {
-    let frontmatter = "";
-    if (meta) {
-        frontmatter = `---\n`;
-        if (meta.label) frontmatter += `label: ${meta.label}\n`;
-        if (meta.title) frontmatter += `title: ${meta.title}\n`;
-        if (meta.subTitle) frontmatter += `subTitle: ${meta.subTitle}\n`;
-        if (meta.date) frontmatter += `date: ${meta.date}\n`;
-        if (meta.mins) frontmatter += `mins: ${meta.mins}\n`;
-        if (meta.tags) frontmatter += `tags: [${meta.tags.join(", ")}]\n`;
-        if (meta.imageUrl) frontmatter += `imageUrl: ${meta.imageUrl}\n`;
-        frontmatter += `---\n\n`;
-    }
-    
-    let numberedListCounter = 1;
-    
-    const body = blocks
-        .filter((b) => b.content.trim() !== "" || b.type === "divider")
-        .map((b, index) => {
-            switch (b.type) {
-                case "h1":
-                    numberedListCounter = 1;
-                    return `# ${b.content}`;
-                case "h2":
-                    numberedListCounter = 1;
-                    return `## ${b.content}`;
-                case "h3":
-                    numberedListCounter = 1;
-                    return `### ${b.content}`;
-                case "p":
-                    numberedListCounter = 1;
-                    return b.content;
-                case "ul":
-                    numberedListCounter = 1;
-                    return `- ${b.content}`;
-                case "numberedList":
-                    const prevBlock = blocks.filter(block => block.content.trim() !== "" || block.type === "divider")[index - 1];
-                    if (!prevBlock || prevBlock.type !== "numberedList") {
-                        numberedListCounter = 1;
-                    }
-                    const currentNumber = numberedListCounter++;
-                    return `${currentNumber}. ${b.content}`;
-                case "checkedList":
-                    numberedListCounter = 1;
-                    return `- [ ] ${b.content}`;
-                case "divider":
-                    numberedListCounter = 1;
-                    return "---";
-                default:
-                    numberedListCounter = 1;
-                    return b.content;
-            }
-        })
-        .join("\n\n");
-    return frontmatter + body;
-}
+import { GripDotsIcon, PlusIcon } from "@/components/ui/hover-header/svg/PostsSvg";
+import * as tw from "./Newpage.styles";
 
 export default function NewPage({ collapsed }: { collapsed: boolean }) {
     const [blocks, setBlocks] = useState<Block[]>([{ id: crypto.randomUUID(), type: "p", content: "" }]);
     const [blockColors, setBlockColors] = useState<{ [id: string]: string }>({});
+
     const [hoverIdx, setHoverIdx] = useState<number | null>(null);
     const [menuIdx, setMenuIdx] = useState<number | null>(null);
     const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
-    const plusRefs = useRef<(HTMLButtonElement | null)[]>([]);
-    const divRef = useRef<HTMLDivElement | null>(null);
+    const divRef = useRef<HTMLDivElement>(null);
+    const dotRefs = useRef<(HTMLButtonElement | null)[]>([]);
+    const [isTitleEmpty, setIsTitleEmpty] = useState(true);
     const [meta, setMeta] = useState({
         label: "",
         title: "",
@@ -118,8 +49,22 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     };
 
     useEffect(() => {
+        if (!divRef.current) return;
+        const observer = new MutationObserver(() => {
+            const hasContent = !!divRef.current?.textContent?.trim();
+            setIsTitleEmpty(!hasContent);
+        });
+        observer.observe(divRef.current, {
+            childList: true,
+            subtree: true,
+            characterData: true,
+        });
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
         if (divRef.current && (!divRef.current.textContent || divRef.current.textContent === "")) {
-            divRef.current.textContent = "시작하기";
+            divRef.current.textContent = "새 페이지";
         }
     }, []);
 
@@ -152,7 +97,6 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         setBlocks(newBlocks);
         setMenuIdx(null);
         setMenuPos(null);
-        
         setTimeout(() => {
             const blockElement = document.getElementById(newBlocks[idx].id);
             if (blockElement) {
@@ -231,14 +175,11 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         if (blocks.length <= 1) {
             return;
         }
-        
         const newBlocks = [...blocks];
         const prevBlockIdx = idx > 0 ? idx - 1 : 0;
         const prevBlockId = blocks[prevBlockIdx].id;
-
         newBlocks.splice(idx, 1);
         setBlocks(newBlocks);
-
         setTimeout(() => {
             const prevBlockElement = document.getElementById(prevBlockId);
             if (prevBlockElement) {
@@ -258,7 +199,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     const handlePlusClick = (idx: number) => {
         setMenuIdx(idx);
         setTimeout(() => {
-            const btn = plusRefs.current[idx];
+            const btn = dotRefs.current[idx];
             if (btn) {
                 const rect = btn.getBoundingClientRect();
                 const menuWidth = 265;
@@ -272,36 +213,12 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         }, 0);
     };
 
-    useEffect(() => {
-        if (menuIdx !== null) {
-            const updateMenuPos = () => {
-                const btn = plusRefs.current[menuIdx];
-                if (btn) {
-                    const rect = btn.getBoundingClientRect();
-                    const menuWidth = 265;
-                    const newLeft = rect.left + window.scrollX - menuWidth - 45;
-                    const newTop = rect.top + window.scrollY - 70;
-                    setMenuPos({
-                        top: newTop,
-                        left: newLeft,
-                    });
-                }
-            };
-            updateMenuPos();
-            window.addEventListener("resize", updateMenuPos);
-            return () => {
-                window.removeEventListener("resize", updateMenuPos);
-            };
-        }
-    }, [menuIdx]);
-
     const handleAddBlock = (idx: number) => {
         const newBlocks = [...blocks];
         const newBlockId = crypto.randomUUID();
         const newBlock = { id: newBlockId, type: "p", content: "" };
         newBlocks.splice(idx + 1, 0, newBlock);
         setBlocks(newBlocks);
-
         setTimeout(() => {
             const newBlockElement = document.getElementById(newBlockId);
             if (newBlockElement) {
@@ -314,11 +231,9 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         const newBlocks = [...blocks];
         const newBlockId = crypto.randomUUID();
         const currentBlockType = blocks[idx].type;
-        
         const newBlock = { id: newBlockId, type: currentBlockType, content: "" };
         newBlocks.splice(idx + 1, 0, newBlock);
         setBlocks(newBlocks);
-
         setTimeout(() => {
             const newBlockElement = document.getElementById(newBlockId);
             if (newBlockElement) {
@@ -348,7 +263,6 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                 const contentText = nextBlock.innerText;
                 let closestOffset = 0;
                 let minDistance = Infinity;
-
                 if (nextBlock.childNodes[0]?.nodeType === Node.TEXT_NODE) {
                     const textNode = nextBlock.childNodes[0] as Text;
                     const text = textNode.data;
@@ -367,7 +281,6 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                         }
                     }
                 }
-                
                 nextBlock.focus();
                 setCaretPosition(nextBlock, closestOffset);
             }
@@ -382,7 +295,6 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                 const contentText = prevBlock.innerText;
                 let closestOffset = contentText.length;
                 let minDistance = Infinity;
-                
                 if (prevBlock.childNodes[0]?.nodeType === Node.TEXT_NODE) {
                     const textNode = prevBlock.childNodes[0] as Text;
                     const text = textNode.data;
@@ -401,13 +313,12 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                         }
                     }
                 }
-
                 prevBlock.focus();
                 setCaretPosition(prevBlock, closestOffset);
             }
         }
     };
-    
+
     return (
         <tw.Container
             style={{
@@ -425,10 +336,10 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                             spellCheck={true}
                             className="notranslate"
                             onInput={handleTitleInput}
+                            data-placeholder="새 페이지"
                         />
                     </tw.TitleBlock>
                 </tw.BlockWrap>
-
                 <TypeMenuModal
                     open={menuIdx !== null}
                     position={menuPos}
@@ -447,14 +358,12 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                     }}
                     elements={ELEMENTS}
                 />
-
                 {blocks.map((block, idx) => (
                     <React.Fragment key={block.id}>
                         <div
                             className={`h-1 rounded ${insertLineIdx === idx ? "bg-blue-500/50" : "bg-transparent"}`}
                             onDragEnter={(e) => handleDragEnter(e, idx, true)}
                             onDragOver={handleDragOver}
-                            onDragEnd={handleDragEnd}
                         />
                         <tw.BlockWrap
                             className={`group ${draggingIdx === idx ? "opacity-50" : ""}`}
@@ -508,7 +417,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                     onMouseEnter={() => setHoverIdx(idx)}
                                     onMouseLeave={(e) => {
                                         const related = e.relatedTarget as HTMLElement | null;
-                                        if (related && related.closest && related.closest(".group")) {
+                                        if (related && (related.closest(`[data-btn-idx="${idx}"]`) || related.closest(".group"))) {
                                             return;
                                         }
                                         setHoverIdx(null);
@@ -517,11 +426,11 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                     onDragStart={(e) => handleDragStart(e, idx)}
                                     onDragEnd={handleDragEnd}
                                 >
-                                    <tw.PlusButton ref={(el) => (plusRefs.current[idx] = el)} onClick={() => handleAddBlock(idx)}>
+                                    <tw.PlusButton onClick={() => handleAddBlock(idx)}>
                                         <PlusIcon color={"#616161"} />
                                     </tw.PlusButton>
                                     <tw.DotButton
-                                        ref={(el) => (plusRefs.current[idx] = el)}
+                                        ref={(el) => (dotRefs.current[idx] = el)} // dotRefs로 변경
                                         className={`${menuIdx === idx ? "bg-[#252525]" : ""}`}
                                         onClick={() => handlePlusClick(idx)}
                                     >
@@ -563,7 +472,6 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                     className={`h-[4px] rounded ${insertLineIdx === blocks.length ? "bg-blue-500/50" : "bg-transparent"}`}
                     onDragEnter={(e) => handleDragEnter(e, blocks.length, true)}
                     onDragOver={handleDragOver}
-                    onDragEnd={handleDragEnd}
                 />
             </div>
             <div className="fixed bottom-8 right-8 z-50">

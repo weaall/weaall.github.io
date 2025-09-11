@@ -82,13 +82,17 @@ export const EditableH3Block = tw.div`
 export const EditableUlBlockWrap = tw.div`flex items-start justify-start`;
 
 export const EditableUlBlockTag = tw.div`
-  before:content-['●']
-  before:px-[10px]
-  before:text-[8px]
-  before:font-medium
-  before:mt-[3px]
-  before:h-[24px]
-  `;
+  pt-[10px]
+  before:content-['']
+  before:block
+  before:w-[7px]
+  before:h-[7px]
+  before:bg-black
+  before:rounded-full
+  before:bg-[#ffffffcf]
+  
+  before:mr-[10px]
+`;
 
 export const EditableUlBlock = tw.div`
   notranslate
