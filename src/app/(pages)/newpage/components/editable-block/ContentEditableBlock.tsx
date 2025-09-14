@@ -15,8 +15,10 @@ interface ContentEditableBlockProps {
     listNumber?: number;
     isChecked?: boolean;
     onToggleChecked?: (id: string, isChecked: boolean) => void;
-    onFocusNext?: (currentId: string, targetX: number) => void; // targetX 추가
-    onFocusPrev?: (currentId: string, targetX: number) => void; // targetX 추가
+    onFocusNext?: (currentId: string, targetX: number) => void;
+    onFocusPrev?: (currentId: string, targetX: number) => void;
+    indentationLevel: number; 
+    onIndent: (change: number) => void;
 }
 
 const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: string }> = ({
@@ -34,6 +36,8 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
     onToggleChecked,
     onFocusNext,
     onFocusPrev,
+    indentationLevel,
+    onIndent,
 }) => {
     const ref = useRef<HTMLDivElement | null>(null);
     const isComposingRef = useRef(false);
@@ -45,7 +49,6 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
 
     const savedSelection = useRef<Range | null>(null);
 
-    // 캐럿(커서)의 정확한 위치를 계산하는 함수
     const getCaretPosition = (editableDiv: HTMLDivElement | null) => {
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return null;
@@ -183,7 +186,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         const element = ref.current;
         if (!element) return;
-        
+
         // 이모지 모달이 열려 있을 때 키 이벤트 전달
         if (showEmojiModal && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"].includes(e.key)) {
             e.preventDefault();
@@ -192,47 +195,63 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             }
             return;
         }
-        
+
         const selection = window.getSelection();
         const range = selection?.getRangeAt(0);
         const currentText = element.innerText;
         const isAtStartOfBlock = selection?.anchorOffset === 0;
-        const isAtEndOfBlock = selection?.anchorOffset === currentText.length;
-        
+
+        const handleIndent = (change: number) => {
+            const newIndent = indentationLevel + change;
+            // 들여쓰기 레벨을 0에서 6 사이로 제한
+            if (newIndent >= 0 && newIndent <= 6) {
+                onIndent(change);
+            }
+        };
+
+        // 탭 키(Tab)에 대한 들여쓰기/내어쓰기 로직 추가
+        if (e.key === "Tab") {
+            e.preventDefault();
+            if (e.shiftKey) {
+                handleIndent(-1); // Shift + Tab: 내어쓰기
+            } else {
+                handleIndent(1); // Tab: 들여쓰기
+            }
+            return;
+        }
+
         // 커서 위치가 특정 행의 시작/끝에 있는지 확인하는 로직 (줄바꿈 포함)
         const isAtStartOfLine = () => {
             if (!range || !range.startContainer || range.startContainer.nodeType !== Node.TEXT_NODE) return false;
-            const textBeforeCursor = range.startContainer.textContent?.substring(0, range.startOffset) || '';
-            return textBeforeCursor.endsWith('\n') || range.startOffset === 0;
+            const textBeforeCursor = range.startContainer.textContent?.substring(0, range.startOffset) || "";
+            return textBeforeCursor.endsWith("\n") || range.startOffset === 0;
         };
 
         const isAtEndOfLine = () => {
             if (!range || !range.startContainer || range.startContainer.nodeType !== Node.TEXT_NODE) return false;
-            const textAfterCursor = range.startContainer.textContent?.substring(range.startOffset) || '';
-            return textAfterCursor.startsWith('\n') || range.startOffset === range.startContainer.textContent?.length;
+            const textAfterCursor = range.startContainer.textContent?.substring(range.startOffset) || "";
+            return textAfterCursor.startsWith("\n") || range.startOffset === range.startContainer.textContent?.length;
         };
-        
+
         // 방향키로 다음/이전 블록 이동
         if (e.key === "ArrowDown") {
-            // 줄바꿈이 없는 단일 라인 블록이거나, 여러 줄 중 마지막 줄의 끝에 있을 때
-            if (currentText.indexOf('\n') === -1 || isAtEndOfLine()) {
+            if (currentText.indexOf("\n") === -1 || isAtEndOfLine()) {
                 e.preventDefault();
                 const caretPos = getCaretPosition(element);
                 if (caretPos) {
                     onFocusNext?.(id, caretPos.left);
                 } else {
-                    onFocusNext?.(id, 0); // fallback
+                    onFocusNext?.(id, 0);
                 }
             }
         } else if (e.key === "ArrowUp") {
-             // 줄바꿈이 없는 단일 라인 블록이거나, 여러 줄 중 첫 번째 줄의 시작에 있을 때
-            if (currentText.indexOf('\n') === -1 || isAtStartOfLine()) {
+            if (currentText.indexOf("\n") === -1 || isAtStartOfLine()) {
                 e.preventDefault();
                 const caretPos = getCaretPosition(element);
                 if (caretPos) {
                     onFocusPrev?.(id, caretPos.left);
                 } else {
-                    onFocusPrev?.(id, 0); // fallback
+                    onFocusPrev?.(id, 0);
                 }
             }
         } else if (e.key === "Enter" && !e.shiftKey) {
@@ -243,6 +262,13 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                 onAddBlock();
             }
         } else if (e.key === "Backspace" && isAtStartOfBlock) {
+            // ✨ 들여쓰기된 상태에서 백스페이스를 눌렀을 때 들여쓰기 해제 로직 추가
+            if (indentationLevel > 0) {
+                e.preventDefault(); // 기본 백스페이스 동작 방지
+                onIndent(-1); // 들여쓰기 레벨 1 감소
+                return; // 들여쓰기 로직이 실행되었으므로 다른 로직은 무시
+            }
+
             const isEmpty = isContentEmpty(element);
             if (isEmpty) {
                 e.preventDefault();
@@ -307,7 +333,6 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         onCompositionEnd: handleCompositionEnd,
         onFocus: handleFocus,
         onBlur: handleBlur,
-        style: { color },
         id: id,
         "data-placeholder": getPlaceholderText(type),
     };
@@ -379,27 +404,27 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         case "h1":
             return (
                 <>
-                    <tw.EditableH1Block {...commonProps} />
+                    <tw.EditableH1Block {...commonProps} style={{ marginLeft: `${indentationLevel * 25}px` }} />
                     {renderEmojiModal()}
                 </>
             );
         case "h2":
             return (
                 <>
-                    <tw.EditableH2Block {...commonProps} />
+                    <tw.EditableH2Block {...commonProps} style={{ marginLeft: `${indentationLevel * 25}px` }} />
                     {renderEmojiModal()}
                 </>
             );
         case "h3":
             return (
                 <>
-                    <tw.EditableH3Block {...commonProps} />
+                    <tw.EditableH3Block {...commonProps} style={{ marginLeft: `${indentationLevel * 25}px` }} />
                     {renderEmojiModal()}
                 </>
             );
         case "ul":
             return (
-                <tw.EditableUlBlockWrap>
+                <tw.EditableUlBlockWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
                     <tw.EditableUlBlockTag style={{ color: color || "#ffffffcf" }} />
                     <tw.EditableUlBlock {...commonProps} />
                     {renderEmojiModal()}
@@ -407,7 +432,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             );
         case "numberedList":
             return (
-                <tw.EditableNumberedListBlockWrap>
+                <tw.EditableNumberedListBlockWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
                     <tw.EditableNumberedListBlockTag style={{ color: color || "#ffffffcf" }} data-number={listNumber || 1} />
                     <tw.EditableNumberedListBlock {...commonProps} />
                     {renderEmojiModal()}
@@ -415,11 +440,19 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             );
         case "checkedList":
             return (
-                <tw.EditableCheckedListBlockWrap>
+                <tw.EditableCheckedListBlockWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
                     <tw.EditableCheckbox type="checkbox" checked={internalIsChecked} onChange={handleCheckboxToggle} />
                     <tw.EditableCheckedListBlock {...commonProps} />
                     {renderEmojiModal()}
                 </tw.EditableCheckedListBlockWrap>
+            );
+        case "toggleText":
+            return (
+                <tw.EditableToggleTextWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
+                    <tw.EditableTogglePButton $isToggled={true} />
+                    <tw.EditableTogglePBlock {...commonProps} />
+                    {renderEmojiModal()}
+                </tw.EditableToggleTextWrap>
             );
         case "divider":
             return <div className={`h-[2px] my-1.5 w-full rounded bg-[#ffffff21]`} />;
@@ -427,7 +460,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         default:
             return (
                 <>
-                    <tw.EditablePBlock {...commonProps} />
+                    <tw.EditablePBlock {...commonProps} style={{ marginLeft: `${indentationLevel * 25}px` }}/>
                     {renderEmojiModal()}
                 </>
             );

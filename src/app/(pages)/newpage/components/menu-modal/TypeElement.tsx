@@ -18,4 +18,8 @@ export const ELEMENTS = [
     { label: "번호 매기기 목록", type: "numberedList", icon: <NumberedListIcon color="#ffffffcf" /> },
     { label: "할 일 목록", type: "checkedList", icon: <CheckedListIcon color="#ffffffcf" /> },
     { label: "구분선", type: "divider", icon: <DividerIcon color="#ffffffcf" /> },
+    { label: "제목 토글1", type: "toggleH1", icon: <CheckedListIcon color="#ffffffcf" /> },
+    { label: "제목 토글2", type: "toggleH2", icon: <DividerIcon color="#ffffffcf" /> },
+    { label: "제목 토글3", type: "toggleH3", icon: <CheckedListIcon color="#ffffffcf" /> },
+    { label: "토글 목록", type: "toggleText", icon: <DividerIcon color="#ffffffcf" /> },
 ];

@@ -2,14 +2,23 @@ import React, { useState, useRef, useEffect } from "react";
 
 import TypeMenuModal from "./menu-modal/TypeMenu.modal";
 import { ELEMENTS } from "./menu-modal/TypeElement";
-import { Block, blocksToMDX } from "./helper/BlocksToMdx";
+import { blocksToMDX } from "./helper/BlocksToMdx";
 import ContentEditableBlock from "./editable-block/ContentEditableBlock";
 
 import { GripDotsIcon, PlusIcon } from "@/components/ui/hover-header/svg/PostsSvg";
 import * as tw from "./Newpage.styles";
 
+// Block 타입 정의에 indentationLevel 추가
+export interface Block {
+    id: string;
+    type: string;
+    content: string;
+    indentationLevel: number; // ✨ 추가된 속성
+    isChecked?: boolean;
+}
+
 export default function NewPage({ collapsed }: { collapsed: boolean }) {
-    const [blocks, setBlocks] = useState<Block[]>([{ id: crypto.randomUUID(), type: "p", content: "" }]);
+    const [blocks, setBlocks] = useState<Block[]>([{ id: crypto.randomUUID(), type: "p", content: "", indentationLevel: 0 }]);
     const [blockColors, setBlockColors] = useState<{ [id: string]: string }>({});
 
     const [hoverIdx, setHoverIdx] = useState<number | null>(null);
@@ -36,7 +45,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         let counter = 1;
         for (let i = 0; i <= currentIndex; i++) {
             if (blocks[i].type === "numberedList") {
-                if (i === 0 || blocks[i - 1].type !== "numberedList") {
+                if (i === 0 || blocks[i - 1].type !== "numberedList" || blocks[i].indentationLevel !== blocks[i - 1].indentationLevel) {
                     counter = 1;
                 }
                 if (i === currentIndex) {
@@ -216,7 +225,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     const handleAddBlock = (idx: number) => {
         const newBlocks = [...blocks];
         const newBlockId = crypto.randomUUID();
-        const newBlock = { id: newBlockId, type: "p", content: "" };
+        const newBlock = { id: newBlockId, type: "p", content: "", indentationLevel: blocks[idx].indentationLevel };
         newBlocks.splice(idx + 1, 0, newBlock);
         setBlocks(newBlocks);
         setTimeout(() => {
@@ -230,8 +239,8 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     const handleAddBlockAfterBullet = (idx: number) => {
         const newBlocks = [...blocks];
         const newBlockId = crypto.randomUUID();
-        const currentBlockType = blocks[idx].type;
-        const newBlock = { id: newBlockId, type: currentBlockType, content: "" };
+        const currentBlock = blocks[idx];
+        const newBlock = { id: newBlockId, type: currentBlock.type, content: "", indentationLevel: currentBlock.indentationLevel };
         newBlocks.splice(idx + 1, 0, newBlock);
         setBlocks(newBlocks);
         setTimeout(() => {
@@ -244,6 +253,26 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
 
     const handleTypeChange = (idx: number, newType: string) => {
         changeBlockType(idx, newType);
+    };
+
+    const handleIndent = (idx: number, change: number) => {
+        setBlocks(prevBlocks => {
+            const newBlocks = [...prevBlocks];
+            const currentBlock = newBlocks[idx];
+            const newIndent = Math.max(0, currentBlock.indentationLevel + change);
+
+            if (change > 0 && idx > 0) {
+              const prevBlock = newBlocks[idx - 1];
+              if (newIndent > prevBlock.indentationLevel + 1) {
+                return prevBlocks;
+              }
+            } else if (change < 0 && newIndent < 0) {
+                return prevBlocks;
+            }
+
+            newBlocks[idx] = { ...currentBlock, indentationLevel: newIndent };
+            return newBlocks;
+        });
     };
 
     const setCaretPosition = (element: HTMLDivElement, offset: number) => {
@@ -326,7 +355,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                 transition: "padding-left 0.2s",
             }}
         >
-            <div className="w-full max-w-[712px]" style={{ position: "relative" }}>
+            <div className="max-w-[712px]  min-w-[712px] w-[712px] mx-10" style={{ position: "relative" }}>
                 <tw.BlockWrap>
                     <tw.TitleBlock>
                         <tw.EditableTitle
@@ -381,7 +410,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                             <div
                                 style={{
                                     position: "absolute",
-                                    left: -56,
+                                    left: -56 + (block.indentationLevel * 25), // ✨ 수정된 부분: -56 + (indentationLevel * 25)
                                     top: 0,
                                     width: 56,
                                     height: "100%",
@@ -405,7 +434,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                     data-btn-idx={idx}
                                     style={{
                                         position: "absolute",
-                                        left: -56,
+                                        left: -56 + (block.indentationLevel * 25), // ✨ 수정된 부분: -56 + (indentationLevel * 25)
                                         top: "50%",
                                         transform: "translateY(-50%)",
                                         display: "flex",
@@ -430,7 +459,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                         <PlusIcon color={"#616161"} />
                                     </tw.PlusButton>
                                     <tw.DotButton
-                                        ref={(el) => (dotRefs.current[idx] = el)} // dotRefs로 변경
+                                        ref={(el) => (dotRefs.current[idx] = el)}
                                         className={`${menuIdx === idx ? "bg-[#252525]" : ""}`}
                                         onClick={() => handlePlusClick(idx)}
                                     >
@@ -463,6 +492,8 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                     listNumber={block.type === "numberedList" ? getListNumber(idx) : undefined}
                                     onFocusNext={handleFocusNext}
                                     onFocusPrev={handleFocusPrev}
+                                    indentationLevel={block.indentationLevel}
+                                    onIndent={(change) => handleIndent(idx, change)}
                                 />
                             </tw.InputWrap>
                         </tw.BlockWrap>
