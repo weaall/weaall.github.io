@@ -1,7 +1,14 @@
+// BlocksToMdx.ts (완전 버전)
+import { FormattedRange, TextFormat } from "../text-modal/TextFormat.modal";
+
 export interface Block {
     id: string;
     type: string;
     content: string;
+    indentationLevel: number;
+    isChecked?: boolean;
+    color?: string;
+    formattedRanges?: FormattedRange[];
 }
 
 export function blocksToMDX(
@@ -17,6 +24,8 @@ export function blocksToMDX(
     },
 ) {
     let frontmatter = "";
+
+    // 메타데이터 프론트매터 생성
     if (meta) {
         frontmatter = `---\n`;
         if (meta.label) frontmatter += `label: ${meta.label}\n`;
@@ -31,43 +40,123 @@ export function blocksToMDX(
 
     let numberedListCounter = 1;
 
+    // 텍스트에 포맷팅을 적용하는 함수
+    const applyFormattingToText = (text: string, formattedRanges: FormattedRange[] = []): string => {
+        if (!formattedRanges || formattedRanges.length === 0) {
+            return text;
+        }
+
+        // 범위를 시작 위치 순으로 정렬
+        const sortedRanges = [...formattedRanges].sort((a, b) => a.start - b.start);
+        let result = '';
+        let lastIndex = 0;
+
+        for (const range of sortedRanges) {
+            // 이전 범위와 현재 범위 사이의 텍스트
+            result += text.slice(lastIndex, range.start);
+            
+            // 현재 범위의 텍스트
+            let rangeText = text.slice(range.start, range.end);
+            const format = range.format;
+
+            // 포맷팅 적용 (중첩 적용 순서: 굵게 -> 기울임 -> 색상/밑줄/취소선)
+            let formattedText = rangeText;
+            
+            // 1. 굵게 적용
+            if (format.bold) {
+                formattedText = `**${formattedText}**`;
+            }
+            
+            // 2. 기울임 적용
+            if (format.italic) {
+                formattedText = `*${formattedText}*`;
+            }
+            
+            // 3. 취소선 적용 (MDX 기본 문법 사용)
+            if (format.strikethrough) {
+                formattedText = `~~${formattedText}~~`;
+            }
+            
+            // 4. 색상이나 밑줄 같은 CSS 스타일이 필요한 경우 span 태그로 감싸기
+            const cssStyles: string[] = [];
+            if (format.color) cssStyles.push(`color: '${format.color}'`);
+            if (format.underline && format.strikethrough) {
+                cssStyles.push(`textDecoration: 'underline line-through'`);
+            } else if (format.underline) {
+                cssStyles.push(`textDecoration: 'underline'`);
+            }
+            
+            // CSS 스타일이 있으면 span으로 감싸기
+            if (cssStyles.length > 0) {
+                formattedText = `<span style={{ ${cssStyles.join(', ')} }}>${formattedText}</span>`;
+            }
+            
+            result += formattedText;
+            lastIndex = range.end;
+        }
+        
+        // 마지막 범위 이후의 텍스트
+        result += text.slice(lastIndex);
+        
+        return result;
+    };
+
+    // 블록을 MDX로 변환하는 메인 로직
     const body = blocks
         .filter((b) => b.content.trim() !== "" || b.type === "divider")
         .map((b, index) => {
+            const indentation = "  ".repeat(b.indentationLevel);
+            
+            // 포맷팅이 적용된 콘텐츠 생성
+            const formattedContent = applyFormattingToText(b.content, b.formattedRanges);
+            
+            // 블록 전체 색상이 있는 경우 추가로 적용
+            const contentWithColor = b.color ? 
+                `<span style={{ color: '${b.color}' }}>${formattedContent}</span>` : 
+                formattedContent;
+
             switch (b.type) {
                 case "h1":
                     numberedListCounter = 1;
-                    return `# ${b.content}`;
+                    return `# ${contentWithColor}`;
                 case "h2":
                     numberedListCounter = 1;
-                    return `## ${b.content}`;
+                    return `## ${contentWithColor}`;
                 case "h3":
                     numberedListCounter = 1;
-                    return `### ${b.content}`;
+                    return `### ${contentWithColor}`;
                 case "p":
                     numberedListCounter = 1;
-                    return b.content;
+                    return contentWithColor;
                 case "ul":
                     numberedListCounter = 1;
-                    return `- ${b.content}`;
-                case "numberedList":
+                    return `${indentation}- ${contentWithColor}`;
+                case "numberedList": {
                     const prevBlock = blocks.filter((block) => block.content.trim() !== "" || block.type === "divider")[index - 1];
-                    if (!prevBlock || prevBlock.type !== "numberedList") {
+
+                    if (!prevBlock || prevBlock.type !== "numberedList" || prevBlock.indentationLevel !== b.indentationLevel) {
                         numberedListCounter = 1;
                     }
+
                     const currentNumber = numberedListCounter++;
-                    return `${currentNumber}. ${b.content}`;
-                case "checkedList":
+                    return `${indentation}${currentNumber}. ${contentWithColor}`;
+                }
+                case "checkedList": {
                     numberedListCounter = 1;
-                    return `- [ ] ${b.content}`;
+                    const checkedState = b.isChecked ? "x" : " ";
+                    return `${indentation}- [${checkedState}] ${contentWithColor}`;
+                }
                 case "divider":
                     numberedListCounter = 1;
                     return "---";
+                case "toggleText":
+                    return `${indentation}<ToggleText>${contentWithColor}</ToggleText>`;
                 default:
                     numberedListCounter = 1;
-                    return b.content;
+                    return contentWithColor;
             }
         })
         .join("\n\n");
+
     return frontmatter + body;
 }

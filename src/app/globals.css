@@ -61,3 +61,15 @@ body::-webkit-scrollbar-thumb:hover {
   content: attr(data-placeholder);
   color: #999;
 }
+
+/* 텍스트 드래그 시 스타일 */
+.EditableBlockClass::selection {
+  background-color: rgba(255, 255, 255, 0.2); /* 배경색을 투명한 흰색으로 */
+  color: #fff; /* 글자색을 흰색으로 */
+}
+
+/* Firefox 전용 */
+.EditableBlockClass::-moz-selection {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}

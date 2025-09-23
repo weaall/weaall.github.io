@@ -1,25 +1,19 @@
+// NewPage.tsx (완전 버전)
 import React, { useState, useRef, useEffect } from "react";
 
 import TypeMenuModal from "./menu-modal/TypeMenu.modal";
 import { ELEMENTS } from "./menu-modal/TypeElement";
-import { blocksToMDX } from "./helper/BlocksToMdx";
+import { Block, blocksToMDX } from "./helper/BlocksToMdx";
 import ContentEditableBlock from "./editable-block/ContentEditableBlock";
+import { FormattedRange } from "./text-modal/TextFormat.modal";
 
 import { GripDotsIcon, PlusIcon } from "@/components/ui/hover-header/svg/PostsSvg";
 import * as tw from "./Newpage.styles";
 
-// Block 타입 정의에 indentationLevel 추가
-export interface Block {
-    id: string;
-    type: string;
-    content: string;
-    indentationLevel: number; // ✨ 추가된 속성
-    isChecked?: boolean;
-}
-
 export default function NewPage({ collapsed }: { collapsed: boolean }) {
     const [blocks, setBlocks] = useState<Block[]>([{ id: crypto.randomUUID(), type: "p", content: "", indentationLevel: 0 }]);
     const [blockColors, setBlockColors] = useState<{ [id: string]: string }>({});
+    const [blockFormattedRanges, setBlockFormattedRanges] = useState<{ [id: string]: FormattedRange[] }>({});
 
     const [hoverIdx, setHoverIdx] = useState<number | null>(null);
     const [menuIdx, setMenuIdx] = useState<number | null>(null);
@@ -87,8 +81,16 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     };
 
     const handleExport = () => {
+        // 블록에 색상과 포맷팅 범위 정보를 추가
+        const blocksWithFormatting = blocks.map(block => ({
+            ...block,
+            color: blockColors[block.id],
+            formattedRanges: blockFormattedRanges[block.id] || [],
+        }));
+
         const exportedTags = meta.tags.length > 0 ? meta.tags : ["default-tag"];
-        const mdx = blocksToMDX(blocks, {
+        
+        const mdx = blocksToMDX(blocksWithFormatting, {
             label: meta.label || "",
             title: meta.title || "",
             subTitle: meta.subTitle || "",
@@ -97,6 +99,8 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
             tags: exportedTags,
             imageUrl: meta.imageUrl || "",
         });
+
+        console.log(mdx)
         alert(mdx);
     };
 
@@ -133,6 +137,14 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         const newBlocks = [...blocks];
         newBlocks[idx].content = value;
         setBlocks(newBlocks);
+    };
+
+    const handleFormattedRangesChange = (idx: number, ranges: FormattedRange[]) => {
+        const blockId = blocks[idx].id;
+        setBlockFormattedRanges((prev) => ({
+            ...prev,
+            [blockId]: ranges,
+        }));
     };
 
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>, idx: number) => {
@@ -174,21 +186,48 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
 
     const handleDeleteBlock = (idx: number) => {
         const newBlocks = [...blocks];
+        const blockId = blocks[idx].id;
         newBlocks.splice(idx, 1);
         setBlocks(newBlocks);
+        
+        // 포맷팅 범위와 색상도 함께 삭제
+        setBlockFormattedRanges((prev) => {
+            const newRanges = { ...prev };
+            delete newRanges[blockId];
+            return newRanges;
+        });
+        setBlockColors((prev) => {
+            const newColors = { ...prev };
+            delete newColors[blockId];
+            return newColors;
+        });
+        
         setMenuIdx(null);
         setMenuPos(null);
     };
 
     const handleDeleteBlockAndFocusPrevious = (idx: number) => {
-        if (blocks.length <= 1) {
-            return;
-        }
+        if (blocks.length <= 1) return;
+        
         const newBlocks = [...blocks];
+        const blockId = blocks[idx].id;
         const prevBlockIdx = idx > 0 ? idx - 1 : 0;
         const prevBlockId = blocks[prevBlockIdx].id;
         newBlocks.splice(idx, 1);
         setBlocks(newBlocks);
+        
+        // 포맷팅 범위와 색상도 함께 삭제
+        setBlockFormattedRanges((prev) => {
+            const newRanges = { ...prev };
+            delete newRanges[blockId];
+            return newRanges;
+        });
+        setBlockColors((prev) => {
+            const newColors = { ...prev };
+            delete newColors[blockId];
+            return newColors;
+        });
+        
         setTimeout(() => {
             const prevBlockElement = document.getElementById(prevBlockId);
             if (prevBlockElement) {
@@ -289,7 +328,6 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         if (currentIdx < blocks.length - 1) {
             const nextBlock = document.getElementById(blocks[currentIdx + 1].id) as HTMLDivElement;
             if (nextBlock) {
-                const contentText = nextBlock.innerText;
                 let closestOffset = 0;
                 let minDistance = Infinity;
                 if (nextBlock.childNodes[0]?.nodeType === Node.TEXT_NODE) {
@@ -321,8 +359,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         if (currentIdx > 0) {
             const prevBlock = document.getElementById(blocks[currentIdx - 1].id) as HTMLDivElement;
             if (prevBlock) {
-                const contentText = prevBlock.innerText;
-                let closestOffset = contentText.length;
+                let closestOffset = prevBlock.textContent?.length || 0;
                 let minDistance = Infinity;
                 if (prevBlock.childNodes[0]?.nodeType === Node.TEXT_NODE) {
                     const textNode = prevBlock.childNodes[0] as Text;
@@ -355,7 +392,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                 transition: "padding-left 0.2s",
             }}
         >
-            <div className="max-w-[712px]  min-w-[712px] w-[712px] mx-10" style={{ position: "relative" }}>
+            <div className="max-w-[712px] min-w-[712px] w-[712px] mx-10" style={{ position: "relative" }}>
                 <tw.BlockWrap>
                     <tw.TitleBlock>
                         <tw.EditableTitle
@@ -369,6 +406,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                         />
                     </tw.TitleBlock>
                 </tw.BlockWrap>
+                
                 <TypeMenuModal
                     open={menuIdx !== null}
                     position={menuPos}
@@ -387,6 +425,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                     }}
                     elements={ELEMENTS}
                 />
+                
                 {blocks.map((block, idx) => (
                     <React.Fragment key={block.id}>
                         <div
@@ -410,7 +449,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                             <div
                                 style={{
                                     position: "absolute",
-                                    left: -56 + (block.indentationLevel * 25), // ✨ 수정된 부분: -56 + (indentationLevel * 25)
+                                    left: -56 + (block.indentationLevel * 25),
                                     top: 0,
                                     width: 56,
                                     height: "100%",
@@ -429,12 +468,13 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                 onDragStart={(e) => handleDragStart(e, idx)}
                                 onDragEnd={handleDragEnd}
                             />
+                            
                             {(hoverIdx === idx || menuIdx === idx) && (
                                 <div
                                     data-btn-idx={idx}
                                     style={{
                                         position: "absolute",
-                                        left: -56 + (block.indentationLevel * 25), // ✨ 수정된 부분: -56 + (indentationLevel * 25)
+                                        left: -56 + (block.indentationLevel * 25),
                                         top: "50%",
                                         transform: "translateY(-50%)",
                                         display: "flex",
@@ -467,6 +507,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                     </tw.DotButton>
                                 </div>
                             )}
+                            
                             <tw.InputWrap
                                 className={menuIdx === idx ? "bg-gray-800" : ""}
                                 onMouseEnter={() => setHoverIdx(idx)}
@@ -494,19 +535,26 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                     onFocusPrev={handleFocusPrev}
                                     indentationLevel={block.indentationLevel}
                                     onIndent={(change) => handleIndent(idx, change)}
+                                    formattedRanges={blockFormattedRanges[block.id] || []}
+                                    onFormattedRangesChange={(ranges) => handleFormattedRangesChange(idx, ranges)}
                                 />
                             </tw.InputWrap>
                         </tw.BlockWrap>
                     </React.Fragment>
                 ))}
+                
                 <div
                     className={`h-[4px] rounded ${insertLineIdx === blocks.length ? "bg-blue-500/50" : "bg-transparent"}`}
                     onDragEnter={(e) => handleDragEnter(e, blocks.length, true)}
                     onDragOver={handleDragOver}
                 />
             </div>
+            
             <div className="fixed bottom-8 right-8 z-50">
-                <button className="px-6 py-3 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition" onClick={handleExport}>
+                <button 
+                    className="px-6 py-3 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition" 
+                    onClick={handleExport}
+                >
                     내보내기
                 </button>
             </div>
