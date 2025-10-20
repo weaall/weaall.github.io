@@ -58,6 +58,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
     const [showFormattingModal, setShowFormattingModal] = useState(false);
     const [formattingModalPosition, setFormattingModalPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
     const [selectedRange, setSelectedRange] = useState<{ start: number; end: number } | null>(null);
+    const [currentFormat, setCurrentFormat] = useState<TextFormat>({});
 
     const savedSelection = useRef<Range | null>(null);
     const replacedRangeRef = useRef<{ start: number; end: number; format: TextFormat | null } | null>(null);
@@ -100,10 +101,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         let lastIndex = 0;
 
         for (const range of sortedRanges) {
-            // 이전 범위와 현재 범위 사이의 텍스트
             html += text.slice(lastIndex, range.start);
-
-            // 현재 범위의 텍스트
             const rangeText = text.slice(range.start, range.end);
             const styles: string[] = [];
 
@@ -123,13 +121,9 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             } else {
                 html += rangeText;
             }
-
             lastIndex = range.end;
         }
-
-        // 마지막 범위 이후의 텍스트
         html += text.slice(lastIndex);
-
         return html;
     };
 
@@ -155,13 +149,13 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             currentPosition += textLength;
         }
 
-        // 위치를 찾지 못한 경우 끝으로 이동
         const range = document.createRange();
         range.selectNodeContents(element);
         range.collapse(false);
         selection.removeAllRanges();
         selection.addRange(range);
     };
+
     const getTextPositionFromSelection = (): { start: number; end: number } | null => {
         const selection = window.getSelection();
         if (!selection || !ref.current || selection.rangeCount === 0) return null;
@@ -171,9 +165,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         preCaretRange.selectNodeContents(ref.current);
         preCaretRange.setEnd(range.startContainer, range.startOffset);
         const start = preCaretRange.toString().length;
-
         const end = start + range.toString().length;
-
         return { start, end };
     };
 
@@ -193,10 +185,9 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
 
     // 포맷팅 범위가 변경될 때마다 HTML 업데이트
     useEffect(() => {
-        if (ref.current && formattedRanges.length > 0) {
+        if (ref.current) {
             const formattedHTML = generateFormattedHTML(content, formattedRanges);
             if (ref.current.innerHTML !== formattedHTML) {
-                // 현재 커서 위치 저장
                 const selection = window.getSelection();
                 const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
                 let cursorPosition = 0;
@@ -208,16 +199,14 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                     cursorPosition = preCaretRange.toString().length;
                 }
 
-                // HTML 업데이트
                 ref.current.innerHTML = formattedHTML;
 
-                // 커서 위치 복원
                 if (range && document.activeElement === ref.current) {
                     restoreCursorPosition(ref.current, cursorPosition);
                 }
             }
         }
-    }, [formattedRanges]);
+    }, [formattedRanges, content]);
 
     useEffect(() => {
         setInternalIsChecked(isChecked || false);
@@ -229,13 +218,39 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         }
     }, [content]);
 
+    // 선택된 영역의 현재 포맷을 가져오는 함수
+    const getFormatForRange = (range: { start: number; end: number }): TextFormat => {
+        const activeFormat: TextFormat = {};
+        if (!formattedRanges) return activeFormat;
+
+        const overlappingRanges = formattedRanges.filter(
+            (r) => Math.max(r.start, range.start) < Math.min(r.end, range.end)
+        );
+
+        overlappingRanges.forEach((r) => {
+            Object.assign(activeFormat, r.format);
+        });
+
+        return activeFormat;
+    };
+
     // 마우스 업 이벤트 (텍스트 선택 감지)
     const handleMouseUp = () => {
         const selection = window.getSelection();
-        if (!selection || selection.isCollapsed || !ref.current) return;
+        if (!selection || selection.isCollapsed || !ref.current) {
+            if (showFormattingModal) {
+                setShowFormattingModal(false);
+            }
+            return;
+        }
 
         const selectedPos = getTextPositionFromSelection();
-        if (!selectedPos || selectedPos.start === selectedPos.end) return;
+        if (!selectedPos || selectedPos.start === selectedPos.end) {
+            if (showFormattingModal) {
+                setShowFormattingModal(false);
+            }
+            return;
+        }
 
         const rect = selection.getRangeAt(0).getBoundingClientRect();
         setFormattingModalPosition({
@@ -243,59 +258,32 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             left: rect.left + window.scrollX,
         });
         setSelectedRange(selectedPos);
+        setCurrentFormat(getFormatForRange(selectedPos));
         setShowFormattingModal(true);
     };
-
-    // 포맷 적용 처리
-    // ContentEditableBlock.tsx 파일의 기존 handleFormatText 함수를 아래 코드로 교체하세요.
-
+    
+    // 포맷 적용 처리 (토글 기능 포함)
     const handleFormatText = (format: TextFormat) => {
         if (!selectedRange || !onFormattedRangesChange) return;
 
         const { start: selectionStart, end: selectionEnd } = selectedRange;
-        const newRanges: FormattedRange[] = [];
 
-        // 기존 범위를 순회하며 새 범위와 비교하고, 필요에 따라 분할/병합합니다.
-        const remainingRanges = [...formattedRanges];
-
-        // 선택 영역과 겹치는 기존 범위들을 처리합니다.
-        const overlappingOrAdjacentRanges = remainingRanges.filter((range) => Math.max(range.start, selectionStart) < Math.min(range.end, selectionEnd));
-
-        // 겹치지 않는 범위들은 그대로 newRanges에 추가합니다.
-        const nonOverlappingRanges = remainingRanges.filter((range) => !overlappingOrAdjacentRanges.includes(range));
-        newRanges.push(...nonOverlappingRanges);
-
-        if (Object.keys(format).length === 0) {
-            // 포맷 제거 로직
-            const rangesToModify = [...formattedRanges];
+        if (Object.keys(format).length === 0) { // 포맷 제거 로직
             const finalRanges: FormattedRange[] = [];
-
-            rangesToModify.forEach((range) => {
-                // 1. 선택 영역이 기존 범위를 완전히 포함하는 경우
-                if (selectionStart <= range.start && selectionEnd >= range.end) {
-                    // 이 범위는 제거되므로 아무것도 하지 않습니다.
-                }
-                // 2. 기존 범위가 선택 영역을 완전히 포함하는 경우
-                else if (range.start < selectionStart && range.end > selectionEnd) {
-                    finalRanges.push({ ...range, end: selectionStart });
-                    finalRanges.push({ ...range, start: selectionEnd });
-                }
-                // 3. 기존 범위의 끝 부분이 선택 영역과 겹치는 경우
-                else if (range.start < selectionStart && range.end > selectionStart) {
-                    finalRanges.push({ ...range, end: selectionStart });
-                }
-                // 4. 기존 범위의 시작 부분이 선택 영역과 겹치는 경우
-                else if (range.start < selectionEnd && range.end > selectionEnd) {
-                    finalRanges.push({ ...range, start: selectionEnd });
-                }
-                // 5. 겹치지 않는 경우
-                else {
+            formattedRanges.forEach((range) => {
+                if (range.end <= selectionStart || range.start >= selectionEnd) {
                     finalRanges.push(range);
+                } else {
+                    if (range.start < selectionStart) {
+                        finalRanges.push({ ...range, end: selectionStart });
+                    }
+                    if (range.end > selectionEnd) {
+                        finalRanges.push({ ...range, start: selectionEnd });
+                    }
                 }
             });
             onFormattedRangesChange(finalRanges);
-        } else {
-            // 포맷 추가/변경 로직
+        } else { // 포맷 추가/변경/토글 로직
             const finalRanges: FormattedRange[] = [];
             const oldRanges = [...formattedRanges];
 
@@ -310,34 +298,50 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             for (let i = 0; i < sortedPoints.length - 1; i++) {
                 const start = sortedPoints[i];
                 const end = sortedPoints[i + 1];
-                if (start === end) continue;
+                if (start >= end) continue;
 
                 const midPoint = (start + end) / 2;
+                let segmentFormat: TextFormat = {};
 
-                let currentFormat: TextFormat = {};
                 oldRanges.forEach((range) => {
                     if (midPoint >= range.start && midPoint < range.end) {
-                        currentFormat = { ...currentFormat, ...range.format };
+                        segmentFormat = { ...segmentFormat, ...range.format };
                     }
                 });
 
                 if (midPoint >= selectionStart && midPoint < selectionEnd) {
-                    currentFormat = { ...currentFormat, ...format };
+                    segmentFormat = { ...segmentFormat, ...format };
                 }
 
-                if (Object.keys(currentFormat).length > 0) {
-                    finalRanges.push({ start, end, format: currentFormat });
+                const cleanedFormat: TextFormat = {};
+
+                if (segmentFormat.color) {
+                    cleanedFormat.color = segmentFormat.color;
+                }
+                if (segmentFormat.bold) {
+                    cleanedFormat.bold = segmentFormat.bold;
+                }
+                if (segmentFormat.italic) {
+                    cleanedFormat.italic = segmentFormat.italic;
+                }
+                if (segmentFormat.underline) {
+                    cleanedFormat.underline = segmentFormat.underline;
+                }
+                if (segmentFormat.strikethrough) {
+                    cleanedFormat.strikethrough = segmentFormat.strikethrough;
+                }
+                // 여기까지 교체합니다.
+
+                if (Object.keys(cleanedFormat).length > 0) {
+                    finalRanges.push({ start, end, format: cleanedFormat });
                 }
             }
 
-            // 인접하고 포맷이 동일한 범위들을 병합합니다.
             const mergedRanges: FormattedRange[] = [];
             if (finalRanges.length > 0) {
                 let currentMerge = { ...finalRanges[0] };
                 for (let i = 1; i < finalRanges.length; i++) {
                     const nextRange = finalRanges[i];
-                    // JSON.stringify는 객체 순서에 민감할 수 있으므로, 더 나은 비교 방법이 필요할 수 있습니다.
-                    // 여기서는 간단하게 사용합니다.
                     if (currentMerge.end === nextRange.start && JSON.stringify(currentMerge.format) === JSON.stringify(nextRange.format)) {
                         currentMerge.end = nextRange.end;
                     } else {
@@ -347,183 +351,156 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                 }
                 mergedRanges.push(currentMerge);
             }
-
             onFormattedRangesChange(mergedRanges);
         }
 
-        // 모달 닫기 및 선택 해제
         setShowFormattingModal(false);
         setSelectedRange(null);
-        window.getSelection()?.removeAllRanges();
     };
 
     const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
-    if (isComposingRef.current) return;
-    const element = e.currentTarget;
-    const newContent = element.innerText ?? "";
-    const oldContent = content;
+        if (isComposingRef.current) return;
+        const element = e.currentTarget;
+        const newContent = element.innerText ?? "";
+        const oldContent = content;
 
-    // 1. 내용이 완전히 비워졌을 때의 처리 (스타일 기억 로직 포함)
-    if (newContent === "") {
-        let styleToPreserve: TextFormat | null = null;
-        if (formattedRanges.length > 0 && oldContent.length > 0) {
-            styleToPreserve = formattedRanges[0].format;
+        if (newContent === "") {
+            let styleToPreserve: TextFormat | null = null;
+            if (formattedRanges.length > 0 && oldContent.length > 0) {
+                styleToPreserve = formattedRanges[0].format;
+            }
+
+            onContentChange("");
+            if (onFormattedRangesChange) {
+                if (styleToPreserve) {
+                    onFormattedRangesChange([{ start: 0, end: 0, format: styleToPreserve }]);
+                } else {
+                    onFormattedRangesChange([]);
+                }
+            }
+            setShowEmojiModal(false);
+            setEmojiSearch("");
+            return;
         }
 
-        onContentChange("");
+        const textChangeLength = newContent.length - oldContent.length;
         if (onFormattedRangesChange) {
-            if (styleToPreserve) {
-                onFormattedRangesChange([{ start: 0, end: 0, format: styleToPreserve }]);
-            } else {
-                onFormattedRangesChange([]);
+            if (textChangeLength === 0 && newContent !== oldContent) {
+                if (formattedRanges.length > 0) {
+                    const styleToInherit = formattedRanges[0].format;
+                    const newRange: FormattedRange = {
+                        start: 0,
+                        end: newContent.length,
+                        format: styleToInherit,
+                    };
+                    onFormattedRangesChange([newRange]);
+                }
+            } else if (textChangeLength !== 0) {
+                const selection = window.getSelection();
+                if (selection && selection.isCollapsed) {
+                    const cursorPos = getTextPositionFromSelection()?.start;
+                    if (cursorPos !== undefined) {
+                        const editPosition = textChangeLength > 0 ? cursorPos - textChangeLength : cursorPos;
+                        const updatedRanges: FormattedRange[] = [];
+                        const originalRanges = JSON.parse(JSON.stringify(formattedRanges)) as FormattedRange[];
+
+                        originalRanges.forEach((range: FormattedRange) => {
+                            const newRange = { ...range };
+                            const { start, end } = range;
+                            if (start === end && start === editPosition) {
+                                newRange.end += textChangeLength;
+                            } else if (start >= editPosition) {
+                                newRange.start += textChangeLength;
+                                newRange.end += textChangeLength;
+                            } else if (start < editPosition && end >= editPosition) {
+                                newRange.end += textChangeLength;
+                            }
+
+                            if (newRange.end > newRange.start) {
+                                updatedRanges.push(newRange);
+                            }
+                        });
+                        onFormattedRangesChange(updatedRanges);
+                    }
+                }
+            }
+        }
+
+        onContentChange(newContent);
+
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0 && ref.current) {
+            const range = selection.getRangeAt(0);
+            let textBeforeCursor = "";
+            try {
+                const beforeRange = document.createRange();
+                beforeRange.setStart(ref.current, 0);
+                beforeRange.setEnd(range.startContainer, range.startOffset);
+                textBeforeCursor = beforeRange.toString();
+            } catch {
+                textBeforeCursor = range.startContainer.textContent?.substring(0, range.startOffset) || "";
+            }
+            
+            const lastColonIndex = textBeforeCursor.lastIndexOf(":");
+            if (lastColonIndex !== -1) {
+                const searchTerm = textBeforeCursor.substring(lastColonIndex + 1);
+                if (searchTerm && !/[\s\n]/.test(searchTerm)) {
+                    savedSelection.current = selection.getRangeAt(0).cloneRange();
+                    if (!showEmojiModal) {
+                        const caretPos = getCaretPosition(ref.current);
+                        if (caretPos) {
+                            setEmojiModalPosition(caretPos);
+                        }
+                    }
+                    setShowEmojiModal(true);
+                    setEmojiSearch(searchTerm);
+                    return;
+                }
             }
         }
         setShowEmojiModal(false);
         setEmojiSearch("");
-        return;
-    }
 
-    // 2. 텍스트 변경에 따른 스타일 범위 업데이트
-    const textChangeLength = newContent.length - oldContent.length;
-    if (onFormattedRangesChange) {
-        if (textChangeLength === 0 && newContent !== oldContent) { // 텍스트 교체
-            if (formattedRanges.length > 0) {
-                const styleToInherit = formattedRanges[0].format;
-                const newRange: FormattedRange = {
-                    start: 0,
-                    end: newContent.length,
-                    format: styleToInherit,
-                };
-                onFormattedRangesChange([newRange]);
-            }
-        } else if (textChangeLength !== 0) { // 텍스트 추가/삭제
-            const selection = window.getSelection();
-            if (selection && selection.isCollapsed) {
-                const cursorPos = getTextPositionFromSelection()?.start;
-                if (cursorPos !== undefined) {
-                    const editPosition = textChangeLength > 0 ? cursorPos - textChangeLength : cursorPos;
-                    const updatedRanges: FormattedRange[] = [];
-                    const originalRanges = JSON.parse(JSON.stringify(formattedRanges)) as FormattedRange[];
-
-                    originalRanges.forEach((range: FormattedRange) => {
-                        const newRange = { ...range };
-                        const { start, end } = range;
-                        if (start === end && start === editPosition) {
-                            newRange.end += textChangeLength;
-                        } else if (start >= editPosition) {
-                            newRange.start += textChangeLength;
-                            newRange.end += textChangeLength;
-                        } else if (start < editPosition && end >= editPosition) {
-                            newRange.end += textChangeLength;
-                        }
-
-                        if (newRange.end > newRange.start) {
-                            updatedRanges.push(newRange);
-                        }
-                    });
-                    onFormattedRangesChange(updatedRanges);
-                }
-            }
+        const trimmedContent = newContent.trim();
+        if (trimmedContent === "---" && type !== "divider") {
+            onTypeChange("divider");
+            onContentChange("");
+            onAddBlock();
         }
-    }
+    };
 
-    // 3. content state 업데이트
-    onContentChange(newContent);
-
-    // ✨ 4. 이모지 모달 트리거 로직 (누락되었던 부분)
-    const selection = window.getSelection();
-    if (selection && selection.rangeCount > 0 && ref.current) {
-        const range = selection.getRangeAt(0);
-        let textBeforeCursor = "";
-        try {
-            const beforeRange = document.createRange();
-            beforeRange.setStart(ref.current, 0);
-            beforeRange.setEnd(range.startContainer, range.startOffset);
-            textBeforeCursor = beforeRange.toString();
-        } catch {
-            textBeforeCursor = range.startContainer.textContent?.substring(0, range.startOffset) || "";
-        }
-        
-        const lastColonIndex = textBeforeCursor.lastIndexOf(":");
-        if (lastColonIndex !== -1) {
-            const searchTerm = textBeforeCursor.substring(lastColonIndex + 1);
-            if (searchTerm && !/[\s\n]/.test(searchTerm)) {
-                savedSelection.current = selection.getRangeAt(0).cloneRange();
-                if (!showEmojiModal) {
-                    const caretPos = getCaretPosition(ref.current);
-                    if (caretPos) {
-                        setEmojiModalPosition(caretPos);
-                    }
-                }
-                setShowEmojiModal(true);
-                setEmojiSearch(searchTerm);
-                return; // 이모지 모달이 뜰 때는 여기서 함수를 종료
-            }
-        }
-    }
-    // 이모지 트리거 조건이 아닐 경우, 모달을 닫음
-    setShowEmojiModal(false);
-    setEmojiSearch("");
-
-    // 5. 페이지 나누는 선 (---) 처리
-    const trimmedContent = newContent.trim();
-    if (trimmedContent === "---" && type !== "divider") {
-        onTypeChange("divider");
-        onContentChange("");
-        onAddBlock();
-    }
-};
     const handleCompositionStart = () => {
         isComposingRef.current = true;
     };
 
     const handleCompositionEnd = (e: React.FormEvent<HTMLDivElement>) => {
         isComposingRef.current = false;
-        const element = e.currentTarget;
-        if (isContentEmpty(element)) {
-            cleanEmptyContent(element);
-            onContentChange("");
-        } else {
-            onContentChange(element.innerText ?? "");
-        }
+        handleInput(e);
     };
 
     const getPlaceholderText = (blockType: string): string => {
         switch (blockType) {
-            case "h1":
-                return "제목1";
-            case "h2":
-                return "제목2";
-            case "h3":
-                return "제목3";
-            case "ul":
-                return "리스트";
-            case "numberedList":
-                return "번호 리스트";
-            case "checkedList":
-                return "체크 리스트";
-            case "p":
-            default:
-                return "텍스트";
+            case "h1": return "제목1";
+            case "h2": return "제목2";
+            case "h3": return "제목3";
+            case "ul": return "리스트";
+            case "numberedList": return "번호 리스트";
+            case "checkedList": return "체크 리스트";
+            case "p": default: return "텍스트";
         }
     };
-
-    // 키 입력 처리 (기존 로직 유지)
+    
     const emojiModalRef = useRef<any>(null);
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         const element = ref.current;
         if (!element) return;
 
-        // --- 텍스트가 교체/삭제되기 직전의 스타일 정보를 저장하는 로직 ---
         const selection = window.getSelection();
         if (selection && !selection.isCollapsed) {
-            // Backspace, Delete 또는 일반 문자/숫자 입력으로 선택 영역이 교체될 때
             if (e.key === "Backspace" || e.key === "Delete" || e.key.length === 1) {
                 const currentPos = getTextPositionFromSelection();
                 if (currentPos) {
                     let formatAtSelectionStart: TextFormat | null = null;
-                    // 선택 시작 지점의 스타일을 찾음
-                    // 🔽 아래 줄의 range 매개변수에 타입을 추가합니다.
                     for (const range of formattedRanges) {
                         if (currentPos.start >= range.start && currentPos.start < range.end) {
                             formatAtSelectionStart = range.format;
@@ -534,8 +511,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                 }
             }
         }
-        // --- 로직 종료 ---
-
+    
         if (showEmojiModal && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"].includes(e.key)) {
             e.preventDefault();
             if (emojiModalRef.current && emojiModalRef.current.handleKeyEvent) {
@@ -581,21 +557,13 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             if (currentText.indexOf("\n") === -1 || isAtEndOfLine()) {
                 e.preventDefault();
                 const caretPos = getCaretPosition(element);
-                if (caretPos) {
-                    onFocusNext?.(id, caretPos.left);
-                } else {
-                    onFocusNext?.(id, 0);
-                }
+                onFocusNext?.(id, caretPos?.left ?? 0);
             }
         } else if (e.key === "ArrowUp") {
             if (currentText.indexOf("\n") === -1 || isAtStartOfLine()) {
                 e.preventDefault();
                 const caretPos = getCaretPosition(element);
-                if (caretPos) {
-                    onFocusPrev?.(id, caretPos.left);
-                } else {
-                    onFocusPrev?.(id, 0);
-                }
+                onFocusPrev?.(id, caretPos?.left ?? 0);
             }
         } else if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
@@ -614,13 +582,13 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             const isEmpty = isContentEmpty(element);
             if (isEmpty) {
                 e.preventDefault();
-                if (type === "h1" || type === "h2" || type === "h3" || type === "ul" || type === "numberedList" || type === "checkedList") {
+                if (["h1", "h2", "h3", "ul", "numberedList", "checkedList"].includes(type)) {
                     onTypeChange("p");
                 } else if (type === "p") {
                     onDeleteBlock();
                 }
             }
-        } else if (e.key === " " && (ref.current?.innerText === "-" || ref.current?.innerText === "*" || ref.current?.innerText === "+")) {
+        } else if (e.key === " " && ["-", "*", "+"].includes(ref.current?.innerText ?? "")) {
             e.preventDefault();
             onTypeChange("ul");
             onContentChange("");
@@ -628,31 +596,20 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             e.preventDefault();
             onTypeChange("numberedList");
             onContentChange("");
-        } else if (e.key === " " && (ref.current?.innerText === "[]" || ref.current?.innerText === "[ ]")) {
+        } else if (e.key === " " && ["[]", "[ ]"].includes(ref.current?.innerText ?? "")) {
             e.preventDefault();
             onTypeChange("checkedList");
             onContentChange("");
         }
     };
-
+    
     const handleFocus = () => setIsFocused(true);
-
-    const handleBlur = () => {
-        setIsFocused(false);
-        if (ref.current && isContentEmpty(ref.current)) {
-            cleanEmptyContent(ref.current);
-            if (content !== "") {
-                onContentChange("");
-            }
-        }
-    };
+    const handleBlur = () => setIsFocused(false);
 
     const handleCheckboxToggle = () => {
         const newCheckedState = !internalIsChecked;
         setInternalIsChecked(newCheckedState);
-        if (onToggleChecked) {
-            onToggleChecked(id, newCheckedState);
-        }
+        onToggleChecked?.(id, newCheckedState);
     };
 
     const commonProps = {
@@ -671,7 +628,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         id: id,
         "data-placeholder": getPlaceholderText(type),
     };
-
+    
     // 이모지 모달 렌더링
     const renderEmojiModal = () =>
         showEmojiModal && (
@@ -747,10 +704,10 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                     setSelectedRange(null);
                 }}
                 onFormat={handleFormatText}
+                currentFormat={currentFormat}
             />
         );
 
-    // 블록 타입별 렌더링
     switch (type) {
         case "h1":
             return (
@@ -818,7 +775,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         default:
             return (
                 <>
-                    <tw.EditablePBlock {...commonProps} />
+                    <tw.EditablePBlock {...commonProps} style={{ marginLeft: `${indentationLevel * 25}px` }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </>
