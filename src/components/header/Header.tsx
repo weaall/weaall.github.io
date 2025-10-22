@@ -1,15 +1,28 @@
 "use client";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 import * as tw from "./Header.styles";
 
 export default function Header() {
     const pathname = usePathname();
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 10);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
 
     if (pathname.startsWith("/weaall-ui") || pathname.startsWith("/post") || pathname.startsWith("/newpage")) return null;
 
     const validPaths = ["/dev", "/prac", "/project"];
-
     const headerLayout = validPaths.some((path) => pathname.startsWith(path));
 
     const navItems = [
@@ -21,7 +34,7 @@ export default function Header() {
     ];
 
     return (
-        <tw.Container $state={headerLayout}>
+        <tw.Container $state={headerLayout} $scrolled={scrolled}>
             <tw.LogoWrap>
                 <tw.LogoBtn onClick={() => (window.location.href = "/")}>
                     <tw.Svg alt="" src={"../../assets/weaall-ui.png"} />
@@ -41,7 +54,7 @@ export default function Header() {
             <tw.RearWrap>
                 <tw.Nav>
                     <tw.NavDirectP href="/login">로그인</tw.NavDirectP>
-                    <tw.SubBtn href="/weaall-hub">Weaall Hub 이용하기</tw.SubBtn>
+                    <tw.SubBtn href="/weaall-hub">WeHub 이용하기</tw.SubBtn>
                 </tw.Nav>
             </tw.RearWrap>
         </tw.Container>

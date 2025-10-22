@@ -3,10 +3,19 @@ import Link from "next/link";
 
 interface HeaderLayout {
     $state: boolean;
+    $scrolled: boolean;
 }
 
-export const Container = tw.div<HeaderLayout>`w-full px-6 py-3 flex items-center justify-between mb-20 m:mb-12
-${(p) => (p.$state ? "" : "")}`;
+export const Container = tw.div<HeaderLayout>`w-full px-6 py-3 flex items-center justify-between
+    fixed top-0 left-0 z-50 bg-white transition-all duration-300 // 기본적으로 고정
+    
+    ${(p) => (p.$state ? "" : "")}
+    
+    ${(p) =>
+        p.$scrolled
+            ? "border-b border-gray-200"
+            : ""}
+`;
 
 export const LogoWrap = tw.div`flex w-1/3 items-center justify-start m:w-auto`;
 export const LogoBtn = tw.button`w-10 h-10 bg-white rounded-full mr-2 `;

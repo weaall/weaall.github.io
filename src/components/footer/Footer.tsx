@@ -12,11 +12,21 @@ export default function Footer() {
     return (
         <tw.Container>
             <tw.FooterWrap>
-                <tw.LeftWrap>
-                    <tw.LogoSvg alt="" src={"../../assets/favicon.png"} />
-                    <tw.MainLabel className={roboto.className}>Dong-Hyun Wi</tw.MainLabel>
-                    <tw.MainP>더 나은 것을 만들어내기 위해 끊임없이 고민하며 나아갑니다.</tw.MainP>
-                    <tw.MainP>복잡함 속에서도 효과적인 구조를 위해 노력합니다.</tw.MainP>
+                <tw.LeftWrap className={roboto.className}>
+                    <div className="flex">
+                        <tw.LogoSvg alt="" src={"../../assets/weaall-ui.png"} />
+                        <label className="pl-2 text-black text-2xl font-semibold my-auto">WeHub</label>
+                    </div>
+                    <div className="flex gap-1 mt-8">
+                        <button className="w-8 h-8 bg-gray-200 rounded-lg"></button>
+                        <button className="w-8 h-8 bg-gray-200 rounded-lg"></button>
+                        <button className="w-8 h-8 bg-gray-200 rounded-lg"></button>
+                        <button className="w-8 h-8 bg-gray-200 rounded-lg"></button>
+                        <button className="w-8 h-8 bg-gray-200 rounded-lg"></button>
+                    </div>
+                    <div className="flex mt-16">
+                        <button className="py-1 px-2 border rounded-lg">한국어</button>
+                    </div>
                 </tw.LeftWrap>
 
                 <tw.RightWrap className={roboto.className}>
@@ -38,6 +48,7 @@ export default function Footer() {
                     </tw.ColWrap>
                 </tw.RightWrap>
             </tw.FooterWrap>
+
             <tw.NavWrap>
                 <tw.NavBtn className="w-9 h-9" href="https://github.com/weaall" target="_blank" rel="noopener noreferrer">
                     <tw.NavImg alt="" src={"../../assets/footer/github.png"} />

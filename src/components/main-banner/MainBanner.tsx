@@ -18,7 +18,7 @@ export default function MainBanner() {
                     {"며, 프로젝트를 완료할 수 있는 하나의 공간."}
                 </tw.SubTitle>
                 <tw.BtnWrap>
-                    <tw.SubBtn>Weaall Hub 이용하기</tw.SubBtn>
+                    <tw.SubBtn>WeHub 이용하기</tw.SubBtn>
                     <tw.ReqBtn>개인화 요청하기</tw.ReqBtn>
                 </tw.BtnWrap>
             </tw.StartWrap>
