@@ -4,6 +4,7 @@ import { roboto } from "@/util/font";
 import { usePathname } from "next/navigation";
 
 import * as tw from "./Footer.styles";
+import { InstagramLogo, LinkedInLogo, WeHubLogo, XLogo, YoutubeLogo } from "../ui/hover-header/svg/LogosSvg";
 
 export default function Footer() {
     const pathname = usePathname();
@@ -18,11 +19,21 @@ export default function Footer() {
                         <label className="pl-2 text-black text-2xl font-semibold my-auto">WeHub</label>
                     </div>
                     <div className="flex gap-1 mt-8">
-                        <button className="w-8 h-8 bg-gray-200 rounded-lg"></button>
-                        <button className="w-8 h-8 bg-gray-200 rounded-lg"></button>
-                        <button className="w-8 h-8 bg-gray-200 rounded-lg"></button>
-                        <button className="w-8 h-8 bg-gray-200 rounded-lg"></button>
-                        <button className="w-8 h-8 bg-gray-200 rounded-lg"></button>
+                        <button className="w-8 h-8 bg-gray-200 rounded-lg">
+                            <InstagramLogo color="#000" />
+                        </button>
+                        <button className="w-8 h-8 bg-gray-200 rounded-lg">
+                            <YoutubeLogo color="#000" />
+                        </button>
+                        <button className="w-8 h-8 bg-gray-200 rounded-lg">
+                            <LinkedInLogo color="#000" />
+                        </button>
+                        <button className="w-8 h-8 bg-gray-200 rounded-lg">
+                            <WeHubLogo color="#000" />
+                        </button>
+                        <button className="w-8 h-8 bg-gray-200 rounded-lg">
+                            <XLogo color="#000" />
+                        </button>
                     </div>
                     <div className="flex mt-16">
                         <button className="py-1 px-2 border rounded-lg">한국어</button>
