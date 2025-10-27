@@ -4,7 +4,7 @@ import { roboto } from "@/util/font";
 import { usePathname } from "next/navigation";
 
 import * as tw from "./Footer.styles";
-import { InstagramLogo, LinkedInLogo, WeHubLogo, XLogo, YoutubeLogo } from "../ui/hover-header/svg/LogosSvg";
+import { InstagramLogo, LinkedInLogo, MetaLogo, XLogo, YoutubeLogo } from "../ui/hover-header/svg/LogosSvg";
 
 export default function Footer() {
     const pathname = usePathname();
@@ -27,31 +27,31 @@ export default function Footer() {
                         >
                             <InstagramLogo color="#000" />
                         </a>
-                        <a
-                            className="w-8 h-8 p-1.5 rounded-lg 
+                        <a href="/"
+                            className="w-8 h-8 p-[6px] rounded-lg 
                    bg-transparent hover:bg-gray-200 
                    opacity-60 hover:opacity-100 
                    transition-all duration-300"
                         >
                             <YoutubeLogo color="#000" />
                         </a>
-                        <a
-                            className="w-8 h-8 p-1.5 rounded-lg 
+                        <a href="/"
+                            className="w-8 h-8 p-1 rounded-lg 
                    bg-transparent hover:bg-gray-200 
                    opacity-60 hover:opacity-100 
                    transition-all duration-300"
                         >
                             <LinkedInLogo color="#000" />
                         </a>
-                        <a
+                        <a href="/"
                             className="w-8 h-8 p-1.5 rounded-lg 
                    bg-transparent hover:bg-gray-200 
                    opacity-60 hover:opacity-100 
                    transition-all duration-300"
                         >
-                            <WeHubLogo color="#000" />
+                            <MetaLogo color="#000" />
                         </a>
-                        <a
+                        <a href="/"
                             className="w-8 h-8 p-1.5 rounded-lg 
                    bg-transparent hover:bg-gray-200 
                    opacity-60 hover:opacity-100 
@@ -97,7 +97,6 @@ export default function Footer() {
                 <tw.NavBtn className="w-9 h-9" href="https://github.com/weaall" target="_blank" rel="noopener noreferrer">
                     <tw.NavImg alt="" src={"../../assets/footer/github.png"} />
                 </tw.NavBtn>
-
             </tw.NavWrap>
         </tw.Container>
     );

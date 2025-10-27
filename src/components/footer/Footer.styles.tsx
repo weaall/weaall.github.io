@@ -16,6 +16,6 @@ export const ColWrap = tw.div`flex flex-col space-y-1.5 text-left flex-1`
 export const TopLabel = tw.label`text-base font-semibold`
 export const Index = tw.a`text-[0.9375rem] font:thin hover:underline`
 
-export const NavWrap = tw.div`flex border-t border-main/[0.6] w-full py-6 justify-end items-center space-x-6`
+export const NavWrap = tw.div`flex w-full py-6 justify-end items-center space-x-6`
 export const NavBtn = tw.a`w-5 h-5`
 export const NavImg = tw.img`w-full h-full`

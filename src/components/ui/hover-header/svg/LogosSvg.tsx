@@ -2,8 +2,8 @@ export const XLogo = ({ color = "#000", width = "100%", height = "100%" }) => (
     <svg viewBox="0 0 30 30" width={width} height={height}><path d="M26.37,26l-8.795-12.822l0.015,0.012L25.52,4h-2.65l-6.46,7.48L11.28,4H4.33l8.211,11.971L12.54,15.97L3.88,26h2.65 l7.182-8.322L19.42,26H26.37z M10.23,6l12.34,18h-2.1L8.12,6H10.23z" /></svg>
 );
 
-export const WeHubLogo = ({ color = "#000", width = "100%", height = "100%" }) => (
-    <svg fill={color} width={width} height={height} viewBox="0 0 512 512" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
+export const MetaLogo = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg fill={color} width={width} height={height} viewBox="0 0 512 512">
         <path
             d="M480,257.35c0-123.7-100.3-224-224-224s-224,100.3-224,224c0,111.8,81.9,204.47,189,221.29V322.12H164.11V257.35H221V208c0-56.13,33.45-87.16,84.61-87.16,24.51,0,50.15,4.38,50.15,4.38v55.13H327.5c-27.81,0-36.51,17.26-36.51,35v42h62.12l-9.92,64.77H291V478.66C398.1,461.85,480,369.18,480,257.35Z"
             fill-rule="evenodd"
@@ -23,12 +23,9 @@ export const LinkedInLogo = ({ color = "#000", width = "100%", height = "100%" }
         fill={color}
         version="1.1"
         id="icon"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
         width={width}
         height={height}
         viewBox="0 0 32 32"
-        xmlSpace="preserve"
     >
         <path
             d="M26.2,4H5.8C4.8,4,4,4.8,4,5.7v20.5c0,0.9,0.8,1.7,1.8,1.7h20.4c1,0,1.8-0.8,1.8-1.7V5.7C28,4.8,27.2,4,26.2,4z M11.1,24.4
