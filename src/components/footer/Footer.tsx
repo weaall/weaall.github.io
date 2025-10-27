@@ -18,22 +18,47 @@ export default function Footer() {
                         <tw.LogoSvg alt="" src={"../../assets/weaall-ui.png"} />
                         <label className="pl-2 text-black text-2xl font-semibold my-auto">WeHub</label>
                     </div>
-                    <div className="flex gap-1 mt-8">
-                        <button className="w-8 h-8 bg-gray-200 rounded-lg">
+                    <div className="flex gap-1 mt-6">
+                        <a href="https://www.instagram.com/wea_all/"
+                            className="w-8 h-8 p-1.5 rounded-lg 
+                   bg-transparent hover:bg-gray-200 
+                   opacity-60 hover:opacity-100 
+                   transition-all duration-300"
+                        >
                             <InstagramLogo color="#000" />
-                        </button>
-                        <button className="w-8 h-8 bg-gray-200 rounded-lg">
+                        </a>
+                        <a
+                            className="w-8 h-8 p-1.5 rounded-lg 
+                   bg-transparent hover:bg-gray-200 
+                   opacity-60 hover:opacity-100 
+                   transition-all duration-300"
+                        >
                             <YoutubeLogo color="#000" />
-                        </button>
-                        <button className="w-8 h-8 bg-gray-200 rounded-lg">
+                        </a>
+                        <a
+                            className="w-8 h-8 p-1.5 rounded-lg 
+                   bg-transparent hover:bg-gray-200 
+                   opacity-60 hover:opacity-100 
+                   transition-all duration-300"
+                        >
                             <LinkedInLogo color="#000" />
-                        </button>
-                        <button className="w-8 h-8 bg-gray-200 rounded-lg">
+                        </a>
+                        <a
+                            className="w-8 h-8 p-1.5 rounded-lg 
+                   bg-transparent hover:bg-gray-200 
+                   opacity-60 hover:opacity-100 
+                   transition-all duration-300"
+                        >
                             <WeHubLogo color="#000" />
-                        </button>
-                        <button className="w-8 h-8 bg-gray-200 rounded-lg">
+                        </a>
+                        <a
+                            className="w-8 h-8 p-1.5 rounded-lg 
+                   bg-transparent hover:bg-gray-200 
+                   opacity-60 hover:opacity-100 
+                   transition-all duration-300"
+                        >
                             <XLogo color="#000" />
-                        </button>
+                        </a>
                     </div>
                     <div className="flex mt-16">
                         <button className="py-1 px-2 border rounded-lg">한국어</button>
@@ -42,18 +67,26 @@ export default function Footer() {
 
                 <tw.RightWrap className={roboto.className}>
                     <tw.ColWrap>
-                        <tw.TopLabel>WEAALL</tw.TopLabel>
-                        <tw.Index href="/">Home</tw.Index>
-                        <tw.Index href="/me">Me</tw.Index>
+                        <tw.TopLabel>소개</tw.TopLabel>
+                        <tw.Index href="/me">WeHub 소개</tw.Index>
+                        <tw.Index href="/me">보안</tw.Index>
+                        <tw.Index href="/me">서비스 상태</tw.Index>
+                        <tw.Index href="/me">이용약관 및 개인정보 보호 정책</tw.Index>
+                        <tw.Index href="/me">개인정보 보호 권한</tw.Index>
                     </tw.ColWrap>
                     <tw.ColWrap>
-                        <tw.TopLabel>POST</tw.TopLabel>
-                        <tw.Index href="/shallow">Shallow Dive</tw.Index>
-                        <tw.Index href="/deep">Deep Dive</tw.Index>
-                        <tw.Index href="/prac">Practice</tw.Index>
+                        <tw.TopLabel>포트폴리오</tw.TopLabel>
+                        <tw.Index href="/prac">WeHub</tw.Index>
+                        <tw.Index href="/deep">MindsNavi</tw.Index>
+                        <tw.Index href="/shallow">Travelo</tw.Index>
                     </tw.ColWrap>
                     <tw.ColWrap>
-                        <tw.TopLabel>TRAVELO</tw.TopLabel>
+                        <tw.TopLabel>자료</tw.TopLabel>
+                        <tw.Index href="https://travelo.store/">Web</tw.Index>
+                        <tw.Index href="/dev/intro">Dev</tw.Index>
+                    </tw.ColWrap>
+                    <tw.ColWrap>
+                        <tw.TopLabel>용도별</tw.TopLabel>
                         <tw.Index href="https://travelo.store/">Web</tw.Index>
                         <tw.Index href="/dev/intro">Dev</tw.Index>
                     </tw.ColWrap>
@@ -64,12 +97,7 @@ export default function Footer() {
                 <tw.NavBtn className="w-9 h-9" href="https://github.com/weaall" target="_blank" rel="noopener noreferrer">
                     <tw.NavImg alt="" src={"../../assets/footer/github.png"} />
                 </tw.NavBtn>
-                <tw.NavBtn href="https://www.instagram.com/wea_all/" target="_blank" rel="noopener noreferrer">
-                    <tw.NavImg alt="" src={"../../assets/footer/instagram.png"} />
-                </tw.NavBtn>
-                <tw.NavBtn className="w-7 h-7" href="https://travelo.store/" target="_blank" rel="noopener noreferrer">
-                    <tw.NavImg alt="" src={"../../assets/footer/travelo.png"} />
-                </tw.NavBtn>
+
             </tw.NavWrap>
         </tw.Container>
     );
