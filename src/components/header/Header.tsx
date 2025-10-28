@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 // 경로는 사용자 환경에 맞게 수정이 필요할 수 있습니다.
-import * as tw from "./Header.styles"; 
+import * as tw from "./Header.styles";
 import { DownIcon, UpIcon } from "../ui/hover-header/svg/PostsSvg";
 import { roboto } from "@/util/font";
 
@@ -14,28 +14,74 @@ const WeHubHoverMenu = () => {
     // absolute top-full left-0 right-0 w-full 클래스를 그대로 유지하여 헤더의 전체 너비를 차지하게 합니다.
     return (
         // 창 너비에 맞추기 위해 left-0, right-0, w-full을 유지합니다.
-        <div className="absolute top-full left-0 right-0 p-4 bg-white shadow-lg border-b border-gray-100 z-50 w-full flex justify-center">
-            <div className="flex justify-between max-w-7xl w-full px-4"> {/* 내부 콘텐츠 너비 제한 (선택 사항) */}
-                <div className="w-auto px-4"> 
-                    <ul className="flex flex-col space-y-2"> 
-                        <li><a href="/weaall-hub-link1" className="block text-lg font-bold text-gray-800 hover:text-blue-600">WeHub Features</a></li>
-                        <li><a href="/weaall-hub-link2" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Documentation</a></li>
-                        <li><a href="/weaall-hub-settings" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Support</a></li>
-                    </ul>
+        <div className="absolute top-full left-0 right-0 pt-2 pb-8  bg-white shadow-lg border-b border-gray-100 z-50 w-full flex justify-center">
+            <div className="flex justify-between max-w-7xl w-full px-4">
+                <div className="w-1/2">
+                    <p className="text-sm text-gray-400 pl-2 font-medium">기능</p>
+                    <div className="w-full flex">
+                        <div className="w-1/2 flex flex-col pr-10 pt-4">
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className={`text-xl font-semibold ${roboto.className}`}>WeHub AI</label>
+                                <p className="text-xs text-gray-400">구축, 작성, 자동화를 위한 툴</p>
+                            </div>
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className="text-xl font-semibold">에이전트</label>
+                                <p className="text-xs text-gray-400">수동 작업 처리</p>
+                            </div>
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className="text-xl font-semibold">기업 통합 검색</label>
+                                <p className="text-xs text-gray-400">즉시 답변을 찾을 수 있는 기능</p>
+                            </div>
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className="text-xl font-semibold">AI 노트</label>
+                                <p className="text-xs text-gray-400">AI가 완벽하게 정리해 드립니다.</p>
+                            </div>
+                        </div>
+                        <div className="w-1/2 flex flex-col pr-10 pt-4">
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className="text-xl font-semibold">문서</label>
+                                <p className="text-xs text-gray-400">간단하면서도 강력한 툴</p>
+                            </div>
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className="text-xl font-semibold">지식 베이스</label>
+                                <p className="text-xs text-gray-400">모든 지식을 한데 모은 허브</p>
+                            </div>
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className="text-xl font-semibold">프로젝트</label>
+                                <p className="text-xs text-gray-400">어떤 프로젝트든 관리할 수 있는 툴</p>
+                            </div>
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className="text-xl font-semibold">사이트</label>
+                                <p className="text-xs text-gray-400">뭐든 빠르게 게시할 수 있는 툴</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="w-auto px-4"> 
-                    <ul className="flex flex-col space-y-2"> 
-                        <li><a href="/weaall-hub-link1" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Community</a></li>
-                        <li><a href="/weaall-hub-link2" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Roadmap</a></li>
-                        <li><a href="/weaall-hub-settings" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Pricing</a></li>
-                    </ul>
-                </div>
-                <div className="w-auto px-4"> 
-                    <ul className="flex flex-col space-y-2"> 
-                        <li><a href="/weaall-hub-link1" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Use Cases</a></li>
-                        <li><a href="/weaall-hub-link2" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Partners</a></li>
-                        <li><a href="/weaall-hub-settings" className="block text-lg font-bold text-gray-800 hover:text-blue-600">About Us</a></li>
-                    </ul>
+                <div className="w-1/2">
+                    <p className="text-sm text-gray-400 pl-2 font-medium">시작하기</p>
+                    <div className="w-full flex">
+                        <div className="w-1/2 flex flex-col pr-10 pt-4">
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className="text-xl font-semibold">WeHub AI</label>
+                                <p className="text-xs text-gray-400">구축, 작성, 자동화를 위한 툴</p>
+                            </div>
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className="text-xl font-semibold">에이전트</label>
+                                <p className="text-xs text-gray-400">수동 작업 처리</p>
+                            </div>
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className="text-xl font-semibold">기업 통합 검색</label>
+                                <p className="text-xs text-gray-400">즉시 답변을 찾을 수 있는 기능</p>
+                            </div>
+                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
+                                <label className="text-xl font-semibold">AI 노트</label>
+                                <p className="text-xs text-gray-400">AI가 완벽하게 정리해 드립니다.</p>
+                            </div>
+                        </div>
+                        <div className="w-1/2 flex justify-center items-center">
+                            <img src="../../assets/header_menu_image.webp" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
