@@ -16,14 +16,11 @@ export default function Footer() {
                 <tw.LeftWrap className={roboto.className}>
                     <div className="flex">
                         <tw.LogoSvg alt="" src={"../../assets/weaall-ui.png"} />
-                        <label className="pl-2 text-black text-2xl font-semibold my-auto">WeHub</label>
+                        <label className="pl-2 text-black text-[1.8rem] font-medium my-auto">WeHub</label>
                     </div>
                     <div className="flex gap-1 mt-6">
                         <a href="https://www.instagram.com/wea_all/"
-                            className="w-8 h-8 p-1.5 rounded-lg 
-                   bg-transparent hover:bg-gray-200 
-                   opacity-60 hover:opacity-100 
-                   transition-all duration-300"
+                            className="w-8 h-8 p-1.5 rounded-lg bg-transparent hover:bg-gray-200 opacity-60 hover:opacity-100 transition-all duration-300"
                         >
                             <InstagramLogo color="#000" />
                         </a>

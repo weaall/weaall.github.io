@@ -2,42 +2,88 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-import * as tw from "./Header.styles";
-// Assuming you have an UpIcon component in the same directory
+// 경로는 사용자 환경에 맞게 수정이 필요할 수 있습니다.
+import * as tw from "./Header.styles"; 
 import { DownIcon, UpIcon } from "../ui/hover-header/svg/PostsSvg";
 import { roboto } from "@/util/font";
 
-// --- New Component for the Hover Menu ---
-// This is a placeholder for the content you want in the dropdown menu
+// WeHubHoverMenu 컴포넌트
 const WeHubHoverMenu = () => {
-    // Replace with your actual menu content, links, etc.
+    // 이 컴포넌트는 tw.Container 바로 아래에 렌더링되며,
+    // tw.Container가 일반적으로 창 너비만큼 확장되므로 w-full이 창 너비를 따릅니다.
+    // absolute top-full left-0 right-0 w-full 클래스를 그대로 유지하여 헤더의 전체 너비를 차지하게 합니다.
     return (
-        // Key changes: left-0 right-0 and w-full for full-header-width spanning
-        // This component MUST be placed inside the parent element that defines the full header width.
-        <div className="absolute top-full left-0 right-0 p-4 bg-white shadow- border-b border-gray-100 z-50 w-full">
-            <div className="max-w-6xl mx-auto px-4"> 
-                {/* Use a wrapper here if tw.Container has a max-width, to center content */}
-                <ul className="flex space-x-8"> 
-                    {/* Example content using flex for horizontal layout */}
-                    <li><a href="/weaall-hub-link1" className="block text-lg font-bold text-gray-800 hover:text-blue-600">WeHub Features</a></li>
-                    <li><a href="/weaall-hub-link2" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Documentation</a></li>
-                    <li><a href="/weaall-hub-settings" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Support</a></li>
-                </ul>
+        // 창 너비에 맞추기 위해 left-0, right-0, w-full을 유지합니다.
+        <div className="absolute top-full left-0 right-0 p-4 bg-white shadow-lg border-b border-gray-100 z-50 w-full flex justify-center">
+            <div className="flex justify-between max-w-7xl w-full px-4"> {/* 내부 콘텐츠 너비 제한 (선택 사항) */}
+                <div className="w-auto px-4"> 
+                    <ul className="flex flex-col space-y-2"> 
+                        <li><a href="/weaall-hub-link1" className="block text-lg font-bold text-gray-800 hover:text-blue-600">WeHub Features</a></li>
+                        <li><a href="/weaall-hub-link2" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Documentation</a></li>
+                        <li><a href="/weaall-hub-settings" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Support</a></li>
+                    </ul>
+                </div>
+                <div className="w-auto px-4"> 
+                    <ul className="flex flex-col space-y-2"> 
+                        <li><a href="/weaall-hub-link1" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Community</a></li>
+                        <li><a href="/weaall-hub-link2" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Roadmap</a></li>
+                        <li><a href="/weaall-hub-settings" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Pricing</a></li>
+                    </ul>
+                </div>
+                <div className="w-auto px-4"> 
+                    <ul className="flex flex-col space-y-2"> 
+                        <li><a href="/weaall-hub-link1" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Use Cases</a></li>
+                        <li><a href="/weaall-hub-link2" className="block text-lg font-bold text-gray-800 hover:text-blue-600">Partners</a></li>
+                        <li><a href="/weaall-hub-settings" className="block text-lg font-bold text-gray-800 hover:text-blue-600">About Us</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     );
 };
-// ----------------------------------------
 
 
+// Header 컴포넌트
 export default function Header() {
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
-    const [isHoveringWeHub, setIsHoveringWeHub] = useState(false);
+    
+    // 메뉴 호버 상태 (마우스가 영역에 있을 때)
+    const [isHoveringWeHub, setIsHoveringWeHub] = useState(false); 
+    
+    // 메뉴 클릭 상태 (클릭으로 메뉴를 열었을 때 고정)
+    const [isMenuClicked, setIsMenuClicked] = useState(false); 
+
+    // 최종적으로 메뉴가 열려 있어야 하는 상태: 호버 중이거나, 클릭으로 고정된 상태
+    const isMenuOpen = isHoveringWeHub || isMenuClicked; 
+    
+    // WeHub 버튼 클릭 핸들러: 클릭할 때마다 isMenuClicked 상태 토글
+    const handleWeHubClick = () => {
+        setIsMenuClicked(prev => !prev);
+        // 클릭으로 열었을 때는 호버 상태를 강제로 true로 설정할 필요가 없습니다. 
+        // isMenuOpen이 isMenuClicked를 포함하므로.
+    };
+    
+    // ⭐ 마우스가 Header 영역을 벗어났을 때 호버 상태를 해제하는 핸들러
+    const handleMouseLeaveHeader = () => {
+        // 클릭으로 고정된 상태가 아니라면, 호버 상태를 해제합니다.
+        // isMenuClicked가 true이면 클릭으로 고정되었으므로 닫히지 않습니다.
+        if (!isMenuClicked) {
+             setIsHoveringWeHub(false);
+        }
+    };
+    
+    // ⭐ 마우스가 버튼 영역에 진입했을 때 호버 상태를 설정하는 핸들러
+    const handleMouseEnterHeader = () => {
+        setIsHoveringWeHub(true);
+    };
+
 
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 10);
+            // 스크롤 발생 시 클릭으로 고정된 메뉴를 닫습니다.
+            if (isMenuClicked) setIsMenuClicked(false);
         };
 
         window.addEventListener("scroll", handleScroll);
@@ -45,7 +91,7 @@ export default function Header() {
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
-    }, []);
+    }, [isMenuClicked]);
 
     if (pathname.startsWith("/weaall-ui") || pathname.startsWith("/post") || pathname.startsWith("/newpage")) return null;
 
@@ -61,7 +107,16 @@ export default function Header() {
     ];
 
     return (
-        <tw.Container $state={headerLayout} $scrolled={scrolled}>
+        // tw.Container에 마우스 이벤트 핸들러를 추가하여,
+        // Header 영역 전체가 호버 영역이 되도록 합니다.
+        // tw.Container가 position: relative 또는 position: fixed/sticky를 가질 것으로 가정합니다.
+        <tw.Container 
+            $state={headerLayout} 
+            $scrolled={scrolled}
+            // ⭐ Header 컴포넌트의 최상위 컨테이너에 호버 이벤트 추가
+            onMouseEnter={handleMouseEnterHeader}
+            onMouseLeave={handleMouseLeaveHeader}
+        >
             <tw.LogoWrap>
                 <tw.LogoBtn onClick={() => (window.location.href = "/")}>
                     <tw.Svg alt="" src={"../../assets/weaall-ui.png"} />
@@ -70,18 +125,16 @@ export default function Header() {
 
             <tw.NavWrap className={roboto.className}>
                 <tw.Nav>
-                    {/* WeHub button with hover functionality 
-                        Added 'relative' class to the parent of the button to correctly position the absolute menu
-                    */}
-                    <div
-                        className="relative" 
-                        onMouseEnter={() => setIsHoveringWeHub(true)}
-                        onMouseLeave={() => setIsHoveringWeHub(false)}
-                    >
-                        <button className="text-sm flex font-medium bg-white rounded px-3 py-1.5 items-center justify-center hover:bg-gray-100">
+                    {/* 호버 이벤트를 tw.Container로 옮겼으므로, 이 div는 relative만 유지합니다. */}
+                    <div className="relative">
+                        <button 
+                            className={`text-sm flex font-medium rounded px-3 py-1.5 items-center justify-center 
+                                        ${isMenuOpen ? 'bg-gray-100' : 'bg-white hover:bg-gray-100'}`}
+                            onClick={handleWeHubClick}
+                        >
                             WeHub
                             <div className="w-[14px] h-[14px] ml-2">
-                                {isHoveringWeHub ? <UpIcon /> : <DownIcon />}
+                                {isMenuOpen ? <UpIcon /> : <DownIcon />}
                             </div>
                         </button>
                     </div>
@@ -100,7 +153,10 @@ export default function Header() {
                     <tw.SubBtn href="/weaall-hub">WeHub 이용하기</tw.SubBtn>
                 </tw.Nav>
             </tw.RearWrap>
-                                                {isHoveringWeHub && <WeHubHoverMenu />}
+
+            {/* ⭐ WeHubHoverMenu를 다시 tw.Container 바로 안으로 옮겨 전체 너비를 차지하도록 합니다. */}
+            {isMenuOpen && <WeHubHoverMenu />}
+            
         </tw.Container>
     );
 }
