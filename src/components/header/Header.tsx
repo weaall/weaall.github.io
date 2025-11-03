@@ -150,6 +150,7 @@ export default function Header() {
         { label: "ME", path: "/me" },
         { label: "GITHUB", path: "https://github.com/weaall" },
         { label: "DEV", path: "/dev/intro" },
+        { label: "PORTFOLIO", path: "/portfolio" },
     ];
 
     return (

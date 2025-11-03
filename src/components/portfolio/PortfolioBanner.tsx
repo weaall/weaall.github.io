@@ -1,7 +1,7 @@
 import { roboto } from "@/util/font";
 import { RightIcon } from "../ui/hover-header/svg/TypeMenuSvg";
 
-export default function PortfolioBanner() {
+export default function PortfolioListBanner() {
     return (
         <div className="w-full flex flex-col">
             <h2 className="text-[3.25rem] text-[#191918] font-bold "><span className={roboto.className}>WeHub</span>1.0과 함께하세요</h2>
