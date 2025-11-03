@@ -16,31 +16,42 @@ export default function ProveLightBanner() {
                         </span>
                     </tw.Title>
                     <tw.SubTitle>
-                        {"전문의, 임상심리전문가, 상담심리전문가"}
+                        {"자가 설문 평가를 통해 "}
+                        <span className="text-[#416bac] font-bold">
+                        {"우울증상"}
+                        </span>
+                        {"과"}
+                        <span className="text-red-400 font-bold">
+                        {"스트레스 상태"}
+                        </span>
+                        {"를"}
                         <br />
-                        {"& (주)마인즈에이아이 R&D센터 공동 개발."}
+                        {"알아볼 수 있는 "}
+                        <span className="font-bold">
+                        {"정신건강 분석평가 프로그램"}
+                        </span>
                     </tw.SubTitle>
                     <tw.BtnWrap>
-                        <button className="px-6 py-3 bg-[#416bac] text-white rounded-lg hover:bg-[#416bac]/80 transition-colors">기업 바로가기</button>
-                        <button className="px-6 py-3 bg-blue-50 text-[#416bac] rounded-lg hover:bg-blue-100 transition-colors">설문 체험하기</button>
+                        <a className="px-6 py-3 bg-[#416bac] text-white rounded-lg hover:bg-[#416bac]/80 transition-colors cursor-pointer" href="https://www.mindsai.co.kr/" target="_blank" rel="noopener noreferrer">기업 바로가기</a>
+                        <a className="px-6 py-3 bg-blue-50 text-[#416bac] rounded-lg hover:bg-blue-100 transition-colors cursor-pointer">설문 체험하기</a>
                     </tw.BtnWrap>
                 </tw.StartWrap>
 
                 <tw.EndWrap>
-                    <tw.ImgContainer>
+                    <div className="flex w-full justify-center items-center my-auto mx-auto gap-4">
                         <img className="h-36 object-contain" src="/assets/portfolio/prove-lite/prove_l_logo.png" alt="" />
-                    </tw.ImgContainer>
-                    <tw.BottomLabel />
+                    </div>
+                    <div className="w-full h-[1px] bg-[#416bac] m:hidden" />
                 </tw.EndWrap>
             </div>
 
-            <div className="flex flex-col w-full">
-                <p className="text-xs text-gray-800 font-normal mx-auto mt-20">PROVE Lite를 사용하는 파트너</p>
+            <div className="flex flex-col w-full mb-4">
+                <p className="text-xs text-gray-800 font-normal mx-auto mt-20 mb-4">PROVE Lite를 사용하는 파트너</p>
                 <div className="w-full flex justify-between px-20">
-                    <img className="w-32 h-24 object-contain" src="/assets/portfolio/prove-lite/medicheck_logo.jpg" alt="" />
-                    <img className="w-32 h-24 object-contain" src="/assets/portfolio/prove-lite/nurseorg_logo.jpg" alt="" />
-                    <img className="w-32 h-24 object-contain" src="/assets/portfolio/prove-lite/samsunglogitech_logo.png" alt="" />
-                    <img className="w-32 h-24 object-contain" src="/assets/portfolio/prove-lite/donghwa_logo.svg" alt="" />
+                    <img className="w-32  object-contain" src="/assets/portfolio/prove-lite/medicheck_logo.jpg" alt="" />
+                    <img className="w-32  object-contain" src="/assets/portfolio/prove-lite/nurseorg_logo.jpg" alt="" />
+                    <img className="w-32  object-contain" src="/assets/portfolio/prove-lite/samsunglogitech_logo.png" alt="" />
+                    <img className="w-32 object-contain" src="/assets/portfolio/prove-lite/donghwa_logo.svg" alt="" />
                 </div>
             </div>
         </div>
