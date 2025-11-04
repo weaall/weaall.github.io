@@ -1,4 +1,5 @@
 // TextFormattingModal.tsx (최종 수정 버전)
+import { FontIcon } from "@/components/ui/hover-header/svg/TypeMenuSvg";
 import React, { useRef, useEffect, useState } from "react";
 
 // (Interface 정의는 기존과 동일)
@@ -23,15 +24,6 @@ interface TextFormattingModalProps {
     onFormat: (format: TextFormat) => void;
     currentFormat: TextFormat;
 }
-
-// ✨ FontIcon은 색상 표시를 위해 유지합니다.
-const FontIcon = ({ color = "#ffffffcf" }) => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9.9375 6.375L6.25 17.625M17.75 17.625L14.0625 6.375M15.6875 13.75H8.3125" 
-              stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-);
-
 
 const TextFormattingModal: React.FC<TextFormattingModalProps> = ({
     open, position, onClose, onFormat, currentFormat,
@@ -105,10 +97,10 @@ const TextFormattingModal: React.FC<TextFormattingModalProps> = ({
 
                 <button
                     title="텍스트 색상"
-                    className={`p-1 rounded ${isColorPickerOpen ? activeClass : inactiveClass}`}
+                    className={`w-7 h-7 flex items-center justify-center rounded ${isColorPickerOpen ? activeClass : inactiveClass}`}
                     onClick={() => setIsColorPickerOpen(!isColorPickerOpen)}
                 >
-                    <FontIcon color={currentFormat.color || "#ffffffcf"} />
+                    <FontIcon width="16" height="16" color={currentFormat.color || "#ffffffcf"} />
                 </button>
             </div>
 
