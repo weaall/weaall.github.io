@@ -1,127 +1,50 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
-// 경로는 사용자 환경에 맞게 수정이 필요할 수 있습니다.
 import * as tw from "./Header.styles";
 import { DownIcon, UpIcon } from "../ui/hover-header/svg/PostsSvg";
 import { roboto } from "@/util/font";
-
-// WeHubHoverMenu 컴포넌트
-const WeHubHoverMenu = () => {
-    // 이 컴포넌트는 tw.Container 바로 아래에 렌더링되며,
-    // tw.Container가 일반적으로 창 너비만큼 확장되므로 w-full이 창 너비를 따릅니다.
-    // absolute top-full left-0 right-0 w-full 클래스를 그대로 유지하여 헤더의 전체 너비를 차지하게 합니다.
-    return (
-        // 창 너비에 맞추기 위해 left-0, right-0, w-full을 유지합니다.
-        <div className="absolute top-full left-0 right-0 pt-2 pb-8  bg-white shadow-lg border-b border-gray-100 z-50 w-full flex justify-center">
-            <div className="flex justify-between max-w-7xl w-full px-4">
-                <div className="w-1/2">
-                    <p className="text-sm text-gray-400 pl-2 font-medium">기능</p>
-                    <div className="w-full flex">
-                        <div className="w-1/2 flex flex-col pr-10 pt-4">
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className={`text-xl font-semibold ${roboto.className}`}>WeHub AI</label>
-                                <p className="text-xs text-gray-400">구축, 작성, 자동화를 위한 툴</p>
-                            </div>
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className="text-xl font-semibold">에이전트</label>
-                                <p className="text-xs text-gray-400">수동 작업 처리</p>
-                            </div>
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className="text-xl font-semibold">기업 통합 검색</label>
-                                <p className="text-xs text-gray-400">즉시 답변을 찾을 수 있는 기능</p>
-                            </div>
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className="text-xl font-semibold">AI 노트</label>
-                                <p className="text-xs text-gray-400">AI가 완벽하게 정리해 드립니다.</p>
-                            </div>
-                        </div>
-                        <div className="w-1/2 flex flex-col pr-10 pt-4">
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className="text-xl font-semibold">문서</label>
-                                <p className="text-xs text-gray-400">간단하면서도 강력한 툴</p>
-                            </div>
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className="text-xl font-semibold">지식 베이스</label>
-                                <p className="text-xs text-gray-400">모든 지식을 한데 모은 허브</p>
-                            </div>
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className="text-xl font-semibold">프로젝트</label>
-                                <p className="text-xs text-gray-400">어떤 프로젝트든 관리할 수 있는 툴</p>
-                            </div>
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className="text-xl font-semibold">사이트</label>
-                                <p className="text-xs text-gray-400">뭐든 빠르게 게시할 수 있는 툴</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-1/2">
-                    <p className="text-sm text-gray-400 pl-2 font-medium">시작하기</p>
-                    <div className="w-full flex">
-                        <div className="w-1/2 flex flex-col pr-10 pt-4">
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className="text-xl font-semibold">WeHub AI</label>
-                                <p className="text-xs text-gray-400">구축, 작성, 자동화를 위한 툴</p>
-                            </div>
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className="text-xl font-semibold">에이전트</label>
-                                <p className="text-xs text-gray-400">수동 작업 처리</p>
-                            </div>
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className="text-xl font-semibold">기업 통합 검색</label>
-                                <p className="text-xs text-gray-400">즉시 답변을 찾을 수 있는 기능</p>
-                            </div>
-                            <div className="w-full flex-1 flex flex-col gap-1 p-2 rounded-lg hover:bg-gray-100">
-                                <label className="text-xl font-semibold">AI 노트</label>
-                                <p className="text-xs text-gray-400">AI가 완벽하게 정리해 드립니다.</p>
-                            </div>
-                        </div>
-                        <div className="w-1/2 flex justify-center items-center">
-                            <img src="../../assets/header_menu_image.webp" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
+import WeHubHoverMenu from "./WeHubHoverMenu";
 
 // Header 컴포넌트
 export default function Header() {
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
     
-    // 메뉴 호버 상태 (마우스가 영역에 있을 때)
-    const [isHoveringWeHub, setIsHoveringWeHub] = useState(false); 
-    
-    // 메뉴 클릭 상태 (클릭으로 메뉴를 열었을 때 고정)
+    const [isMenuOpenInternal, setIsMenuOpenInternal] = useState(false); 
     const [isMenuClicked, setIsMenuClicked] = useState(false); 
+    
+    // ⭐ TimeOut ID를 저장할 ref (렌더링에 영향을 주지 않음)
+    const leaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // 최종적으로 메뉴가 열려 있어야 하는 상태: 호버 중이거나, 클릭으로 고정된 상태
-    const isMenuOpen = isHoveringWeHub || isMenuClicked; 
+    // 최종적으로 메뉴가 열려 있어야 하는 상태
+    const isMenuOpen = isMenuOpenInternal || isMenuClicked; 
     
-    // WeHub 버튼 클릭 핸들러: 클릭할 때마다 isMenuClicked 상태 토글
     const handleWeHubClick = () => {
+        // 클릭 시 호버 상태는 비활성화하고, 클릭 고정 상태를 토글합니다.
         setIsMenuClicked(prev => !prev);
-        // 클릭으로 열었을 때는 호버 상태를 강제로 true로 설정할 필요가 없습니다. 
-        // isMenuOpen이 isMenuClicked를 포함하므로.
     };
     
-    // ⭐ 마우스가 Header 영역을 벗어났을 때 호버 상태를 해제하는 핸들러
-    const handleMouseLeaveHeader = () => {
-        // 클릭으로 고정된 상태가 아니라면, 호버 상태를 해제합니다.
-        // isMenuClicked가 true이면 클릭으로 고정되었으므로 닫히지 않습니다.
-        if (!isMenuClicked) {
-             setIsHoveringWeHub(false);
+    // ⭐ 마우스 영역 진입 핸들러: 타이머를 즉시 취소하고 메뉴를 M
+    const handleMouseEnterWeHubArea = () => { 
+        // 닫기 타이머가 작동 중이면 취소합니다.
+        if (leaveTimeoutRef.current) {
+            clearTimeout(leaveTimeoutRef.current);
+            leaveTimeoutRef.current = null;
         }
+        setIsMenuOpenInternal(true);
     };
     
-    // ⭐ 마우스가 버튼 영역에 진입했을 때 호버 상태를 설정하는 핸들러
-    const handleMouseEnterHeader = () => {
-        setIsHoveringWeHub(true);
+    // ⭐ 마우스 영역 이탈 핸들러: 닫기 명령을 200ms 지연시킴
+    const handleMouseLeaveWeHubArea = () => { 
+        if (!isMenuClicked) {
+            // 200ms 후에 메뉴를 닫도록 타이머를 설정합니다.
+            leaveTimeoutRef.current = setTimeout(() => {
+                 setIsMenuOpenInternal(false);
+                 leaveTimeoutRef.current = null;
+            }, 200); // 200ms는 마우스 이동 속도에 적절한 값입니다.
+        }
     };
 
 
@@ -136,32 +59,32 @@ export default function Header() {
 
         return () => {
             window.removeEventListener("scroll", handleScroll);
+            // 컴포넌트 언마운트 시 타이머 정리
+            if (leaveTimeoutRef.current) {
+                clearTimeout(leaveTimeoutRef.current);
+            }
         };
     }, [isMenuClicked]);
-
+    
+    // ... (경로 체크 및 navItems 생략) ...
     if (pathname.startsWith("/weaall-ui") || pathname.startsWith("/post") || pathname.startsWith("/newpage")) return null;
 
     const validPaths = ["/dev", "/prac", "/project"];
     const headerLayout = validPaths.some((path) => pathname.startsWith(path));
 
     const navItems = [
-        { label: "POST", path: "/post" },
-        { label: "PRAC", path: "/prac" },
-        { label: "ME", path: "/me" },
-        { label: "GITHUB", path: "https://github.com/weaall" },
-        { label: "DEV", path: "/dev/intro" },
+        { p: "POST", path: "/post" },
+        { p: "PRAC", path: "/prac" },
+        { p: "ME", path: "/me" },
+        { p: "GITHUB", path: "https://github.com/weaall" },
+        { p: "DEV", path: "/dev/intro" },
     ];
 
+
     return (
-        // tw.Container에 마우스 이벤트 핸들러를 추가하여,
-        // Header 영역 전체가 호버 영역이 되도록 합니다.
-        // tw.Container가 position: relative 또는 position: fixed/sticky를 가질 것으로 가정합니다.
         <tw.Container 
             $state={headerLayout} 
             $scrolled={scrolled}
-            // ⭐ Header 컴포넌트의 최상위 컨테이너에 호버 이벤트 추가
-            onMouseEnter={handleMouseEnterHeader}
-            onMouseLeave={handleMouseLeaveHeader}
         >
             <tw.LogoWrap>
                 <tw.LogoBtn onClick={() => (window.location.href = "/")}>
@@ -171,8 +94,12 @@ export default function Header() {
 
             <tw.NavWrap className={roboto.className}>
                 <tw.Nav>
-                    {/* 호버 이벤트를 tw.Container로 옮겼으므로, 이 div는 relative만 유지합니다. */}
-                    <div className="relative">
+                    {/* 1. WeHub 버튼 래퍼 */}
+                    <div 
+                        className="relative h-full flex items-center" 
+                        onMouseEnter={handleMouseEnterWeHubArea} // 들어오면 타이머 취소 및 메뉴 M
+                        onMouseLeave={handleMouseLeaveWeHubArea} // 나가면 200ms 딜레이 후 끔
+                    >
                         <button 
                             className={`text-sm flex font-medium rounded px-3 py-1.5 items-center justify-center 
                                         ${isMenuOpen ? 'bg-gray-100' : 'bg-white hover:bg-gray-100'}`}
@@ -183,11 +110,11 @@ export default function Header() {
                                 {isMenuOpen ? <UpIcon /> : <DownIcon />}
                             </div>
                         </button>
-                    </div>
+                    </div> 
 
                     {navItems.map((item, index) => (
                         <tw.NavDirectP key={index} href={`${item.path}`}>
-                            {item.label}
+                            {item.p}
                         </tw.NavDirectP>
                     ))}
                 </tw.Nav>
@@ -200,8 +127,16 @@ export default function Header() {
                 </tw.Nav>
             </tw.RearWrap>
 
-            {/* ⭐ WeHubHoverMenu를 다시 tw.Container 바로 안으로 옮겨 전체 너비를 차지하도록 합니다. */}
-            {isMenuOpen && <WeHubHoverMenu />}
+            {/* 2. 메뉴 렌더링 래퍼 */}
+            {isMenuOpen && (
+                <div
+                    // 메뉴 자체에 마우스가 들어오면 다시 onMouseEnter를 발생시켜 타이머를 취소합니다.
+                    onMouseEnter={handleMouseEnterWeHubArea}
+                    onMouseLeave={handleMouseLeaveWeHubArea}
+                >
+                    <WeHubHoverMenu />
+                </div>
+            )}
             
         </tw.Container>
     );
