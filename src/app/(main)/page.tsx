@@ -1,6 +1,6 @@
-import MainBanner from "@/components/main-banner/MainBanner"
+import MainBanner from "@/components/top-banner/MainBanner"
 import MdxBanner from "@/components/mdx/mdx-banner/MdxBanner"
-import PortfolioBanner from "@/components/portfolio/PortfolioBanner"
+import PortfolioListBanner from "@/components/portfolio/PortfolioBanner"
 
 export default function Home() {
     return (
@@ -10,7 +10,7 @@ export default function Home() {
             </div>
             <div className="w-full bg-[#f6f5f4]">
                 <div className="max-w-[1080px] mx-auto pt-12 pb-20">
-                <PortfolioBanner />
+                <PortfolioListBanner />
                 </div>
             </div>
             {/* <MdxBanner dir="Post" />

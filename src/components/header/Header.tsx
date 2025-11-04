@@ -78,6 +78,7 @@ export default function Header() {
         { p: "ME", path: "/me" },
         { p: "GITHUB", path: "https://github.com/weaall" },
         { p: "DEV", path: "/dev/intro" },
+        { label: "PORTFOLIO", path: "/portfolio" },
     ];
 
 
