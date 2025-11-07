@@ -8,26 +8,27 @@ export default function ProveLiteBanner() {
             <div className="w-full h-auto flex flex-reverse m:flex-col-reverse">
                 <tw.StartWrap>
                     <tw.Title className="hidden m:block">{"PROVE LITE 설문"}</tw.Title>
-                    <tw.Title className="block m:hidden text-[#416bac] tracking-[-0.1em]">
-                        <span className="tracking-tighter">
-                        {"PROVE LITE 설문"}
+                    <tw.Title className="block m:hidden text-[#191918] tracking-[-0.1em]">
+                        <span className="tracking-normal">
+                        {"심리지표 평가"}
+                        </span>
+                        <span className="tracking-normal">
+                        {"PROVE LITE"}
                         </span>
                     </tw.Title>
-                    <p className="text-[1.3rem] leading-snug text-gray-700 m:text-[1rem] m:leading-normal">
+                    <p className="text-[1.3rem] leading-snug tracking-tighter text-[#191918] m:text-[1rem] m:leading-normal">
                         {"자가 설문 평가를 통해 "}
-                        <span className="text-[#416bac] font-medium">
+                        <span className="text-[#416bac]">
                         {"우울증상"}
                         </span>
                         {"과"}
-                        <span className="text-red-500 font-medium">
+                        <span className="text-red-500">
                         {"스트레스 상태"}
                         </span>
                         {"를"}
                         <br />
                         {"알아볼 수 있는 "}
-                        <span className="font-medium">
                         {"정신건강 분석평가 프로그램"}
-                        </span>
                     </p>
                     <tw.BtnWrap>
                         <a className="px-6 py-3 bg-[#416bac] text-white rounded-lg hover:bg-[#416bac]/80 transition-colors cursor-pointer" href="https://www.mindsai.co.kr/" target="_blank" rel="noopener noreferrer">기업 바로가기</a>
@@ -44,11 +45,11 @@ export default function ProveLiteBanner() {
             </div>
 
             <div className="flex flex-col w-full mb-4">
-                <p className="text-xs text-gray-800 font-normal mx-auto mt-16 mb-4">PROVE Lite를 사용하는 파트너</p>
+                <p className="font-normal text-xs leading-4 mx-auto mt-16 mb-4 tracking-[-0.0078125rem]">PROVE Lite를 사용하는 파트너</p>
                 <div className="w-full flex justify-between px-20">
-                    <img className="w-32  object-contain" src="/assets/portfolio/prove-lite/medicheck_logo.jpg" alt="" />
-                    <img className="w-32  object-contain" src="/assets/portfolio/prove-lite/nurseorg_logo.jpg" alt="" />
-                    <img className="w-32  object-contain" src="/assets/portfolio/prove-lite/samsunglogitech_logo.png" alt="" />
+                    <img className="w-32 object-contain" src="/assets/portfolio/prove-lite/medicheck_logo.jpg" alt="" />
+                    <img className="w-32 object-contain" src="/assets/portfolio/prove-lite/nurseorg_logo.jpg" alt="" />
+                    <img className="w-32 object-contain" src="/assets/portfolio/prove-lite/samsunglogitech_logo.png" alt="" />
                     <img className="w-32 object-contain" src="/assets/portfolio/prove-lite/donghwa_logo.svg" alt="" />
                 </div>
             </div>
