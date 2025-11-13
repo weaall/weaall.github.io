@@ -46,7 +46,7 @@ export default function PracPostList({ props }: PostsProps) {
                             onClick={() => setOpenCategory(openCategory === category ? null : category)}
                         >
                             <span>{category}</span>
-                            <tw.CategoryArrow className={openCategory === category ? "rotate-90" : ""}>▶</tw.CategoryArrow>
+                            {/* <tw.CategoryArrow className={openCategory === category ? "rotate-90" : ""}>▶</tw.CategoryArrow> */}
                         </tw.CategoryButton>
                         {openCategory === category && (
                             <tw.CategoryList>
