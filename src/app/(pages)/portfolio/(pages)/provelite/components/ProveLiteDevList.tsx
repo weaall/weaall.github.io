@@ -57,7 +57,7 @@ export default function ProveLiteDevList() {
                             <div className="w-8 h-8 mb-2">
                                 <UserLayoutIcon color="#416bac" />
                             </div>
-                            <h3 className="text-lg font-bold mb-1">유저 레이아웃</h3>
+                            <h3 className="text-lg font-bold mb-1">유저 앱</h3>
                             <p>크로스 플랫폼 기반 자가 설문 평가 서비스</p>
                         </div>
                         <div className=" pl-8 w-full h-1/2 overflow-hidden">
@@ -71,8 +71,8 @@ export default function ProveLiteDevList() {
                             <div className="w-8 h-8 mb-2">
                                 <AdminLayoutIcon color="#416bac" />
                             </div>
-                            <h3 className="text-lg font-bold mb-1">어드민 레이아웃</h3>
-                            <p>AWS 서버리스 기반, 트래픽에 맞춰 비용이 최적화된 시스템</p>
+                            <h3 className="text-lg font-bold mb-1">어드민 대시보드</h3>
+                            <p>웹 기반 서비스 운영 및 통계 분석 대시보드</p>
                         </div>
                         <div className=" pl-8 w-full h-1/2 overflow-hidden">
                             <img className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg" src="/assets/portfolio/prove-lite/admin_layout.png" alt="" />
@@ -94,6 +94,21 @@ export default function ProveLiteDevList() {
                     </div>
                 </div>
 
+            </div>
+
+            <h2 className="text-[2.625rem] text-[#191918] text-left font-black tracking-[-0.09375rem]">AWS Arch.</h2>
+            <div className="w-full h-1/2 overflow-hidden">
+                <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4" src="/assets/portfolio/prove-lite/aws_arch_origin.png" alt="" />
+            </div>
+
+            <h2 className="text-[2.625rem] text-[#191918] text-left font-black tracking-[-0.09375rem]">APP Arch.</h2>
+            <div className="w-full h-1/2 overflow-hidden">
+                <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4" src="/assets/portfolio/prove-lite/app_arch_origin.png" alt="" />
+            </div>
+
+            <h2 className="text-[2.625rem] text-[#191918] text-left font-black tracking-[-0.09375rem]">AWS Arch.</h2>
+            <div className="w-full h-1/2 overflow-hidden">
+                <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4" src="/assets/portfolio/prove-lite/aoo_arch_origin.png" alt="" />
             </div>
         </div>
     );
