@@ -12,7 +12,7 @@ export default function ProveLiteBanner() {
                         <span className="tracking-normal">
                         {"심리지표 평가"}
                         </span>
-                        <span className="tracking-normal">
+                        <span className={`tracking-wide ${roboto.className}`}>
                         {"PROVE LITE"}
                         </span>
                     </tw.Title>

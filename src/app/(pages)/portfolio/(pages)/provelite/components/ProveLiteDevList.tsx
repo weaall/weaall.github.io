@@ -1,4 +1,5 @@
 import { AdminLayoutIcon, AWSIcon, CodeIcon, EtcIcon, LogicIcon, UserLayoutIcon } from "@/components/ui/hover-header/svg/PortfolioSvg";
+import { roboto } from "@/util/font";
 
 export default function ProveLiteDevList() {
     return (
@@ -96,19 +97,24 @@ export default function ProveLiteDevList() {
 
             </div>
 
-            <h2 className="text-[2.625rem] text-[#191918] text-left font-black tracking-[-0.09375rem]">AWS Arch.</h2>
+            <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem]"><span className={roboto.className}>AWS</span> 아키텍쳐</h2>
             <div className="w-full h-1/2 overflow-hidden">
-                <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4" src="/assets/portfolio/prove-lite/aws_arch_origin.png" alt="" />
+                <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4 px-32" src="/assets/portfolio/prove-lite/aws_arch_origin.png" alt="" />
             </div>
 
-            <h2 className="text-[2.625rem] text-[#191918] text-left font-black tracking-[-0.09375rem]">APP Arch.</h2>
+            <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem]">어플리케이션 아키텍쳐</h2>
             <div className="w-full h-1/2 overflow-hidden">
-                <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4" src="/assets/portfolio/prove-lite/app_arch_origin.png" alt="" />
+                <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4 px-32" src="/assets/portfolio/prove-lite/app_arch_origin.png" alt="" />
             </div>
 
-            <h2 className="text-[2.625rem] text-[#191918] text-left font-black tracking-[-0.09375rem]">AWS Arch.</h2>
+            <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem]">사용자 웹 레이아웃</h2>
             <div className="w-full h-1/2 overflow-hidden">
-                <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4" src="/assets/portfolio/prove-lite/aoo_arch_origin.png" alt="" />
+                <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4" src="/assets/portfolio/prove-lite/user_layout_origin.png" alt="" />
+            </div>
+
+            <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem]">관리자 웹 레이아웃</h2>
+            <div className="w-full h-auto">
+                <img className="object-full w-full rounded-xl" src="/assets/portfolio/prove-lite/admin_layout_origin.png" alt="" />
             </div>
         </div>
     );
