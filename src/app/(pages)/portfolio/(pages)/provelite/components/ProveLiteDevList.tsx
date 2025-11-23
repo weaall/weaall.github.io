@@ -1,5 +1,6 @@
 import { AdminLayoutIcon, AWSIcon, CodeIcon, EtcIcon, LogicIcon, UserLayoutIcon } from "@/components/ui/hover-header/svg/PortfolioSvg";
 import { roboto } from "@/util/font";
+import UserLayout from "./UserLayout";
 
 export default function ProveLiteDevList() {
     return (
@@ -107,10 +108,7 @@ export default function ProveLiteDevList() {
                 <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4 px-32" src="/assets/portfolio/prove-lite/app_arch_origin.png" alt="" />
             </div>
 
-            <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem]">사용자 웹 레이아웃</h2>
-            <div className="w-full h-1/2 overflow-hidden">
-                <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4" src="/assets/portfolio/prove-lite/user_layout_origin.png" alt="" />
-            </div>
+            <UserLayout />
 
             <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem]">관리자 웹 레이아웃</h2>
             <div className="w-full h-auto">
