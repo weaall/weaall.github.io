@@ -74,7 +74,8 @@ export default function Footer() {
                     <tw.ColWrap>
                         <tw.TopLabel>포트폴리오</tw.TopLabel>
                         <tw.Index href="/prac">WeHub</tw.Index>
-                        <tw.Index href="/deep">MindsNavi</tw.Index>
+                        <tw.Index href="/portfolio/provelite">PROVE Lite</tw.Index>
+                        <tw.Index href="/portfolio/provelite">MindsNavi</tw.Index>
                         <tw.Index href="/shallow">Travelo</tw.Index>
                     </tw.ColWrap>
                     <tw.ColWrap>
