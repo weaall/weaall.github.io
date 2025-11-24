@@ -12,7 +12,7 @@ export default function UserLayout() {
                 <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem]">사용자 웹 레이아웃</h2>
                 <div className="relative flex items-center rounded-full bg-gray-100 p-1.5">
                     <div
-                        className={`absolute top-1/2 left-1.5 w-1/2 h-10 rounded-full shadow-md transition-all duration-500 ease-in-out transform -translate-y-1/2 ${isToggled ? 'translate-x-[5rem] bg-[#416bac]' : 'translate-x-0 bg-gray-500'
+                        className={`absolute top-1/2 left-1.5 w-1/2 h-10 rounded-full shadow-md transition-all duration-500 ease-in-out transform -translate-y-1/2 ${isToggled ? 'translate-x-[5.5rem] bg-[#416bac]' : 'translate-x-0 bg-gray-500'
                             } ${isToggled ? 'translate-x-[5.5rem] bg-[#416bac]' : 'translate-x-0 bg-[#4da38d]'}`}
                     ></div>
                     <button

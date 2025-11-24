@@ -2,6 +2,7 @@
 
 import { AdminLayoutIcon, AWSIcon, CodeIcon, EtcIcon, LogicIcon, UserLayoutIcon } from "@/components/ui/hover-header/svg/PortfolioSvg";
 import { roboto } from "@/util/font";
+import SystemArchitecture from "./SystemArchitecture";
 import UserLayout from "./UserLayout";
 import { useRef } from "react";
 
@@ -21,8 +22,10 @@ export default function ProveLiteDevList() {
 
             <div className="w-full flex flex-col pt-6 gap-6">
                 <div className="w-full flex gap-6">
-                    <div onClick={() => scrollToRef(awsArchRef)}
-                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
+                    <div
+                        onClick={() => scrollToRef(awsArchRef)}
+                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
+                    >
                         <div className="w-full h-1/2 flex flex-col p-8">
                             <div className="w-8 h-8 mb-2">
                                 <AWSIcon color="#416bac" />
@@ -31,12 +34,18 @@ export default function ProveLiteDevList() {
                             <p className="text-[#191918] text-base">AWS 서버리스 기반, 트래픽에 맞춰 비용이 최적화된 시스템</p>
                         </div>
                         <div className=" pl-8 w-full h-1/2 overflow-hidden">
-                            <img className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left" src="/assets/portfolio/prove-lite/aws_arch.png" alt="" />
+                            <img
+                                className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left"
+                                src="/assets/portfolio/prove-lite/aws_arch.png"
+                                alt=""
+                            />
                         </div>
                     </div>
 
-                    <div onClick={() => scrollToRef(appArchRef)}
-                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
+                    <div
+                        onClick={() => scrollToRef(appArchRef)}
+                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
+                    >
                         <div className="w-full h-1/2 flex flex-col p-8">
                             <div className="w-8 h-8 mb-2">
                                 <CodeIcon color="#416bac" />
@@ -45,10 +54,13 @@ export default function ProveLiteDevList() {
                             <p className="text-[#191918] text-base">Next.js 기반의 서버 사이드 렌더링(SSR) 웹 애플리케이션</p>
                         </div>
                         <div className=" pl-8 w-full h-1/2 overflow-hidden">
-                            <img className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left" src="/assets/portfolio/prove-lite/app_arch.png" alt="" />
+                            <img
+                                className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left"
+                                src="/assets/portfolio/prove-lite/app_arch.png"
+                                alt=""
+                            />
                         </div>
                     </div>
-
 
                     <div className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
                         <div className="w-full h-1/2 flex flex-col p-8">
@@ -59,15 +71,20 @@ export default function ProveLiteDevList() {
                             <p>서비스 로직</p>
                         </div>
                         <div className=" pl-8 w-full h-1/2 overflow-hidden">
-                            <img className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left" src="/assets/portfolio/prove-lite/aws_arch.png" alt="" />
+                            <img
+                                className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left"
+                                src="/assets/portfolio/prove-lite/aws_arch.png"
+                                alt=""
+                            />
                         </div>
                     </div>
-
                 </div>
 
                 <div className="w-full flex gap-6">
-                    <div onClick={() => scrollToRef(userLayoutRef)}
-                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
+                    <div
+                        onClick={() => scrollToRef(userLayoutRef)}
+                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
+                    >
                         <div className="w-full h-1/2 flex flex-col p-8">
                             <div className="w-8 h-8 mb-2">
                                 <UserLayoutIcon color="#416bac" />
@@ -76,12 +93,18 @@ export default function ProveLiteDevList() {
                             <p>크로스 플랫폼 기반 자가 설문 평가 서비스</p>
                         </div>
                         <div className=" pl-8 w-full h-1/2 overflow-hidden">
-                            <img className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left" src="/assets/portfolio/prove-lite/user_layout.png" alt="" />
+                            <img
+                                className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left"
+                                src="/assets/portfolio/prove-lite/user_layout.png"
+                                alt=""
+                            />
                         </div>
                     </div>
 
-                    <div onClick={() => scrollToRef(adminLayoutRef)}
-                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
+                    <div
+                        onClick={() => scrollToRef(adminLayoutRef)}
+                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
+                    >
                         <div className="w-full h-1/2 flex flex-col p-8">
                             <div className="w-8 h-8 mb-2">
                                 <AdminLayoutIcon color="#416bac" />
@@ -90,10 +113,13 @@ export default function ProveLiteDevList() {
                             <p>웹 기반 서비스 운영 및 통계 분석 대시보드</p>
                         </div>
                         <div className=" pl-8 w-full h-1/2 overflow-hidden">
-                            <img className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left" src="/assets/portfolio/prove-lite/admin_layout.png" alt="" />
+                            <img
+                                className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left"
+                                src="/assets/portfolio/prove-lite/admin_layout.png"
+                                alt=""
+                            />
                         </div>
                     </div>
-
 
                     <div className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
                         <div className="w-full h-1/2 flex flex-col p-8">
@@ -104,28 +130,34 @@ export default function ProveLiteDevList() {
                             <p>기타</p>
                         </div>
                         <div className=" pl-8 w-full h-1/2 overflow-hidden">
-                            <img className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left" src="/assets/portfolio/prove-lite/aws_arch.png" alt="" />
+                            <img
+                                className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left"
+                                src="/assets/portfolio/prove-lite/aws_arch.png"
+                                alt=""
+                            />
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            <div ref={awsArchRef} className="pt-20">
-                <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem]"><span className={roboto.className}>AWS</span> 아키텍쳐</h2>
-                <div className="w-full h-1/2 overflow-hidden">
-                    <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4 px-32" src="/assets/portfolio/prove-lite/aws_arch_origin.png" alt="" />
-                </div>
+            <div ref={awsArchRef}  className="pt-20">
+                <SystemArchitecture />
             </div>
 
             <div ref={appArchRef} className="pt-20">
                 <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem]">어플리케이션 아키텍쳐</h2>
                 <div className="w-full h-1/2 overflow-hidden">
-                    <img className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4 px-32" src="/assets/portfolio/prove-lite/app_arch_origin.png" alt="" />
+                    <img
+                        className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4 px-32"
+                        src="/assets/portfolio/prove-lite/app_arch_origin.png"
+                        alt=""
+                    />
                 </div>
             </div>
 
-            <div ref={userLayoutRef} className="pt-20"><UserLayout /></div>
+            <div ref={userLayoutRef} className="pt-20">
+                <UserLayout />
+            </div>
 
             <div ref={adminLayoutRef} className="pt-20">
                 <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem]">관리자 웹 레이아웃</h2>
