@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminLayoutIcon, AWSIcon, CodeIcon, EtcIcon, LogicIcon, UserLayoutIcon } from "@/components/ui/hover-header/svg/PortfolioSvg";
+import ApplicationArchitecture from "./ApplicationArchitecture";
 import { roboto } from "@/util/font";
 import SystemArchitecture from "./SystemArchitecture";
 import UserLayout from "./UserLayout";
@@ -145,14 +146,7 @@ export default function ProveLiteDevList() {
             </div>
 
             <div ref={appArchRef} className="pt-20">
-                <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem]">어플리케이션 아키텍쳐</h2>
-                <div className="w-full h-1/2 overflow-hidden">
-                    <img
-                        className="object-full w-full rounded-xl bg-[#ffffff] shadow-lg p-4 px-32"
-                        src="/assets/portfolio/prove-lite/app_arch_origin.png"
-                        alt=""
-                    />
-                </div>
+                <ApplicationArchitecture/>
             </div>
 
             <div ref={userLayoutRef} className="pt-20">
