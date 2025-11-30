@@ -44,7 +44,7 @@ export default function SystemArchitecture() {
                             <p className="text-sm text-[#0075de]">
                                 <span className={roboto.className}>Task 2.</span>
                             </p>
-                            <h3 className="text-lg font-bold mb-1 leading-tight text-[#191918]"><span className={roboto.className}>GitLab CI/CD - </span>클라우드 포메이션을 통한 배포 자동화</h3>
+                            <h3 className="text-lg font-bold mb-1 leading-tight text-[#191918]"><span className={roboto.className}>GitLab CI/CD - </span>클라우드 포메이션 배포 자동화</h3>
                             <div className="my-auto w-full">
                                 <img
                                     className="object-full w-full group-hover:scale-110 transition-transform duration-300"

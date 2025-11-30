@@ -60,7 +60,7 @@ export default function ApplicationArchitecture() {
                             <h3 className="text-lg font-bold my-2 text-[#191918] leading-tight">Puppeteer 구조 개선</h3>
                             <ul className="text-[#191918] text-base list-disc pl-5 space-y-1 mt-2">
                                 <li>가상 브라우저 리소스 관리</li>
-                                <li>인스턴스 리소스 사용 개선</li>
+                                <li>인스턴스 리소스 사용량 개선</li>
                             </ul>
                             <a className="text-[#0075de] text-end mt-auto group-hover:font-bold transition-all">개선 과정 알아보기 →</a>
                         </div>
