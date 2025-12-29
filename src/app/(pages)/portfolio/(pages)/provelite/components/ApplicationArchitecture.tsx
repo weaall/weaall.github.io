@@ -29,7 +29,7 @@ export default function ApplicationArchitecture() {
                             <p className="text-sm text-[#0075de]">
                                 <span className={roboto.className}>Task 1.</span>
                             </p>
-                            <h3 className="text-lg font-bold my-2 text-[#191918] leading-tight">FE/BE 통합</h3>
+                            <h3 className="text-lg font-bold text-[#191918] leading-tight">FE/BE 통합</h3>
                             <ul className="text-[#191918] text-base list-disc pl-5 space-y-1 mt-2">
                                 <li>모노레포 도입</li>
                                 <li>배포 파이프라인 단일화</li>
@@ -43,7 +43,7 @@ export default function ApplicationArchitecture() {
                             <p className="text-sm text-[#0075de]">
                                 <span className={roboto.className}>Task 2.</span>
                             </p>
-                            <h3 className="text-lg font-bold my-2 text-[#191918] leading-tight">평가, 결과 알림을 위한 Cron 도입</h3>
+                            <h3 className="text-lg font-bold text-[#191918] leading-tight">평가, 결과 알림을 위한 Cron 도입</h3>
                             <ul className="text-[#191918] text-base list-disc pl-5 space-y-1 mt-2">
                                 <li>고객사 요구사항 반영</li>
                                 <li>평가 미완료자 리마인드 알림톡</li>
@@ -57,7 +57,7 @@ export default function ApplicationArchitecture() {
                             <p className="text-sm text-[#0075de]">
                                 <span className={roboto.className}>Task 3.</span>
                             </p>
-                            <h3 className="text-lg font-bold my-2 text-[#191918] leading-tight">Puppeteer 구조 개선</h3>
+                            <h3 className="text-lg font-bold text-[#191918] leading-tight">Puppeteer 구조 개선</h3>
                             <ul className="text-[#191918] text-base list-disc pl-5 space-y-1 mt-2">
                                 <li>가상 브라우저 리소스 관리</li>
                                 <li>인스턴스 리소스 사용량 개선</li>

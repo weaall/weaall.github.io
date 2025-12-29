@@ -6,10 +6,12 @@ import { roboto } from "@/util/font";
 import SystemArchitecture from "./SystemArchitecture";
 import UserLayout from "./UserLayout";
 import { useRef } from "react";
+import ServiceFlow from "./ServiceFlow";
 
 export default function ProveLiteDevList() {
     const awsArchRef = useRef<HTMLDivElement>(null);
     const appArchRef = useRef<HTMLDivElement>(null);
+    const serviceFlowRef = useRef<HTMLDivElement>(null);
     const userLayoutRef = useRef<HTMLDivElement>(null);
     const adminLayoutRef = useRef<HTMLDivElement>(null);
 
@@ -68,13 +70,13 @@ export default function ProveLiteDevList() {
                             <div className="w-8 h-8 mb-2 p-[1px]">
                                 <LogicIcon color="#416bac" />
                             </div>
-                            <h3 className="text-lg font-bold mb-1">서비스 로직</h3>
-                            <p>서비스 로직</p>
+                            <h3 className="text-lg font-bold mb-1">서비스 플로우</h3>
+                            <p>B2B2C 기반 설문 평가 서비스 </p>
                         </div>
                         <div className=" pl-8 w-full h-1/2 overflow-hidden">
                             <img
                                 className="object-contain w-full rounded-tl-xl border-2 border-[#ededeb] shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left"
-                                src="/assets/portfolio/prove-lite/aws_arch.png"
+                                src="/assets/portfolio/prove-lite/service_flow.png"
                                 alt=""
                             />
                         </div>
@@ -147,6 +149,10 @@ export default function ProveLiteDevList() {
 
             <div ref={appArchRef} className="pt-20">
                 <ApplicationArchitecture/>
+            </div>
+
+            <div ref={serviceFlowRef} className="pt-20">
+                <ServiceFlow/>
             </div>
 
             <div ref={userLayoutRef} className="pt-20">
