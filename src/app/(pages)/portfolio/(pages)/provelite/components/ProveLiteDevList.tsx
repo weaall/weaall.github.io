@@ -65,7 +65,9 @@ export default function ProveLiteDevList() {
                         </div>
                     </div>
 
-                    <div className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
+                    <div 
+                        onClick={() => scrollToRef(serviceFlowRef)}
+                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
                         <div className="w-full h-1/2 flex flex-col p-8">
                             <div className="w-8 h-8 mb-2 p-[1px]">
                                 <LogicIcon color="#416bac" />
