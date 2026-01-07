@@ -20,6 +20,8 @@ import {
     Th,
     Td,
     H4,
+    P,
+    Span,
 } from "@/components/mdx/mdx-components/components";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
@@ -87,6 +89,7 @@ async function compilePostMarkdown(slug: string) {
             h3: H3,
             h4: H4,
             a: A,
+            p: P,
             li: Li,
             hr: Hr,
             pre: Pre,
@@ -100,6 +103,7 @@ async function compilePostMarkdown(slug: string) {
             tr: Tr,
             th: Th,
             td: Td,
+            span: Span,
         },
     });
 }

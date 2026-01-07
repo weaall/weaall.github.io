@@ -62,13 +62,13 @@ export default function PostLayout({ postsData, content, frontmatter }: MDXConte
             id="main-bg-container"
             className="w-full h-full flex flex-col bg-darkbg relative"
             style={{
-                paddingLeft: collapsed ? 50 : 260,
+                paddingLeft: collapsed ? 50 : 350,
                 transition: "padding-left 0.2s",
             }}
         >
             <HoverHeader visible={showHeader} collapsed={collapsed} />
             <PostListDrawer props={postsData} collapsed={collapsed} setCollapsed={setCollapsed} />
-            <MDXContent content={content} frontmatter={frontmatter} />
+            <MDXContent content={content} frontmatter={frontmatter} collapsed={collapsed} />
         </div>
     );
 }

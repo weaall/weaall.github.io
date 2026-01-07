@@ -1,15 +1,57 @@
 import tw from "tailwind-styled-components";
 
-export const H1 = tw.h1`text-2xl font-medium py-2`;
-export const H2 = tw.h2`text-[1.75rem] font-medium py-4`;
-export const H3 = tw.h3`text-[1.25rem] font-medium pt-4`;
+export const H1 = tw.h1`
+  font-bold
+  text-white
+  text-[#ffffffcf]
+  px-[2px] pt-[3px] pb-0
+  outline-none
+  cursor-text
+  text-[30px] font-bold
+  relative`;
+export const H2 = tw.h2`
+  font-semibold
+  text-white
+  text-[#ffffffcf]
+  px-[2px] pt-[3px] pb-0
+  outline-none
+  cursor-text
+  text-[24px] font-semibold`;
+export const H3 = tw.h3`
+  font-medium
+  text-white
+  text-[#ffffffcf]
+  px-[2px] pt-[3px] pb-0
+  outline-none
+  cursor-text
+  text-[20px] font-medium`;
 
 export const H4 = tw.h4`text-base font-medium before:content-['|'] before:font-bold before:pr-[20px]`;
 
 
-export const P = tw.span`ml-4 text-base py-3`;
+export const P = tw.p`
+  text-white
+  text-[#ffffffcf]
+  px-[2px] pt-[3px] pb-0
+  outline-none
+  cursor-text
+  text-[16px]`;
 
-export const A = tw.a`text-base font-bold text-red-500`;
+  export const Span = tw.span`
+  text-white
+  text-[#ffffffcf]
+  px-[2px] pt-[3px] pb-0
+  outline-none
+  cursor-text
+  text-[16px]`;
+
+export const A = tw.a`
+  text-white
+  text-[#ffffffcf]
+  px-[2px] pt-[3px] pb-0
+  outline-none
+  cursor-text
+  text-[16px]`;
 
 export const Hr = tw.hr`my-10 w-full h-[1px] bg-t-main`;
 

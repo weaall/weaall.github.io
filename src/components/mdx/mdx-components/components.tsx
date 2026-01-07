@@ -28,6 +28,10 @@ export function P({ children }: { children?: React.ReactNode }) {
     return <tw.P>{children}</tw.P>;
 }
 
+export function Span({ children }: { children?: React.ReactNode }) {
+    return <tw.Span>{children}</tw.Span>;
+}
+
 export function A({ href, children }: { href?: string; children?: React.ReactNode }) {
     return (
         <tw.A target="_blank" href={href}>

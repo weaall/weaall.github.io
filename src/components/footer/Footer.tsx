@@ -9,7 +9,7 @@ import { InstagramLogo, LinkedInLogo, MetaLogo, XLogo, YoutubeLogo } from "../ui
 export default function Footer() {
     const pathname = usePathname();
 
-    if (pathname.startsWith("/weaall-ui")) return null;
+    if (pathname.startsWith("/weaall-ui") || pathname.startsWith("/post")) return null;
     return (
         <tw.Container>
             <tw.FooterWrap>

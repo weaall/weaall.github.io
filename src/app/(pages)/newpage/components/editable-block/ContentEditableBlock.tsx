@@ -712,7 +712,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         case "h1":
             return (
                 <>
-                    <tw.EditableH1Block {...commonProps} style={{ marginLeft: `${indentationLevel * 25}px` }} />
+                    <tw.EditableH1Block {...commonProps} style={{ color: color, marginLeft: `${indentationLevel * 25}px` }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </>
@@ -720,7 +720,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         case "h2":
             return (
                 <>
-                    <tw.EditableH2Block {...commonProps} style={{ marginLeft: `${indentationLevel * 25}px` }} />
+                    <tw.EditableH2Block {...commonProps} style={{ color: color, marginLeft: `${indentationLevel * 25}px` }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </>
@@ -728,7 +728,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         case "h3":
             return (
                 <>
-                    <tw.EditableH3Block {...commonProps} style={{ marginLeft: `${indentationLevel * 25}px` }} />
+                    <tw.EditableH3Block {...commonProps} style={{ color: color, marginLeft: `${indentationLevel * 25}px` }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </>
@@ -736,8 +736,8 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         case "ul":
             return (
                 <tw.EditableUlBlockWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
-                    <tw.EditableUlBlockTag style={{ color: color || "#ffffffcf" }} />
-                    <tw.EditableUlBlock {...commonProps} />
+                    <tw.EditableUlBlockTag style={{ color: color }} />
+                    <tw.EditableUlBlock {...commonProps} style={{ color: color }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </tw.EditableUlBlockWrap>
@@ -745,8 +745,8 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         case "numberedList":
             return (
                 <tw.EditableNumberedListBlockWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
-                    <tw.EditableNumberedListBlockTag style={{ color: color || "#ffffffcf" }} data-number={listNumber || 1} />
-                    <tw.EditableNumberedListBlock {...commonProps} />
+                    <tw.EditableNumberedListBlockTag style={{ color: color }} data-number={listNumber || 1} />
+                    <tw.EditableNumberedListBlock {...commonProps} style={{ color: color }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </tw.EditableNumberedListBlockWrap>
@@ -754,8 +754,8 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         case "checkedList":
             return (
                 <tw.EditableCheckedListBlockWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
-                    <tw.EditableCheckbox type="checkbox" checked={internalIsChecked} onChange={handleCheckboxToggle} />
-                    <tw.EditableCheckedListBlock {...commonProps} style={{ marginLeft: "6px" }} />
+                    <tw.EditableCheckbox type="checkbox" checked={internalIsChecked} onChange={handleCheckboxToggle} style={{ color: color }} />
+                    <tw.EditableCheckedListBlock {...commonProps} style={{ color: color, marginLeft: "6px" }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </tw.EditableCheckedListBlockWrap>
@@ -764,7 +764,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             return (
                 <tw.EditableToggleTextWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
                     <tw.EditableTogglePButton $isToggled={true} />
-                    <tw.EditableTogglePBlock {...commonProps} />
+                    <tw.EditableTogglePBlock {...commonProps} style={{ color: color }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </tw.EditableToggleTextWrap>
@@ -775,7 +775,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         default:
             return (
                 <>
-                    <tw.EditablePBlock {...commonProps} style={{ marginLeft: `${indentationLevel * 25}px` }} />
+                    <tw.EditablePBlock {...commonProps} style={{ color: color, marginLeft: `${indentationLevel * 25}px` }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </>

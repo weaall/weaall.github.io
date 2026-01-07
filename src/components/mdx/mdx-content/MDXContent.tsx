@@ -16,9 +16,10 @@ interface MDXContentProps {
         tags: string[];
         mins: string;
     };
+    collapsed: boolean;
 }
 
-export function MDXContent({ content, frontmatter }: MDXContentProps) {
+export function MDXContent({ content, frontmatter, collapsed  }: MDXContentProps) {
     const [headings, setHeadings] = useState<{ id: string; text: string; level: number }[]>([]);
     const [activeId, setActiveId] = useState<string>("");
 
@@ -75,9 +76,11 @@ export function MDXContent({ content, frontmatter }: MDXContentProps) {
         <tw.Container>
             <tw.ContentWrap>
                 <PostTitle frontmatter={frontmatter} />
+                <div className="flex flex-col gap-[4px]">
                 {content}
+                </div>
             </tw.ContentWrap>
-            <tw.IndexWrap>
+            {/* <tw.IndexWrap>
                 <tw.IndexList>
                     {headings.map((heading) => (
                         <tw.IndexLabel $active={heading.id === activeId}
@@ -91,7 +94,7 @@ export function MDXContent({ content, frontmatter }: MDXContentProps) {
                         </tw.IndexLabel>
                     ))}
                 </tw.IndexList>
-            </tw.IndexWrap>
+            </tw.IndexWrap> */}
         </tw.Container>
     );
 }

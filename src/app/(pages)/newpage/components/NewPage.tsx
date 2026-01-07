@@ -100,8 +100,17 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
             imageUrl: meta.imageUrl || "",
         });
 
-        console.log(mdx)
-        alert(mdx);
+        // MDX 콘텐츠를 파일로 다운로드
+        const blob = new Blob([mdx], { type: "text/markdown" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        // 파일명은 페이지 제목으로, 공백은 밑줄로 바꿉니다. 제목이 없으면 'untitled.mdx'로 저장됩니다.
+        a.download = `${(meta.title || "untitled").replace(/ /g, "_")}.mdx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     };
 
     const changeBlockType = (idx: number, type: string) => {

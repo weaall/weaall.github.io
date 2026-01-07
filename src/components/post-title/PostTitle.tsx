@@ -17,11 +17,14 @@ export default function PostTitle({ frontmatter }: PostData, content: any) {
     return (
         <>
             <tw.Container>
-                <tw.ImgWrap>
-                    <tw.Img alt="" src={`../../${frontmatter.imageUrl}`}></tw.Img>
-                </tw.ImgWrap>
+                {frontmatter.imageUrl && frontmatter.imageUrl !== 'none' && (
+                    <tw.ImgWrap>
+                        <tw.Img alt={frontmatter.title} src={`../../${frontmatter.imageUrl}`}></tw.Img>
+                    </tw.ImgWrap>
+                )}
+                <tw.Title>{frontmatter.title}</tw.Title>
 
-                <tw.TitleWrap>
+                {/* <tw.TitleWrap>
                     <tw.Title>{frontmatter.title}</tw.Title>
                     <tw.SubTitle>{frontmatter.subTitle}</tw.SubTitle>
                     <tw.SubWrap>
@@ -39,7 +42,7 @@ export default function PostTitle({ frontmatter }: PostData, content: any) {
                             <tw.Tag key={index}>#{tag}</tw.Tag>
                         ))}
                     </tw.TagWrap>
-                </tw.TitleWrap>
+                </tw.TitleWrap> */}
             </tw.Container>
         </>
     );

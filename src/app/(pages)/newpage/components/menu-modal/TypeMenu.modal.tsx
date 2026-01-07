@@ -16,6 +16,19 @@ interface TypeMenuModalProps {
     }[];
 }
 
+const TEXT_COLORS = [
+    { color: "#ffffffcf", label: "기본 텍스트" },
+    { color: "#b5b5b5", label: "회색 텍스트" },
+    { color: "#e9bfa8", label: "갈색 텍스트" },
+    { color: "#ffb86b", label: "주황색 텍스트" },
+    { color: "#ffe066", label: "노란색 텍스트" },
+    { color: "#b6e3b6", label: "초록색 텍스트" },
+    { color: "#8ecae6", label: "파란색 텍스트" },
+    { color: "#cbb7f0", label: "보라색 텍스트" },
+    { color: "#f7b7d7", label: "분홍색 텍스트" },
+    { color: "#ff7b7b", label: "빨간색 텍스트" },
+];
+
 export default function TypeMenuModal({ open, position, onSelect, onColorSelect, onDeleteBlock, onClose, elements }: TypeMenuModalProps) {
     useEffect(() => {
         if (!open) return;
@@ -129,86 +142,19 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                 {showDrawer === "색" && (
                     <tw.DrawerMenu onMouseEnter={() => setShowDrawer("색")} onMouseLeave={handleDrawerMouseLeave}>
                         <tw.Label>텍스트 색상</tw.Label>
-                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#ffffffcf")}>
-                            <tw.LabelWrap>
-                                <tw.SvgWrap>
-                                    <FontIcon color="#ffffffcf" />
-                                </tw.SvgWrap>
-                                기본 텍스트
-                            </tw.LabelWrap>
-                        </tw.MenuButton>
-                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#b5b5b5")}>
-                            <tw.LabelWrap>
-                                <tw.SvgWrap>
-                                    <FontIcon color="#b5b5b5" />
-                                </tw.SvgWrap>
-                                회색 텍스트
-                            </tw.LabelWrap>
-                        </tw.MenuButton>
-                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#e9bfa8")}>
-                            <tw.LabelWrap>
-                                <tw.SvgWrap>
-                                    <FontIcon color="#e9bfa8" />
-                                </tw.SvgWrap>
-                                갈색 텍스트
-                            </tw.LabelWrap>
-                        </tw.MenuButton>
-                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#ffb86b")}>
-                            <tw.LabelWrap>
-                                <tw.SvgWrap>
-                                    <FontIcon color="#ffb86b" />
-                                </tw.SvgWrap>
-                                주황색 텍스트
-                            </tw.LabelWrap>
-                        </tw.MenuButton>
-                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#ffe066")}>
-                            <tw.LabelWrap>
-                                <tw.SvgWrap>
-                                    <FontIcon color="#ffe066" />
-                                </tw.SvgWrap>
-                                노란색 텍스트
-                            </tw.LabelWrap>
-                        </tw.MenuButton>
-                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#b6e3b6")}>
-                            <tw.LabelWrap>
-                                <tw.SvgWrap>
-                                    <FontIcon color="#b6e3b6" />
-                                </tw.SvgWrap>
-                                초록색 텍스트
-                            </tw.LabelWrap>
-                        </tw.MenuButton>
-                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#8ecae6")}>
-                            <tw.LabelWrap>
-                                <tw.SvgWrap>
-                                    <FontIcon color="#8ecae6" />
-                                </tw.SvgWrap>
-                                파란색 텍스트
-                            </tw.LabelWrap>
-                        </tw.MenuButton>
-                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#cbb7f0")}>
-                            <tw.LabelWrap>
-                                <tw.SvgWrap>
-                                    <FontIcon color="#cbb7f0" />
-                                </tw.SvgWrap>
-                                보라색 텍스트
-                            </tw.LabelWrap>
-                        </tw.MenuButton>
-                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#f7b7d7")}>
-                            <tw.LabelWrap>
-                                <tw.SvgWrap>
-                                    <FontIcon color="#f7b7d7" />
-                                </tw.SvgWrap>
-                                분홍색 텍스트
-                            </tw.LabelWrap>
-                        </tw.MenuButton>
-                        <tw.MenuButton onClick={() => onColorSelect && onColorSelect("#ff7b7b")}>
-                            <tw.LabelWrap>
-                                <tw.SvgWrap>
-                                    <FontIcon color="#ff7b7b" />
-                                </tw.SvgWrap>
-                                빨간색 텍스트
-                            </tw.LabelWrap>
-                        </tw.MenuButton>
+                        {TEXT_COLORS.map(({ color, label }) => (
+                            <tw.MenuButton
+                                key={color}
+                                onClick={() => onColorSelect?.(color)}
+                            >
+                                <tw.LabelWrap>
+                                    <tw.SvgWrap>
+                                        <FontIcon color={color} />
+                                    </tw.SvgWrap>
+                                    {label}
+                                </tw.LabelWrap>
+                            </tw.MenuButton>
+                        ))}
                     </tw.DrawerMenu>
                 )}
             </div>
