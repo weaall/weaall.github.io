@@ -23,7 +23,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     const [isTitleEmpty, setIsTitleEmpty] = useState(true);
     const [meta, setMeta] = useState({
         label: "",
-        title: "",
+        title: "새 페이지",
         subTitle: "",
         date: "",
         mins: 0,
