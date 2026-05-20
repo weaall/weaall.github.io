@@ -4,7 +4,7 @@ import { RightIcon } from "../ui/hover-header/svg/TypeMenuSvg";
 export default function PortfolioListBanner() {
     return (
         <div className="w-full flex flex-col">
-            <h2 className="text-[3.25rem] text-[#191918] font-bold "><span className={roboto.className}>WeHub</span>1.0과 함께하세요</h2>
+            <h2 className="text-[3.25rem] text-[#191918] font-bold">포트폴리오</h2>
 
             <div className="w-full flex gap-8 pt-6">
                 <div className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex bg-white">
@@ -34,38 +34,62 @@ export default function PortfolioListBanner() {
             </div>
 
             <div className="w-full flex gap-6 pt-6">
-                <div className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex flex-col bg-white">
+                <a href="/portfolio/provelite" className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex flex-col bg-white overflow-hidden group">
                     <div className="flex p-6 justify-between">
                         <div className="w-full flex flex-col gap-2">
-                            <div>
-                                <label className="text-base">포트폴리오1에 대한 설명</label>
-                            </div>
+                            <label className="text-base">심리지표 평가 프로그램</label>
                             <div className="w-full flex justify-between">
-                                <label className="text-2xl font-bold">포트폴리오1</label>
+                                <label className={`text-2xl font-bold ${roboto.className}`}>PROVE Lite</label>
                                 <button className="w-8 h-8 p-1.5 bg-[#222222] rounded-full">
                                     <RightIcon color="#ffffff" />
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div className="flex-1 rounded-b-2xl bg-[#f77463]"></div>
-                </div>
-                <div className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex flex-col bg-white">
+                    <div className="pl-8 pt-6 w-full flex-1 overflow-hidden bg-[#416bac]">
+                        <div className="relative w-full h-full rounded-tl-xl border-2 border-[#ededeb] bg-white shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left overflow-hidden">
+                            <img
+                                className="absolute inset-0 w-full h-full object-cover opacity-60 blur-[1px] scale-105"
+                                src="/assets/portfolio/prove-lite/admin_layout.png"
+                                alt=""
+                            />
+                            <div className="absolute inset-0 bg-white/35"></div>
+                            <img
+                                className="absolute left-8 bottom-[-0.75rem] w-[110%] max-w-none object-contain"
+                                src="/assets/portfolio/prove-lite/prove_l_logo.png"
+                                alt="PROVE Lite"
+                            />
+                        </div>
+                    </div>
+                </a>
+                <a href="/portfolio/mindsnavi" className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex flex-col bg-white overflow-hidden group">
                     <div className="flex p-6 justify-between">
                         <div className="w-full flex flex-col gap-2">
-                            <div>
-                                <label className="text-base">포트폴리오1에 대한 설명</label>
-                            </div>
+                            <label className="text-base">정신건강 분석평가</label>
                             <div className="w-full flex justify-between">
-                                <label className="text-2xl font-bold">포트폴리오1</label>
+                                <label className={`text-2xl font-bold ${roboto.className}`}>Minds. NAVI</label>
                                 <button className="w-8 h-8 p-1.5 bg-[#222222] rounded-full">
                                     <RightIcon color="#ffffff" />
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div className="flex-1 rounded-b-2xl bg-[#62aef0]"></div>
-                </div>
+                    <div className="pl-8 pt-6 w-full flex-1 overflow-hidden bg-[#1a8f7a]">
+                        <div className="relative w-full h-full rounded-tl-xl border-2 border-[#ededeb] bg-white shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left overflow-hidden">
+                            <img
+                                className="absolute inset-0 w-full h-full object-cover opacity-60 blur-[1px] scale-105"
+                                src="/assets/portfolio/minds-navi/dashboard.png"
+                                alt=""
+                            />
+                            <div className="absolute inset-0 bg-white/30"></div>
+                            <img
+                                className="absolute left-8 bottom-[-0.5rem] w-[135%] max-w-none object-contain"
+                                src="/assets/portfolio/minds-navi/minds-navi-logo-horizontal.png"
+                                alt="Minds. NAVI"
+                            />
+                        </div>
+                    </div>
+                </a>
             </div>
 
             <div className="w-full flex gap-8 pt-6">

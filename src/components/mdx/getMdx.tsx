@@ -30,12 +30,13 @@ export default async function getPostsData(dir: string) {
 
             const slug = filename.slice(0, -4);
             const postUrl = `/${lowerDir}/${slug}`;
+            const date = frontmatter.date as unknown;
 
             return {
                 label: frontmatter.label,
                 title: frontmatter.title,
                 subTitle: frontmatter.subTitle,
-                date: frontmatter.date,
+                date: date instanceof Date ? date.toISOString().slice(0, 10) : String(date),
                 tags: frontmatter.tags,
                 slug,
                 postUrl,

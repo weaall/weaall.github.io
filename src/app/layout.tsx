@@ -8,12 +8,14 @@ import { getBaseMetadata } from "@/util/seo"
 const inter = Inter({
     subsets: ["latin"],
     weight: ["100", "300", "400", "500", "700", "900"],
-    variable: "--Inter",
+    variable: "--font-inter",
+    display: "swap",
 });
 const notoSansKr = Noto_Sans_KR({
     subsets: ["latin"],
     weight: ["100", "300", "400", "500", "700", "900"],
-    variable: "--Noto-Sans-KR",
+    variable: "--font-noto-sans-kr",
+    display: "swap",
 });
 
 export const metadata: Metadata = getBaseMetadata({ title: "WeHub" })
@@ -26,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <meta name="google-site-verification" content="EB5qLPhkvA7mD6Yz6VpiZaMErWP4KIB7Aj_rR-xqdsA" />
                 <link rel="icon" href="/favicon.ico" />
             </head>
-            <body className={`${inter.className} ${notoSansKr.className}`}>
+            <body className={`${inter.variable} ${notoSansKr.variable}`}>
                 <Layout>{children}</Layout>
             </body>
         </html>

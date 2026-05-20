@@ -9,7 +9,6 @@
   --main-color-hover: linear-gradient(135deg, rgba(34, 34, 34, 0.8), rgba(85, 85, 85, 0.8));
   --main-color-btn: #222222;
   --main-color-btn-hover: #222222cc;
-  --font-noto-sans-kr: var(--font-noto-sans-kr);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,6 +24,7 @@ body {
 
 body {
   color: black;
+  font-family: var(--font-noto-sans-kr), var(--font-inter), "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   /* Google Dark Mode style scrollbar */
   scrollbar-width: thin; /* For Firefox */
   scrollbar-color: #5f6368 transparent; /* For Firefox */
