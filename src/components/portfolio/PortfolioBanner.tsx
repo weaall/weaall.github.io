@@ -55,7 +55,7 @@ export default function PortfolioListBanner() {
                             />
                             <div className="absolute inset-0 bg-white/35"></div>
                             <img
-                                className="absolute left-8 bottom-[-0.75rem] w-[110%] max-w-none object-contain"
+                                className="absolute left-1/2 top-1/2 w-[82%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain"
                                 src="/assets/portfolio/prove-lite/prove_l_logo.png"
                                 alt="PROVE Lite"
                             />
@@ -83,7 +83,7 @@ export default function PortfolioListBanner() {
                             />
                             <div className="absolute inset-0 bg-white/30"></div>
                             <img
-                                className="absolute left-8 bottom-[-0.5rem] w-[135%] max-w-none object-contain"
+                                className="absolute left-1/2 top-1/2 w-[100%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain"
                                 src="/assets/portfolio/minds-navi/minds-navi-logo-horizontal.png"
                                 alt="Minds. NAVI"
                             />
