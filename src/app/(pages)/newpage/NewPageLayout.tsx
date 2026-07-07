@@ -1,9 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
-import NewPage from "./components/NewPage";
+
+// 에디터는 순수 클라이언트 도구(contentEditable, crypto.randomUUID 등)라
+// SSR 시 서버/클라이언트 초기 상태가 어긋나 하이드레이션 불일치가 난다. 클라이언트에서만 렌더한다.
+const NewPage = dynamic(() => import("./components/NewPage"), { ssr: false });
 
 interface PostData {
     label: string;
@@ -18,7 +22,7 @@ interface PostData {
 
 export default function NewPageLayout({ postsData }: { postsData: PostData[] }) {
     const [collapsed, setCollapsed] = useState(false);
-    const sortedPostsData = postsData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const sortedPostsData = [...postsData].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     // HoverHeader 표시 상태 관리
     const [showHeader, setShowHeader] = useState(false);

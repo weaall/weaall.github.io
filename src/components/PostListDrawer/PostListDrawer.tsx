@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import * as tw from "./PostListDrawer.styles";
 import { DocIcon, DotListIcon, HomeIcon, PlusIcon, PostIcon, ReduceIcon, RightIcon, SearchIcon } from "./SvgDrawer";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AddDockIcon } from "../ui/hover-header/svg/PostsSvg";
 
 interface PostData {
@@ -26,23 +26,37 @@ export default function PostListDrawer({ props, collapsed, setCollapsed }: Posts
     const pathname = usePathname();
     const activeCategory = props.find((post) => post.postUrl === pathname)?.label || null;
 
-    // openCategory 상태를 localStorage에 저장/불러오기
-    const [openCategory, setOpenCategory] = useState<string[]>(() => {
-        if (typeof window !== "undefined") {
-            const saved = window.localStorage.getItem("sidebarOpenCategory");
-            if (saved) return JSON.parse(saved);
+    // 초기값은 서버 렌더와 동일해야 한다. localStorage는 클라이언트에서만 접근 가능하므로
+    // 초기 상태에서 읽으면 서버/클라이언트 HTML이 달라져 하이드레이션 불일치가 난다.
+    // → 초기값은 SSR-safe 하게 두고, localStorage 복원은 마운트 후 useEffect에서 처리한다.
+    const [openCategory, setOpenCategory] = useState<string[]>(activeCategory ? [activeCategory] : []);
+    const hydratedRef = useRef(false);
+
+    // 마운트 후 localStorage에서 복원
+    useEffect(() => {
+        const saved = window.localStorage.getItem("sidebarOpenCategory");
+        if (saved) {
+            try {
+                setOpenCategory(JSON.parse(saved));
+            } catch {
+                /* 손상된 값은 무시 */
+            }
         }
-        return activeCategory ? [activeCategory] : [];
-    });
+    }, []);
+
     useEffect(() => {
         if (activeCategory && !openCategory.includes(activeCategory)) {
             setOpenCategory((prev) => [...prev, activeCategory]);
         }
     }, [pathname, activeCategory]);
+
+    // 최초 마운트(복원 이전)에는 저장하지 않아 localStorage 값이 초기값으로 덮이는 것을 방지
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            window.localStorage.setItem("sidebarOpenCategory", JSON.stringify(openCategory));
+        if (!hydratedRef.current) {
+            hydratedRef.current = true;
+            return;
         }
+        window.localStorage.setItem("sidebarOpenCategory", JSON.stringify(openCategory));
     }, [openCategory]);
 
     const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);

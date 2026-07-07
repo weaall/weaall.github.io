@@ -81,7 +81,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         }
     };
 
-    const handleExport = () => {
+    const handleExport = async () => {
         // 블록에 색상과 포맷팅 범위 정보를 추가
         const blocksWithFormatting = blocks.map(block => ({
             ...block,
@@ -101,13 +101,31 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
             imageUrl: meta.imageUrl || "",
         });
 
-        // MDX 콘텐츠를 파일로 다운로드
+        // 파일명은 페이지 제목으로, 공백은 밑줄로. 제목이 없으면 'untitled'.
+        const filename = `${(meta.title || "untitled").replace(/ /g, "_")}.mdx`;
+
+        // 개발 모드: posts/post 폴더에 바로 저장 시도. 실패하면 브라우저 다운로드로 폴백.
+        try {
+            const res = await fetch("/api/save-mdx", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ filename, content: mdx }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                alert(`저장되었습니다 → ${data.path}`);
+                return;
+            }
+        } catch {
+            // 네트워크/서버 불가 → 아래 다운로드 폴백
+        }
+
+        // 폴백: 브라우저 다운로드
         const blob = new Blob([mdx], { type: "text/markdown" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        // 파일명은 페이지 제목으로, 공백은 밑줄로 바꿉니다. 제목이 없으면 'untitled.mdx'로 저장됩니다.
-        a.download = `${(meta.title || "untitled").replace(/ /g, "_")}.mdx`;
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
