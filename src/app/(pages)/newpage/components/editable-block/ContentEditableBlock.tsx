@@ -94,6 +94,8 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
 
     // 포맷된 HTML을 생성하는 함수
     const generateFormattedHTML = (text: string, ranges: FormattedRange[]): string => {
+        text = text.replace(/\n/g, "<br>");
+
         if (!ranges || ranges.length === 0) return text;
 
         const sortedRanges = [...ranges].sort((a, b) => a.start - b.start);
@@ -565,6 +567,28 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                 const caretPos = getCaretPosition(element);
                 onFocusPrev?.(id, caretPos?.left ?? 0);
             }
+        } else if (e.key === "Enter" && e.shiftKey) {
+            e.preventDefault();
+            const selection = window.getSelection();
+            if (!selection || !selection.rangeCount) return;
+
+            const range = selection.getRangeAt(0);
+            const br = document.createElement("br");
+            range.insertNode(br);
+
+            // <br> 뒤에 커서를 위치시킵니다.
+            const newRange = document.createRange();
+            newRange.setStartAfter(br);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+
+            // 상태 업데이트를 위해 innerHTML 사용
+            onContentChange(element.innerHTML);
+            document.execCommand("insertLineBreak");
+            // handleInput을 수동으로 호출하여 상태를 동기화합니다.
+            handleInput(e as any);
+            return;
         } else if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             if (type === "ul" || type === "numberedList" || type === "checkedList") {
