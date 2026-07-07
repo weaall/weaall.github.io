@@ -34,7 +34,7 @@ interface PostData {
     title: string
     subTitle: string
     date: string
-    tags: []
+    tags: string[]
     mins: string
 }
 
@@ -93,8 +93,9 @@ async function compilePostMarkdown(slug: string) {
     })
 }
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
-    const { content } = await compilePostMarkdown(params.slug)
+export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const { content } = await compilePostMarkdown(slug)
     const postsData = await getPostsData("dev")
 
     return (
@@ -105,8 +106,9 @@ export default async function PostPage({ params }: { params: { slug: string } })
     )
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-    const { frontmatter } = await compilePostMarkdown(params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const { frontmatter } = await compilePostMarkdown(slug)
 
     const metadata: Metadata = {
         title: frontmatter.title,

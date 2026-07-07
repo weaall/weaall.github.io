@@ -1,13 +1,14 @@
 import { compileMDX } from "next-mdx-remote/rsc";
 import fs from "fs";
 import path from "path";
+import { formatPostDate } from "@/util/date";
 
 interface PostData {
     label: string;
     title: string;
     subTitle: string;
     date: string;
-    tags: [];
+    tags: string[];
     slug: string;
     postUrl: string;
     imageUrl: string;
@@ -35,7 +36,7 @@ export default async function getPostsData(dir: string) {
                 label: frontmatter.label,
                 title: frontmatter.title,
                 subTitle: frontmatter.subTitle,
-                date: frontmatter.date,
+                date: formatPostDate(frontmatter.date),
                 tags: frontmatter.tags,
                 slug,
                 postUrl,

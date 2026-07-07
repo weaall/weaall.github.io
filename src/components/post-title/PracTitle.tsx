@@ -12,7 +12,7 @@ interface PostData {
     }
 }
 
-export default function PracTitle({ frontmatter }: PostData, content: any) {
+export default function PracTitle({ frontmatter }: PostData) {
     return (
         <>
             <tw.Container>

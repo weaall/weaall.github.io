@@ -13,7 +13,7 @@ interface PostData {
     };
 }
 
-export default function PostTitle({ frontmatter }: PostData, content: any) {
+export default function PostTitle({ frontmatter }: PostData) {
     return (
         <>
             <tw.Container>

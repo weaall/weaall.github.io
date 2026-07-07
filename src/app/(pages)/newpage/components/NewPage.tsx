@@ -8,6 +8,7 @@ import ContentEditableBlock from "./editable-block/ContentEditableBlock";
 import { FormattedRange } from "./text-modal/TextFormat.modal";
 
 import { GripDotsIcon, PlusIcon } from "@/components/ui/hover-header/svg/PostsSvg";
+import { formatPostDate } from "@/util/date";
 import * as tw from "./Newpage.styles";
 
 export default function NewPage({ collapsed }: { collapsed: boolean }) {
@@ -94,7 +95,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
             label: meta.label || "",
             title: meta.title || "",
             subTitle: meta.subTitle || "",
-            date: meta.date || new Date().toISOString().slice(0, 10),
+            date: meta.date || formatPostDate(new Date()),
             mins: meta.mins || 2,
             tags: exportedTags,
             imageUrl: meta.imageUrl || "",
@@ -115,7 +116,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
 
     const changeBlockType = (idx: number, type: string) => {
         const newBlocks = [...blocks];
-        newBlocks[idx].type = type;
+        newBlocks[idx] = { ...newBlocks[idx], type };
         setBlocks(newBlocks);
         setMenuIdx(null);
         setMenuPos(null);
@@ -144,7 +145,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
 
     const handleContentChange = (idx: number, value: string) => {
         const newBlocks = [...blocks];
-        newBlocks[idx].content = value;
+        newBlocks[idx] = { ...newBlocks[idx], content: value };
         setBlocks(newBlocks);
     };
 
@@ -445,14 +446,14 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                         <tw.BlockWrap
                             className={`group ${draggingIdx === idx ? "opacity-50" : ""}`}
                             style={{ position: "relative" }}
-                            onMouseLeave={(e) => {
+                            onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
                                 const related = e.relatedTarget as HTMLElement | null;
                                 if (related && related.closest && related.closest(`[data-btn-idx="${idx}"]`)) {
                                     return;
                                 }
                                 setHoverIdx(null);
                             }}
-                            onDragEnter={(e) => handleDragEnter(e, idx, false)}
+                            onDragEnter={(e: React.DragEvent<HTMLDivElement>) => handleDragEnter(e, idx, false)}
                             onDragOver={handleDragOver}
                         >
                             <div
@@ -466,7 +467,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                     cursor: "pointer",
                                 }}
                                 onMouseEnter={() => setHoverIdx(idx)}
-                                onMouseLeave={(e) => {
+                                onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
                                     const related = e.relatedTarget as HTMLElement | null;
                                     if (related && related.closest && related.closest(`[data-btn-idx="${idx}"]`)) {
                                         return;
@@ -493,7 +494,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                         height: "100%",
                                     }}
                                     onMouseEnter={() => setHoverIdx(idx)}
-                                    onMouseLeave={(e) => {
+                                    onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
                                         const related = e.relatedTarget as HTMLElement | null;
                                         if (related && (related.closest(`[data-btn-idx="${idx}"]`) || related.closest(".group"))) {
                                             return;
@@ -508,7 +509,9 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                                         <PlusIcon color={"#616161"} />
                                     </tw.PlusButton>
                                     <tw.DotButton
-                                        ref={(el) => (dotRefs.current[idx] = el)}
+                                        ref={(el: HTMLButtonElement | null) => {
+                                            dotRefs.current[idx] = el;
+                                        }}
                                         className={`${menuIdx === idx ? "bg-[#252525]" : ""}`}
                                         onClick={() => handlePlusClick(idx)}
                                     >
@@ -520,7 +523,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                             <tw.InputWrap
                                 className={menuIdx === idx ? "bg-gray-800" : ""}
                                 onMouseEnter={() => setHoverIdx(idx)}
-                                onMouseLeave={(e) => {
+                                onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
                                     const related = e.relatedTarget as HTMLElement | null;
                                     if (related && (related.closest(`[data-btn-idx="${idx}"]`) || related.closest(".group"))) {
                                         return;

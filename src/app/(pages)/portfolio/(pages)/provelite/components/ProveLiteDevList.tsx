@@ -15,7 +15,7 @@ export default function ProveLiteDevList() {
     const userLayoutRef = useRef<HTMLDivElement>(null);
     const adminLayoutRef = useRef<HTMLDivElement>(null);
 
-    const scrollToRef = (ref: React.RefObject<HTMLDivElement>) => {
+    const scrollToRef = (ref: React.RefObject<HTMLDivElement | null>) => {
         ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 

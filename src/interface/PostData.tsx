@@ -3,7 +3,7 @@ interface PostData {
     title: string
     subTitle: string
     date: string
-    tags: []
+    tags: string[]
     mins: string
     imageUrl: string
 }

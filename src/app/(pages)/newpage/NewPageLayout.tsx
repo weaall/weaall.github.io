@@ -10,7 +10,7 @@ interface PostData {
     title: string;
     subTitle: string;
     date: string;
-    tags: [];
+    tags: string[];
     slug: string;
     postUrl: string;
     imageUrl: string;

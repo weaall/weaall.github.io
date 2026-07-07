@@ -10,7 +10,7 @@ interface PostData {
     title: string;
     subTitle: string;
     date: string;
-    tags: [];
+    tags: string[];
     slug: string;
     postUrl: string;
     imageUrl: string;
@@ -18,7 +18,7 @@ interface PostData {
 
 export default function PostListLayout({ postsData }: { postsData: PostData[] }) {
     const [collapsed, setCollapsed] = useState(false);
-    const sortedPostsData = postsData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const sortedPostsData = [...postsData].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     // HoverHeader 표시 상태 관리
     const [showHeader, setShowHeader] = useState(false);

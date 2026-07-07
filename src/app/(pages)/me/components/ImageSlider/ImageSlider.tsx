@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import * as tw from "./ImageSlider.styles";
 
@@ -124,18 +124,18 @@ export const WebImageSlider = ({ images }: ImageSliderProps) => {
                                                     src={image.src}
                                                     alt={image.alt}
                                                     draggable="false"
-                                                    onDragStart={(e) => e.preventDefault()}
+                                                    onDragStart={(e: React.DragEvent) => e.preventDefault()}
                                                     loading="lazy"
                                                 />
                                                 <tw.EnlargeBtn
                                                     style={{ display: isActive ? "block" : "none" }}
-                                                    onClick={(e) => {
+                                                    onClick={(e: React.MouseEvent) => {
                                                         e.stopPropagation();
                                                         handleEnlargeClick();
                                                     }}
-                                                    onMouseDown={(e) => e.stopPropagation()}
-                                                    onMouseMove={(e) => e.stopPropagation()}
-                                                    onMouseUp={(e) => e.stopPropagation()}
+                                                    onMouseDown={(e: React.MouseEvent) => e.stopPropagation()}
+                                                    onMouseMove={(e: React.MouseEvent) => e.stopPropagation()}
+                                                    onMouseUp={(e: React.MouseEvent) => e.stopPropagation()}
                                                 >
                                                     <tw.EnlageImg alt="확대" src={"../../../assets/svg/enlarge.svg"} />
                                                 </tw.EnlargeBtn>

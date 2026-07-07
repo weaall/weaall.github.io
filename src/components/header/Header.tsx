@@ -67,7 +67,7 @@ export default function Header() {
     }, [isMenuClicked]);
     
     // ... (경로 체크 및 navItems 생략) ...
-    if (pathname.startsWith("/weaall-ui") || pathname.startsWith("/post") || pathname.startsWith("/newpage")) return null;
+    if (pathname.startsWith("/post") || pathname.startsWith("/newpage")) return null;
 
     const validPaths = ["/dev", "/prac", "/project"];
     const headerLayout = validPaths.some((path) => pathname.startsWith(path));

@@ -1,5 +1,8 @@
 import type { Config } from "tailwindcss";
-import type { PluginAPI } from "tailwindcss/types/config";
+
+type AddUtilitiesApi = {
+    addUtilities: (utilities: Record<string, Record<string, string>>) => void;
+};
 
 const config: Config = {
     content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}", "./public/**/*.html"],
@@ -103,7 +106,7 @@ const config: Config = {
         },
     },
     plugins: [
-        function (api: PluginAPI) {
+        function (api: AddUtilitiesApi) {
             const { addUtilities } = api;
             const newUtilities = {
                 ".text-shadow-custom": {
