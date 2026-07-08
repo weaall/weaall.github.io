@@ -3,13 +3,12 @@ import React, { useState, useRef, useEffect } from "react";
 
 import TypeMenuModal from "./menu-modal/TypeMenu.modal";
 import { ELEMENTS } from "./menu-modal/TypeElement";
-import { Block, blocksToMDX } from "./helper/BlocksToMdx";
-import ContentEditableBlock from "./editable-block/ContentEditableBlock";
+import { blocksToMDX } from "./helper/BlocksToMdx";
 import { FormattedRange } from "./text-modal/TextFormat.modal";
+import BlockRow from "./BlockRow";
 import { useBlockHistory } from "../hooks/useBlockHistory";
 import { useBlockDnD } from "../hooks/useBlockDnD";
 
-import { GripDotsIcon, PlusIcon } from "@/components/ui/icons/PostsSvg";
 import { formatPostDate } from "@/util/date";
 import * as tw from "./Newpage.styles";
 
@@ -545,133 +544,42 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                     elements={ELEMENTS}
                 />
                 
-                {blocks.map((block, idx) => (
+                {blocks.map((block, idx) =>
                     hiddenBlockIds.has(block.id) ? null : (
-                    <React.Fragment key={block.id}>
-                        <div
-                            className={`h-1 rounded ${insertLineIdx === idx ? "bg-blue-500/50" : "bg-transparent"}`}
-                            style={{ marginLeft: (blocks[idx - 1]?.indentationLevel ?? 0) * 25 }}
-                            onDragEnter={(e) => handleDragEnter(e, idx, true)}
+                        <BlockRow
+                            key={block.id}
+                            block={block}
+                            idx={idx}
+                            prevIndentLevel={blocks[idx - 1]?.indentationLevel ?? 0}
+                            hoverId={hoverId}
+                            menuId={menuId}
+                            setHoverId={setHoverId}
+                            draggingIdx={draggingIdx}
+                            insertLineIdx={insertLineIdx}
+                            dotRefs={dotRefs}
+                            color={blockColors[block.id]}
+                            formattedRanges={blockFormattedRanges[block.id] || []}
+                            listNumber={block.type === "numberedList" ? getListNumber(idx) : undefined}
+                            onDragStart={handleDragStart}
+                            onDragEnter={handleDragEnter}
                             onDragOver={handleDragOver}
+                            onDragEnd={handleDragEnd}
+                            onAddBlock={handleAddBlock}
+                            onPlusClick={handlePlusClick}
+                            onContentChange={handleContentChange}
+                            onTypeChange={handleTypeChange}
+                            onAddBlockAfterBullet={handleAddBlockAfterBullet}
+                            onAddChildBlock={handleAddBlockAsChild}
+                            onDeleteBlock={handleDeleteBlockAndFocusPrevious}
+                            onToggleChecked={handleToggleChecked}
+                            onToggleCollapse={handleToggleCollapse}
+                            onFocusNext={handleFocusNext}
+                            onFocusPrev={handleFocusPrev}
+                            onIndent={handleIndent}
+                            onFormattedRangesChange={handleFormattedRangesChange}
                         />
-                        <tw.BlockWrap
-                            className={`group ${draggingIdx === idx ? "opacity-50" : ""}`}
-                            style={{ position: "relative" }}
-                            onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
-                                const related = e.relatedTarget as HTMLElement | null;
-                                if (related && related.closest && related.closest(`[data-btn-idx="${idx}"]`)) {
-                                    return;
-                                }
-                                setHoverId(null);
-                            }}
-                            onDragEnter={(e: React.DragEvent<HTMLDivElement>) => handleDragEnter(e, idx, false)}
-                            onDragOver={handleDragOver}
-                        >
-                            <div
-                                style={{
-                                    position: "absolute",
-                                    left: -56 + (block.indentationLevel * 25),
-                                    top: 0,
-                                    width: 56,
-                                    height: "100%",
-                                    zIndex: 5,
-                                    cursor: "pointer",
-                                }}
-                                onMouseEnter={() => setHoverId(block.id)}
-                                onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
-                                    const related = e.relatedTarget as HTMLElement | null;
-                                    if (related && related.closest && related.closest(`[data-btn-idx="${idx}"]`)) {
-                                        return;
-                                    }
-                                    setHoverId(null);
-                                }}
-                                draggable
-                                onDragStart={(e) => handleDragStart(e, idx)}
-                                onDragEnd={handleDragEnd}
-                            />
-                            
-                            {(hoverId === block.id || menuId === block.id) && (
-                                <div
-                                    data-btn-idx={block.id}
-                                    style={{
-                                        position: "absolute",
-                                        left: -56 + (block.indentationLevel * 25),
-                                        top: "50%",
-                                        transform: "translateY(-50%)",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        zIndex: 10,
-                                        width: 56,
-                                        height: "100%",
-                                    }}
-                                    onMouseEnter={() => setHoverId(block.id)}
-                                    onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
-                                        const related = e.relatedTarget as HTMLElement | null;
-                                        if (related instanceof Element && (related.closest(`[data-btn-idx="${idx}"]`) || related.closest(".group"))) {
-                                            return;
-                                        }
-                                        setHoverId(null);
-                                    }}
-                                    draggable
-                                    onDragStart={(e) => handleDragStart(e, idx)}
-                                    onDragEnd={handleDragEnd}
-                                >
-                                    <tw.PlusButton onClick={() => handleAddBlock(idx)}>
-                                        <PlusIcon color={"#91918e"} />
-                                    </tw.PlusButton>
-                                    <tw.DotButton
-                                        ref={(el: HTMLButtonElement | null) => {
-                                            dotRefs.current[block.id] = el;
-                                        }}
-                                        className={`${menuId === block.id ? "bg-(--grip-hover-bg)" : ""}`}
-                                        onClick={() => handlePlusClick(block.id)}
-                                    >
-                                        <GripDotsIcon color={"#91918e"} />
-                                    </tw.DotButton>
-                                </div>
-                            )}
-                            
-                            <tw.InputWrap
-                                className={menuId === block.id ? "bg-(--hover-bg)" : ""}
-                                style={{ marginLeft: block.indentationLevel * 25 }}
-                                onMouseEnter={() => setHoverId(block.id)}
-                                onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
-                                    const related = e.relatedTarget as HTMLElement | null;
-                                    if (related instanceof Element && (related.closest(`[data-btn-idx="${idx}"]`) || related.closest(".group"))) {
-                                        return;
-                                    }
-                                    setHoverId(null);
-                                }}
-                            >
-                                <ContentEditableBlock
-                                    key={`${block.id}-${block.type}`}
-                                    type={block.type}
-                                    content={block.content}
-                                    onContentChange={(value) => handleContentChange(idx, value)}
-                                    onTypeChange={(newType) => handleTypeChange(idx, newType)}
-                                    onAddBlock={() => handleAddBlock(idx)}
-                                    onAddBlockAfterBullet={() => handleAddBlockAfterBullet(idx)}
-                                    onAddChildBlock={() => handleAddBlockAsChild(idx)}
-                                    onDeleteBlock={() => handleDeleteBlockAndFocusPrevious(idx)}
-                                    color={blockColors[block.id]}
-                                    id={block.id}
-                                    isChecked={block.isChecked}
-                                    onToggleChecked={handleToggleChecked}
-                                    listNumber={block.type === "numberedList" ? getListNumber(idx) : undefined}
-                                    onFocusNext={handleFocusNext}
-                                    onFocusPrev={handleFocusPrev}
-                                    indentationLevel={block.indentationLevel}
-                                    onIndent={(change) => handleIndent(idx, change)}
-                                    formattedRanges={blockFormattedRanges[block.id] || []}
-                                    onFormattedRangesChange={(ranges) => handleFormattedRangesChange(idx, ranges)}
-                                    collapsed={block.collapsed}
-                                    onToggleCollapse={() => handleToggleCollapse(block.id)}
-                                />
-                            </tw.InputWrap>
-                        </tw.BlockWrap>
-                    </React.Fragment>
-                    )
-                ))}
+                    ),
+                )}
                 
                 <div
                     className={`h-[4px] rounded ${insertLineIdx === blocks.length ? "bg-blue-500/50" : "bg-transparent"}`}
