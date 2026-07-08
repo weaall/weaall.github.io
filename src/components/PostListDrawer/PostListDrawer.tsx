@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import * as tw from "./PostListDrawer.styles";
 import { DocIcon, DotListIcon, HomeIcon, PlusIcon, PostIcon, ReduceIcon, RightIcon, SearchIcon } from "./SvgDrawer";
 import { useEffect, useRef, useState } from "react";
-import { AddDockIcon } from "../ui/hover-header/svg/PostsSvg";
+import { AddDockIcon } from "../ui/icons/PostsSvg";
 import { PostData } from "@/interface/PostData";
 
 interface PostsProps {

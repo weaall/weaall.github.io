@@ -1,4 +1,4 @@
-import { ColorPainterIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@/components/ui/hover-header/svg/TypeMenuSvg";
+import { ColorPainterIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
 import * as tw from "./TypeMenu.modal.styles";
 import { ReactNode, useEffect, useState } from "react";
 

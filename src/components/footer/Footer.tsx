@@ -4,7 +4,7 @@ import { roboto } from "@/util/font";
 import { usePathname } from "next/navigation";
 
 import * as tw from "./Footer.styles";
-import { InstagramLogo, LinkedInLogo, MetaLogo, XLogo, YoutubeLogo } from "../ui/hover-header/svg/LogosSvg";
+import { InstagramLogo, LinkedInLogo, MetaLogo, XLogo, YoutubeLogo } from "../ui/icons/LogosSvg";
 
 export default function Footer() {
     const pathname = usePathname();

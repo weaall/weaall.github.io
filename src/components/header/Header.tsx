@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import * as tw from "./Header.styles";
-import { DownIcon, UpIcon } from "../ui/hover-header/svg/PostsSvg";
+import { DownIcon, UpIcon } from "../ui/icons/PostsSvg";
 import { roboto } from "@/util/font";
 import WeHubHoverMenu from "./WeHubHoverMenu";
 

@@ -8,7 +8,7 @@ import ContentEditableBlock from "./editable-block/ContentEditableBlock";
 import { FormattedRange } from "./text-modal/TextFormat.modal";
 import { useBlockHistory } from "../hooks/useBlockHistory";
 
-import { GripDotsIcon, PlusIcon } from "@/components/ui/hover-header/svg/PostsSvg";
+import { GripDotsIcon, PlusIcon } from "@/components/ui/icons/PostsSvg";
 import { formatPostDate } from "@/util/date";
 import * as tw from "./Newpage.styles";
 

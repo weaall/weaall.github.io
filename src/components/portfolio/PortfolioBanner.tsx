@@ -1,5 +1,5 @@
 import { roboto } from "@/util/font";
-import { RightIcon } from "../ui/hover-header/svg/TypeMenuSvg";
+import { RightIcon } from "../ui/icons/TypeMenuSvg";
 
 export default function PortfolioListBanner() {
     return (

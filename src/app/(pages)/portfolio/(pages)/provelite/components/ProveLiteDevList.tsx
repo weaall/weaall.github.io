@@ -1,6 +1,6 @@
 "use client";
 
-import { AdminLayoutIcon, AWSIcon, CodeIcon, EtcIcon, LogicIcon, UserLayoutIcon } from "@/components/ui/hover-header/svg/PortfolioSvg";
+import { AdminLayoutIcon, AWSIcon, CodeIcon, EtcIcon, LogicIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioSvg";
 import ApplicationArchitecture from "./ApplicationArchitecture";
 import { roboto } from "@/util/font";
 import SystemArchitecture from "./SystemArchitecture";

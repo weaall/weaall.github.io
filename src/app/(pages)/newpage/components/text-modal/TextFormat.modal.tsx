@@ -1,5 +1,5 @@
 // TextFormattingModal.tsx (최종 수정 버전)
-import { FontIcon } from "@/components/ui/hover-header/svg/TypeMenuSvg";
+import { FontIcon } from "@/components/ui/icons/TypeMenuSvg";
 import React, { useRef, useEffect, useState } from "react";
 
 // (Interface 정의는 기존과 동일)

@@ -7,7 +7,7 @@ import {
     H3BlockIcon,
     NumberedListIcon,
     TextBlockIcon,
-} from "@/components/ui/hover-header/svg/TypeMenuSvg";
+} from "@/components/ui/icons/TypeMenuSvg";
 
 export const ELEMENTS = [
     { label: "텍스트", type: "p", icon: <TextBlockIcon color="#5f5e5b" /> },
