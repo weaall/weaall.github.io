@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import { PostFrontmatter } from "@/interface/PostData"
 
 export const siteConfig = {
     url: "https://weaall.github.io",
@@ -43,7 +44,7 @@ export const getBaseMetadata = ({ title }: { title: string }): Metadata => {
     }
 }
 
-export const getArticleMetadata = (postData: PostData, url: string): Metadata => {
+export const getArticleMetadata = (postData: PostFrontmatter, url: string): Metadata => {
     const dateTime = new Date(postData.date).toISOString()
 
     return {
@@ -74,7 +75,7 @@ export const getArticleMetadata = (postData: PostData, url: string): Metadata =>
     }
 }
 
-export const JSONLD = (postData: PostData, url: string) => {
+export const JSONLD = (postData: PostFrontmatter, url: string) => {
     const jsonLD = {
         "@context": "https://schema.org",
         "@type": "BlogPosting",

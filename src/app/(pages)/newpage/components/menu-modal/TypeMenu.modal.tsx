@@ -17,7 +17,7 @@ interface TypeMenuModalProps {
 }
 
 const TEXT_COLORS = [
-    { color: "#ffffffcf", label: "기본 텍스트" },
+    { color: "#37352f", label: "기본 텍스트" },
     { color: "#b5b5b5", label: "회색 텍스트" },
     { color: "#e9bfa8", label: "갈색 텍스트" },
     { color: "#ffb86b", label: "주황색 텍스트" },
@@ -85,26 +85,26 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
             >
                 <tw.Menu id="type-menu" style={{ minWidth: "120px", position: "relative" }}>
                     <tw.Label>텍스트</tw.Label>
-                    <tw.MenuButton onMouseEnter={() => handleMenuButtonMouseEnter("전환")} className={showDrawer === "전환" ? "bg-[#313131]" : ""}>
+                    <tw.MenuButton onMouseEnter={() => handleMenuButtonMouseEnter("전환")} className={showDrawer === "전환" ? "bg-(--menu-hover-bg)" : ""}>
                         <tw.LabelWrap>
                             <tw.SvgWrap>
-                                <LoopIcon color="#ffffffcf" />
+                                <LoopIcon color="#5f5e5b" />
                             </tw.SvgWrap>
                             전환
                         </tw.LabelWrap>
                         <tw.SvgWrap>
-                            <RightIcon color="#ffffffcf" />
+                            <RightIcon color="#5f5e5b" />
                         </tw.SvgWrap>
                     </tw.MenuButton>
-                    <tw.MenuButton onMouseEnter={() => handleMenuButtonMouseEnter("색")} className={showDrawer === "색" ? "bg-[#313131]" : ""}>
+                    <tw.MenuButton onMouseEnter={() => handleMenuButtonMouseEnter("색")} className={showDrawer === "색" ? "bg-(--menu-hover-bg)" : ""}>
                         <tw.LabelWrap>
                             <tw.SvgWrap>
-                                <ColorPainterIcon color="#ffffffcf" />
+                                <ColorPainterIcon color="#5f5e5b" />
                             </tw.SvgWrap>
                             색
                         </tw.LabelWrap>
                         <tw.SvgWrap>
-                            <RightIcon color="#ffffffcf" />
+                            <RightIcon color="#5f5e5b" />
                         </tw.SvgWrap>
                     </tw.MenuButton>
                     <tw.MenuButton
@@ -118,7 +118,7 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                     >
                         <tw.LabelWrap>
                             <tw.SvgWrap>
-                                <TrashBinIcon color={deleteHover ? "#e65b58" : "#ffffffcf"} />
+                                <TrashBinIcon color={deleteHover ? "#e65b58" : "#5f5e5b"} />
                             </tw.SvgWrap>
                             삭제
                         </tw.LabelWrap>

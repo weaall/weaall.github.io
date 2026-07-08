@@ -1,18 +1,7 @@
 import * as tw from "./PostTitle.styles"
+import { PostFrontmatter } from "@/interface/PostData"
 
-interface PostData {
-    frontmatter: {
-        imageUrl: string
-        label: string
-        title: string
-        subTitle: string
-        date: string
-        tags: string[]
-        mins: string
-    }
-}
-
-export default function PracTitle({ frontmatter }: PostData) {
+export default function PracTitle({ frontmatter }: { frontmatter: PostFrontmatter }) {
     return (
         <>
             <tw.Container>

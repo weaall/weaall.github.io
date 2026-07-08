@@ -10,14 +10,17 @@ export const BlockWrap = tw.div` flex items-center relative transition-colors
 export const InputWrap = tw.div`
   flex-1 transition-colors
   rounded-md
+  py-[2px]
+  hover:bg-(--hover-bg)
+  focus-within:bg-(--hover-bg)
 `;
 
 export const PlusButton = tw.button`
-  w-[24px] h-[24px] rounded hover:bg-[#252525] flex items-center justify-center text-xl p-[4px] cursor-grab
+  w-[24px] h-[24px] rounded hover:bg-(--grip-hover-bg) flex items-center justify-center text-xl p-[4px] cursor-grab
 `;
 
 export const DotButton = tw.button`
-  w-[18px] h-[24px] rounded hover:bg-[#252525] flex items-center justify-center text-2xl cursor-grab
+  w-[18px] h-[24px] rounded hover:bg-(--grip-hover-bg) flex items-center justify-center text-2xl cursor-grab
 `;
 
 export const EditableTitle = tw.div`
@@ -26,19 +29,19 @@ export const EditableTitle = tw.div`
   max-w-full
   min-h-[1em]
   font-bold
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
   relative
   [&:empty]:after:content-[attr(data-placeholder)]
-  [&:empty]:after:text-[#5a5a5a]
+  [&:empty]:after:text-(--placeholder)
   [&:empty]:after:pointer-events-none
   [&:empty]:after:text-[40px]
   [&:empty]:after:font-bold
 `;
 
 export const TitleBlock = tw.div`
-  text-[40px] font-bold pt-2 pb-4 text-[#ffffffcf] relative w-full
+  text-[40px] font-bold pt-2 pb-4 text-(--text) relative w-full
 `;

@@ -2,8 +2,8 @@ import tw from "tailwind-styled-components";
 
 export const Menu = tw.div`
   absolute left-10 top-0
-  bg-[#252525]
-  border-[rgb(48,48,46)] 
+  bg-(--menu-bg)
+  border-(--border)
   border
   rounded-[10px]
   p-[4px]
@@ -23,7 +23,7 @@ export const Label = tw.p`
   text-[12px]
   font-[500]
   leading-[120%]
-  text-[rgba(255,255,255,0.46)]
+  text-(--text-muted)
   user-select-none
 `;
 
@@ -35,12 +35,12 @@ export const MenuButton = tw.button`
   px-[8px]
   text-left
   text-[14px]
-  text-[#ffffffcf]
+  text-(--text)
   rounded-[6px]
   user-select-none
   transition-[background] duration-75 ease-in
   cursor-pointer
-  hover:bg-[#313131]
+  hover:bg-(--menu-hover-bg)
 `;
 
 export const LabelWrap = tw.div`
@@ -55,7 +55,7 @@ export const SvgWrap = tw.div`
 `;
 
 export const ExpLabel = tw.div`
-  text-[#ffffff48]
+  text-(--text-faint)
   text-[12px]
 `;
 
@@ -65,8 +65,8 @@ export const DrawerMenu = tw.div`
   absolute
   left-[calc(100%+42px)]
   top-0
-  bg-[#252525]
-  border-[rgb(48,48,46)] 
+  bg-(--menu-bg)
+  border-(--border)
   border
   rounded-[10px]
   p-[4px]

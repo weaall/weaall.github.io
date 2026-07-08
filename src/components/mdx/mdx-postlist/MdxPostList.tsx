@@ -2,17 +2,7 @@
 
 import { useState } from "react";
 import * as tw from "./MdxPostList.styles";
-
-interface PostData {
-    label: string;
-    title: string;
-    subTitle: string;
-    date: string;
-    tags: string[];
-    slug: string;
-    postUrl: string;
-    imageUrl: string;
-}
+import { PostData } from "@/interface/PostData";
 
 interface PostListProps {
     latestPosts: PostData[];

@@ -32,7 +32,7 @@ const TextFormattingModal: React.FC<TextFormattingModalProps> = ({
     const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
 
     const colors = [
-        "#ffffffcf", "#b5b5b5", "#e9bfa8", "#ffb86b", "#ffe066", 
+        "#37352f", "#b5b5b5", "#e9bfa8", "#ffb86b", "#ffe066",
         "#b6e3b6", "#8ecae6", "#cbb7f0", "#f7b7d7", "#ff7b7b"
     ];
 
@@ -53,7 +53,7 @@ const TextFormattingModal: React.FC<TextFormattingModalProps> = ({
     if (!open) return null;
 
     const activeClass = "bg-[#3772ff] text-white";
-    const inactiveClass = "text-gray-300 hover:bg-[#333]";
+    const inactiveClass = "text-(--text) hover:bg-(--menu-hover-bg)";
     
     const handleColorSelect = (color: string) => {
         onFormat({ color });
@@ -63,7 +63,7 @@ const TextFormattingModal: React.FC<TextFormattingModalProps> = ({
     return (
         <div
             ref={modalRef}
-            className="fixed z-50 bg-[#1a1a1a] border border-[#333] rounded-lg shadow-lg p-1"
+            className="fixed z-50 bg-(--menu-bg) border border-(--border) rounded-lg shadow-lg p-1"
             style={{ top: position.top, left: position.left }}
         >
             <div className="relative flex items-center gap-1">
@@ -93,33 +93,33 @@ const TextFormattingModal: React.FC<TextFormattingModalProps> = ({
                     <span className="line-through">S</span>
                 </button>
 
-                <div className="w-[1px] h-5 bg-gray-600 mx-1" />
+                <div className="w-[1px] h-5 bg-(--border) mx-1" />
 
                 <button
                     title="텍스트 색상"
                     className={`w-7 h-7 flex items-center justify-center rounded ${isColorPickerOpen ? activeClass : inactiveClass}`}
                     onClick={() => setIsColorPickerOpen(!isColorPickerOpen)}
                 >
-                    <FontIcon width="16" height="16" color={currentFormat.color || "#ffffffcf"} />
+                    <FontIcon width="16" height="16" color={currentFormat.color || "#5f5e5b"} />
                 </button>
             </div>
 
             {/* --- 색상 선택 팝업 --- */}
             {isColorPickerOpen && (
-                <div className="absolute top-full left-0 mt-2 w-auto bg-[#1a1a1a] border border-[#333] rounded-lg shadow-lg p-3">
+                <div className="absolute top-full left-0 mt-2 w-auto bg-(--menu-bg) border border-(--border) rounded-lg shadow-lg p-3">
                     <div className="grid grid-cols-5 gap-2">
                         {colors.map((color) => (
                             <button
                                 key={color}
-                                className={`w-6 h-6 rounded-full border border-gray-600 hover:scale-110 transition-transform ${
-                                    currentFormat.color === color ? "ring-2 ring-white" : ""
+                                className={`w-6 h-6 rounded-full border border-(--border) hover:scale-110 transition-transform ${
+                                    currentFormat.color === color ? "ring-2 ring-(--text)" : ""
                                 }`}
                                 style={{ backgroundColor: color }}
                                 onClick={() => handleColorSelect(color)}
                             />
                         ))}
                     </div>
-                    <div className="border-t border-gray-600 mt-3 pt-2">
+                    <div className="border-t border-(--border) mt-3 pt-2">
                         <button
                             className="w-full px-3 py-1.5 text-center bg-red-600 hover:bg-red-700 rounded text-white text-sm"
                             onClick={() => { onFormat({}); setIsColorPickerOpen(false); }}

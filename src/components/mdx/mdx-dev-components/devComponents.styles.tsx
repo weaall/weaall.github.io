@@ -22,8 +22,6 @@ export const Pre = tw.pre`text-t-main text-base`
 export const Li = tw.li`pl-4 py-1 text-base before:content-['-'] before:font-bold before:pr-3
 mobile:text-sm`
 
-export const CodeWrap = tw.div`relative bg-main rounded-xl text-t-main text-base p-6 tracking-tight leading-tight
-mobile:text-xs`
 export const CodeWrapC = tw.div`relative rounded-xl text-base pt-6  tracking-tight leading-tight
 mobile:text-xs mobile:pt-5 mobile:mb-6`
 export const ClassWrap = tw.div`absolute right-4 top-0 text-main rounded-2xl py-2 px-4 bg-white w-fit mr-4

@@ -6,6 +6,7 @@ import { notFound } from "next/navigation"
 import { Metadata } from "next"
 import { getArticleMetadata } from "@/util/seo"
 import PracTitle from "@/components/post-title/PracTitle"
+import { PostFrontmatter } from "@/interface/PostData"
 
 const POSTS_FOLDER = path.join(process.cwd(), "posts/prac")
 
@@ -36,7 +37,7 @@ async function compilePostMarkdown(slug: string) {
         notFound()
     }
 
-    return compileMDX<PostData>({
+    return compileMDX<PostFrontmatter>({
         source: markdown,
         options: { parseFrontmatter: true },
         components: {

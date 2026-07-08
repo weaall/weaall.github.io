@@ -5,7 +5,8 @@ import path from "path";
 /**
  * 로컬 오써링 전용 저장 엔드포인트.
  * newpage 에디터의 "내보내기"가 이 라우트로 MDX를 POST하면 posts/post/ 폴더에 파일을 쓴다.
- * `next dev`에서만 동작하며, 정적 export(프로덕션 빌드)에서는 제외된다(하단 config 참고).
+ * `next dev`에서만 동작한다(아래 NODE_ENV 가드). 프로덕션은 next.config의 output:"export"라
+ * 라우트 핸들러 자체가 정적 결과물에 포함되지 않으므로 배포본에서는 호출될 수 없다.
  */
 export async function POST(request: Request) {
     if (process.env.NODE_ENV !== "development") {

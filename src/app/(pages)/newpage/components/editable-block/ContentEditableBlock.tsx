@@ -5,6 +5,16 @@ import TextFormattingModal, { TextFormat, FormattedRange } from "../text-modal/T
 import { useRef, useEffect, useState } from "react";
 import React from "react";
 
+// 토글 타입별: 삼각형 크기(arrow)와 텍스트 줄 높이(lh).
+// 버튼 박스와 텍스트가 같은 lh를 쓰게 해서 삼각형이 첫 줄 정중앙에 오도록 한다.
+const TOGGLE_SIZES: { [k: string]: { arrow: number; lh: number } } = {
+    toggleText: { arrow: 16, lh: 24 },
+    toggleH3: { arrow: 19, lh: 28 },
+    toggleH2: { arrow: 23, lh: 34 },
+    toggleH1: { arrow: 28, lh: 42 },
+};
+const TOGGLE_PADDING_TOP = 3; // 블록의 pt-[3px]과 동일
+
 interface ContentEditableBlockProps {
     type: string;
     content: string;
@@ -12,6 +22,7 @@ interface ContentEditableBlockProps {
     onTypeChange: (newType: string) => void;
     onAddBlock: () => void;
     onAddBlockAfterBullet: () => void;
+    onAddChildBlock?: () => void;
     onDeleteBlock: () => void;
     id: string;
     listNumber?: number;
@@ -23,6 +34,8 @@ interface ContentEditableBlockProps {
     onIndent: (change: number) => void;
     formattedRanges?: FormattedRange[];
     onFormattedRangesChange?: (ranges: FormattedRange[]) => void;
+    collapsed?: boolean;
+    onToggleCollapse?: () => void;
 }
 
 const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: string }> = ({
@@ -32,6 +45,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
     onTypeChange,
     onAddBlock,
     onAddBlockAfterBullet,
+    onAddChildBlock,
     onDeleteBlock,
     color,
     id,
@@ -44,6 +58,8 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
     onIndent,
     formattedRanges = [],
     onFormattedRangesChange,
+    collapsed,
+    onToggleCollapse,
 }) => {
     const ref = useRef<HTMLDivElement | null>(null);
     const isComposingRef = useRef(false);
@@ -171,44 +187,50 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         return { start, end };
     };
 
-    // 컴포넌트 업데이트 시 HTML 렌더링
+    // content / formattedRanges → DOM 동기화 (단일화)
+    //
+    // 기존엔 거의 동일한 useEffect가 두 개라 서로 경쟁하며 타이핑 중에도
+    // innerHTML을 다시 써서 커서가 튀었다. 여기서는 변경 출처를 구분한다.
+    //  - 포커스 중 & 텍스트만 변경(타이핑)  → 브라우저가 이미 DOM을 갱신했으므로 건드리지 않음
+    //  - 포맷 범위 변경(모달로 서식 적용)     → 재렌더 후 커서 위치 복원
+    //  - 비포커스(다른 블록에서 반영 등)      → 그냥 동기화
+    const prevContentRef = useRef(content);
+    const prevRangesRef = useRef(formattedRanges);
     useEffect(() => {
-        if (ref.current && document.activeElement !== ref.current) {
-            if (content === "") {
-                ref.current.innerHTML = "";
-            } else {
-                const formattedHTML = generateFormattedHTML(content, formattedRanges);
-                if (ref.current.innerHTML !== formattedHTML) {
-                    ref.current.innerHTML = formattedHTML || content;
-                }
+        const element = ref.current;
+        if (!element) return;
+
+        const contentChanged = prevContentRef.current !== content;
+        const rangesChanged = prevRangesRef.current !== formattedRanges;
+        prevContentRef.current = content;
+        prevRangesRef.current = formattedRanges;
+
+        const isFocused = document.activeElement === element;
+
+        // 타이핑 중(포커스 + 텍스트만 변경)이면 DOM은 브라우저가 이미 맞춰뒀다. 재렌더 금지.
+        // 단, 내용이 비워졌을 땐 예외 — 브라우저가 남긴 <br> 때문에 :empty가 안 맞아
+        // placeholder가 안 뜨므로, 이 경우엔 DOM을 비워 :empty가 매칭되게 한다.
+        if (isFocused && contentChanged && !rangesChanged && content !== "") return;
+
+        const formattedHTML = content === "" ? "" : generateFormattedHTML(content, formattedRanges);
+        if (element.innerHTML === formattedHTML) return;
+
+        if (isFocused) {
+            const selection = window.getSelection();
+            const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+            let cursorPosition = 0;
+            if (range) {
+                const preCaretRange = range.cloneRange();
+                preCaretRange.selectNodeContents(element);
+                preCaretRange.setEnd(range.startContainer, range.startOffset);
+                cursorPosition = preCaretRange.toString().length;
             }
+            element.innerHTML = formattedHTML;
+            if (range) restoreCursorPosition(element, cursorPosition);
+        } else {
+            element.innerHTML = formattedHTML;
         }
     }, [content, formattedRanges]);
-
-    // 포맷팅 범위가 변경될 때마다 HTML 업데이트
-    useEffect(() => {
-        if (ref.current) {
-            const formattedHTML = generateFormattedHTML(content, formattedRanges);
-            if (ref.current.innerHTML !== formattedHTML) {
-                const selection = window.getSelection();
-                const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-                let cursorPosition = 0;
-
-                if (range) {
-                    const preCaretRange = range.cloneRange();
-                    preCaretRange.selectNodeContents(ref.current);
-                    preCaretRange.setEnd(range.startContainer, range.startOffset);
-                    cursorPosition = preCaretRange.toString().length;
-                }
-
-                ref.current.innerHTML = formattedHTML;
-
-                if (range && document.activeElement === ref.current) {
-                    restoreCursorPosition(ref.current, cursorPosition);
-                }
-            }
-        }
-    }, [formattedRanges, content]);
 
     useEffect(() => {
         setInternalIsChecked(isChecked || false);
@@ -366,7 +388,11 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         const newContent = element.innerText ?? "";
         const oldContent = content;
 
-        if (newContent === "") {
+        // 완전히 비었거나 브라우저가 남긴 <br>(innerText가 "\n")만 있는 경우 → 빈 블록으로 처리
+        if (newContent === "" || newContent === "\n") {
+            // 남아있는 <br> 등을 제거해 :empty 가 매칭되도록 (placeholder 표시)
+            if (element.innerHTML !== "") element.innerHTML = "";
+
             let styleToPreserve: TextFormat | null = null;
             if (formattedRanges.length > 0 && oldContent.length > 0) {
                 styleToPreserve = formattedRanges[0].format;
@@ -488,6 +514,10 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             case "ul": return "리스트";
             case "numberedList": return "번호 리스트";
             case "checkedList": return "체크 리스트";
+            case "toggleText": return "토글";
+            case "toggleH1": return "토글 제목1";
+            case "toggleH2": return "토글 제목2";
+            case "toggleH3": return "토글 제목3";
             case "p": default: return "텍스트";
         }
     };
@@ -593,6 +623,9 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             e.preventDefault();
             if (type === "ul" || type === "numberedList" || type === "checkedList") {
                 onAddBlockAfterBullet();
+            } else if (type === "toggleText" || type === "toggleH1" || type === "toggleH2" || type === "toggleH3") {
+                // 토글에서 Enter → 내용이 한 단계 들여쓴 자식으로 들어간다
+                onAddChildBlock?.();
             } else {
                 onAddBlock();
             }
@@ -612,15 +645,16 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                     onDeleteBlock();
                 }
             }
-        } else if (e.key === " " && ["-", "*", "+"].includes(ref.current?.innerText ?? "")) {
+        } else if (e.key === " " && ["-", "*", "+"].includes((ref.current?.innerText ?? "").trim())) {
             e.preventDefault();
             onTypeChange("ul");
             onContentChange("");
-        } else if (e.key === " " && ref.current?.innerText.match(/^\d+\.$/)) {
+        } else if (e.key === " " && /^\d+\.$/.test((ref.current?.innerText ?? "").trim())) {
             e.preventDefault();
             onTypeChange("numberedList");
             onContentChange("");
-        } else if (e.key === " " && ["[]", "[ ]"].includes(ref.current?.innerText ?? "")) {
+        } else if (e.key === " " && (ref.current?.innerText ?? "").replace(/\s+/g, "") === "[]") {
+            // "[]" 또는 "[ ]" (브라우저가 붙이는 후행 개행/공백까지 허용)
             e.preventDefault();
             onTypeChange("checkedList");
             onContentChange("");
@@ -732,11 +766,41 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             />
         );
 
+    // 토글 삼각형: 타입별 글자 크기에 비례한 SVG. collapsed면 오른쪽(▶), 펼침이면 아래(▼)로 회전.
+    // line = 해당 블록 첫 줄 높이(대략)로, 그 안에서 세로 중앙 정렬.
+    const renderToggleButton = () => {
+        const { arrow, lh } = TOGGLE_SIZES[type] ?? TOGGLE_SIZES.toggleText;
+        // 박스 높이 = pt + lh, items-center → 삼각형 중심이 (pt + lh/2) = 텍스트 첫 줄 중심과 일치
+        return (
+            <div
+                onClick={onToggleCollapse}
+                className="flex items-center justify-center shrink-0 cursor-pointer text-(--text-muted)"
+                style={{ height: lh + TOGGLE_PADDING_TOP, paddingTop: TOGGLE_PADDING_TOP, width: arrow + 8 }}
+            >
+                <svg
+                    width={arrow}
+                    height={arrow}
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    style={{
+                        transform: collapsed ? "rotate(0deg)" : "rotate(90deg)",
+                        transition: "transform 0.15s ease",
+                    }}
+                >
+                    <path
+                        d="M15.795 11.272L7.795 16.272C6.79593 16.8964 5.5 16.1782 5.5 15L5.5 5.00002C5.5 3.82186 6.79593 3.1036 7.795 3.72802L15.795 8.72802C16.735 9.31552 16.735 10.6845 15.795 11.272Z"
+                        fill="currentColor"
+                    />
+                </svg>
+            </div>
+        );
+    };
+
     switch (type) {
         case "h1":
             return (
                 <>
-                    <tw.EditableH1Block {...commonProps} style={{ color: color, marginLeft: `${indentationLevel * 25}px` }} />
+                    <tw.EditableH1Block {...commonProps} style={{ color: color }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </>
@@ -744,7 +808,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         case "h2":
             return (
                 <>
-                    <tw.EditableH2Block {...commonProps} style={{ color: color, marginLeft: `${indentationLevel * 25}px` }} />
+                    <tw.EditableH2Block {...commonProps} style={{ color: color }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </>
@@ -752,14 +816,14 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         case "h3":
             return (
                 <>
-                    <tw.EditableH3Block {...commonProps} style={{ color: color, marginLeft: `${indentationLevel * 25}px` }} />
+                    <tw.EditableH3Block {...commonProps} style={{ color: color }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </>
             );
         case "ul":
             return (
-                <tw.EditableUlBlockWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
+                <tw.EditableUlBlockWrap>
                     <tw.EditableUlBlockTag style={{ color: color }} />
                     <tw.EditableUlBlock {...commonProps} style={{ color: color }} />
                     {renderEmojiModal()}
@@ -768,7 +832,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             );
         case "numberedList":
             return (
-                <tw.EditableNumberedListBlockWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
+                <tw.EditableNumberedListBlockWrap>
                     <tw.EditableNumberedListBlockTag style={{ color: color }} data-number={listNumber || 1} />
                     <tw.EditableNumberedListBlock {...commonProps} style={{ color: color }} />
                     {renderEmojiModal()}
@@ -777,29 +841,43 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             );
         case "checkedList":
             return (
-                <tw.EditableCheckedListBlockWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
+                <tw.EditableCheckedListBlockWrap>
                     <tw.EditableCheckbox type="checkbox" checked={internalIsChecked} onChange={handleCheckboxToggle} style={{ color: color }} />
-                    <tw.EditableCheckedListBlock {...commonProps} style={{ color: color, marginLeft: "6px" }} />
+                    <tw.EditableCheckedListBlock {...commonProps} style={{ color: color }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </tw.EditableCheckedListBlockWrap>
             );
         case "toggleText":
             return (
-                <tw.EditableToggleTextWrap style={{ marginLeft: `${indentationLevel * 25}px` }}>
-                    <tw.EditableTogglePButton $isToggled={true} />
-                    <tw.EditableTogglePBlock {...commonProps} style={{ color: color }} />
+                <tw.EditableToggleTextWrap>
+                    {renderToggleButton()}
+                    <tw.EditableTogglePBlock {...commonProps} style={{ color: color, lineHeight: `${TOGGLE_SIZES.toggleText.lh}px` }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </tw.EditableToggleTextWrap>
             );
+        case "toggleH1":
+        case "toggleH2":
+        case "toggleH3": {
+            const HeadingBlock = type === "toggleH1" ? tw.EditableH1Block : type === "toggleH2" ? tw.EditableH2Block : tw.EditableH3Block;
+            const { lh } = TOGGLE_SIZES[type] ?? TOGGLE_SIZES.toggleText;
+            return (
+                <tw.EditableToggleTextWrap>
+                    {renderToggleButton()}
+                    <HeadingBlock {...commonProps} style={{ color: color, lineHeight: `${lh}px` }} />
+                    {renderEmojiModal()}
+                    {renderFormattingModal()}
+                </tw.EditableToggleTextWrap>
+            );
+        }
         case "divider":
-            return <div className={`h-[2px] my-1.5 w-full rounded bg-[#ffffff21]`} style={{ marginLeft: `${indentationLevel * 25}px` }} />;
+            return <div className={`h-[2px] my-1.5 w-full rounded bg-(--border)`} />;
         case "p":
         default:
             return (
                 <>
-                    <tw.EditablePBlock {...commonProps} style={{ color: color, marginLeft: `${indentationLevel * 25}px` }} />
+                    <tw.EditablePBlock {...commonProps} style={{ color: color }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
                 </>

@@ -7,6 +7,7 @@ export interface Block {
     content: string;
     indentationLevel: number;
     isChecked?: boolean;
+    collapsed?: boolean;
     color?: string;
     formattedRanges?: FormattedRange[];
 }
@@ -25,16 +26,25 @@ export function blocksToMDX(
 ) {
     let frontmatter = "";
 
+    // YAML에서 특수문자가 들어간 값은 따옴표로 감싸야 파싱이 깨지지 않는다.
+    // (예: 콜론이 든 제목 "React: 입문", 콤마가 든 태그 등)
+    // 평범한 값은 기존 포스트처럼 따옴표 없이 그대로 둔다.
+    const yamlValue = (v: string): string => {
+        const needsQuote = /[:#[\]{}",'`&*!|>%@]/.test(v) || /^\s|\s$/.test(v) || v === "";
+        if (!needsQuote) return v;
+        return `"${v.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+    };
+
     // 메타데이터 프론트매터 생성
     if (meta) {
         frontmatter = `---\n`;
-        if (meta.label) frontmatter += `label: ${meta.label}\n`;
-        if (meta.title) frontmatter += `title: ${meta.title}\n`;
-        if (meta.subTitle) frontmatter += `subTitle: ${meta.subTitle}\n`;
-        if (meta.date) frontmatter += `date: ${meta.date}\n`;
+        if (meta.label) frontmatter += `label: ${yamlValue(meta.label)}\n`;
+        if (meta.title) frontmatter += `title: ${yamlValue(meta.title)}\n`;
+        if (meta.subTitle) frontmatter += `subTitle: ${yamlValue(meta.subTitle)}\n`;
+        if (meta.date) frontmatter += `date: ${yamlValue(meta.date)}\n`;
         if (meta.mins) frontmatter += `mins: ${meta.mins}\n`;
-        if (meta.tags) frontmatter += `tags: [${meta.tags.join(", ")}]\n`;
-        if (meta.imageUrl) frontmatter += `imageUrl: ${meta.imageUrl}\n`;
+        if (meta.tags) frontmatter += `tags: [${meta.tags.map(yamlValue).join(", ")}]\n`;
+        if (meta.imageUrl) frontmatter += `imageUrl: ${yamlValue(meta.imageUrl)}\n`;
         frontmatter += `---\n\n`;
     }
 
@@ -151,6 +161,15 @@ export function blocksToMDX(
                     return "---";
                 case "toggleText":
                     return `${indentation}<ToggleText>${contentWithColor}</ToggleText>`;
+                case "toggleH1":
+                    numberedListCounter = 1;
+                    return `${indentation}# ${contentWithColor}`;
+                case "toggleH2":
+                    numberedListCounter = 1;
+                    return `${indentation}## ${contentWithColor}`;
+                case "toggleH3":
+                    numberedListCounter = 1;
+                    return `${indentation}### ${contentWithColor}`;
                 default:
                     numberedListCounter = 1;
                     return contentWithColor;

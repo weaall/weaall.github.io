@@ -27,17 +27,7 @@ import DevList from "@/components/dev-list/DevList"
 import getPostsData from "@/components/mdx/getMdx"
 import * as tw from "./page.styles"
 import { DevMDXContent } from "@/components/dev-mdx/DevMDXContent"
-
-interface PostData {
-    imageUrl: string;
-    label: string
-    title: string
-    subTitle: string
-    date: string
-    tags: string[]
-    mins: string
-}
-
+import { PostFrontmatter } from "@/interface/PostData"
 
 const POSTS_FOLDER = path.join(process.cwd(), "posts/dev")
 
@@ -68,7 +58,7 @@ async function compilePostMarkdown(slug: string) {
         notFound()
     }
 
-    return compileMDX<PostData>({
+    return compileMDX<PostFrontmatter>({
         source: markdown,
         options: { parseFrontmatter: true, mdxOptions: { remarkPlugins: [remarkGfm] } },
         components: {

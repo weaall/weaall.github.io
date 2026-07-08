@@ -18,15 +18,15 @@ export const EditablePBlock = tw.div`
   w-full
   max-w-full
   min-h-[1em]
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
   text-[16px]
   relative
   [&:empty]:after:content-[attr(data-placeholder)]
-  [&:empty]:after:text-[#5a5a5a]
+  [&:empty]:after:text-(--placeholder)
   [&:empty]:after:pointer-events-none
   [&:empty]:after:text-[16px]
   [&:empty]:after:font-medium
@@ -38,15 +38,15 @@ export const EditableH1Block = tw.div`
   max-w-full
   min-h-[1em]
   font-bold
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
   text-[30px] font-bold
   relative
   [&:empty]:after:content-[attr(data-placeholder)]
-  [&:empty]:after:text-[#5a5a5a]
+  [&:empty]:after:text-(--placeholder)
   [&:empty]:after:pointer-events-none
   [&:empty]:after:text-[30px]
   [&:empty]:after:font-bold
@@ -58,15 +58,15 @@ export const EditableH2Block = tw.div`
   max-w-full
   min-h-[1em]
   font-semibold
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
   text-[24px] font-semibold
   relative
   [&:empty]:after:content-[attr(data-placeholder)]
-  [&:empty]:after:text-[#5a5a5a]
+  [&:empty]:after:text-(--placeholder)
   [&:empty]:after:pointer-events-none
   [&:empty]:after:text-[24px]
   [&:empty]:after:font-semibold
@@ -78,15 +78,15 @@ export const EditableH3Block = tw.div`
   max-w-full
   min-h-[1em]
   font-medium
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
   relative
   text-[20px] font-medium
   [&:empty]:after:content-[attr(data-placeholder)]
-  [&:empty]:after:text-[#5a5a5a]
+  [&:empty]:after:text-(--placeholder)
   [&:empty]:after:pointer-events-none
   [&:empty]:after:text-[20px]
   [&:empty]:after:font-medium
@@ -102,7 +102,7 @@ export const EditableUlBlockTag = tw.div`
   before:block
   before:w-[7px]
   before:h-[7px]
-  before:bg-[#ffffffcf]
+  before:bg-(--text)
   before:rounded-full
 `;
 
@@ -111,15 +111,15 @@ export const EditableUlBlock = tw.div`
   w-full
   max-w-full
   min-h-[1em]
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
   text-[16px]
   relative
   [&:empty]:after:content-[attr(data-placeholder)]
-  [&:empty]:after:text-[#5a5a5a]
+  [&:empty]:after:text-(--placeholder)
   [&:empty]:after:pointer-events-none
   [&:empty]:after:text-[16px]
   [&:empty]:after:font-medium
@@ -134,7 +134,7 @@ export const EditableNumberedListBlockTag = tw.div`
   before:content-[attr(data-number)'.']
   before:text-[16px]
   before:font-medium
-  before:text-[#ffffffcf]
+  before:text-(--text)
   min-w-[20px]
   text-right
 `;
@@ -145,8 +145,8 @@ export const EditableNumberedListBlock = tw.div`
   max-w-full
   min-h-[1em]
   font-medium
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
@@ -154,7 +154,7 @@ export const EditableNumberedListBlock = tw.div`
   font-medium
   relative
   [&:empty]:after:content-[attr(data-placeholder)]
-  [&:empty]:after:text-[#5a5a5a]
+  [&:empty]:after:text-(--placeholder)
   [&:empty]:after:pointer-events-none
   [&:empty]:after:text-[16px]
   [&:empty]:after:font-medium
@@ -165,10 +165,10 @@ export const EditableCheckedListBlockWrap = tw.div`
 `;
 
 export const EditableCheckbox = tw.input`
-  w-4 h-4
-  mx-[10px]
+  w-[18px] h-[18px]
+  ml-[8px] mr-[6px]
   appearance-none
-  border-2 border-[#616161]
+  border-2 border-(--checkbox-border)
   rounded
   bg-transparent
   checked:bg-blue-500
@@ -177,11 +177,11 @@ export const EditableCheckbox = tw.input`
   flex-shrink-0
   relative
   focus:outline-none
-  mt-[7px]
+  mt-[5px]
   checked:after:content-['']
   checked:after:absolute
-  checked:after:left-[4px]
-  checked:after:top-[0px]
+  checked:after:left-[5px]
+  checked:after:top-[1px]
   checked:after:w-[5px]
   checked:after:h-[10px]
   checked:after:border-r-[2px]
@@ -196,8 +196,8 @@ export const EditableCheckedListBlock = tw.div`
   max-w-full
   min-h-[1em]
   font-medium
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
@@ -205,7 +205,7 @@ export const EditableCheckedListBlock = tw.div`
   font-medium
   relative
   [&:empty]:after:content-[attr(data-placeholder)]
-  [&:empty]:after:text-[#5a5a5a]
+  [&:empty]:after:text-(--placeholder)
   [&:empty]:after:pointer-events-none
   [&:empty]:after:text-[16px]
   [&:empty]:after:font-medium
@@ -221,15 +221,15 @@ export const EditableTogglePBlock = tw.div`
   w-full
   max-w-full
   min-h-[1em]
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
   text-[16px]
   relative
   [&:empty]:after:content-[attr(data-placeholder)]
-  [&:empty]:after:text-[#5a5a5a]
+  [&:empty]:after:text-(--placeholder)
   [&:empty]:after:pointer-events-none
   [&:empty]:after:text-[16px]
   [&:empty]:after:font-medium
@@ -237,16 +237,12 @@ export const EditableTogglePBlock = tw.div`
 
 
 export const EditableTogglePButton = tw.div<EditableToggleButtonProps>`
-  w-5 h-5
-  flex items-center justify-center
-  transform transition-transform duration-200 ease-in-out
+  pt-[3px] pr-[8px]
+  text-(--text-muted)
+  text-[13px]
+  leading-[1.5]
   cursor-pointer
+  select-none
   flex-shrink-0
-  mt-[3px]
-  ${({ $isToggled }) => ($isToggled ? 'rotate-90' : 'rotate-0')}
-  &::before {
-    content: '▶️';
-    color: #ffffffcf;
-    font-size: 16px;
-  }
+  hover:text-(--text)
 `;

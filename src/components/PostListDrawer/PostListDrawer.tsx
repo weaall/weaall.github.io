@@ -5,16 +5,7 @@ import * as tw from "./PostListDrawer.styles";
 import { DocIcon, DotListIcon, HomeIcon, PlusIcon, PostIcon, ReduceIcon, RightIcon, SearchIcon } from "./SvgDrawer";
 import { useEffect, useRef, useState } from "react";
 import { AddDockIcon } from "../ui/hover-header/svg/PostsSvg";
-
-interface PostData {
-    label: string;
-    title: string;
-    subTitle: string;
-    date: string;
-    tags: string[];
-    slug: string;
-    postUrl: string;
-}
+import { PostData } from "@/interface/PostData";
 
 interface PostsProps {
     props: PostData[];

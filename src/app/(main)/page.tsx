@@ -1,5 +1,4 @@
 import MainBanner from "@/components/top-banner/MainBanner"
-import MdxBanner from "@/components/mdx/mdx-banner/MdxBanner"
 import PortfolioListBanner from "@/components/portfolio/PortfolioBanner"
 
 export default function Home() {
@@ -13,8 +12,6 @@ export default function Home() {
                 <PortfolioListBanner />
                 </div>
             </div>
-            {/* <MdxBanner dir="Post" />
-            <MdxBanner dir="Prac" /> */}
         </div>
     )
 }

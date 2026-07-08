@@ -2,17 +2,10 @@
 
 import { useState } from "react"
 import * as tw from "./DevList.styles"
+import { PostData } from "@/interface/PostData"
 
 interface PostsProps {
     props: PostData[]
-}
-
-interface PostData {
-    label: string
-    title: string
-    date: string
-    slug: string
-    postUrl: string
 }
 
 export default function DevList({ props }: PostsProps) {

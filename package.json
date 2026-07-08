@@ -20,8 +20,10 @@
         "next-mdx-remote": "^6.0.0",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
-        "remark-gfm": "^4.0.1",
-        "zustand": "^5.0.14"
+        "remark-gfm": "^4.0.1"
+    },
+    "overrides": {
+        "postcss": "$postcss"
     },
     "devDependencies": {
         "@tailwindcss/postcss": "^4.3.2",

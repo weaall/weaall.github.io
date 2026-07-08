@@ -4,21 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
+import { PostData } from "@/interface/PostData";
 
 // 에디터는 순수 클라이언트 도구(contentEditable, crypto.randomUUID 등)라
 // SSR 시 서버/클라이언트 초기 상태가 어긋나 하이드레이션 불일치가 난다. 클라이언트에서만 렌더한다.
 const NewPage = dynamic(() => import("./components/NewPage"), { ssr: false });
-
-interface PostData {
-    label: string;
-    title: string;
-    subTitle: string;
-    date: string;
-    tags: string[];
-    slug: string;
-    postUrl: string;
-    imageUrl: string;
-}
 
 export default function NewPageLayout({ postsData }: { postsData: PostData[] }) {
     const [collapsed, setCollapsed] = useState(false);
@@ -48,7 +38,7 @@ export default function NewPageLayout({ postsData }: { postsData: PostData[] }) 
     }, []);
 
     return (
-        <div id="main-bg-container" className="w-full h-full flex flex-col bg-darkbg relative">
+        <div id="main-bg-container" data-theme="light" className="w-full h-full flex flex-col bg-(--page-bg) relative">
             <HoverHeader visible={showHeader} collapsed={collapsed}/>
             <PostListDrawer props={postsData} collapsed={collapsed} setCollapsed={setCollapsed} />
             <NewPage collapsed={collapsed}/>

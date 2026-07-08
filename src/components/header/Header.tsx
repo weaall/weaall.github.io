@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import * as tw from "./Header.styles";
 import { DownIcon, UpIcon } from "../ui/hover-header/svg/PostsSvg";
@@ -10,6 +10,7 @@ import WeHubHoverMenu from "./WeHubHoverMenu";
 // Header 컴포넌트
 export default function Header() {
     const pathname = usePathname();
+    const router = useRouter();
     const [scrolled, setScrolled] = useState(false);
     
     const [isMenuOpenInternal, setIsMenuOpenInternal] = useState(false); 
@@ -88,7 +89,7 @@ export default function Header() {
             $scrolled={scrolled}
         >
             <tw.LogoWrap>
-                <tw.LogoBtn onClick={() => (window.location.href = "/")}>
+                <tw.LogoBtn onClick={() => router.push("/")}>
                     <tw.Svg alt="" src={"../../assets/weaall-ui.png"} />
                 </tw.LogoBtn>
             </tw.LogoWrap>

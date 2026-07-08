@@ -2,8 +2,8 @@ import tw from "tailwind-styled-components";
 
 export const H1 = tw.h1`
   font-bold
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
@@ -11,16 +11,16 @@ export const H1 = tw.h1`
   relative`;
 export const H2 = tw.h2`
   font-semibold
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
   text-[24px] font-semibold`;
 export const H3 = tw.h3`
   font-medium
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
@@ -30,24 +30,24 @@ export const H4 = tw.h4`text-base font-medium before:content-['|'] before:font-b
 
 
 export const P = tw.p`
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
   text-[16px]`;
 
   export const Span = tw.span`
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
   text-[16px]`;
 
 export const A = tw.a`
-  text-white
-  text-[#ffffffcf]
+  text-(--text-strong)
+  text-(--text)
   px-[2px] pt-[3px] pb-0
   outline-none
   cursor-text
@@ -64,7 +64,6 @@ export const Li = tw.li`
     before:pr-3
 `;
 
-export const CodeWrap = tw.div`relative bg-main rounded-xl text-t-main text-base p-6 tracking-tight leading-tight`;
 export const CodeWrapC = tw.div`relative rounded-xl text-base pt-5 pb-3 tracking-tight leading-tight ml-2`;
 export const ClassWrap = tw.div`absolute right-4 top-0 text-main rounded-2xl py-2 px-4 bg-white w-fit mr-4`;
 export const ClassLabel = tw.span`text-xl font-bold after:content-['.'] after:text-red-500`;
@@ -73,7 +72,7 @@ export const Code = tw.code`whitespace-pre-wrap rounded-xl text-t-main my-6 text
 
 export const Strong = tw.strong`font-bold`;
 
-export const Em = tw.em`text-sm font-semibold not-italic px-2 py-0.5 bg-darktext rounded-xl text-darkbg`;
+export const Em = tw.em`text-sm font-semibold not-italic px-2 py-0.5 bg-(--text) rounded-xl text-(--page-bg)`;
 
 export const ImgWrap = tw.span`w-full mx-auto py-6 text-center flex flex-col`;
 export const Img = tw.img`mx-auto`;

@@ -5,30 +5,12 @@ import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
 import MdxPostList from "@/components/mdx/mdx-postlist/MdxPostList";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
 import { MDXContent } from "@/components/mdx/mdx-content/MDXContent";
-
-interface PostData {
-    label: string;
-    title: string;
-    subTitle: string;
-    date: string;
-    tags: string[];
-    slug: string;
-    postUrl: string;
-    imageUrl: string;
-}
+import { PostData, PostFrontmatter } from "@/interface/PostData";
 
 interface MDXContentProps {
     postsData: PostData[];
     content: React.ReactNode;
-    frontmatter: {
-        imageUrl: string;
-        label: string;
-        title: string;
-        subTitle: string;
-        date: string;
-        tags: string[];
-        mins: string;
-    };
+    frontmatter: PostFrontmatter;
 }
 
 export default function PostLayout({ postsData, content, frontmatter }: MDXContentProps) {
@@ -60,7 +42,8 @@ export default function PostLayout({ postsData, content, frontmatter }: MDXConte
     return (
         <div
             id="main-bg-container"
-            className="w-full h-full flex flex-col bg-darkbg relative"
+            data-theme="light"
+            className="w-full h-full flex flex-col bg-(--page-bg) relative"
             style={{
                 paddingLeft: collapsed ? 50 : 350,
                 transition: "padding-left 0.2s",

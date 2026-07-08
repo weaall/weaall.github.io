@@ -22,7 +22,7 @@ export const metadata: Metadata = getBaseMetadata({ title: "WeHub" })
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="kr">
+        <html lang="ko">
             <head>
                 <meta name="naver-site-verification" content="e782934088f4524e1d46947402328d9864f04318" />
                 <meta name="google-site-verification" content="EB5qLPhkvA7mD6Yz6VpiZaMErWP4KIB7Aj_rR-xqdsA" />

@@ -4,17 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
 import MdxPostList from "@/components/mdx/mdx-postlist/MdxPostList";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
-
-interface PostData {
-    label: string;
-    title: string;
-    subTitle: string;
-    date: string;
-    tags: string[];
-    slug: string;
-    postUrl: string;
-    imageUrl: string;
-}
+import { PostData } from "@/interface/PostData";
 
 export default function PostListLayout({ postsData }: { postsData: PostData[] }) {
     const [collapsed, setCollapsed] = useState(false);
@@ -44,7 +34,7 @@ export default function PostListLayout({ postsData }: { postsData: PostData[] })
     }, []);
 
     return (
-        <div id="main-bg-container" className="w-full h-full flex flex-col bg-darkbg relative">
+        <div id="main-bg-container" data-theme="light" className="w-full h-full flex flex-col bg-(--page-bg) relative">
             <HoverHeader visible={showHeader} collapsed={collapsed}/>
             <PostListDrawer props={postsData} collapsed={collapsed} setCollapsed={setCollapsed} />
             <MdxPostList latestPosts={sortedPostsData} collapsed={collapsed} />

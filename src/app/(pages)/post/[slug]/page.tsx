@@ -28,18 +28,7 @@ import { Metadata } from "next";
 import remarkGfm from "remark-gfm";
 import PostLayout from "./PostLayout";
 import getPostsData from "@/components/mdx/getMdx";
-
-interface PostData {
-    imageUrl: string;
-    label: string;
-    title: string;
-    subTitle: string;
-    date: string;
-    tags: string[];
-    mins: string;
-    slug: string;
-    postUrl: string;
-}
+import { PostFrontmatter } from "@/interface/PostData";
 
 const POSTS_FOLDER = path.join(process.cwd(), "posts/post")
 
@@ -75,7 +64,7 @@ async function compilePostMarkdown(slug: string) {
         notFound();
     }
 
-    return compileMDX<PostData>({
+    return compileMDX<PostFrontmatter>({
         source: markdown,
         options: {
             parseFrontmatter: true,
