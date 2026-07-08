@@ -6,7 +6,7 @@ export default async function Page() {
     
     return (
         <>
-            <DevList props={postsData} />
+            <DevList posts={postsData} />
         </>
     )
 }

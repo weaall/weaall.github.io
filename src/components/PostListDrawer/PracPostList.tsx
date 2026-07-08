@@ -6,12 +6,12 @@ import * as tw from "./PostListDrawer.styles";
 import { PostData } from "@/interface/PostData";
 
 interface PostsProps {
-    props: PostData[];
+    posts: PostData[];
 }
 
-export default function PracPostList({ props }: PostsProps) {
+export default function PracPostList({ posts }: PostsProps) {
     const pathname = usePathname();
-    const activeCategory = props.find((post) => post.postUrl === pathname)?.label || null;
+    const activeCategory = posts.find((post) => post.postUrl === pathname)?.label || null;
     const [openCategory, setOpenCategory] = useState<string | null>(activeCategory);
     const isFirstRender = useRef(true);
 
@@ -22,7 +22,7 @@ export default function PracPostList({ props }: PostsProps) {
         }
     }, [activeCategory]);
 
-    const grouped = props.reduce((acc, post) => {
+    const grouped = posts.reduce((acc, post) => {
         (acc[post.label] = acc[post.label] || []).push(post);
         return acc;
     }, {} as Record<string, PostData[]>);

@@ -6,7 +6,7 @@ export default async function Page() {
 
     return (
         <>
-            <PracPostList props={postsData} />
+            <PracPostList posts={postsData} />
         </>
     );
 }

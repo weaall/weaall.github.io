@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
+import { useHoverHeader } from "@/hooks/useHoverHeader";
 import { PostData } from "@/interface/PostData";
 
 // 에디터는 순수 클라이언트 도구(contentEditable, crypto.randomUUID 등)라
@@ -12,35 +13,12 @@ const NewPage = dynamic(() => import("./components/NewPage"), { ssr: false });
 
 export default function NewPageLayout({ postsData }: { postsData: PostData[] }) {
     const [collapsed, setCollapsed] = useState(false);
-    const sortedPostsData = [...postsData].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-    // HoverHeader 표시 상태 관리
-    const [showHeader, setShowHeader] = useState(false);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-    // 마우스 움직임 감지 핸들러
-    useEffect(() => {
-        const handleMouseMove = () => {
-            setShowHeader(true);
-            if (timerRef.current) clearTimeout(timerRef.current);
-            timerRef.current = setTimeout(() => setShowHeader(false), 1000);
-        };
-        const container = document.getElementById("main-bg-container");
-        if (container) {
-            container.addEventListener("mousemove", handleMouseMove);
-        }
-        return () => {
-            if (container) {
-                container.removeEventListener("mousemove", handleMouseMove);
-            }
-            if (timerRef.current) clearTimeout(timerRef.current);
-        };
-    }, []);
+    const showHeader = useHoverHeader();
 
     return (
         <div id="main-bg-container" data-theme="light" className="w-full h-full flex flex-col bg-(--page-bg) relative">
             <HoverHeader visible={showHeader} collapsed={collapsed}/>
-            <PostListDrawer props={postsData} collapsed={collapsed} setCollapsed={setCollapsed} />
+            <PostListDrawer posts={postsData} collapsed={collapsed} setCollapsed={setCollapsed} />
             <NewPage collapsed={collapsed}/>
         </div>
     );

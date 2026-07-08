@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
-import MdxPostList from "@/components/mdx/mdx-postlist/MdxPostList";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
 import { MDXContent } from "@/components/mdx/mdx-content/MDXContent";
+import { useHoverHeader } from "@/hooks/useHoverHeader";
 import { PostData, PostFrontmatter } from "@/interface/PostData";
 
 interface MDXContentProps {
@@ -15,29 +15,7 @@ interface MDXContentProps {
 
 export default function PostLayout({ postsData, content, frontmatter }: MDXContentProps) {
     const [collapsed, setCollapsed] = useState(false);
-
-    // HoverHeader 표시 상태 관리
-    const [showHeader, setShowHeader] = useState(false);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-    // 마우스 움직임 감지 핸들러
-    useEffect(() => {
-        const handleMouseMove = () => {
-            setShowHeader(true);
-            if (timerRef.current) clearTimeout(timerRef.current);
-            timerRef.current = setTimeout(() => setShowHeader(false), 1000);
-        };
-        const container = document.getElementById("main-bg-container");
-        if (container) {
-            container.addEventListener("mousemove", handleMouseMove);
-        }
-        return () => {
-            if (container) {
-                container.removeEventListener("mousemove", handleMouseMove);
-            }
-            if (timerRef.current) clearTimeout(timerRef.current);
-        };
-    }, []);
+    const showHeader = useHoverHeader();
 
     return (
         <div
@@ -50,7 +28,7 @@ export default function PostLayout({ postsData, content, frontmatter }: MDXConte
             }}
         >
             <HoverHeader visible={showHeader} collapsed={collapsed} />
-            <PostListDrawer props={postsData} collapsed={collapsed} setCollapsed={setCollapsed} />
+            <PostListDrawer posts={postsData} collapsed={collapsed} setCollapsed={setCollapsed} />
             <MDXContent content={content} frontmatter={frontmatter} collapsed={collapsed} />
         </div>
     );

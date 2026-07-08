@@ -1,61 +1,20 @@
-import { compileMDX } from "next-mdx-remote/rsc"
-import path from "path"
-import { readFile, access, readdir } from "fs/promises"
 import { Hr, H1, H2, P, Code, Strong, Pre, H3, A, Li, Em, Img } from "@/components/mdx/mdx-components/components"
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
 import { getArticleMetadata } from "@/util/seo"
 import PracTitle from "@/components/post-title/PracTitle"
-import { PostFrontmatter } from "@/interface/PostData"
+import { compilePost, makeGenerateStaticParams } from "@/components/mdx/postRoutes"
 
-const POSTS_FOLDER = path.join(process.cwd(), "posts/prac")
+const FOLDER = "prac"
 
-export const generateStaticParams = async () => {
-    const files = await readdir(POSTS_FOLDER)
-    const posts = files.filter((file) => file.endsWith(".mdx")).map((file) => file.replace(/\.mdx$/, ""))
-
-    return posts.map((post) => ({
-        slug: post,
-    }))
+const components = {
+    h1: H1, h2: H2, h3: H3, p: P, a: A, li: Li, hr: Hr, pre: Pre,
+    code: Code, strong: Strong, em: Em, img: Img,
 }
 
-async function readPostFile(slug: string) {
-    const filePath = path.resolve(path.join(POSTS_FOLDER, `${slug}.mdx`))
+export const generateStaticParams = makeGenerateStaticParams(FOLDER)
 
-    try {
-        await access(filePath)
-        return await readFile(filePath, { encoding: "utf8" })
-    } catch (err) {
-        return null
-    }
-}
-
-async function compilePostMarkdown(slug: string) {
-    const markdown = await readPostFile(slug)
-
-    if (!markdown) {
-        notFound()
-    }
-
-    return compileMDX<PostFrontmatter>({
-        source: markdown,
-        options: { parseFrontmatter: true },
-        components: {
-            h1: H1,
-            h2: H2,
-            h3: H3,
-            p: P,
-            a: A,
-            li: Li,
-            hr: Hr,
-            pre: Pre,
-            code: Code,
-            strong: Strong,
-            em: Em,
-            img: Img,
-        },
-    })
-}
+const compilePostMarkdown = (slug: string) => compilePost(FOLDER, slug, components)
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;

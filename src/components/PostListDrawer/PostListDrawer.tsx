@@ -8,14 +8,14 @@ import { AddDockIcon } from "../ui/hover-header/svg/PostsSvg";
 import { PostData } from "@/interface/PostData";
 
 interface PostsProps {
-    props: PostData[];
+    posts: PostData[];
     collapsed: boolean;
     setCollapsed: (v: boolean) => void;
 }
 
-export default function PostListDrawer({ props, collapsed, setCollapsed }: PostsProps) {
+export default function PostListDrawer({ posts, collapsed, setCollapsed }: PostsProps) {
     const pathname = usePathname();
-    const activeCategory = props.find((post) => post.postUrl === pathname)?.label || null;
+    const activeCategory = posts.find((post) => post.postUrl === pathname)?.label || null;
 
     // 초기값은 서버 렌더와 동일해야 한다. localStorage는 클라이언트에서만 접근 가능하므로
     // 초기 상태에서 읽으면 서버/클라이언트 HTML이 달라져 하이드레이션 불일치가 난다.
@@ -53,7 +53,7 @@ export default function PostListDrawer({ props, collapsed, setCollapsed }: Posts
     const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
 
     // 카테고리별 그룹핑
-    const grouped = props.reduce((acc, post) => {
+    const grouped = posts.reduce((acc, post) => {
         (acc[post.label] = acc[post.label] || []).push(post);
         return acc;
     }, {} as Record<string, PostData[]>);
