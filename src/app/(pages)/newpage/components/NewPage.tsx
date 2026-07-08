@@ -7,6 +7,7 @@ import { Block, blocksToMDX } from "./helper/BlocksToMdx";
 import ContentEditableBlock from "./editable-block/ContentEditableBlock";
 import { FormattedRange } from "./text-modal/TextFormat.modal";
 import { useBlockHistory } from "../hooks/useBlockHistory";
+import { useBlockDnD } from "../hooks/useBlockDnD";
 
 import { GripDotsIcon, PlusIcon } from "@/components/ui/icons/PostsSvg";
 import { formatPostDate } from "@/util/date";
@@ -43,9 +44,8 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         imageUrl: "",
     });
 
-    const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
-    const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
-    const [insertLineIdx, setInsertLineIdx] = useState<number | null>(null);
+    const { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } =
+        useBlockDnD(setBlocks);
 
     const getListNumber = (currentIndex: number): number => {
         let counter = 1;
@@ -246,56 +246,6 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     // 토글(목록/제목) 접기·펼치기
     const handleToggleCollapse = (id: string) => {
         setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, collapsed: !b.collapsed } : b)));
-    };
-
-    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, idx: number) => {
-        e.stopPropagation();
-        setDraggingIdx(idx);
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", `${idx}`);
-    };
-
-    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>, idx: number, isIndicator: boolean) => {
-        e.preventDefault();
-        setDragOverIdx(idx);
-        if (isIndicator) {
-            setInsertLineIdx(idx);
-        } else {
-            setInsertLineIdx(null);
-        }
-    };
-
-    const handleDragEnd = () => {
-        if (draggingIdx !== null && insertLineIdx !== null) {
-            const fromIdx = draggingIdx;
-            const dropIdx = insertLineIdx;
-            setBlocks((prev) => {
-                const newBlocks = [...prev];
-                const [draggedItem] = newBlocks.splice(fromIdx, 1);
-                let targetIdx = dropIdx;
-                if (fromIdx < dropIdx) {
-                    targetIdx = dropIdx - 1;
-                }
-                // 드롭 위치의 앞 블록 들여쓰기를 물려받되,
-                // 앞 블록이 토글이면 그 자식(= indent + 1)으로 들어간다.
-                const prevBlock = newBlocks[targetIdx - 1];
-                const prevIsToggle =
-                    !!prevBlock && (prevBlock.type === "toggleText" || prevBlock.type.startsWith("toggleH"));
-                const targetIndent = prevBlock
-                    ? prevBlock.indentationLevel + (prevIsToggle ? 1 : 0)
-                    : 0;
-                const adjusted = { ...draggedItem, indentationLevel: targetIndent };
-                newBlocks.splice(targetIdx, 0, adjusted);
-                return newBlocks;
-            });
-        }
-        setDraggingIdx(null);
-        setDragOverIdx(null);
-        setInsertLineIdx(null);
-    };
-
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
     };
 
     const handleDeleteBlock = (idx: number) => {
