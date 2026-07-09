@@ -5,17 +5,18 @@ import React from "react";
 export interface ChartRow {
     label: string;
     value: number;
+    color?: string; // 지정 안 하면 인덱스 순서대로 팔레트 색이 배정됨
 }
 
 // 막대 색상 팔레트 (에디터 텍스트 색상과 같은 톤의 부드러운 노션풍 색).
 // 항목이 추가되면 순서대로 배정되고, 색을 다 쓰면 다시 1번째 색부터 순환한다.
-const CHART_COLORS = ["#8ecae6", "#ffb86b", "#b6e3b6", "#cbb7f0", "#f7b7d7", "#ff7b7b", "#ffe066", "#e9bfa8"];
-const colorAt = (i: number) => CHART_COLORS[((i % CHART_COLORS.length) + CHART_COLORS.length) % CHART_COLORS.length];
+export const CHART_COLORS = ["#8ecae6", "#ffb86b", "#b6e3b6", "#cbb7f0", "#f7b7d7", "#ff7b7b", "#ffe066", "#e9bfa8"];
+export const colorAt = (i: number) => CHART_COLORS[((i % CHART_COLORS.length) + CHART_COLORS.length) % CHART_COLORS.length];
 
 function normalizeRows(rows: ChartRow[]): ChartRow[] {
     return rows
         .filter((r) => r && (r.label !== "" || r.value !== undefined))
-        .map((r) => ({ label: String(r.label ?? ""), value: Number(r.value) || 0 }));
+        .map((r) => ({ label: String(r.label ?? ""), value: Number(r.value) || 0, ...(r.color ? { color: r.color } : {}) }));
 }
 
 interface BarChartProps {
@@ -70,7 +71,7 @@ export default function BarChart({ orient = "h", data, rows, title }: BarChartPr
                                     style={{
                                         width: `${(r.value / max) * 100}%`,
                                         minWidth: 6,
-                                        background: colorAt(i),
+                                        background: r.color || colorAt(i),
                                     }}
                                 />
                                 <span className="shrink-0 text-xs font-semibold text-(--text-muted)">{r.value}</span>
@@ -88,7 +89,7 @@ export default function BarChart({ orient = "h", data, rows, title }: BarChartPr
                                 style={{
                                     height: `${(r.value / max) * 100}%`,
                                     minHeight: 4,
-                                    background: colorAt(i),
+                                    background: r.color || colorAt(i),
                                 }}
                             />
                             <div className="w-full truncate text-center text-xs text-(--text-muted)" title={r.label}>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import BarChart, { ChartRow } from "@/components/mdx/mdx-components/BarChart";
+import BarChart, { ChartRow, CHART_COLORS, colorAt } from "@/components/mdx/mdx-components/BarChart";
 import { BarChartHIcon, BarChartVIcon } from "@/components/ui/icons/TypeMenuSvg";
 
 interface ChartModalProps {
@@ -19,6 +19,7 @@ interface ChartModalProps {
 export default function ChartModal({ open, orient, initialTitle, initialRows, onSave, onClose }: ChartModalProps) {
     const [title, setTitle] = useState(initialTitle);
     const [rows, setRows] = useState<ChartRow[]>(initialRows.length ? initialRows : [{ label: "", value: 0 }]);
+    const [paletteOpenIdx, setPaletteOpenIdx] = useState<number | null>(null);
 
     // 다른 블록을 열 때마다 초기값 재설정
     useEffect(() => {
@@ -77,14 +78,22 @@ export default function ChartModal({ open, orient, initialTitle, initialRows, on
 
                 {/* 표 헤더 */}
                 <div className="mb-[6px] flex items-center gap-[8px] px-[2px] text-[12px] font-[500] text-(--text-muted) select-none">
+                    <span className="w-6" />
                     <span className="flex-1">항목</span>
                     <span className="w-[80px]">값</span>
                     <span className="w-6" />
                 </div>
                 {/* 표 입력 행 */}
-                <div className="flex max-h-[200px] flex-col gap-[6px] overflow-y-auto">
+                <div className="flex max-h-[220px] flex-col gap-[6px] overflow-y-auto">
                     {rows.map((r, i) => (
-                        <div key={i} className="flex items-center gap-[8px]">
+                        <div key={i} className="relative flex items-center gap-[8px]">
+                            {/* 색 선택 스와치 */}
+                            <button
+                                className="h-6 w-6 shrink-0 rounded-full border border-(--border)"
+                                style={{ background: r.color || colorAt(i) }}
+                                onClick={() => setPaletteOpenIdx(paletteOpenIdx === i ? null : i)}
+                                aria-label="막대 색 선택"
+                            />
                             <input
                                 className={`min-w-0 flex-1 ${inputCls}`}
                                 placeholder="이름"
@@ -105,6 +114,33 @@ export default function ChartModal({ open, orient, initialTitle, initialRows, on
                             >
                                 −
                             </button>
+
+                            {/* 색 팔레트 팝오버 */}
+                            {paletteOpenIdx === i && (
+                                <div className="animate-popIn absolute left-0 top-[32px] z-10 flex w-[184px] flex-wrap gap-[6px] rounded-[10px] border border-(--border) bg-(--menu-bg) p-[8px] shadow-xl">
+                                    {CHART_COLORS.map((c) => (
+                                        <button
+                                            key={c}
+                                            className="h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110"
+                                            style={{ background: c, outline: r.color === c ? "2px solid #3b82f6" : undefined, outlineOffset: 1 }}
+                                            onClick={() => {
+                                                updateRow(i, { color: c });
+                                                setPaletteOpenIdx(null);
+                                            }}
+                                            aria-label={c}
+                                        />
+                                    ))}
+                                    <button
+                                        className="flex h-6 items-center rounded-full border border-(--border) px-2 text-[11px] text-(--text-muted) hover:bg-(--menu-hover-bg)"
+                                        onClick={() => {
+                                            updateRow(i, { color: undefined });
+                                            setPaletteOpenIdx(null);
+                                        }}
+                                    >
+                                        자동
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
