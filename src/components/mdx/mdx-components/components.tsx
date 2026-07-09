@@ -92,10 +92,22 @@ export function ToggleText({ children }: { children?: React.ReactNode }) {
     );
 }
 
-export function Img({ title, src, children }: { title?: string; src?: string; children?: React.ReactNode }) {
+export function Img({
+    title,
+    src,
+    width,
+    children,
+}: {
+    title?: string;
+    src?: string;
+    width?: string | number;
+    children?: React.ReactNode;
+}) {
     return (
         <tw.ImgWrap>
-            <tw.Img src={src} loading="lazy">{children}</tw.Img>
+            <tw.Img src={src} loading="lazy" style={width ? { width: `${width}px`, maxWidth: "100%" } : undefined}>
+                {children}
+            </tw.Img>
             <tw.ImgTitle>{title}</tw.ImgTitle>
         </tw.ImgWrap>
     );

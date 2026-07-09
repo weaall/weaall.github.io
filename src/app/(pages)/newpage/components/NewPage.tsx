@@ -12,9 +12,19 @@ import { ChartRow } from "@/components/mdx/mdx-components/BarChart";
 import { useBlockHistory } from "../hooks/useBlockHistory";
 import { useBlockDnD } from "../hooks/useBlockDnD";
 import { getDoc, saveDoc } from "../lib/localDocs";
+import { parseImageContent, serializeImageContent } from "../lib/imageContent";
 
 import { formatPostDate } from "@/util/date";
 import * as tw from "./Newpage.styles";
+
+// 이미지 파일 드래그 중, 삽입될 위치에 뜨는 자리표시자 (공간이 열리며 "여기 들어감" 표시)
+function ImageDropZone() {
+    return (
+        <div className="my-1 flex animate-popIn items-center justify-center rounded-lg border-2 border-dashed border-[#3b82f6] bg-[#e0edfb]/50 py-6 text-sm font-medium text-[#3b82f6] select-none">
+            이미지를 여기에 놓기
+        </div>
+    );
+}
 
 export default function NewPage({ collapsed, docId }: { collapsed: boolean; docId: string }) {
     // 이 컴포넌트는 docId로 key되어 remount되므로, 초기값을 localStorage에서 한 번 읽어오면 된다.
@@ -63,25 +73,75 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
 
     // 이미지 드래그앤드롭: 이미지 파일을 떨어뜨리면 base64로 읽어 이미지 블록을 추가한다.
     // (정적 사이트라 서버 업로드가 없어 data URL로 임베드)
+    // 드래그 중에는 커서 위치에 맞는 삽입 지점(fileDropIdx)에 자리표시자를 띄워 "여기 들어감" 느낌을 준다.
+    const [fileDropIdx, setFileDropIdx] = useState<number | null>(null);
+
+    const computeDropIdx = (clientY: number): number => {
+        const arr = blocksRef.current;
+        for (let i = 0; i < arr.length; i++) {
+            const el = document.getElementById(arr[i].id);
+            if (!el) continue;
+            const r = el.getBoundingClientRect();
+            if (clientY < r.top + r.height / 2) return i;
+        }
+        return arr.length;
+    };
+
     const handleFileDragOver = (e: React.DragEvent) => {
-        if (Array.from(e.dataTransfer.types).includes("Files")) e.preventDefault();
+        if (!Array.from(e.dataTransfer.types).includes("Files")) return;
+        e.preventDefault();
+        setFileDropIdx(computeDropIdx(e.clientY));
+    };
+    const handleFileDragLeave = (e: React.DragEvent) => {
+        const related = e.relatedTarget as Node | null;
+        if (!related || !e.currentTarget.contains(related)) setFileDropIdx(null);
     };
     const handleFileDrop = (e: React.DragEvent) => {
         const files = Array.from(e.dataTransfer.files || []).filter((f) => f.type.startsWith("image/"));
-        if (files.length === 0) return;
+        if (files.length === 0) {
+            setFileDropIdx(null);
+            return;
+        }
         e.preventDefault();
-        files.forEach((file) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const dataUrl = reader.result as string;
-                setBlocks((prev) => [
-                    ...prev,
-                    { id: crypto.randomUUID(), type: "image", content: dataUrl, indentationLevel: 0 },
-                ]);
-            };
-            reader.readAsDataURL(file);
+        const insertAt = fileDropIdx ?? blocksRef.current.length;
+        setFileDropIdx(null);
+        Promise.all(
+            files.map(
+                (file) =>
+                    new Promise<string>((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result as string);
+                        reader.readAsDataURL(file);
+                    }),
+            ),
+        ).then((urls) => {
+            const newBlocks: Block[] = urls.map((u) => ({
+                id: crypto.randomUUID(),
+                type: "image",
+                content: serializeImageContent(u),
+                indentationLevel: 0,
+            }));
+            setBlocks((prev) => {
+                const arr = [...prev];
+                arr.splice(Math.min(insertAt, arr.length), 0, ...newBlocks);
+                return arr;
+            });
         });
     };
+
+    // 이미지 리사이즈 핸들에서 발생 → 해당 이미지 블록의 width 저장
+    useEffect(() => {
+        const onW = (e: Event) => {
+            const { id, width } = (e as CustomEvent<{ id: string; width: number }>).detail || {};
+            if (!id) return;
+            setBlocks((prev) =>
+                prev.map((b) => (b.id === id ? { ...b, content: serializeImageContent(parseImageContent(b.content).src, width) } : b)),
+            );
+        };
+        window.addEventListener("newpage:setimagewidth", onW);
+        return () => window.removeEventListener("newpage:setimagewidth", onW);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // 그래프 데이터 저장 → 해당 블록 content(JSON)를 갱신
     const saveChart = (title: string, rows: ChartRow[]) => {
@@ -104,8 +164,17 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
 
     const handleMarqueeDown = (e: React.MouseEvent) => {
         const t = e.target as HTMLElement;
-        // 텍스트/핸들/버튼에서 시작하면 마퀴 안 함 (여백·갓터 등 빈 영역만)
-        if (t.closest("[contenteditable]") || t.closest("button") || t.closest("[data-btn-idx]")) return;
+        // 텍스트/핸들/버튼/입력·모달에서 시작하면 마퀴 안 함 (여백·갓터 등 빈 영역만)
+        // (input/textarea에서 preventDefault 하면 포커스가 막혀 타이핑이 안 되므로 반드시 제외)
+        if (
+            t.closest("[contenteditable]") ||
+            t.closest("button") ||
+            t.closest("[data-btn-idx]") ||
+            t.closest("input") ||
+            t.closest("textarea") ||
+            t.closest("[data-modal]")
+        )
+            return;
         e.preventDefault(); // 마퀴 드래그 중 텍스트 선택 방지
         // 블록 선택 모드 진입 → 편집 포커스 해제 (편집 중 판정 isContentEditable이 false가 되도록)
         (document.activeElement as HTMLElement | null)?.blur?.();
@@ -798,6 +867,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         <tw.Container
             onMouseDown={handleMarqueeDown}
             onDragOver={handleFileDragOver}
+            onDragLeave={handleFileDragLeave}
             onDrop={handleFileDrop}
             style={{
                 paddingLeft: collapsed ? 50 : 350,
@@ -842,10 +912,11 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                     elements={ELEMENTS}
                 />
                 
-                {blocks.map((block, idx) =>
-                    hiddenBlockIds.has(block.id) ? null : (
+                {blocks.map((block, idx) => (
+                    <React.Fragment key={block.id}>
+                        {fileDropIdx === idx && <ImageDropZone />}
+                        {hiddenBlockIds.has(block.id) ? null : (
                         <BlockRow
-                            key={block.id}
                             block={block}
                             idx={idx}
                             prevIndentLevel={blocks[idx - 1]?.indentationLevel ?? 0}
@@ -878,9 +949,11 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                             selected={idx >= selMin && idx <= selMax}
                             onClearSelection={clearSelection}
                         />
-                    ),
-                )}
-                
+                        )}
+                    </React.Fragment>
+                ))}
+                {fileDropIdx === blocks.length && <ImageDropZone />}
+
                 <div
                     className={`h-[4px] rounded ${insertLineIdx === blocks.length ? "bg-[#e0edfb]" : "bg-transparent"}`}
                     style={{ marginLeft: (blocks[blocks.length - 1]?.indentationLevel ?? 0) * 25 }}

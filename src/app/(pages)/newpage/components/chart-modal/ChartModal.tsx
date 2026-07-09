@@ -48,7 +48,11 @@ export default function ChartModal({ open, orient, initialTitle, initialRows, on
         "rounded-[6px] border border-(--border) bg-transparent px-[8px] py-[5px] text-[14px] text-(--text) outline-none focus:border-[#3b82f6]";
 
     return (
-        <div className="fixed inset-0 z-[1900] flex items-center justify-center bg-black/20 p-4" onClick={onClose}>
+        <div
+            className="fixed inset-0 z-[1900] flex items-center justify-center bg-black/20 p-4"
+            onClick={onClose}
+            onMouseDown={(e) => e.stopPropagation()}
+        >
             <div
                 data-theme="light"
                 className="animate-popIn flex max-h-[86vh] w-[420px] max-w-[94vw] flex-col rounded-[10px] border border-(--border) bg-(--menu-bg) p-[16px] text-(--text) shadow-2xl"

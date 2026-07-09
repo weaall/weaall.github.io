@@ -170,10 +170,22 @@ export function blocksToMDX(
                 case "toggleH3":
                     numberedListCounter = 1;
                     return `${indentation}### ${contentWithColor}`;
-                case "image":
+                case "image": {
                     numberedListCounter = 1;
-                    // content = data URL(base64). Img 컴포넌트로 매핑됨.
-                    return `<img src="${b.content}" alt="" />`;
+                    // content = {src, width} JSON (과거 raw dataURL도 호환). Img 컴포넌트로 매핑됨.
+                    let src = b.content;
+                    let width: number | undefined;
+                    if (b.content && b.content[0] === "{") {
+                        try {
+                            const p = JSON.parse(b.content);
+                            if (typeof p.src === "string") src = p.src;
+                            if (typeof p.width === "number") width = p.width;
+                        } catch {
+                            /* 폴백: content 그대로 src */
+                        }
+                    }
+                    return `<img src="${src}" alt=""${width ? ` width="${width}"` : ""} />`;
+                }
                 case "barChartH":
                 case "barChartV":
                     numberedListCounter = 1;
