@@ -97,7 +97,9 @@ export const EditableUlBlockWrap = tw.div`
 `;
 
 export const EditableUlBlockTag = tw.div`
-  pt-[11px] pr-[10px]
+  ml-[8px] mr-[6px] w-[18px]
+  pt-[11px]
+  flex justify-center
   before:content-['']
   before:block
   before:w-[7px]
@@ -130,14 +132,14 @@ export const EditableNumberedListBlockWrap = tw.div`
 `;
 
 export const EditableNumberedListBlockTag = tw.div`
-  pt-[3px] pr-[10px]
+  ml-[8px] mr-[6px] min-w-[18px]
+  pt-[3px]
   leading-[1.4]
+  text-right
   before:content-[attr(data-number)'.']
   before:text-[16px]
   before:font-medium
   before:text-(--text)
-  min-w-[20px]
-  text-right
 `;
 
 export const EditableNumberedListBlock = tw.div`
