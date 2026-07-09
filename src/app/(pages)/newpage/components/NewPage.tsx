@@ -8,11 +8,15 @@ import { FormattedRange } from "./text-modal/TextFormat.modal";
 import BlockRow from "./BlockRow";
 import { useBlockHistory } from "../hooks/useBlockHistory";
 import { useBlockDnD } from "../hooks/useBlockDnD";
+import { getDoc, saveDoc } from "../lib/localDocs";
 
 import { formatPostDate } from "@/util/date";
 import * as tw from "./Newpage.styles";
 
-export default function NewPage({ collapsed }: { collapsed: boolean }) {
+export default function NewPage({ collapsed, docId, onSaved }: { collapsed: boolean; docId: string; onSaved?: () => void }) {
+    // 이 컴포넌트는 docId로 key되어 remount되므로, 초기값을 localStorage에서 한 번 읽어오면 된다.
+    const initialDoc = getDoc(docId);
+
     // blocks / colors / formattedRanges 상태 + 되돌리기(Ctrl+Z)·다시실행(Ctrl+Y) 히스토리는 훅이 소유
     const {
         blocks,
@@ -23,7 +27,11 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
         setBlockFormattedRanges,
         undo,
         redo,
-    } = useBlockHistory([{ id: crypto.randomUUID(), type: "p", content: "", indentationLevel: 0 }]);
+    } = useBlockHistory(
+        initialDoc?.blocks ?? [{ id: crypto.randomUUID(), type: "p", content: "", indentationLevel: 0 }],
+        initialDoc?.blockColors ?? {},
+        initialDoc?.blockFormattedRanges ?? {},
+    );
 
     // hover/menu 대상은 배열 인덱스가 아니라 블록 id로 추적한다.
     // (드래그로 순서가 바뀌어도 메뉴가 엉뚱한 블록에 열리지 않게)
@@ -35,7 +43,7 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     const [isTitleEmpty, setIsTitleEmpty] = useState(true);
     const [meta, setMeta] = useState({
         label: "",
-        title: "새 페이지",
+        title: initialDoc?.title || "새 페이지",
         subTitle: "",
         date: "",
         mins: 0,
@@ -111,9 +119,26 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
 
     useEffect(() => {
         if (divRef.current && (!divRef.current.textContent || divRef.current.textContent === "")) {
-            divRef.current.textContent = "새 페이지";
+            divRef.current.textContent = meta.title || "새 페이지";
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // 작성 내용을 localStorage에 자동 저장 (변경 후 800ms 디바운스). 저장 후 좌측 목록 갱신 알림.
+    useEffect(() => {
+        const t = setTimeout(() => {
+            saveDoc({
+                id: docId,
+                title: meta.title || "새 페이지",
+                updatedAt: Date.now(),
+                blocks,
+                blockColors,
+                blockFormattedRanges,
+            });
+            onSaved?.();
+        }, 800);
+        return () => clearTimeout(t);
+    }, [docId, meta.title, blocks, blockColors, blockFormattedRanges, onSaved]);
 
     const handleTitleInput = () => {
         if (divRef.current) {
@@ -580,12 +605,12 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
                 />
             </div>
             
-            <div className="fixed bottom-8 right-8 z-50">
-                <button 
-                    className="px-6 py-3 rounded bg-blue-600 text-white font-bold shadow hover:bg-blue-700 transition" 
+            <div className="fixed bottom-6 right-6 z-50">
+                <button
+                    className="px-4 py-2 rounded-md border border-(--border) bg-(--menu-bg) text-sm font-medium text-(--text) shadow-sm hover:bg-(--hover-bg) transition"
                     onClick={handleExport}
                 >
-                    내보내기
+                    MDX 내보내기
                 </button>
             </div>
         </tw.Container>

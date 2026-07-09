@@ -29,16 +29,20 @@ const MAX_HISTORY = 200;
 const clone = (s: Snapshot): Snapshot => JSON.parse(JSON.stringify(s));
 const isSame = (a: Snapshot, b: Snapshot) => JSON.stringify(a) === JSON.stringify(b);
 
-export function useBlockHistory(initialBlocks: Block[]) {
+export function useBlockHistory(
+    initialBlocks: Block[],
+    initialColors: ColorMap = {},
+    initialRanges: RangeMap = {},
+) {
     const [blocks, setBlocks] = useState<Block[]>(initialBlocks);
-    const [blockColors, setBlockColors] = useState<ColorMap>({});
-    const [blockFormattedRanges, setBlockFormattedRanges] = useState<RangeMap>({});
+    const [blockColors, setBlockColors] = useState<ColorMap>(initialColors);
+    const [blockFormattedRanges, setBlockFormattedRanges] = useState<RangeMap>(initialRanges);
 
     // 매 렌더의 최신 상태 스냅샷(읽기 전용 참조)
-    const liveRef = useRef<Snapshot>({ blocks: initialBlocks, blockColors: {}, blockFormattedRanges: {} });
+    const liveRef = useRef<Snapshot>({ blocks: initialBlocks, blockColors: initialColors, blockFormattedRanges: initialRanges });
     liveRef.current = { blocks, blockColors, blockFormattedRanges };
 
-    const historyRef = useRef<Snapshot[]>([clone({ blocks: initialBlocks, blockColors: {}, blockFormattedRanges: {} })]);
+    const historyRef = useRef<Snapshot[]>([clone({ blocks: initialBlocks, blockColors: initialColors, blockFormattedRanges: initialRanges })]);
     const pointerRef = useRef(0);
     const isRestoringRef = useRef(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
