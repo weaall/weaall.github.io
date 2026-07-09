@@ -66,6 +66,8 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         // 텍스트/핸들/버튼에서 시작하면 마퀴 안 함 (여백·갓터 등 빈 영역만)
         if (t.closest("[contenteditable]") || t.closest("button") || t.closest("[data-btn-idx]")) return;
         e.preventDefault(); // 마퀴 드래그 중 텍스트 선택 방지
+        // 블록 선택 모드 진입 → 편집 포커스 해제 (편집 중 판정 isContentEditable이 false가 되도록)
+        (document.activeElement as HTMLElement | null)?.blur?.();
         marqueeStartRef.current = { x: e.clientX, y: e.clientY };
         setMarquee({ x0: e.clientX, y0: e.clientY, x1: e.clientX, y1: e.clientY });
         setSelRange(null);
@@ -173,29 +175,36 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
     // 블록 선택 모드(selRange 활성)에서 clipboard 이벤트를 블록 단위로 가로챈다.
     // (선택이 없으면 일반 텍스트 복사/붙여넣기 그대로 — keydown보다 clipboard 이벤트가 확실)
     useEffect(() => {
+        // 텍스트 편집 중(contentEditable 포커스)이면 항상 네이티브 처리 → 블록 op는 선택 모드일 때만
+        const isEditingText = () => !!(document.activeElement as HTMLElement | null)?.isContentEditable;
         const onCopy = (e: ClipboardEvent) => {
-            if (!selRange) return;
+            if (!selRange || isEditingText()) return;
             e.preventDefault();
             copySelection();
         };
         const onCut = (e: ClipboardEvent) => {
-            if (!selRange) return;
+            if (!selRange || isEditingText()) return;
             e.preventDefault();
             copySelection();
             deleteSelectedBlocks();
         };
         const onPaste = (e: ClipboardEvent) => {
-            if (!selRange) return;
+            if (!selRange || isEditingText()) return;
             e.preventDefault();
             if (clipboardRef.current) pasteAfterSelection();
+        };
+        const onEsc = (e: KeyboardEvent) => {
+            if (e.key === "Escape" && selRange) clearSelection();
         };
         document.addEventListener("copy", onCopy);
         document.addEventListener("cut", onCut);
         document.addEventListener("paste", onPaste);
+        window.addEventListener("keydown", onEsc);
         return () => {
             document.removeEventListener("copy", onCopy);
             document.removeEventListener("cut", onCut);
             document.removeEventListener("paste", onPaste);
+            window.removeEventListener("keydown", onEsc);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selRange, selMin, selMax, blocks, blockColors, blockFormattedRanges]);
