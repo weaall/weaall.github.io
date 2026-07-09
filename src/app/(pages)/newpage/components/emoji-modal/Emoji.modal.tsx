@@ -102,7 +102,7 @@ const EmojiModal = forwardRef(function EmojiModal({ open, position, search, onSe
                             onClick={() => onSelect(emoji, label)}
                             tabIndex={-1}
                             aria-selected={focusedIndex === i}
-                            style={focusedIndex === i ? { background: '#313131', borderRadius: '8px' } : undefined}
+                            className={focusedIndex === i ? "rounded-lg bg-(--menu-hover-bg)" : ""}
                         >
                             {emoji}
                         </EmojiButton>

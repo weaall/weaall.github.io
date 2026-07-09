@@ -12,7 +12,7 @@ export const InputWrap = tw.div`
   rounded-md
   py-[2px]
   hover:bg-(--hover-bg)
-  focus-within:bg-(--hover-bg)
+  focus-within:bg-(--active-bg)
 `;
 
 export const PlusButton = tw.button`
