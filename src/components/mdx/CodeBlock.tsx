@@ -30,14 +30,14 @@ export default function CodeBlock({ className, children, styles: S }: CodeBlockP
     }, [children, language]);
 
     return (
-        <S.CodeWrapC className="hljs">
+        <S.CodeWrapC>
             {language && (
                 <S.ClassWrap>
                     <S.ClassLabel>{language}</S.ClassLabel>
                 </S.ClassWrap>
             )}
             <S.CodeBoxC>
-                <S.Code dangerouslySetInnerHTML={{ __html: highlightedCode || "" }} />
+                <S.Code className="hljs" dangerouslySetInnerHTML={{ __html: highlightedCode || "" }} />
             </S.CodeBoxC>
         </S.CodeWrapC>
     );

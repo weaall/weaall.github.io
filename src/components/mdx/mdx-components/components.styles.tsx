@@ -55,7 +55,7 @@ export const A = tw.a`
 
 export const Hr = tw.hr`my-10 w-full h-[1px] bg-t-main`;
 
-export const Pre = tw.pre`text-t-main text-base`;
+export const Pre = tw.pre`my-0`;
 
 export const Li = tw.li`
     relative pl-6 py-1 text-base
@@ -64,11 +64,12 @@ export const Li = tw.li`
     before:pr-3
 `;
 
-export const CodeWrapC = tw.div`relative rounded-xl text-base pt-5 pb-3 tracking-tight leading-tight ml-2`;
-export const ClassWrap = tw.div`absolute right-4 top-0 text-main rounded-2xl py-2 px-4 bg-white w-fit mr-4`;
-export const ClassLabel = tw.span`text-xl font-bold after:content-['.'] after:text-red-500`;
-export const CodeBoxC = tw.div`bg-main p-6 pt-6 rounded-xl`;
-export const Code = tw.code`whitespace-pre-wrap rounded-xl text-t-main my-6 text-xs`;
+// 노션식 코드블록: 어두운 배경 컨테이너 + 미니 언어라벨 + 모노. 색상은 hljs(atom-one-dark)가 담당.
+export const CodeWrapC = tw.div`relative my-5 rounded-lg overflow-hidden bg-[#282c34] text-[13px] leading-relaxed`;
+export const ClassWrap = tw.div`absolute top-0 right-0 z-10 px-3 py-2 select-none`;
+export const ClassLabel = tw.span`text-[11px] font-mono lowercase text-white/40`;
+export const CodeBoxC = tw.div`overflow-x-auto px-3 py-2`;
+export const Code = tw.code`font-mono whitespace-pre`;
 
 export const Strong = tw.strong`font-bold`;
 
