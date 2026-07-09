@@ -115,16 +115,41 @@
     color: #999;
   }
 
-  /* GFM 태스크 리스트(- [x]): 마커 제거 + 체크박스 스타일 (에디터 체크리스트와 유사하게) */
-  li:has(> input[type="checkbox"]) {
+  /* GFM 태스크 리스트(- [x]): 에디터 체크리스트 블록(EditableCheckbox)과 동일한 커스텀 체크박스 */
+  .post-content .task-list-item {
+    display: flex;
+    align-items: flex-start;
     list-style: none;
+    padding-left: 0;
   }
-  li > input[type="checkbox"] {
-    width: 1rem;
-    height: 1rem;
-    margin-right: 0.5rem;
-    accent-color: #3b82f6;
-    vertical-align: middle;
+  .post-content .task-list-item > input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 5px;
+    margin-right: 6px;
+    border: 2px solid var(--checkbox-border);
+    border-radius: 4px;
+    background: transparent;
+    cursor: default;
+  }
+  .post-content .task-list-item > input[type="checkbox"]:checked {
+    background: #3b82f6;
+    border-color: transparent;
+  }
+  .post-content .task-list-item > input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 10px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(45deg);
   }
 
   /* 라이트 테마 스코프: placeholder / 텍스트 선택 색 */

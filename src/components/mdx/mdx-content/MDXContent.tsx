@@ -33,7 +33,7 @@ export function MDXContent({ content, frontmatter, collapsed }: MDXContentProps)
         <tw.Container>
             <tw.ContentWrap>
                 <PostTitle frontmatter={frontmatter} />
-                <div className="flex flex-col gap-[4px]">{content}</div>
+                <div className="post-content flex flex-col gap-[4px]">{content}</div>
             </tw.ContentWrap>
         </tw.Container>
     );
