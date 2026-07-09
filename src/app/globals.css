@@ -24,6 +24,7 @@
     --panel-bg: #202020;
     --menu-bg: #252525;
     --hover-bg: rgba(255, 255, 255, 0.1);
+    --active-bg: rgba(35, 131, 226, 0.3);
     --menu-hover-bg: #313131;
     --grip-hover-bg: #252525;
     --text-strong: #ffffff;
@@ -45,6 +46,7 @@
     --panel-bg: #f7f7f5;
     --menu-bg: #ffffff;
     --hover-bg: rgba(55, 53, 47, 0.08);
+    --active-bg: #e0edfb;
     --menu-hover-bg: #efefee;
     --grip-hover-bg: #efefee;
     --text-strong: #37352f;
