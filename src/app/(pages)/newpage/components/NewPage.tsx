@@ -66,6 +66,8 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         // 텍스트/핸들/버튼에서 시작하면 마퀴 안 함 (여백·갓터 등 빈 영역만)
         if (t.closest("[contenteditable]") || t.closest("button") || t.closest("[data-btn-idx]")) return;
         e.preventDefault(); // 마퀴 드래그 중 텍스트 선택 방지
+        // 포커스된 블록을 해제 (블록 선택 모드에서 네이티브 붙여넣기가 그 블록에 들어가지 않게)
+        (document.activeElement as HTMLElement | null)?.blur?.();
         marqueeStartRef.current = { x: e.clientX, y: e.clientY };
         setMarquee({ x0: e.clientX, y0: e.clientY, x1: e.clientX, y1: e.clientY });
         setSelRange(null);
@@ -183,13 +185,22 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                 e.preventDefault();
                 copySelection();
                 deleteSelectedBlocks();
-            } else if (key === "v") {
+            } else if (key === "v" && clipboardRef.current) {
                 e.preventDefault();
                 pasteAfterSelection();
             }
         };
+        // 포커스된 편집영역이 있으면 keydown이 막혀도 paste 이벤트가 날 수 있으니 네이티브 삽입만 차단
+        const onPaste = (e: ClipboardEvent) => {
+            if (!selRange) return;
+            e.preventDefault();
+        };
         window.addEventListener("keydown", onKey);
-        return () => window.removeEventListener("keydown", onKey);
+        window.addEventListener("paste", onPaste);
+        return () => {
+            window.removeEventListener("keydown", onKey);
+            window.removeEventListener("paste", onPaste);
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selRange, selMin, selMax, blocks, blockColors, blockFormattedRanges]);
     const divRef = useRef<HTMLDivElement>(null);
