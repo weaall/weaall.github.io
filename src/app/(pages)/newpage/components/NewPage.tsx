@@ -176,9 +176,20 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         imageUrl: "",
     });
 
-    const { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } =
-        useBlockDnD(setBlocks, () => selectionRef.current, (targetIdx, count) =>
-            setSelRange({ a: targetIdx, b: targetIdx + count - 1 }),
+    const { draggingIdx, insertLineIdx, dragPreview, dragPos, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } =
+        useBlockDnD(
+            setBlocks,
+            () => selectionRef.current,
+            (targetIdx, count) => setSelRange({ a: targetIdx, b: targetIdx + count - 1 }),
+            (fromIdx) => {
+                const sel = selectionRef.current;
+                const inSel = sel && sel.max > sel.min && fromIdx >= sel.min && fromIdx <= sel.max;
+                const min = inSel ? sel!.min : fromIdx;
+                const max = inSel ? sel!.max : fromIdx;
+                const first = blocks[min];
+                const label = (first?.content || "").trim() || "빈 블록";
+                return { count: max - min + 1, label };
+            },
         );
 
     const getListNumber = (currentIndex: number): number => {
@@ -745,7 +756,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                 )}
                 
                 <div
-                    className={`h-[4px] rounded ${insertLineIdx === blocks.length ? "bg-blue-500/50" : "bg-transparent"}`}
+                    className={`h-[4px] rounded ${insertLineIdx === blocks.length ? "bg-[#e0edfb]" : "bg-transparent"}`}
                     style={{ marginLeft: (blocks[blocks.length - 1]?.indentationLevel ?? 0) * 25 }}
                     onDragEnter={(e) => handleDragEnter(e, blocks.length, true)}
                     onDragOver={handleDragOver}
@@ -758,6 +769,18 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                 onExport={handleExport}
                 postUrl={`https://weaall.github.io/post/${(meta.title || "untitled").replace(/ /g, "_")}`}
             />
+
+            {/* 노션식 드래그 미리보기: 커서를 따라다니며 내용 + 개수 표시 */}
+            {dragPreview && dragPos && (
+                <div className="pointer-events-none fixed z-[2000]" style={{ top: dragPos.y + 12, left: dragPos.x + 12 }}>
+                    <div className="flex max-w-[280px] items-center gap-2 rounded-md border border-(--border) bg-(--menu-bg) px-3 py-1.5 text-sm text-(--text) opacity-90 shadow-lg">
+                        <span className="truncate">{dragPreview.label}</span>
+                        {dragPreview.count > 1 && (
+                            <span className="rounded bg-[#3772ff] px-1.5 py-0.5 text-xs text-white">{dragPreview.count}</span>
+                        )}
+                    </div>
+                </div>
+            )}
         </tw.Container>
     );
 }

@@ -81,7 +81,7 @@ export default function BlockRow({
     return (
         <>
             <div
-                className={`h-1 rounded ${insertLineIdx === idx ? "bg-blue-500/50" : "bg-transparent"}`}
+                className={`h-1 rounded ${insertLineIdx === idx ? "bg-[#e0edfb]" : "bg-transparent"}`}
                 style={{ marginLeft: prevIndentLevel * 25 }}
                 onDragEnter={(e) => onDragEnter(e, idx, true)}
                 onDragOver={onDragOver}
