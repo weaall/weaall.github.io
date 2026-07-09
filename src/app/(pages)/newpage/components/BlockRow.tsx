@@ -38,8 +38,6 @@ interface BlockRowProps {
     onIndent: (idx: number, change: number) => void;
     onFormattedRangesChange: (idx: number, ranges: FormattedRange[]) => void;
     selected: boolean;
-    onGutterDown: (idx: number) => void;
-    onGutterEnter: (idx: number) => void;
     onClearSelection: () => void;
 }
 
@@ -74,8 +72,6 @@ export default function BlockRow({
     onIndent,
     onFormattedRangesChange,
     selected,
-    onGutterDown,
-    onGutterEnter,
     onClearSelection,
 }: BlockRowProps) {
     return (
@@ -99,7 +95,7 @@ export default function BlockRow({
                 onDragEnter={(e: React.DragEvent<HTMLDivElement>) => onDragEnter(e, idx, false)}
                 onDragOver={onDragOver}
             >
-                {/* 왼쪽 갓터: 여기서 드래그하면 범위 선택 (리오더는 ⣿ 핸들로) */}
+                {/* 왼쪽 갓터: 핸들 호버 영역 (여기서 빈 채로 드래그하면 상위에서 마퀴 선택 시작) */}
                 <div
                     style={{
                         position: "absolute",
@@ -108,16 +104,8 @@ export default function BlockRow({
                         width: 56,
                         height: "100%",
                         zIndex: 5,
-                        cursor: "grab",
                     }}
-                    onMouseDown={(e) => {
-                        e.preventDefault();
-                        onGutterDown(idx);
-                    }}
-                    onMouseEnter={() => {
-                        setHoverId(block.id);
-                        onGutterEnter(idx);
-                    }}
+                    onMouseEnter={() => setHoverId(block.id)}
                     onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
                         const related = e.relatedTarget as HTMLElement | null;
                         if (related && related.closest && related.closest(`[data-btn-idx="${idx}"]`)) {
@@ -169,7 +157,13 @@ export default function BlockRow({
                 )}
 
                 <tw.InputWrap
-                    className={selected ? "bg-(--active-bg)" : menuId === block.id ? "bg-(--hover-bg)" : ""}
+                    className={
+                        selected
+                            ? "bg-(--active-bg) hover:bg-(--active-bg) focus-within:bg-(--active-bg)"
+                            : menuId === block.id
+                              ? "bg-(--hover-bg)"
+                              : ""
+                    }
                     style={{ marginLeft: block.indentationLevel * 25 }}
                     onMouseDown={onClearSelection}
                     onMouseEnter={() => setHoverId(block.id)}

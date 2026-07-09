@@ -48,32 +48,61 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         return () => window.removeEventListener("newpage:share", open);
     }, []);
 
-    // 여러 블록 선택 (왼쪽 갓터를 드래그해 범위 선택)
+    // 여러 블록 선택 (빈 영역을 드래그하면 마퀴 박스가 커지며 겹치는 블록 선택)
     const [selRange, setSelRange] = useState<{ a: number; b: number } | null>(null);
-    const selectingRef = useRef(false);
     const selMin = selRange ? Math.min(selRange.a, selRange.b) : -1;
     const selMax = selRange ? Math.max(selRange.a, selRange.b) : -1;
     const selectionRef = useRef<{ min: number; max: number } | null>(null);
     selectionRef.current = selRange ? { min: selMin, max: selMax } : null;
+    const clearSelection = () => setSelRange(null);
+
+    const [marquee, setMarquee] = useState<{ x0: number; y0: number; x1: number; y1: number } | null>(null);
+    const marqueeStartRef = useRef<{ x: number; y: number } | null>(null);
+    const blocksRef = useRef(blocks);
+    blocksRef.current = blocks;
+
+    const handleMarqueeDown = (e: React.MouseEvent) => {
+        const t = e.target as HTMLElement;
+        // 텍스트/핸들/버튼에서 시작하면 마퀴 안 함 (여백·갓터 등 빈 영역만)
+        if (t.closest("[contenteditable]") || t.closest("button") || t.closest("[data-btn-idx]")) return;
+        e.preventDefault(); // 마퀴 드래그 중 텍스트 선택 방지
+        marqueeStartRef.current = { x: e.clientX, y: e.clientY };
+        setMarquee({ x0: e.clientX, y0: e.clientY, x1: e.clientX, y1: e.clientY });
+        setSelRange(null);
+    };
 
     useEffect(() => {
-        const onUp = () => {
-            if (!selectingRef.current) return;
-            selectingRef.current = false;
-            setSelRange((r) => (r && r.a === r.b ? null : r)); // 단순 클릭이면 선택 해제
+        if (!marquee) return;
+        const onMove = (ev: MouseEvent) => {
+            const s = marqueeStartRef.current;
+            if (!s) return;
+            setMarquee({ x0: s.x, y0: s.y, x1: ev.clientX, y1: ev.clientY });
+            const top = Math.min(s.y, ev.clientY);
+            const bot = Math.max(s.y, ev.clientY);
+            let lo = -1;
+            let hi = -1;
+            blocksRef.current.forEach((b, i) => {
+                const el = document.getElementById(b.id);
+                if (!el) return;
+                const r = el.getBoundingClientRect();
+                if (r.bottom >= top && r.top <= bot) {
+                    if (lo === -1) lo = i;
+                    hi = i;
+                }
+            });
+            setSelRange(lo !== -1 ? { a: lo, b: hi } : null);
         };
+        const onUp = () => {
+            marqueeStartRef.current = null;
+            setMarquee(null);
+        };
+        window.addEventListener("mousemove", onMove);
         window.addEventListener("mouseup", onUp);
-        return () => window.removeEventListener("mouseup", onUp);
-    }, []);
-
-    const handleGutterDown = (idx: number) => {
-        selectingRef.current = true;
-        setSelRange({ a: idx, b: idx });
-    };
-    const handleGutterEnter = (idx: number) => {
-        if (selectingRef.current) setSelRange((r) => (r ? { ...r, b: idx } : { a: idx, b: idx }));
-    };
-    const clearSelection = () => setSelRange(null);
+        return () => {
+            window.removeEventListener("mousemove", onMove);
+            window.removeEventListener("mouseup", onUp);
+        };
+    }, [marquee !== null]);
 
     // 블록 복사/붙여넣기: 선택된 블록을 통째로(타입+내용+서식) 복제한다.
     const clipboardRef = useRef<{
@@ -671,6 +700,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
 
     return (
         <tw.Container
+            onMouseDown={handleMarqueeDown}
             style={{
                 paddingLeft: collapsed ? 50 : 350,
                 transition: "padding-left 0.2s",
@@ -748,8 +778,6 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                             onIndent={handleIndent}
                             onFormattedRangesChange={handleFormattedRangesChange}
                             selected={idx >= selMin && idx <= selMax}
-                            onGutterDown={handleGutterDown}
-                            onGutterEnter={handleGutterEnter}
                             onClearSelection={clearSelection}
                         />
                     ),
@@ -769,6 +797,19 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                 onExport={handleExport}
                 postUrl={`https://weaall.github.io/post/${(meta.title || "untitled").replace(/ /g, "_")}`}
             />
+
+            {/* 마퀴 선택 박스 */}
+            {marquee && (Math.abs(marquee.x1 - marquee.x0) > 3 || Math.abs(marquee.y1 - marquee.y0) > 3) && (
+                <div
+                    className="pointer-events-none fixed z-[1500] rounded-[2px] border border-[#3772ff]/40 bg-[#e0edfb]/40"
+                    style={{
+                        left: Math.min(marquee.x0, marquee.x1),
+                        top: Math.min(marquee.y0, marquee.y1),
+                        width: Math.abs(marquee.x1 - marquee.x0),
+                        height: Math.abs(marquee.y1 - marquee.y0),
+                    }}
+                />
+            )}
 
             {/* 노션식 드래그 미리보기: 커서를 따라다니며 내용 + 개수 표시 */}
             {dragPreview && dragPos && (
