@@ -393,23 +393,14 @@ export default function NewPage({ collapsed }: { collapsed: boolean }) {
     };
 
     const handleIndent = (idx: number, change: number) => {
-        setBlocks(prevBlocks => {
-            const newBlocks = [...prevBlocks];
-            const currentBlock = newBlocks[idx];
-            const newIndent = Math.max(0, currentBlock.indentationLevel + change);
-
-            if (change > 0 && idx > 0) {
-              const prevBlock = newBlocks[idx - 1];
-              if (newIndent > prevBlock.indentationLevel + 1) {
-                return prevBlocks;
-              }
-            } else if (change < 0 && newIndent < 0) {
-                return prevBlocks;
-            }
-
-            newBlocks[idx] = { ...currentBlock, indentationLevel: newIndent };
-            return newBlocks;
-        });
+        // 0~6 범위 내에서 자유롭게 들여쓰기 (이전엔 "위 블록보다 1단계까지"로 막혀 2번째 Tab이 안 됐음)
+        setBlocks((prev) =>
+            prev.map((b, i) => {
+                if (i !== idx) return b;
+                const newIndent = Math.min(6, Math.max(0, b.indentationLevel + change));
+                return { ...b, indentationLevel: newIndent };
+            }),
+        );
     };
 
     const setCaretPosition = (element: HTMLDivElement, offset: number) => {
