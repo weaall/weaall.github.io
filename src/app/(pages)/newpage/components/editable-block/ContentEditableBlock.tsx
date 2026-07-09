@@ -1,5 +1,7 @@
 // ContentEditableBlock.tsx (완전 버전)
 import * as tw from "./ContentEditableBlock.styles";
+import ChartBlock from "./ChartBlock";
+import ImageBlock from "./ImageBlock";
 import EmojiModal from "../emoji-modal/Emoji.modal";
 import TextFormattingModal, { TextFormat, FormattedRange } from "../text-modal/TextFormat.modal";
 import { useRef, useEffect, useState } from "react";
@@ -749,6 +751,12 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         }
         case "divider":
             return <div className={`h-[2px] my-1.5 w-full rounded bg-(--border)`} />;
+        case "image":
+            return <ImageBlock id={id} content={content} />;
+        case "barChartH":
+            return <ChartBlock id={id} orient="h" content={content} />;
+        case "barChartV":
+            return <ChartBlock id={id} orient="v" content={content} />;
         case "p":
         default:
             return (

@@ -113,7 +113,7 @@ export function blocksToMDX(
 
     // 블록을 MDX로 변환하는 메인 로직
     const body = blocks
-        .filter((b) => b.content.trim() !== "" || b.type === "divider")
+        .filter((b) => b.content.trim() !== "" || b.type === "divider" || b.type === "image" || b.type.startsWith("barChart"))
         .map((b, index) => {
             const indentation = "  ".repeat(b.indentationLevel);
             
@@ -170,6 +170,17 @@ export function blocksToMDX(
                 case "toggleH3":
                     numberedListCounter = 1;
                     return `${indentation}### ${contentWithColor}`;
+                case "image":
+                    numberedListCounter = 1;
+                    // content = data URL(base64). Img 컴포넌트로 매핑됨.
+                    return `<img src="${b.content}" alt="" />`;
+                case "barChartH":
+                case "barChartV":
+                    numberedListCounter = 1;
+                    // content = {title, rows} JSON. 속성 안전을 위해 URI 인코딩해서 전달.
+                    return `<BarChart orient="${b.type === "barChartH" ? "h" : "v"}" data="${encodeURIComponent(
+                        b.content || "{}",
+                    )}" />`;
                 default:
                     numberedListCounter = 1;
                     return contentWithColor;

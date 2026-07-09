@@ -1,6 +1,7 @@
 import { ColorPainterIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
 import * as tw from "./TypeMenu.modal.styles";
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { TypeMenuElement } from "./TypeElement";
 
 interface TypeMenuModalProps {
     open: boolean;
@@ -9,11 +10,7 @@ interface TypeMenuModalProps {
     onColorSelect?: (color: string) => void;
     onDeleteBlock?: () => void;
     onClose: () => void;
-    elements: {
-        icon: React.ReactNode;
-        label: string;
-        type: string;
-    }[];
+    elements: TypeMenuElement[];
 }
 
 const TEXT_COLORS = [
@@ -130,14 +127,18 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                 {/* 전환 드로워 */}
                 {showDrawer === "전환" && (
                     <tw.DrawerMenu onMouseEnter={() => setShowDrawer("전환")} onMouseLeave={handleDrawerMouseLeave}>
-                        {elements.map((el) => (
-                            <tw.MenuButton key={el.type + "-drawer"} onClick={() => onSelect(el.type)}>
-                                <tw.LabelWrap>
-                                    <tw.SvgWrap>{el.icon}</tw.SvgWrap>
-                                    {el.label}
-                                </tw.LabelWrap>
-                            </tw.MenuButton>
-                        ))}
+                        {elements.map((el, i) =>
+                            "divider" in el ? (
+                                <hr key={`divider-${i}`} className="my-1 border-0 border-t border-(--border)" />
+                            ) : (
+                                <tw.MenuButton key={el.type + "-drawer"} onClick={() => onSelect(el.type)}>
+                                    <tw.LabelWrap>
+                                        <tw.SvgWrap>{el.icon}</tw.SvgWrap>
+                                        {el.label}
+                                    </tw.LabelWrap>
+                                </tw.MenuButton>
+                            ),
+                        )}
                     </tw.DrawerMenu>
                 )}
                 {/* 색 드로워 */}

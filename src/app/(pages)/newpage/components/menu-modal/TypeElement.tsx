@@ -1,4 +1,6 @@
 import {
+    BarChartHIcon,
+    BarChartVIcon,
     BulletedListIcon,
     CheckedListIcon,
     DividerIcon,
@@ -8,8 +10,14 @@ import {
     NumberedListIcon,
     TextBlockIcon,
 } from "@/components/ui/icons/TypeMenuSvg";
+import { ReactNode } from "react";
 
-export const ELEMENTS = [
+// 전환 메뉴 항목. divider:true 인 항목은 메뉴에서 구분선으로 렌더된다.
+export type TypeMenuElement =
+    | { divider: true }
+    | { label: string; type: string; icon: ReactNode };
+
+export const ELEMENTS: TypeMenuElement[] = [
     { label: "텍스트", type: "p", icon: <TextBlockIcon color="#5f5e5b" /> },
     { label: "제목1", type: "h1", icon: <H1BlockIcon color="#5f5e5b" /> },
     { label: "제목2", type: "h2", icon: <H2BlockIcon color="#5f5e5b" /> },
@@ -22,4 +30,7 @@ export const ELEMENTS = [
     { label: "토글 제목1", type: "toggleH1", icon: <H1BlockIcon color="#5f5e5b" /> },
     { label: "토글 제목2", type: "toggleH2", icon: <H2BlockIcon color="#5f5e5b" /> },
     { label: "토글 제목3", type: "toggleH3", icon: <H3BlockIcon color="#5f5e5b" /> },
+    { divider: true },
+    { label: "가로 막대그래프", type: "barChartH", icon: <BarChartHIcon color="#5f5e5b" /> },
+    { label: "세로 막대그래프", type: "barChartV", icon: <BarChartVIcon color="#5f5e5b" /> },
 ];

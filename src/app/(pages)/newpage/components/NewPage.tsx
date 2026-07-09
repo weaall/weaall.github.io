@@ -7,6 +7,8 @@ import { Block, blocksToMDX } from "./helper/BlocksToMdx";
 import { FormattedRange } from "./text-modal/TextFormat.modal";
 import BlockRow from "./BlockRow";
 import ShareModal from "./ShareModal";
+import ChartModal from "./chart-modal/ChartModal";
+import { ChartRow } from "@/components/mdx/mdx-components/BarChart";
 import { useBlockHistory } from "../hooks/useBlockHistory";
 import { useBlockDnD } from "../hooks/useBlockDnD";
 import { getDoc, saveDoc } from "../lib/localDocs";
@@ -47,6 +49,45 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         window.addEventListener("newpage:share", open);
         return () => window.removeEventListener("newpage:share", open);
     }, []);
+
+    // 그래프 데이터 편집 모달: 그래프 블록 클릭 시(newpage:editchart) 열린다.
+    const [chartEditId, setChartEditId] = useState<string | null>(null);
+    useEffect(() => {
+        const onEdit = (e: Event) => {
+            const id = (e as CustomEvent<{ id: string }>).detail?.id;
+            if (id) setChartEditId(id);
+        };
+        window.addEventListener("newpage:editchart", onEdit);
+        return () => window.removeEventListener("newpage:editchart", onEdit);
+    }, []);
+
+    // 이미지 드래그앤드롭: 이미지 파일을 떨어뜨리면 base64로 읽어 이미지 블록을 추가한다.
+    // (정적 사이트라 서버 업로드가 없어 data URL로 임베드)
+    const handleFileDragOver = (e: React.DragEvent) => {
+        if (Array.from(e.dataTransfer.types).includes("Files")) e.preventDefault();
+    };
+    const handleFileDrop = (e: React.DragEvent) => {
+        const files = Array.from(e.dataTransfer.files || []).filter((f) => f.type.startsWith("image/"));
+        if (files.length === 0) return;
+        e.preventDefault();
+        files.forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const dataUrl = reader.result as string;
+                setBlocks((prev) => [
+                    ...prev,
+                    { id: crypto.randomUUID(), type: "image", content: dataUrl, indentationLevel: 0 },
+                ]);
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
+    // 그래프 데이터 저장 → 해당 블록 content(JSON)를 갱신
+    const saveChart = (title: string, rows: ChartRow[]) => {
+        if (!chartEditId) return;
+        setBlocks((prev) => prev.map((b) => (b.id === chartEditId ? { ...b, content: JSON.stringify({ title, rows }) } : b)));
+    };
 
     // 여러 블록 선택 (빈 영역을 드래그하면 마퀴 박스가 커지며 겹치는 블록 선택)
     const [selRange, setSelRange] = useState<{ a: number; b: number } | null>(null);
@@ -458,6 +499,12 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         setBlocks((prev) => prev.map((b, i) => (i === idx ? { ...b, type } : b)));
         setMenuId(null);
         setMenuPos(null);
+        // 그래프/이미지는 편집 가능한 텍스트가 아니므로 포커스 로직을 건너뛴다.
+        if (type === "barChartH" || type === "barChartV") {
+            if (blockId) setChartEditId(blockId); // 바로 데이터 입력 모달 열기
+            return;
+        }
+        if (type === "image") return;
         setTimeout(() => {
             if (!blockId) return;
             const blockElement = document.getElementById(blockId);
@@ -750,6 +797,8 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
     return (
         <tw.Container
             onMouseDown={handleMarqueeDown}
+            onDragOver={handleFileDragOver}
+            onDrop={handleFileDrop}
             style={{
                 paddingLeft: collapsed ? 50 : 350,
                 transition: "padding-left 0.2s",
@@ -846,6 +895,28 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                 onExport={handleExport}
                 postUrl={`https://weaall.github.io/post/${(meta.title || "untitled").replace(/ /g, "_")}`}
             />
+
+            {(() => {
+                if (!chartEditId) return null;
+                const block = blocks.find((b) => b.id === chartEditId);
+                if (!block || (block.type !== "barChartH" && block.type !== "barChartV")) return null;
+                let parsed: { title?: string; rows?: ChartRow[] } = {};
+                try {
+                    parsed = JSON.parse(block.content || "{}");
+                } catch {
+                    /* 손상된 값은 빈 데이터 */
+                }
+                return (
+                    <ChartModal
+                        open
+                        orient={block.type === "barChartH" ? "h" : "v"}
+                        initialTitle={parsed.title ?? ""}
+                        initialRows={parsed.rows ?? []}
+                        onSave={saveChart}
+                        onClose={() => setChartEditId(null)}
+                    />
+                );
+            })()}
 
             {/* 마퀴 선택 박스 */}
             {marquee && (Math.abs(marquee.x1 - marquee.x0) > 3 || Math.abs(marquee.y1 - marquee.y0) > 3) && (

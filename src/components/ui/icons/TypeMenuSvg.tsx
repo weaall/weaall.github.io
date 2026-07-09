@@ -143,3 +143,21 @@ export const DividerIcon = ({ color = "#000", width = "100%", height = "100%" })
         <path d="M4 12L20 12" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
+
+// 가로 막대그래프 아이콘
+export const BarChartHIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="4" width="12" height="4" rx="1" fill={color} />
+        <rect x="3" y="10" width="18" height="4" rx="1" fill={color} />
+        <rect x="3" y="16" width="8" height="4" rx="1" fill={color} />
+    </svg>
+);
+
+// 세로 막대그래프 아이콘
+export const BarChartVIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="9" width="4" height="11" rx="1" fill={color} />
+        <rect x="10" y="4" width="4" height="16" rx="1" fill={color} />
+        <rect x="16" y="13" width="4" height="7" rx="1" fill={color} />
+    </svg>
+);
