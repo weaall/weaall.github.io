@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import BarChart, { ChartRow } from "@/components/mdx/mdx-components/BarChart";
+import { BarChartHIcon, BarChartVIcon } from "@/components/ui/icons/TypeMenuSvg";
 
 interface ChartModalProps {
     open: boolean;
@@ -12,8 +13,9 @@ interface ChartModalProps {
     onClose: () => void;
 }
 
-// 우측 상단에 뜨는 그래프 데이터 편집 모달. 표 형태로 라벨/값을 입력하면
-// 아래 미리보기에 상대 막대그래프가 실시간으로 그려진다.
+// 화면 가운데에 뜨는 그래프 데이터 편집 모달. 전환 메뉴(TypeMenu)와 같은 톤:
+// --menu-bg / --border / rounded-[10px] / muted 라벨 / --menu-hover-bg 호버.
+// 표 형태로 라벨·값을 입력하면 아래 미리보기에 상대 막대그래프가 실시간으로 그려진다.
 export default function ChartModal({ open, orient, initialTitle, initialRows, onSave, onClose }: ChartModalProps) {
     const [title, setTitle] = useState(initialTitle);
     const [rows, setRows] = useState<ChartRow[]>(initialRows.length ? initialRows : [{ label: "", value: 0 }]);
@@ -42,53 +44,58 @@ export default function ChartModal({ open, orient, initialTitle, initialRows, on
         onClose();
     };
 
+    const inputCls =
+        "rounded-[6px] border border-(--border) bg-transparent px-[8px] py-[5px] text-[14px] text-(--text) outline-none focus:border-[#3b82f6]";
+
     return (
-        <>
-            <div className="fixed inset-0 z-[1900]" onClick={onClose} />
+        <div className="fixed inset-0 z-[1900] flex items-center justify-center bg-black/20 p-4" onClick={onClose}>
             <div
                 data-theme="light"
-                className="animate-popIn fixed right-4 top-16 z-[2000] flex w-[360px] max-w-[92vw] flex-col rounded-xl border border-(--border) bg-(--menu-bg) p-4 text-(--text) shadow-2xl"
+                className="animate-popIn flex max-h-[86vh] w-[420px] max-w-[94vw] flex-col rounded-[10px] border border-(--border) bg-(--menu-bg) p-[16px] text-(--text) shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
             >
-                <div className="mb-2 flex items-center justify-between">
-                    <span className="text-sm font-semibold text-(--text-strong)">
+                {/* 헤더 */}
+                <div className="mb-[12px] flex items-center justify-between">
+                    <span className="flex items-center gap-[8px] text-[14px] font-[600] text-(--text-strong)">
+                        <span className="h-4 w-4">{orient === "h" ? <BarChartHIcon color="#5f5e5b" /> : <BarChartVIcon color="#5f5e5b" />}</span>
                         {orient === "h" ? "가로 막대그래프" : "세로 막대그래프"}
                     </span>
-                    <button className="rounded p-1 text-(--text-muted) hover:bg-(--hover-bg)" onClick={onClose} aria-label="닫기">
+                    <button
+                        className="flex h-6 w-6 items-center justify-center rounded-[6px] text-(--text-muted) hover:bg-(--menu-hover-bg)"
+                        onClick={onClose}
+                        aria-label="닫기"
+                    >
                         ✕
                     </button>
                 </div>
 
-                <input
-                    className="mb-3 w-full rounded-md border border-(--border) bg-transparent px-2 py-1 text-sm outline-none focus:border-[#3b82f6]"
-                    placeholder="그래프 제목 (선택)"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
+                <input className={`mb-[14px] w-full ${inputCls}`} placeholder="그래프 제목 (선택)" value={title} onChange={(e) => setTitle(e.target.value)} />
 
-                {/* 표 형태 입력 */}
-                <div className="mb-2 flex items-center gap-2 px-1 text-xs text-(--text-muted)">
+                {/* 표 헤더 */}
+                <div className="mb-[6px] flex items-center gap-[8px] px-[2px] text-[12px] font-[500] text-(--text-muted) select-none">
                     <span className="flex-1">항목</span>
-                    <span className="w-20">값</span>
+                    <span className="w-[80px]">값</span>
                     <span className="w-6" />
                 </div>
-                <div className="flex max-h-[220px] flex-col gap-1.5 overflow-y-auto">
+                {/* 표 입력 행 */}
+                <div className="flex max-h-[200px] flex-col gap-[6px] overflow-y-auto">
                     {rows.map((r, i) => (
-                        <div key={i} className="flex items-center gap-2">
+                        <div key={i} className="flex items-center gap-[8px]">
                             <input
-                                className="min-w-0 flex-1 rounded-md border border-(--border) bg-transparent px-2 py-1 text-sm outline-none focus:border-[#3b82f6]"
+                                className={`min-w-0 flex-1 ${inputCls}`}
                                 placeholder="이름"
                                 value={r.label}
                                 onChange={(e) => updateRow(i, { label: e.target.value })}
                             />
                             <input
                                 type="number"
-                                className="w-20 rounded-md border border-(--border) bg-transparent px-2 py-1 text-sm outline-none focus:border-[#3b82f6]"
+                                className={`w-[80px] ${inputCls}`}
                                 placeholder="0"
                                 value={Number.isFinite(r.value) ? r.value : 0}
                                 onChange={(e) => updateRow(i, { value: Number(e.target.value) || 0 })}
                             />
                             <button
-                                className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-(--text-muted) hover:bg-(--hover-bg) hover:text-[#e65b58]"
+                                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] text-[16px] text-(--text-muted) hover:bg-(--menu-hover-bg) hover:text-[#e65b58]"
                                 onClick={() => removeRow(i)}
                                 aria-label="행 삭제"
                             >
@@ -98,7 +105,7 @@ export default function ChartModal({ open, orient, initialTitle, initialRows, on
                     ))}
                 </div>
                 <button
-                    className="mt-2 w-full rounded-md border border-dashed border-(--border) py-1 text-sm text-(--text-muted) hover:bg-(--hover-bg)"
+                    className="mt-[8px] w-full rounded-[6px] border border-dashed border-(--border) py-[6px] text-[13px] text-(--text-muted) hover:bg-(--menu-hover-bg)"
                     onClick={addRow}
                 >
                     + 항목 추가
@@ -106,19 +113,19 @@ export default function ChartModal({ open, orient, initialTitle, initialRows, on
 
                 {/* 실시간 미리보기 */}
                 {cleaned.length > 0 && (
-                    <div className="mt-3">
-                        <div className="mb-1 text-xs text-(--text-muted)">미리보기</div>
+                    <div className="mt-[14px] overflow-y-auto">
+                        <div className="mb-[6px] text-[12px] font-[500] text-(--text-muted) select-none">미리보기</div>
                         <BarChart orient={orient} rows={cleaned} title={title.trim()} />
                     </div>
                 )}
 
                 <button
-                    className="mt-3 w-full rounded-md bg-[#3b82f6] py-1.5 text-sm font-medium text-white hover:bg-[#2f6fe0]"
+                    className="mt-[16px] w-full rounded-[6px] bg-[#3b82f6] py-[8px] text-[14px] font-[500] text-white hover:bg-[#2f6fe0]"
                     onClick={handleSave}
                 >
                     적용
                 </button>
             </div>
-        </>
+        </div>
     );
 }
