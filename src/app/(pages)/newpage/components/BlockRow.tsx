@@ -37,6 +37,10 @@ interface BlockRowProps {
     onFocusPrev: (currentId: string, targetX: number) => void;
     onIndent: (idx: number, change: number) => void;
     onFormattedRangesChange: (idx: number, ranges: FormattedRange[]) => void;
+    selected: boolean;
+    onGutterDown: (idx: number) => void;
+    onGutterEnter: (idx: number) => void;
+    onClearSelection: () => void;
 }
 
 export default function BlockRow({
@@ -69,6 +73,10 @@ export default function BlockRow({
     onFocusPrev,
     onIndent,
     onFormattedRangesChange,
+    selected,
+    onGutterDown,
+    onGutterEnter,
+    onClearSelection,
 }: BlockRowProps) {
     return (
         <>
@@ -91,6 +99,7 @@ export default function BlockRow({
                 onDragEnter={(e: React.DragEvent<HTMLDivElement>) => onDragEnter(e, idx, false)}
                 onDragOver={onDragOver}
             >
+                {/* 왼쪽 갓터: 여기서 드래그하면 범위 선택 (리오더는 ⣿ 핸들로) */}
                 <div
                     style={{
                         position: "absolute",
@@ -99,9 +108,16 @@ export default function BlockRow({
                         width: 56,
                         height: "100%",
                         zIndex: 5,
-                        cursor: "pointer",
+                        cursor: "grab",
                     }}
-                    onMouseEnter={() => setHoverId(block.id)}
+                    onMouseDown={(e) => {
+                        e.preventDefault();
+                        onGutterDown(idx);
+                    }}
+                    onMouseEnter={() => {
+                        setHoverId(block.id);
+                        onGutterEnter(idx);
+                    }}
                     onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
                         const related = e.relatedTarget as HTMLElement | null;
                         if (related && related.closest && related.closest(`[data-btn-idx="${idx}"]`)) {
@@ -109,9 +125,6 @@ export default function BlockRow({
                         }
                         setHoverId(null);
                     }}
-                    draggable
-                    onDragStart={(e) => onDragStart(e, idx)}
-                    onDragEnd={onDragEnd}
                 />
 
                 {(hoverId === block.id || menuId === block.id) && (
@@ -156,8 +169,9 @@ export default function BlockRow({
                 )}
 
                 <tw.InputWrap
-                    className={menuId === block.id ? "bg-(--hover-bg)" : ""}
+                    className={selected ? "bg-(--active-bg)" : menuId === block.id ? "bg-(--hover-bg)" : ""}
                     style={{ marginLeft: block.indentationLevel * 25 }}
+                    onMouseDown={onClearSelection}
                     onMouseEnter={() => setHoverId(block.id)}
                     onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
                         const related = e.relatedTarget as HTMLElement | null;

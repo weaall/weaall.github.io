@@ -47,6 +47,33 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         window.addEventListener("newpage:share", open);
         return () => window.removeEventListener("newpage:share", open);
     }, []);
+
+    // 여러 블록 선택 (왼쪽 갓터를 드래그해 범위 선택)
+    const [selRange, setSelRange] = useState<{ a: number; b: number } | null>(null);
+    const selectingRef = useRef(false);
+    const selMin = selRange ? Math.min(selRange.a, selRange.b) : -1;
+    const selMax = selRange ? Math.max(selRange.a, selRange.b) : -1;
+    const selectionRef = useRef<{ min: number; max: number } | null>(null);
+    selectionRef.current = selRange ? { min: selMin, max: selMax } : null;
+
+    useEffect(() => {
+        const onUp = () => {
+            if (!selectingRef.current) return;
+            selectingRef.current = false;
+            setSelRange((r) => (r && r.a === r.b ? null : r)); // 단순 클릭이면 선택 해제
+        };
+        window.addEventListener("mouseup", onUp);
+        return () => window.removeEventListener("mouseup", onUp);
+    }, []);
+
+    const handleGutterDown = (idx: number) => {
+        selectingRef.current = true;
+        setSelRange({ a: idx, b: idx });
+    };
+    const handleGutterEnter = (idx: number) => {
+        if (selectingRef.current) setSelRange((r) => (r ? { ...r, b: idx } : { a: idx, b: idx }));
+    };
+    const clearSelection = () => setSelRange(null);
     const divRef = useRef<HTMLDivElement>(null);
     const dotRefs = useRef<{ [id: string]: HTMLButtonElement | null }>({});
     const [isTitleEmpty, setIsTitleEmpty] = useState(true);
@@ -61,7 +88,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
     });
 
     const { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } =
-        useBlockDnD(setBlocks);
+        useBlockDnD(setBlocks, () => selectionRef.current, clearSelection);
 
     const getListNumber = (currentIndex: number): number => {
         let counter = 1;
@@ -618,6 +645,10 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                             onFocusPrev={handleFocusPrev}
                             onIndent={handleIndent}
                             onFormattedRangesChange={handleFormattedRangesChange}
+                            selected={idx >= selMin && idx <= selMax}
+                            onGutterDown={handleGutterDown}
+                            onGutterEnter={handleGutterEnter}
+                            onClearSelection={clearSelection}
                         />
                     ),
                 )}
