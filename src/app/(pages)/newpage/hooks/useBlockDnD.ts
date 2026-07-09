@@ -7,12 +7,12 @@ import { Block } from "../components/helper/BlocksToMdx";
  * 앞 블록이 토글이면 그 자식(indent + 1)으로 들어간다.
  *
  * getSelection: 갓터 드래그로 선택한 블록 범위(min~max). 드래그하는 블록이 이 범위 안이면
- * 선택된 블록들을 통째로 이동한다. clearSelection: 이동 후 선택 해제.
+ * 선택된 블록들을 통째로 이동한다. onDropped: 이동 후 새 위치(targetIdx~+count)를 알려 선택 유지.
  */
 export function useBlockDnD(
     setBlocks: React.Dispatch<React.SetStateAction<Block[]>>,
     getSelection?: () => { min: number; max: number } | null,
-    clearSelection?: () => void,
+    onDropped?: (targetIdx: number, count: number) => void,
 ) {
     const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
     const [insertLineIdx, setInsertLineIdx] = useState<number | null>(null);
@@ -45,15 +45,15 @@ export function useBlockDnD(
             const rangeEnd = inSel ? sel!.max : fromIdx;
             const count = rangeEnd - rangeStart + 1;
 
+            // 삽입 위치 보정(순수 계산): 제거된 블록이 드롭지점 앞에 있었으면 그만큼 당김
+            let targetIdx: number;
+            if (dropIdx <= rangeStart) targetIdx = dropIdx;
+            else if (dropIdx > rangeEnd) targetIdx = dropIdx - count;
+            else targetIdx = rangeStart; // 범위 내부로 드롭 → 제자리
+
             setBlocks((prev) => {
                 const newBlocks = [...prev];
                 const moving = newBlocks.splice(rangeStart, count);
-
-                // 삽입 위치 보정: 제거된 블록이 드롭지점 앞에 있었으면 그만큼 당김
-                let targetIdx: number;
-                if (dropIdx <= rangeStart) targetIdx = dropIdx;
-                else if (dropIdx > rangeEnd) targetIdx = dropIdx - count;
-                else targetIdx = rangeStart; // 범위 내부로 드롭 → 제자리
 
                 // 앞 블록 들여쓰기를 base로, 선택 블록들의 상대 들여쓰기는 유지
                 const prevBlock = newBlocks[targetIdx - 1];
@@ -69,7 +69,8 @@ export function useBlockDnD(
                 newBlocks.splice(targetIdx, 0, ...adjusted);
                 return newBlocks;
             });
-            clearSelection?.();
+            // 드롭된 블록(들)을 선택 상태로 유지
+            onDropped?.(targetIdx, count);
         }
         setDraggingIdx(null);
         setInsertLineIdx(null);

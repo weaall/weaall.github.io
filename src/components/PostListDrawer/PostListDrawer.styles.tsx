@@ -20,7 +20,7 @@ export const CategoryList = tw.ul``;
 export const CategoryItem = tw.li`mb-[1px]`;
 export const PostLink = tw(Link)<{ $active?: boolean }>`
   flex items-center max-w-[244px] px-2 py-5px rounded-md hover:bg-(--hover-bg) font-medium overflow-hidden text-(--text-faint)
-  ${({ $active }) => ($active ? "bg-(--active-bg) text-(--text-strong)" : "")}
+  ${({ $active }) => ($active ? "bg-(--hover-bg) text-(--text-strong)" : "")}
 `;
 
 export const SvgWrap = tw.div`w-5 h-5 flex-shrink-0 mr-2 flex items-center justify-center text-(--text-faint)`;

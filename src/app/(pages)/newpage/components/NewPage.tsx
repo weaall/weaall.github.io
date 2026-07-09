@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 
 import TypeMenuModal from "./menu-modal/TypeMenu.modal";
 import { ELEMENTS } from "./menu-modal/TypeElement";
-import { blocksToMDX } from "./helper/BlocksToMdx";
+import { Block, blocksToMDX } from "./helper/BlocksToMdx";
 import { FormattedRange } from "./text-modal/TextFormat.modal";
 import BlockRow from "./BlockRow";
 import ShareModal from "./ShareModal";
@@ -74,6 +74,95 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         if (selectingRef.current) setSelRange((r) => (r ? { ...r, b: idx } : { a: idx, b: idx }));
     };
     const clearSelection = () => setSelRange(null);
+
+    // 블록 복사/붙여넣기: 선택된 블록을 통째로(타입+내용+서식) 복제한다.
+    const clipboardRef = useRef<{
+        blocks: Block[];
+        colors: { [id: string]: string };
+        ranges: { [id: string]: FormattedRange[] };
+    } | null>(null);
+
+    const copySelection = () => {
+        if (!selRange) return;
+        const slice = blocks.slice(selMin, selMax + 1);
+        const colors: { [id: string]: string } = {};
+        const ranges: { [id: string]: FormattedRange[] } = {};
+        slice.forEach((b) => {
+            if (blockColors[b.id]) colors[b.id] = blockColors[b.id];
+            if (blockFormattedRanges[b.id]) ranges[b.id] = blockFormattedRanges[b.id];
+        });
+        clipboardRef.current = { blocks: JSON.parse(JSON.stringify(slice)), colors, ranges };
+    };
+
+    const deleteSelectedBlocks = () => {
+        if (!selRange) return;
+        const ids = blocks.slice(selMin, selMax + 1).map((b) => b.id);
+        setBlocks((prev) => {
+            const filtered = prev.filter((_, i) => i < selMin || i > selMax);
+            return filtered.length ? filtered : [{ id: crypto.randomUUID(), type: "p", content: "", indentationLevel: 0 }];
+        });
+        setBlockColors((prev) => {
+            const n = { ...prev };
+            ids.forEach((id) => delete n[id]);
+            return n;
+        });
+        setBlockFormattedRanges((prev) => {
+            const n = { ...prev };
+            ids.forEach((id) => delete n[id]);
+            return n;
+        });
+        setSelRange(null);
+    };
+
+    const pasteAfterSelection = () => {
+        const clip = clipboardRef.current;
+        if (!clip || !selRange) return;
+        const idMap: { [old: string]: string } = {};
+        const newBlocks = clip.blocks.map((b) => {
+            const id = crypto.randomUUID();
+            idMap[b.id] = id;
+            return { ...b, id };
+        });
+        const newColors: { [id: string]: string } = {};
+        const newRanges: { [id: string]: FormattedRange[] } = {};
+        clip.blocks.forEach((b) => {
+            const nid = idMap[b.id];
+            if (clip.colors[b.id]) newColors[nid] = clip.colors[b.id];
+            if (clip.ranges[b.id]) newRanges[nid] = clip.ranges[b.id];
+        });
+        const insertAt = selMax + 1;
+        setBlocks((prev) => {
+            const arr = [...prev];
+            arr.splice(insertAt, 0, ...newBlocks);
+            return arr;
+        });
+        setBlockColors((prev) => ({ ...prev, ...newColors }));
+        setBlockFormattedRanges((prev) => ({ ...prev, ...newRanges }));
+        setSelRange({ a: insertAt, b: insertAt + newBlocks.length - 1 });
+    };
+
+    // 블록 선택 모드(selRange 활성)에서만 Ctrl+C/X/V를 블록 단위로 가로챈다.
+    // (선택이 없으면 일반 텍스트 복사/붙여넣기 그대로)
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => {
+            if (!(e.ctrlKey || e.metaKey) || !selRange) return;
+            const key = e.key.toLowerCase();
+            if (key === "c") {
+                e.preventDefault();
+                copySelection();
+            } else if (key === "x") {
+                e.preventDefault();
+                copySelection();
+                deleteSelectedBlocks();
+            } else if (key === "v") {
+                e.preventDefault();
+                pasteAfterSelection();
+            }
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selRange, selMin, selMax, blocks, blockColors, blockFormattedRanges]);
     const divRef = useRef<HTMLDivElement>(null);
     const dotRefs = useRef<{ [id: string]: HTMLButtonElement | null }>({});
     const [isTitleEmpty, setIsTitleEmpty] = useState(true);
@@ -88,7 +177,9 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
     });
 
     const { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } =
-        useBlockDnD(setBlocks, () => selectionRef.current, clearSelection);
+        useBlockDnD(setBlocks, () => selectionRef.current, (targetIdx, count) =>
+            setSelRange({ a: targetIdx, b: targetIdx + count - 1 }),
+        );
 
     const getListNumber = (currentIndex: number): number => {
         let counter = 1;

@@ -186,7 +186,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                                         <div
                                             className={`group flex items-center w-full rounded-md px-2 py-1 cursor-pointer hover:bg-(--hover-bg) ${
                                                 doc.id === activeDocId && pathname === "/newpage"
-                                                    ? "bg-(--active-bg) text-(--text-strong)"
+                                                    ? "bg-(--hover-bg) text-(--text-strong)"
                                                     : "text-(--text-faint)"
                                             }`}
                                             onClick={() => openDoc(doc.id)}
