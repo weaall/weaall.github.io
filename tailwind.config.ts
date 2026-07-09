@@ -45,6 +45,10 @@ const config: Config = {
                     "0%": { opacity: "0" },
                     "100%": { opacity: "1" },
                 },
+                popIn: {
+                    "0%": { opacity: "0", transform: "scale(0.96)" },
+                    "100%": { opacity: "1", transform: "scale(1)" },
+                },
                 "grow-up": {
                     "0%": { maxHeight: "0", opacity: "0" },
                     "100%": { maxHeight: "500px", opacity: "1" },
@@ -94,6 +98,7 @@ const config: Config = {
             },
             animation: {
                 fadeIn: "fadeIn 0.5s ease-out forwards",
+                popIn: "popIn 0.14s ease-out",
                 "grow-up": "grow-up 0.3s ease-in-out forwards",
                 "shrink-down": "shrink-down 0.3s ease-in-out forwards",
                 rotate: "rotate 4s linear infinite",

@@ -75,12 +75,14 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                 onClick={handleClose}
             />
             <div
+                className="animate-popIn"
                 style={{
                     position: "fixed",
                     top: position.top,
                     left: position.left,
                     zIndex: 1000,
                     display: "flex",
+                    transformOrigin: "top left",
                 }}
             >
                 <tw.Menu id="type-menu" style={{ minWidth: "120px", position: "relative" }}>

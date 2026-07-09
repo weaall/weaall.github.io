@@ -6,7 +6,8 @@ import { DocIcon, DotListIcon, HomeIcon, PlusIcon, PostIcon, ReduceIcon, RightIc
 import { useEffect, useRef, useState } from "react";
 import { AddDockIcon } from "../ui/icons/PostsSvg";
 import { PostData } from "@/interface/PostData";
-import { LocalDocMeta, listDocs, deleteDoc, getActivePointer, setActivePointer, subscribeDocsChanged } from "@/app/(pages)/newpage/lib/localDocs";
+import { LocalDocMeta, listDocs, deleteDoc, getDoc, getActivePointer, setActivePointer, subscribeDocsChanged } from "@/app/(pages)/newpage/lib/localDocs";
+import { exportDoc } from "@/app/(pages)/newpage/lib/exportMdx";
 
 interface PostsProps {
     posts: PostData[];
@@ -21,6 +22,22 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
     // 로컬 저장 문서는 드로어가 직접 localStorage에서 읽어 어느 페이지에서든 표시한다.
     const [localDocs, setLocalDocs] = useState<LocalDocMeta[]>([]);
     const [activeDocId, setActiveDocId] = useState<string | null>(null);
+
+    // 문서 옵션(⋯) 팝오버
+    const [docMenuId, setDocMenuId] = useState<string | null>(null);
+    const [docMenuPos, setDocMenuPos] = useState<{ top: number; left: number } | null>(null);
+    const closeDocMenu = () => {
+        setDocMenuId(null);
+        setDocMenuPos(null);
+    };
+    const openDocMenu = (e: React.MouseEvent<HTMLElement>, id: string) => {
+        e.stopPropagation();
+        const rect = e.currentTarget.getBoundingClientRect();
+        const menuWidth = 160;
+        const left = Math.min(rect.right + 6, window.innerWidth - menuWidth - 12);
+        setDocMenuId(id);
+        setDocMenuPos({ top: rect.top, left });
+    };
 
     useEffect(() => {
         const refresh = () => {
@@ -180,14 +197,13 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                                             <span className="flex-1 truncate text-sm">{doc.title || "제목 없음"}</span>
                                             <span
                                                 role="button"
-                                                aria-label="삭제"
-                                                className="ml-1 hidden group-hover:flex items-center opacity-60 hover:opacity-100"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    removeDoc(doc.id);
-                                                }}
+                                                aria-label="옵션"
+                                                className={`ml-1 items-center rounded p-0.5 hover:bg-(--hover-bg) ${
+                                                    docMenuId === doc.id ? "flex" : "hidden group-hover:flex"
+                                                }`}
+                                                onClick={(e) => openDocMenu(e, doc.id)}
                                             >
-                                                <ReduceIcon color="currentColor" width="14" height="14" />
+                                                <DotListIcon color="currentColor" width="16" height="16" />
                                             </span>
                                         </div>
                                     </tw.CategoryItem>
@@ -239,6 +255,36 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                         </div>
                     ))}
             </tw.SideContainer>
+
+            {docMenuId && docMenuPos && (
+                <>
+                    <div className="fixed inset-0 z-[1000]" onClick={closeDocMenu} />
+                    <div
+                        className="fixed z-[1001] min-w-[160px] animate-popIn rounded-lg border border-(--border) bg-(--menu-bg) py-1 shadow-xl"
+                        style={{ top: docMenuPos.top, left: docMenuPos.left, transformOrigin: "top left" }}
+                    >
+                        <button
+                            className="flex w-full items-center px-3 py-1.5 text-sm text-(--text) hover:bg-(--hover-bg)"
+                            onClick={() => {
+                                const d = getDoc(docMenuId!);
+                                if (d) exportDoc(d);
+                                closeDocMenu();
+                            }}
+                        >
+                            내보내기
+                        </button>
+                        <button
+                            className="flex w-full items-center px-3 py-1.5 text-sm text-[#e65b58] hover:bg-(--hover-bg)"
+                            onClick={() => {
+                                removeDoc(docMenuId!);
+                                closeDocMenu();
+                            }}
+                        >
+                            삭제
+                        </button>
+                    </div>
+                </>
+            )}
         </tw.Container>
     );
 }
