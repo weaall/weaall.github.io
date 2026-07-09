@@ -7,8 +7,10 @@ export interface ChartRow {
     value: number;
 }
 
-// 막대 색상 팔레트 (테마 무관 고정색 — 라이트/다크 모두에서 잘 보이는 톤)
-const BAR_COLORS = ["#4f8ff7", "#f79f4f", "#5fc98b", "#c98be0", "#f7677a", "#5fc9c9", "#f7c94f", "#8b9bf7"];
+// 막대 색상 팔레트 (에디터 텍스트 색상과 같은 톤의 부드러운 노션풍 색).
+// 항목이 추가되면 순서대로 배정되고, 색을 다 쓰면 다시 1번째 색부터 순환한다.
+const CHART_COLORS = ["#8ecae6", "#ffb86b", "#b6e3b6", "#cbb7f0", "#f7b7d7", "#ff7b7b", "#ffe066", "#e9bfa8"];
+const colorAt = (i: number) => CHART_COLORS[((i % CHART_COLORS.length) + CHART_COLORS.length) % CHART_COLORS.length];
 
 function normalizeRows(rows: ChartRow[]): ChartRow[] {
     return rows
@@ -53,41 +55,40 @@ export default function BarChart({ orient = "h", data, rows, title }: BarChartPr
     const max = Math.max(1, ...items.map((r) => r.value));
 
     return (
-        <div className="my-2 rounded-lg border border-(--border) bg-(--panel-bg) p-4">
-            {ttl && <div className="mb-3 text-sm font-semibold text-(--text-strong)">{ttl}</div>}
+        <div className="my-2 rounded-xl border border-(--border) px-5 py-4">
+            {ttl && <div className="mb-4 text-sm font-semibold text-(--text-strong)">{ttl}</div>}
             {orient === "h" ? (
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3">
                     {items.map((r, i) => (
-                        <div key={i} className="flex items-center gap-2">
+                        <div key={i} className="flex items-center gap-3">
                             <div className="w-24 shrink-0 truncate text-right text-xs text-(--text-muted)" title={r.label}>
                                 {r.label}
                             </div>
-                            <div className="relative h-6 flex-1 overflow-hidden rounded bg-(--hover-bg)">
+                            <div className="flex flex-1 items-center gap-2">
                                 <div
-                                    className="flex h-full items-center justify-end rounded px-2 text-xs font-medium text-white"
+                                    className="h-5 rounded-md transition-[width] duration-300"
                                     style={{
                                         width: `${(r.value / max) * 100}%`,
-                                        minWidth: 28,
-                                        background: BAR_COLORS[i % BAR_COLORS.length],
+                                        minWidth: 6,
+                                        background: colorAt(i),
                                     }}
-                                >
-                                    {r.value}
-                                </div>
+                                />
+                                <span className="shrink-0 text-xs font-semibold text-(--text-muted)">{r.value}</span>
                             </div>
                         </div>
                     ))}
                 </div>
             ) : (
-                <div className="flex h-52 items-end justify-around gap-3 px-2">
+                <div className="flex h-52 items-end justify-around gap-4 px-1">
                     {items.map((r, i) => (
-                        <div key={i} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1">
-                            <div className="text-xs font-medium text-(--text-muted)">{r.value}</div>
+                        <div key={i} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1.5">
+                            <div className="text-xs font-semibold text-(--text-muted)">{r.value}</div>
                             <div
-                                className="w-full max-w-[52px] rounded-t"
+                                className="w-full max-w-[48px] rounded-t-md transition-[height] duration-300"
                                 style={{
                                     height: `${(r.value / max) * 100}%`,
                                     minHeight: 4,
-                                    background: BAR_COLORS[i % BAR_COLORS.length],
+                                    background: colorAt(i),
                                 }}
                             />
                             <div className="w-full truncate text-center text-xs text-(--text-muted)" title={r.label}>
