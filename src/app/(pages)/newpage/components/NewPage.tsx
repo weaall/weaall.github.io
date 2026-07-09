@@ -13,7 +13,7 @@ import { getDoc, saveDoc } from "../lib/localDocs";
 import { formatPostDate } from "@/util/date";
 import * as tw from "./Newpage.styles";
 
-export default function NewPage({ collapsed, docId, onSaved }: { collapsed: boolean; docId: string; onSaved?: () => void }) {
+export default function NewPage({ collapsed, docId }: { collapsed: boolean; docId: string }) {
     // 이 컴포넌트는 docId로 key되어 remount되므로, 초기값을 localStorage에서 한 번 읽어오면 된다.
     const initialDoc = getDoc(docId);
 
@@ -124,7 +124,7 @@ export default function NewPage({ collapsed, docId, onSaved }: { collapsed: bool
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // 작성 내용을 localStorage에 자동 저장 (변경 후 800ms 디바운스). 저장 후 좌측 목록 갱신 알림.
+    // 작성 내용을 localStorage에 자동 저장 (변경 후 800ms 디바운스). saveDoc이 목록 변경을 알림.
     useEffect(() => {
         const t = setTimeout(() => {
             saveDoc({
@@ -135,10 +135,26 @@ export default function NewPage({ collapsed, docId, onSaved }: { collapsed: bool
                 blockColors,
                 blockFormattedRanges,
             });
-            onSaved?.();
         }, 800);
         return () => clearTimeout(t);
-    }, [docId, meta.title, blocks, blockColors, blockFormattedRanges, onSaved]);
+    }, [docId, meta.title, blocks, blockColors, blockFormattedRanges]);
+
+    // 문서 전환/이탈(언마운트) 시 최신 상태를 즉시 저장 (디바운스 대기분 유실 방지)
+    const latestRef = useRef({ docId, title: meta.title, blocks, blockColors, blockFormattedRanges });
+    latestRef.current = { docId, title: meta.title, blocks, blockColors, blockFormattedRanges };
+    useEffect(() => {
+        return () => {
+            const l = latestRef.current;
+            saveDoc({
+                id: l.docId,
+                title: l.title || "새 페이지",
+                updatedAt: Date.now(),
+                blocks: l.blocks,
+                blockColors: l.blockColors,
+                blockFormattedRanges: l.blockFormattedRanges,
+            });
+        };
+    }, []);
 
     const handleTitleInput = () => {
         if (divRef.current) {

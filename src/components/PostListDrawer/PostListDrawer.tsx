@@ -1,36 +1,53 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import * as tw from "./PostListDrawer.styles";
 import { DocIcon, DotListIcon, HomeIcon, PlusIcon, PostIcon, ReduceIcon, RightIcon, SearchIcon } from "./SvgDrawer";
 import { useEffect, useRef, useState } from "react";
 import { AddDockIcon } from "../ui/icons/PostsSvg";
 import { PostData } from "@/interface/PostData";
-import { LocalDocMeta } from "@/app/(pages)/newpage/lib/localDocs";
+import { LocalDocMeta, listDocs, deleteDoc, getActivePointer, setActivePointer, subscribeDocsChanged } from "@/app/(pages)/newpage/lib/localDocs";
 
 interface PostsProps {
     posts: PostData[];
     collapsed: boolean;
     setCollapsed: (v: boolean) => void;
-    // 아래는 /newpage 에디터에서만 넘겨줌 (로컬 저장 문서 목록)
-    localDocs?: LocalDocMeta[];
-    activeDocId?: string;
-    onSelectDoc?: (id: string) => void;
-    onNewDoc?: () => void;
-    onDeleteDoc?: (id: string) => void;
 }
 
-export default function PostListDrawer({
-    posts,
-    collapsed,
-    setCollapsed,
-    localDocs,
-    activeDocId,
-    onSelectDoc,
-    onNewDoc,
-    onDeleteDoc,
-}: PostsProps) {
+export default function PostListDrawer({ posts, collapsed, setCollapsed }: PostsProps) {
     const pathname = usePathname();
+    const router = useRouter();
+
+    // 로컬 저장 문서는 드로어가 직접 localStorage에서 읽어 어느 페이지에서든 표시한다.
+    const [localDocs, setLocalDocs] = useState<LocalDocMeta[]>([]);
+    const [activeDocId, setActiveDocId] = useState<string | null>(null);
+
+    useEffect(() => {
+        const refresh = () => {
+            setLocalDocs(listDocs());
+            setActiveDocId(getActivePointer());
+        };
+        refresh();
+        return subscribeDocsChanged(refresh);
+    }, []);
+
+    // 문서 선택: 활성 포인터를 바꾸고 /newpage로 이동(이미 있으면 이벤트로 전환)
+    const openDoc = (id: string) => {
+        setActivePointer(id);
+        if (pathname !== "/newpage") router.push("/newpage");
+    };
+    const newDoc = () => {
+        setActivePointer(crypto.randomUUID());
+        if (pathname !== "/newpage") router.push("/newpage");
+    };
+    const removeDoc = (id: string) => {
+        deleteDoc(id);
+        // 지운 게 현재 활성 문서면 최근 문서로 포인터 이동
+        if (id === getActivePointer()) {
+            const next = listDocs()[0]?.id;
+            if (next) setActivePointer(next);
+        }
+    };
     const activeCategory = posts.find((post) => post.postUrl === pathname)?.label || null;
 
     // 초기값은 서버 렌더와 동일해야 한다. localStorage는 클라이언트에서만 접근 가능하므로
@@ -134,28 +151,28 @@ export default function PostListDrawer({
                     </tw.PostLink>
                 </tw.Fixedwrap>
 
-                {/* 로컬 저장 문서 (에디터 전용) */}
-                {!collapsed && localDocs && (
+                {/* 로컬 저장 문서 (에디터 초안) — 어느 페이지에서든 표시 */}
+                {!collapsed && (
                     <div>
-                        <tw.CategoryButton onClick={onNewDoc} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <tw.CategoryButton onClick={newDoc} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <span>로컬 저장</span>
                             <span title="새 문서" className="flex items-center opacity-60 hover:opacity-100">
                                 <PlusIcon color="currentColor" width="16" height="16" />
                             </span>
                         </tw.CategoryButton>
-                        <tw.CategoryList>
-                            {localDocs.length === 0 ? (
-                                <tw.CategoryItem>
-                                    <div className="px-2 py-1 text-xs text-(--text-faint)">저장된 문서 없음</div>
-                                </tw.CategoryItem>
-                            ) : (
-                                localDocs.map((doc) => (
+                        {localDocs.length === 0 ? (
+                            <div className="px-2 py-1 text-xs text-(--text-faint)">저장된 문서 없음</div>
+                        ) : (
+                            <tw.CategoryList>
+                                {localDocs.map((doc) => (
                                     <tw.CategoryItem key={doc.id}>
                                         <div
                                             className={`group flex items-center w-full rounded-md px-2 py-1 cursor-pointer hover:bg-(--hover-bg) ${
-                                                doc.id === activeDocId ? "bg-(--hover-bg) text-(--text-strong)" : "text-(--text-faint)"
+                                                doc.id === activeDocId && pathname === "/newpage"
+                                                    ? "bg-(--hover-bg) text-(--text-strong)"
+                                                    : "text-(--text-faint)"
                                             }`}
-                                            onClick={() => onSelectDoc?.(doc.id)}
+                                            onClick={() => openDoc(doc.id)}
                                         >
                                             <span className="w-5 h-5 mr-2 shrink-0 flex items-center justify-center">
                                                 <DocIcon color="currentColor" width="16" height="16" />
@@ -167,16 +184,16 @@ export default function PostListDrawer({
                                                 className="ml-1 hidden group-hover:flex items-center opacity-60 hover:opacity-100"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    onDeleteDoc?.(doc.id);
+                                                    removeDoc(doc.id);
                                                 }}
                                             >
                                                 <ReduceIcon color="currentColor" width="14" height="14" />
                                             </span>
                                         </div>
                                     </tw.CategoryItem>
-                                ))
-                            )}
-                        </tw.CategoryList>
+                                ))}
+                            </tw.CategoryList>
+                        )}
                     </div>
                 )}
 
