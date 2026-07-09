@@ -57,12 +57,10 @@ export const Hr = tw.hr`my-10 w-full h-[1px] bg-t-main`;
 
 export const Pre = tw.pre`my-0`;
 
-export const Li = tw.li`
-    relative pl-6 py-1 text-base
-    before:content-['●'] before:font-bold before:text-[5px]
-    before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2
-    before:pr-3
-`;
+// 리스트: 에디터와 맞춰 ul=점, ol=숫자 (마커 색은 본문색). 예전엔 Li가 항상 ●라 번호목록이 깨졌음.
+export const Ul = tw.ul`list-disc pl-[1.6em] my-1 marker:text-(--text)`;
+export const Ol = tw.ol`list-decimal pl-[1.6em] my-1 marker:text-(--text)`;
+export const Li = tw.li`py-[3px] text-[16px] text-(--text)`;
 
 // 노션식 코드블록: 어두운 배경 컨테이너 + 미니 언어라벨 + 모노. 색상은 hljs(atom-one-dark)가 담당.
 export const CodeWrapC = tw.div`relative my-5 rounded-lg overflow-hidden bg-[#282c34] text-[13px] leading-relaxed`;

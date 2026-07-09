@@ -40,6 +40,14 @@ export function A({ href, children }: { href?: string; children?: React.ReactNod
     );
 }
 
+export function Ul({ children }: { children?: React.ReactNode }) {
+    return <tw.Ul>{children}</tw.Ul>;
+}
+
+export function Ol({ children }: { children?: React.ReactNode }) {
+    return <tw.Ol>{children}</tw.Ol>;
+}
+
 export function Li({ children }: { children?: React.ReactNode }) {
     return <tw.Li>{children}</tw.Li>;
 }
@@ -58,6 +66,16 @@ export function Strong({ children }: { children?: React.ReactNode }) {
 
 export function Em({ children }: { children?: React.ReactNode }) {
     return <tw.Em>{children}</tw.Em>;
+}
+
+// 에디터가 토글 목록을 <ToggleText>로 내보냄 → 포스트에서 크래시 방지 + 에디터와 유사하게 삼각형 표시
+export function ToggleText({ children }: { children?: React.ReactNode }) {
+    return (
+        <div className="flex items-start gap-2 py-[3px] text-[16px] text-(--text)">
+            <span className="mt-[4px] select-none text-[11px] text-(--text-muted)">▶</span>
+            <span>{children}</span>
+        </div>
+    );
 }
 
 export function Img({ title, src, children }: { title?: string; src?: string; children?: React.ReactNode }) {

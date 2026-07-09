@@ -1,4 +1,4 @@
-import { Hr, H1, H2, P, Code, Strong, Pre, H3, A, Li, Em, Img } from "@/components/mdx/mdx-components/components"
+import { Hr, H1, H2, P, Code, Strong, Pre, H3, A, Li, Ul, Ol, Em, Img, ToggleText } from "@/components/mdx/mdx-components/components"
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
 import { getArticleMetadata, JSONLD } from "@/util/seo"
@@ -8,8 +8,8 @@ import { compilePost, makeGenerateStaticParams } from "@/components/mdx/postRout
 const FOLDER = "prac"
 
 const components = {
-    h1: H1, h2: H2, h3: H3, p: P, a: A, li: Li, hr: Hr, pre: Pre,
-    code: Code, strong: Strong, em: Em, img: Img,
+    h1: H1, h2: H2, h3: H3, p: P, a: A, li: Li, ul: Ul, ol: Ol, hr: Hr, pre: Pre,
+    code: Code, strong: Strong, em: Em, img: Img, ToggleText,
 }
 
 export const generateStaticParams = makeGenerateStaticParams(FOLDER)
