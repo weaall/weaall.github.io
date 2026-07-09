@@ -1,7 +1,7 @@
 import { Hr, H1, H2, P, Code, Strong, Pre, H3, A, Li, Em, Img } from "@/components/mdx/mdx-components/components"
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
-import { getArticleMetadata } from "@/util/seo"
+import { getArticleMetadata, JSONLD } from "@/util/seo"
 import PracTitle from "@/components/post-title/PracTitle"
 import { compilePost, makeGenerateStaticParams } from "@/components/mdx/postRoutes"
 
@@ -22,8 +22,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
     if (!content) notFound()
 
+    const jsonLd = JSONLD(frontmatter, `https://weaall.github.io/${FOLDER}/${slug}`)
+
     return (
         <>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
             <PracTitle frontmatter={frontmatter} />
             {content}
         </>

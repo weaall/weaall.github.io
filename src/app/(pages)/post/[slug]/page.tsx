@@ -7,6 +7,7 @@ import { Metadata } from "next";
 import PostLayout from "./PostLayout";
 import getPostsData from "@/components/mdx/getMdx";
 import { compilePost, makeGenerateStaticParams } from "@/components/mdx/postRoutes";
+import { JSONLD } from "@/util/seo";
 
 const FOLDER = "post";
 
@@ -27,9 +28,13 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     if (!content) notFound()
 
     const postsData = await getPostsData("post");
+    const jsonLd = JSONLD(frontmatter, `https://weaall.github.io/${FOLDER}/${slug}`);
 
     return (
-        <PostLayout postsData={postsData} content={content} frontmatter={frontmatter} />
+        <>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+            <PostLayout postsData={postsData} content={content} frontmatter={frontmatter} />
+        </>
     )
 }
 

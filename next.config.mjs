@@ -7,7 +7,7 @@ const nextConfig = {
     output: "export",
     distDir: process.env.NEXT_DIST_DIR || ".next",
     pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
-    reactStrictMode: false,
+    reactStrictMode: true,
 };
 
 export default withMDX(nextConfig);

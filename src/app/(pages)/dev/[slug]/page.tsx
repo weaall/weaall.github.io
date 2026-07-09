@@ -8,6 +8,7 @@ import getPostsData from "@/components/mdx/getMdx"
 import * as tw from "./page.styles"
 import { DevMDXContent } from "@/components/dev-mdx/DevMDXContent"
 import { compilePost, makeGenerateStaticParams } from "@/components/mdx/postRoutes"
+import { JSONLD } from "@/util/seo"
 
 const FOLDER = "dev"
 
@@ -23,11 +24,13 @@ const compilePostMarkdown = (slug: string) => compilePost(FOLDER, slug, componen
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    const { content } = await compilePostMarkdown(slug)
+    const { content, frontmatter } = await compilePostMarkdown(slug)
     const postsData = await getPostsData("dev")
+    const jsonLd = JSONLD(frontmatter, `https://weaall.github.io/${FOLDER}/${slug}`)
 
     return (
         <tw.Container>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
             <DevList posts={postsData} />
             <DevMDXContent content={content} />
         </tw.Container>
