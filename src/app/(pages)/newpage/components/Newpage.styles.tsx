@@ -31,7 +31,7 @@ export const EditableTitle = tw.div`
   font-bold
   text-(--text-strong)
   text-(--text)
-  px-[2px] pt-[3px] pb-0
+  px-[2px] py-[3px] leading-[1.4]
   outline-none
   cursor-text
   relative

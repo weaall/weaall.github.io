@@ -20,7 +20,7 @@ export const EditablePBlock = tw.div`
   min-h-[1em]
   text-(--text-strong)
   text-(--text)
-  px-[2px] pt-[3px] pb-0
+  px-[2px] py-[3px] leading-[1.4]
   outline-none
   cursor-text
   text-[16px]
@@ -40,7 +40,7 @@ export const EditableH1Block = tw.div`
   font-bold
   text-(--text-strong)
   text-(--text)
-  px-[2px] pt-[3px] pb-0
+  px-[2px] py-[3px] leading-[1.4]
   outline-none
   cursor-text
   text-[30px] font-bold
@@ -60,7 +60,7 @@ export const EditableH2Block = tw.div`
   font-semibold
   text-(--text-strong)
   text-(--text)
-  px-[2px] pt-[3px] pb-0
+  px-[2px] py-[3px] leading-[1.4]
   outline-none
   cursor-text
   text-[24px] font-semibold
@@ -80,7 +80,7 @@ export const EditableH3Block = tw.div`
   font-medium
   text-(--text-strong)
   text-(--text)
-  px-[2px] pt-[3px] pb-0
+  px-[2px] py-[3px] leading-[1.4]
   outline-none
   cursor-text
   relative
@@ -97,7 +97,7 @@ export const EditableUlBlockWrap = tw.div`
 `;
 
 export const EditableUlBlockTag = tw.div`
-  pt-[10px] pr-[10px]
+  pt-[11px] pr-[10px]
   before:content-['']
   before:block
   before:w-[7px]
@@ -113,7 +113,7 @@ export const EditableUlBlock = tw.div`
   min-h-[1em]
   text-(--text-strong)
   text-(--text)
-  px-[2px] pt-[3px] pb-0
+  px-[2px] py-[3px] leading-[1.4]
   outline-none
   cursor-text
   text-[16px]
@@ -131,6 +131,7 @@ export const EditableNumberedListBlockWrap = tw.div`
 
 export const EditableNumberedListBlockTag = tw.div`
   pt-[3px] pr-[10px]
+  leading-[1.4]
   before:content-[attr(data-number)'.']
   before:text-[16px]
   before:font-medium
@@ -147,7 +148,7 @@ export const EditableNumberedListBlock = tw.div`
   font-medium
   text-(--text-strong)
   text-(--text)
-  px-[2px] pt-[3px] pb-0
+  px-[2px] py-[3px] leading-[1.4]
   outline-none
   cursor-text
   text-[16px]
@@ -198,7 +199,7 @@ export const EditableCheckedListBlock = tw.div`
   font-medium
   text-(--text-strong)
   text-(--text)
-  px-[2px] pt-[3px] pb-0
+  px-[2px] py-[3px] leading-[1.4]
   outline-none
   cursor-text
   text-[16px]
@@ -223,7 +224,7 @@ export const EditableTogglePBlock = tw.div`
   min-h-[1em]
   text-(--text-strong)
   text-(--text)
-  px-[2px] pt-[3px] pb-0
+  px-[2px] py-[3px] leading-[1.4]
   outline-none
   cursor-text
   text-[16px]
