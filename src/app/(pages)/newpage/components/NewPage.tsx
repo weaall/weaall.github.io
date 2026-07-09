@@ -66,8 +66,6 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         // 텍스트/핸들/버튼에서 시작하면 마퀴 안 함 (여백·갓터 등 빈 영역만)
         if (t.closest("[contenteditable]") || t.closest("button") || t.closest("[data-btn-idx]")) return;
         e.preventDefault(); // 마퀴 드래그 중 텍스트 선택 방지
-        // 포커스된 블록을 해제 (블록 선택 모드에서 네이티브 붙여넣기가 그 블록에 들어가지 않게)
-        (document.activeElement as HTMLElement | null)?.blur?.();
         marqueeStartRef.current = { x: e.clientX, y: e.clientY };
         setMarquee({ x0: e.clientX, y0: e.clientY, x1: e.clientX, y1: e.clientY });
         setSelRange(null);
@@ -172,34 +170,32 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         setSelRange({ a: insertAt, b: insertAt + newBlocks.length - 1 });
     };
 
-    // 블록 선택 모드(selRange 활성)에서만 Ctrl+C/X/V를 블록 단위로 가로챈다.
-    // (선택이 없으면 일반 텍스트 복사/붙여넣기 그대로)
+    // 블록 선택 모드(selRange 활성)에서 clipboard 이벤트를 블록 단위로 가로챈다.
+    // (선택이 없으면 일반 텍스트 복사/붙여넣기 그대로 — keydown보다 clipboard 이벤트가 확실)
     useEffect(() => {
-        const onKey = (e: KeyboardEvent) => {
-            if (!(e.ctrlKey || e.metaKey) || !selRange) return;
-            const key = e.key.toLowerCase();
-            if (key === "c") {
-                e.preventDefault();
-                copySelection();
-            } else if (key === "x") {
-                e.preventDefault();
-                copySelection();
-                deleteSelectedBlocks();
-            } else if (key === "v" && clipboardRef.current) {
-                e.preventDefault();
-                pasteAfterSelection();
-            }
+        const onCopy = (e: ClipboardEvent) => {
+            if (!selRange) return;
+            e.preventDefault();
+            copySelection();
         };
-        // 포커스된 편집영역이 있으면 keydown이 막혀도 paste 이벤트가 날 수 있으니 네이티브 삽입만 차단
+        const onCut = (e: ClipboardEvent) => {
+            if (!selRange) return;
+            e.preventDefault();
+            copySelection();
+            deleteSelectedBlocks();
+        };
         const onPaste = (e: ClipboardEvent) => {
             if (!selRange) return;
             e.preventDefault();
+            if (clipboardRef.current) pasteAfterSelection();
         };
-        window.addEventListener("keydown", onKey);
-        window.addEventListener("paste", onPaste);
+        document.addEventListener("copy", onCopy);
+        document.addEventListener("cut", onCut);
+        document.addEventListener("paste", onPaste);
         return () => {
-            window.removeEventListener("keydown", onKey);
-            window.removeEventListener("paste", onPaste);
+            document.removeEventListener("copy", onCopy);
+            document.removeEventListener("cut", onCut);
+            document.removeEventListener("paste", onPaste);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selRange, selMin, selMax, blocks, blockColors, blockFormattedRanges]);
