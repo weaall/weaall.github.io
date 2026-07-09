@@ -144,34 +144,38 @@ export default function PostListDrawer({
                             </span>
                         </tw.CategoryButton>
                         <tw.CategoryList>
-                            {localDocs.length === 0 && (
-                                <div className="px-2 py-1 text-xs text-(--text-faint)">저장된 문서 없음</div>
+                            {localDocs.length === 0 ? (
+                                <tw.CategoryItem>
+                                    <div className="px-2 py-1 text-xs text-(--text-faint)">저장된 문서 없음</div>
+                                </tw.CategoryItem>
+                            ) : (
+                                localDocs.map((doc) => (
+                                    <tw.CategoryItem key={doc.id}>
+                                        <div
+                                            className={`group flex items-center w-full rounded-md px-2 py-1 cursor-pointer hover:bg-(--hover-bg) ${
+                                                doc.id === activeDocId ? "bg-(--hover-bg) text-(--text-strong)" : "text-(--text-faint)"
+                                            }`}
+                                            onClick={() => onSelectDoc?.(doc.id)}
+                                        >
+                                            <span className="w-5 h-5 mr-2 shrink-0 flex items-center justify-center">
+                                                <DocIcon color="currentColor" width="16" height="16" />
+                                            </span>
+                                            <span className="flex-1 truncate text-sm">{doc.title || "제목 없음"}</span>
+                                            <span
+                                                role="button"
+                                                aria-label="삭제"
+                                                className="ml-1 hidden group-hover:flex items-center opacity-60 hover:opacity-100"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onDeleteDoc?.(doc.id);
+                                                }}
+                                            >
+                                                <ReduceIcon color="currentColor" width="14" height="14" />
+                                            </span>
+                                        </div>
+                                    </tw.CategoryItem>
+                                ))
                             )}
-                            {localDocs.map((doc) => (
-                                <div
-                                    key={doc.id}
-                                    className={`group flex items-center w-full rounded-md px-2 py-1 cursor-pointer hover:bg-(--hover-bg) ${
-                                        doc.id === activeDocId ? "bg-(--hover-bg) text-(--text-strong)" : "text-(--text-faint)"
-                                    }`}
-                                    onClick={() => onSelectDoc?.(doc.id)}
-                                >
-                                    <span className="w-5 h-5 mr-2 shrink-0 flex items-center justify-center">
-                                        <DocIcon color="currentColor" width="16" height="16" />
-                                    </span>
-                                    <span className="flex-1 truncate text-sm">{doc.title || "제목 없음"}</span>
-                                    <span
-                                        role="button"
-                                        aria-label="삭제"
-                                        className="ml-1 hidden group-hover:flex items-center opacity-60 hover:opacity-100"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            onDeleteDoc?.(doc.id);
-                                        }}
-                                    >
-                                        <ReduceIcon color="currentColor" width="14" height="14" />
-                                    </span>
-                                </div>
-                            ))}
                         </tw.CategoryList>
                     </div>
                 )}
