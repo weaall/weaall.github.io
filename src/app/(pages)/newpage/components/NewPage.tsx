@@ -106,15 +106,10 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         };
     }, [marquee !== null]);
 
-    // 블록 복사/붙여넣기: 선택된 블록을 통째로(타입+내용+서식) 복제한다.
-    const clipboardRef = useRef<{
-        blocks: Block[];
-        colors: { [id: string]: string };
-        ranges: { [id: string]: FormattedRange[] };
-    } | null>(null);
+    // 블록 복사/붙여넣기: OS 클립보드에 커스텀 타입으로 담아, 텍스트냐 블록이냐를 붙여넣을 때 구분한다.
+    const CLIP_TYPE = "application/x-newpage-blocks";
 
-    const copySelection = () => {
-        if (!selRange) return;
+    const buildBlockPayload = () => {
         const slice = blocks.slice(selMin, selMax + 1);
         const colors: { [id: string]: string } = {};
         const ranges: { [id: string]: FormattedRange[] } = {};
@@ -122,7 +117,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
             if (blockColors[b.id]) colors[b.id] = blockColors[b.id];
             if (blockFormattedRanges[b.id]) ranges[b.id] = blockFormattedRanges[b.id];
         });
-        clipboardRef.current = { blocks: JSON.parse(JSON.stringify(slice)), colors, ranges };
+        return { blocks: slice, colors, ranges };
     };
 
     const deleteSelectedBlocks = () => {
@@ -145,23 +140,26 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         setSelRange(null);
     };
 
-    const pasteAfterSelection = () => {
-        const clip = clipboardRef.current;
-        if (!clip || !selRange) return;
+    // targetIdx 블록 "아래"에 붙여넣기 (새 id 발급 + 색상/서식 이전)
+    const pasteBlocksAfter = (
+        targetIdx: number,
+        payload: { blocks: Block[]; colors?: { [id: string]: string }; ranges?: { [id: string]: FormattedRange[] } },
+    ) => {
+        if (!payload.blocks?.length) return;
         const idMap: { [old: string]: string } = {};
-        const newBlocks = clip.blocks.map((b) => {
+        const newBlocks = payload.blocks.map((b) => {
             const id = crypto.randomUUID();
             idMap[b.id] = id;
             return { ...b, id };
         });
         const newColors: { [id: string]: string } = {};
         const newRanges: { [id: string]: FormattedRange[] } = {};
-        clip.blocks.forEach((b) => {
+        payload.blocks.forEach((b) => {
             const nid = idMap[b.id];
-            if (clip.colors[b.id]) newColors[nid] = clip.colors[b.id];
-            if (clip.ranges[b.id]) newRanges[nid] = clip.ranges[b.id];
+            if (payload.colors?.[b.id]) newColors[nid] = payload.colors[b.id];
+            if (payload.ranges?.[b.id]) newRanges[nid] = payload.ranges[b.id];
         });
-        const insertAt = selMax + 1;
+        const insertAt = targetIdx + 1;
         setBlocks((prev) => {
             const arr = [...prev];
             arr.splice(insertAt, 0, ...newBlocks);
@@ -172,39 +170,74 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         setSelRange({ a: insertAt, b: insertAt + newBlocks.length - 1 });
     };
 
-    // 블록 선택 모드(selRange 활성)에서 clipboard 이벤트를 블록 단위로 가로챈다.
-    // (선택이 없으면 일반 텍스트 복사/붙여넣기 그대로 — keydown보다 clipboard 이벤트가 확실)
     useEffect(() => {
-        // 텍스트 편집 중(contentEditable 포커스)이면 항상 네이티브 처리 → 블록 op는 선택 모드일 때만
         const isEditingText = () => !!(document.activeElement as HTMLElement | null)?.isContentEditable;
+
+        // 복사/잘라내기: 블록 선택 모드일 때만 블록을 OS 클립보드에 담는다 (편집 중이면 네이티브 텍스트)
         const onCopy = (e: ClipboardEvent) => {
-            if (!selRange || isEditingText()) return;
+            if (!selRange || isEditingText() || !e.clipboardData) return;
             e.preventDefault();
-            copySelection();
+            const p = buildBlockPayload();
+            e.clipboardData.setData(CLIP_TYPE, JSON.stringify(p));
+            e.clipboardData.setData("text/plain", p.blocks.map((b) => b.content).join("\n"));
         };
         const onCut = (e: ClipboardEvent) => {
-            if (!selRange || isEditingText()) return;
+            if (!selRange || isEditingText() || !e.clipboardData) return;
             e.preventDefault();
-            copySelection();
+            const p = buildBlockPayload();
+            e.clipboardData.setData(CLIP_TYPE, JSON.stringify(p));
+            e.clipboardData.setData("text/plain", p.blocks.map((b) => b.content).join("\n"));
             deleteSelectedBlocks();
         };
+        // 붙여넣기: 클립보드에 블록 데이터가 있으면(=블록을 복사했으면) 편집 중이어도 현재 블록 아래에 블록 삽입.
+        // 없으면(일반 텍스트) 네이티브 그대로.
         const onPaste = (e: ClipboardEvent) => {
-            if (!selRange || isEditingText()) return;
+            const data = e.clipboardData?.getData(CLIP_TYPE);
+            if (!data) return;
+            let payload;
+            try {
+                payload = JSON.parse(data);
+            } catch {
+                return;
+            }
+            if (!payload?.blocks?.length) return;
             e.preventDefault();
-            if (clipboardRef.current) pasteAfterSelection();
+
+            let target: number;
+            if (isEditingText()) {
+                const activeId = (document.activeElement as HTMLElement).id;
+                target = blocksRef.current.findIndex((b) => b.id === activeId);
+                if (target === -1) target = blocksRef.current.length - 1;
+                (document.activeElement as HTMLElement).blur(); // 붙여넣은 블록 선택이 보이게
+            } else if (selRange) {
+                target = selMax;
+            } else {
+                target = blocksRef.current.length - 1;
+            }
+            pasteBlocksAfter(target, payload);
         };
-        const onEsc = (e: KeyboardEvent) => {
-            if (e.key === "Escape" && selRange) clearSelection();
+
+        // Delete/Backspace: 선택된 블록 전체 삭제 / Escape: 선택 해제
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape" && selRange) {
+                clearSelection();
+                return;
+            }
+            if ((e.key === "Delete" || e.key === "Backspace") && selRange && !isEditingText()) {
+                e.preventDefault();
+                deleteSelectedBlocks();
+            }
         };
+
         document.addEventListener("copy", onCopy);
         document.addEventListener("cut", onCut);
         document.addEventListener("paste", onPaste);
-        window.addEventListener("keydown", onEsc);
+        window.addEventListener("keydown", onKeyDown);
         return () => {
             document.removeEventListener("copy", onCopy);
             document.removeEventListener("cut", onCut);
             document.removeEventListener("paste", onPaste);
-            window.removeEventListener("keydown", onEsc);
+            window.removeEventListener("keydown", onKeyDown);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selRange, selMin, selMax, blocks, blockColors, blockFormattedRanges]);
@@ -817,7 +850,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
             {/* 마퀴 선택 박스 */}
             {marquee && (Math.abs(marquee.x1 - marquee.x0) > 3 || Math.abs(marquee.y1 - marquee.y0) > 3) && (
                 <div
-                    className="pointer-events-none fixed z-[1500] rounded-[2px] border border-[#3772ff]/40 bg-[#e0edfb]/40"
+                    className="pointer-events-none fixed z-[1500] rounded-[2px] bg-[#3772ff]/20"
                     style={{
                         left: Math.min(marquee.x0, marquee.x1),
                         top: Math.min(marquee.y0, marquee.y1),
