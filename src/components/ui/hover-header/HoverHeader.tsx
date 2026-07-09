@@ -31,7 +31,7 @@ export default function HoverHeader({ visible, collapsed }: HoverHeaderProps) {
                 <tw.LabelBtn>편집</tw.LabelBtn>
             </tw.LeftWrap>
             <tw.RightWrap>
-                <tw.LabelBtn>공유</tw.LabelBtn>
+                <tw.LabelBtn onClick={() => window.dispatchEvent(new Event("newpage:share"))}>공유</tw.LabelBtn>
             </tw.RightWrap>
         </tw.Container>
     );

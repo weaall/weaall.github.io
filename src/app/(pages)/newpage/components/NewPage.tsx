@@ -6,6 +6,7 @@ import { ELEMENTS } from "./menu-modal/TypeElement";
 import { blocksToMDX } from "./helper/BlocksToMdx";
 import { FormattedRange } from "./text-modal/TextFormat.modal";
 import BlockRow from "./BlockRow";
+import ShareModal from "./ShareModal";
 import { useBlockHistory } from "../hooks/useBlockHistory";
 import { useBlockDnD } from "../hooks/useBlockDnD";
 import { getDoc, saveDoc } from "../lib/localDocs";
@@ -38,6 +39,14 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
     const [hoverId, setHoverId] = useState<string | null>(null);
     const [menuId, setMenuId] = useState<string | null>(null);
     const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
+    const [showShare, setShowShare] = useState(false);
+
+    // 상단 헤더의 "공유" 버튼(HoverHeader) 클릭 시 커스텀 이벤트로 공유 모달을 연다.
+    useEffect(() => {
+        const open = () => setShowShare(true);
+        window.addEventListener("newpage:share", open);
+        return () => window.removeEventListener("newpage:share", open);
+    }, []);
     const divRef = useRef<HTMLDivElement>(null);
     const dotRefs = useRef<{ [id: string]: HTMLButtonElement | null }>({});
     const [isTitleEmpty, setIsTitleEmpty] = useState(true);
@@ -621,14 +630,12 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                 />
             </div>
             
-            <div className="fixed bottom-6 right-6 z-50">
-                <button
-                    className="px-4 py-2 rounded-md border border-(--border) bg-(--menu-bg) text-sm font-medium text-(--text) shadow-sm hover:bg-(--hover-bg) transition"
-                    onClick={handleExport}
-                >
-                    MDX 내보내기
-                </button>
-            </div>
+            <ShareModal
+                open={showShare}
+                onClose={() => setShowShare(false)}
+                onExport={handleExport}
+                postUrl={`https://weaall.github.io/post/${(meta.title || "untitled").replace(/ /g, "_")}`}
+            />
         </tw.Container>
     );
 }
