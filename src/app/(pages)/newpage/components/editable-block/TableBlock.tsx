@@ -143,12 +143,6 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         d.rowColors!.splice(i, 0, null);
         d.rowTextColors!.splice(i, 0, null);
     };
-    const insertColAt = (i: number) => {
-        d.rows.forEach((row) => row.splice(i, 0, ""));
-        d.colColors!.splice(i, 0, null);
-        d.colTextColors!.splice(i, 0, null);
-        d.colWidths!.splice(i, 0, null); // 새 열은 자동 너비
-    };
     const duplicateRow = (r: number) => {
         d.rows.splice(r + 1, 0, [...d.rows[r]]);
         d.rowColors!.splice(r + 1, 0, d.rowColors![r] ?? null);
@@ -219,6 +213,38 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         window.addEventListener("mouseup", onUp);
     };
 
+    // 현재 열 실제 렌더 너비
+    const measureCol = (i: number) => wrapRef.current?.querySelector<HTMLElement>(`td[data-c="${i}"]`)?.getBoundingClientRect().width ?? 120;
+    // 편집 영역(고정 컬럼) 안에서 표가 가질 수 있는 최대 너비
+    const maxTableWidth = () => {
+        const tableEl = wrapRef.current?.querySelector("table");
+        const tableLeft = tableEl?.getBoundingClientRect().left ?? 0;
+        const colRight = wrapRef.current?.closest("[data-editor-col]")?.getBoundingClientRect().right ?? window.innerWidth;
+        return Math.max(200, colRight - tableLeft - 24);
+    };
+
+    // 열 추가: 표가 최대폭을 넘지 않게. 공간이 부족하면 기존 열을 비례 축소해 자리를 만든다.
+    const insertColFit = (i: number) => {
+        const maxW = maxTableWidth();
+        const widths: number[] = [];
+        for (let k = 0; k < cols; k++) widths.push(d.colWidths![k] || Math.round(measureCol(k)));
+        const sum = widths.reduce((a, b) => a + b, 0);
+        let newW = Math.min(160, Math.max(MIN_W, maxW - sum));
+        if (sum + newW > maxW) {
+            // 부족분을 기존 열에서 비례 축소(각 열은 MIN_W까지만)
+            const need = sum + newW - maxW;
+            const slack = sum - cols * MIN_W;
+            const factor = slack > 0 ? Math.max(0, (slack - need) / slack) : 0;
+            for (let k = 0; k < cols; k++) widths[k] = Math.max(MIN_W, Math.round(MIN_W + (widths[k] - MIN_W) * factor));
+            newW = MIN_W;
+        }
+        d.colWidths = widths;
+        d.colWidths.splice(i, 0, newW);
+        d.rows.forEach((row) => row.splice(i, 0, ""));
+        d.colColors!.splice(i, 0, null);
+        d.colTextColors!.splice(i, 0, null);
+    };
+
     const noFocus = (fn: () => void) => (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
@@ -253,10 +279,10 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                   : []),
               menu.kind === "row"
                   ? { icon: P_UP, label: "위에 삽입", run: () => insertRowAt(menu.index) }
-                  : { icon: P_UP, rotate: -90, label: "왼쪽에 삽입", run: () => insertColAt(menu.index) },
+                  : { icon: P_UP, rotate: -90, label: "왼쪽에 삽입", run: () => insertColFit(menu.index) },
               menu.kind === "row"
                   ? { icon: P_DOWN, label: "아래에 삽입", run: () => insertRowAt(menu.index + 1) }
-                  : { icon: P_DOWN, rotate: -90, label: "오른쪽에 삽입", run: () => insertColAt(menu.index + 1) },
+                  : { icon: P_DOWN, rotate: -90, label: "오른쪽에 삽입", run: () => insertColFit(menu.index + 1) },
               { icon: P_DUP, label: "복제", run: () => (menu.kind === "row" ? duplicateRow(menu.index) : duplicateCol(menu.index)) },
               { icon: P_CLEAR, label: "콘텐츠 삭제", run: () => (menu.kind === "row" ? clearRow(menu.index) : clearCol(menu.index)) },
               { iconNode: <TrashBinIcon color="#5f5e5b" />, label: "삭제", danger: true, run: () => (menu.kind === "row" ? removeRow(menu.index) : removeCol(menu.index)) },
@@ -346,13 +372,13 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                 />
             )}
 
-            <button className={`${addBtn} top-[18px] right-0 bottom-[18px] w-[14px]`} onMouseDown={noFocus(() => apply(() => insertColAt(cols)))} title="열 추가">
+            <button className={`${addBtn} top-[18px] right-0 bottom-[18px] w-[14px]`} onMouseDown={noFocus(() => apply(() => insertColFit(cols)))} title="열 추가">
                 +
             </button>
             <button className={`${addBtn} bottom-0 left-[18px] right-[18px] h-[14px]`} onMouseDown={noFocus(() => apply(() => insertRowAt(grid.length)))} title="행 추가">
                 +
             </button>
-            <button className={`${addBtn} bottom-0 right-0 h-[14px] w-[14px]`} onMouseDown={noFocus(() => apply(() => { insertColAt(cols); insertRowAt(grid.length); }))} title="행·열 추가">
+            <button className={`${addBtn} bottom-0 right-0 h-[14px] w-[14px]`} onMouseDown={noFocus(() => apply(() => { insertColFit(cols); insertRowAt(grid.length); }))} title="행·열 추가">
                 +
             </button>
 
