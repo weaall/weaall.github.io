@@ -202,25 +202,17 @@ export function blocksToMDX(
                     )}" />`;
                 case "table": {
                     numberedListCounter = 1;
-                    // content = {rows: string[][]} — 첫 행이 헤더. GFM 마크다운 표로 출력.
-                    let trows: string[][] = [];
+                    // 배경색/제목행·열을 보존하려고 GFM 표가 아니라 <DataTable> 컴포넌트로 내보낸다.
+                    // content = {rows, headerRow, headerCol, rowColors, colColors} JSON → URI 인코딩.
+                    let ok = false;
                     try {
                         const p = JSON.parse(b.content || "{}");
-                        if (Array.isArray(p.rows)) trows = p.rows;
+                        ok = Array.isArray(p.rows) && p.rows.length > 0;
                     } catch {
-                        /* 무시 */
+                        ok = false;
                     }
-                    if (!trows.length) return "";
-                    const cell = (s: unknown) =>
-                        String(s ?? "")
-                            .replace(/\|/g, "\\|")
-                            .replace(/\n/g, " ")
-                            .trim() || " ";
-                    const ncols = trows[0].length;
-                    const header = `| ${trows[0].map(cell).join(" | ")} |`;
-                    const sep = `| ${Array(ncols).fill("---").join(" | ")} |`;
-                    const body = trows.slice(1).map((r) => `| ${r.map(cell).join(" | ")} |`);
-                    return [header, sep, ...body].join("\n");
+                    if (!ok) return "";
+                    return `<DataTable data="${encodeURIComponent(b.content)}" />`;
                 }
                 default:
                     numberedListCounter = 1;

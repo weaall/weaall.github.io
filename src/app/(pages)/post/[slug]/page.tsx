@@ -3,6 +3,7 @@ import {
     Table, Thead, Tbody, Tr, Th, Td, H4, P, Span, ToggleText,
 } from "@/components/mdx/mdx-components/components";
 import BarChart from "@/components/mdx/mdx-components/BarChart";
+import DataTable from "@/components/mdx/mdx-components/DataTable";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import PostLayout from "./PostLayout";
@@ -16,7 +17,7 @@ const components = {
     h1: H1, h2: H2, h3: H3, h4: H4, a: A, p: P, li: Li, ul: Ul, ol: Ol, hr: Hr, pre: Pre,
     code: Code, strong: Strong, em: Em, img: Img,
     table: Table, thead: Thead, tbody: Tbody, tr: Tr, th: Th, td: Td, span: Span,
-    ToggleText, BarChart,
+    ToggleText, BarChart, DataTable,
 };
 
 export const generateStaticParams = makeGenerateStaticParams(FOLDER);
