@@ -327,7 +327,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                     <tm.MenuButton key={label} onMouseDown={noFocus(() => apply(() => setColor(c)))}>
                                         <tm.LabelWrap>
                                             <tm.SvgWrap>
-                                                <span className="h-4 w-4 rounded-[3px] border border-black/10" style={{ background: c ?? "#ffffff" }} />
+                                                <div className="h-4 w-4 rounded-[4px] border border-black/15" style={{ background: c ?? "#ffffff" }} />
                                             </tm.SvgWrap>
                                             {label}
                                         </tm.LabelWrap>
