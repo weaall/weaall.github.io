@@ -393,6 +393,9 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
     const [iconPicker, setIconPicker] = useState<{ top: number; left: number } | null>(null);
     const [catPicker, setCatPicker] = useState<{ top: number; left: number } | null>(null);
     const [tagInput, setTagInput] = useState("");
+    // 부제목/태그는 버튼으로 추가(아이콘처럼). 이미 내용이 있으면 열린 상태로 시작.
+    const [showSubtitle, setShowSubtitle] = useState(!!initialDoc?.subTitle);
+    const [showTags, setShowTags] = useState(!!(initialDoc?.tags && initialDoc.tags.length));
 
     const { draggingIdx, insertLineIdx, dragPreview, dragPos, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } =
         useBlockDnD(
@@ -972,6 +975,22 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                                         📁 카테고리 추가
                                     </button>
                                 )}
+                                {!showSubtitle && (
+                                    <button
+                                        className="flex items-center gap-1 rounded-[6px] px-2 py-1 text-sm text-(--text-muted) hover:bg-(--hover-bg)"
+                                        onClick={() => setShowSubtitle(true)}
+                                    >
+                                        📝 부제목 추가
+                                    </button>
+                                )}
+                                {!showTags && (
+                                    <button
+                                        className="flex items-center gap-1 rounded-[6px] px-2 py-1 text-sm text-(--text-muted) hover:bg-(--hover-bg)"
+                                        onClick={() => setShowTags(true)}
+                                    >
+                                        🏷️ 태그 추가
+                                    </button>
+                                )}
                             </div>
                         </div>
                         <tw.TitleBlock>
@@ -986,14 +1005,18 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                                 data-placeholder="새 페이지"
                             />
                         </tw.TitleBlock>
-                        {/* 부제목 */}
-                        <input
-                            className="mt-1 w-full bg-transparent px-[2px] text-[16px] text-(--text-muted) outline-none placeholder:text-(--placeholder)"
-                            placeholder="부제목을 입력하세요"
-                            value={meta.subTitle}
-                            onChange={(e) => setMeta((prev) => ({ ...prev, subTitle: e.target.value }))}
-                        />
-                        {/* 태그 */}
+                        {/* 부제목 (버튼으로 추가) */}
+                        {showSubtitle && (
+                            <input
+                                autoFocus={!meta.subTitle}
+                                className="mt-1 w-full bg-transparent px-[2px] text-[16px] text-(--text-muted) outline-none placeholder:text-(--placeholder)"
+                                placeholder="부제목을 입력하세요"
+                                value={meta.subTitle}
+                                onChange={(e) => setMeta((prev) => ({ ...prev, subTitle: e.target.value }))}
+                            />
+                        )}
+                        {/* 태그 (버튼으로 추가) */}
+                        {showTags && (
                         <div className="mt-2 mb-1 flex flex-wrap items-center gap-1 px-[2px]">
                             {meta.tags.map((t, i) => (
                                 <span key={`${t}-${i}`} className="flex items-center gap-1 rounded-[6px] bg-(--hover-bg) px-2 py-0.5 text-xs text-(--text-muted)">
@@ -1024,6 +1047,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                                 }}
                             />
                         </div>
+                        )}
                     </div>
                 </tw.BlockWrap>
 
