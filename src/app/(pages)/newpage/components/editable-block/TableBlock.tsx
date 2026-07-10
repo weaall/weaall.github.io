@@ -314,7 +314,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
             active ? "!bg-[#3b82f6] !opacity-100" : "bg-[#c4c4c2] hover:bg-[#3b82f6]"
         }`;
     const addBtn =
-        "absolute flex items-center justify-center rounded-[4px] border border-(--border) bg-(--hover-bg) text-(--text-muted) opacity-0 transition-opacity group-hover/table:opacity-100 hover:!bg-[#e3e2df]";
+        "absolute flex items-center justify-center rounded-[4px] border border-(--border) bg-(--hover-bg) text-(--text-muted) opacity-0 transition-all group-hover/table:opacity-100 hover:!border-[#3b82f6] hover:!bg-[#e0edfb] hover:!text-[#3b82f6]";
 
     type Item = { icon?: string; iconNode?: React.ReactNode; label: string; run?: () => void; danger?: boolean; rotate?: number; color?: boolean; on?: boolean };
     const items: Item[] = menu
