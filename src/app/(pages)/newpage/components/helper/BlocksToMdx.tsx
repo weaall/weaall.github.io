@@ -113,7 +113,14 @@ export function blocksToMDX(
 
     // 블록을 MDX로 변환하는 메인 로직
     const body = blocks
-        .filter((b) => b.content.trim() !== "" || b.type === "divider" || b.type === "image" || b.type.startsWith("barChart"))
+        .filter(
+            (b) =>
+                b.content.trim() !== "" ||
+                b.type === "divider" ||
+                b.type === "image" ||
+                b.type === "table" ||
+                b.type.startsWith("barChart"),
+        )
         .map((b, index) => {
             const indentation = "  ".repeat(b.indentationLevel);
             
@@ -193,6 +200,28 @@ export function blocksToMDX(
                     return `<BarChart orient="${b.type === "barChartH" ? "h" : "v"}" data="${encodeURIComponent(
                         b.content || "{}",
                     )}" />`;
+                case "table": {
+                    numberedListCounter = 1;
+                    // content = {rows: string[][]} — 첫 행이 헤더. GFM 마크다운 표로 출력.
+                    let trows: string[][] = [];
+                    try {
+                        const p = JSON.parse(b.content || "{}");
+                        if (Array.isArray(p.rows)) trows = p.rows;
+                    } catch {
+                        /* 무시 */
+                    }
+                    if (!trows.length) return "";
+                    const cell = (s: unknown) =>
+                        String(s ?? "")
+                            .replace(/\|/g, "\\|")
+                            .replace(/\n/g, " ")
+                            .trim() || " ";
+                    const ncols = trows[0].length;
+                    const header = `| ${trows[0].map(cell).join(" | ")} |`;
+                    const sep = `| ${Array(ncols).fill("---").join(" | ")} |`;
+                    const body = trows.slice(1).map((r) => `| ${r.map(cell).join(" | ")} |`);
+                    return [header, sep, ...body].join("\n");
+                }
                 default:
                     numberedListCounter = 1;
                     return contentWithColor;

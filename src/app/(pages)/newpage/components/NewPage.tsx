@@ -143,6 +143,18 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // 표 셀/구조 변경 → 해당 표 블록 content(JSON) 갱신
+    useEffect(() => {
+        const onT = (e: Event) => {
+            const { id, content } = (e as CustomEvent<{ id: string; content: string }>).detail || {};
+            if (!id) return;
+            setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, content } : b)));
+        };
+        window.addEventListener("newpage:settable", onT);
+        return () => window.removeEventListener("newpage:settable", onT);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     // 그래프 데이터 저장 → 해당 블록 content(JSON)를 갱신
     const saveChart = (title: string, rows: ChartRow[]) => {
         if (!chartEditId) return;
@@ -573,7 +585,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
             if (blockId) setChartEditId(blockId); // 바로 데이터 입력 모달 열기
             return;
         }
-        if (type === "image") return;
+        if (type === "image" || type === "table") return;
         setTimeout(() => {
             if (!blockId) return;
             const blockElement = document.getElementById(blockId);

@@ -5,7 +5,7 @@ import { ELEMENTS } from "../menu-modal/TypeElement";
 // 인라인 타입 전환 목록 (구분선/그래프 등 텍스트 전환과 무관한 타입은 제외)
 const TYPE_ITEMS = ELEMENTS.filter(
     (e): e is { label: string; type: string; icon: React.ReactNode } =>
-        "type" in e && e.type !== "divider" && !e.type.startsWith("barChart"),
+        "type" in e && e.type !== "divider" && e.type !== "table" && !e.type.startsWith("barChart"),
 );
 
 export interface FormattedRange {

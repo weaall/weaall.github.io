@@ -8,6 +8,7 @@ import {
     H2BlockIcon,
     H3BlockIcon,
     NumberedListIcon,
+    TableIcon,
     TextBlockIcon,
 } from "@/components/ui/icons/TypeMenuSvg";
 import { ReactNode } from "react";
@@ -31,6 +32,7 @@ export const ELEMENTS: TypeMenuElement[] = [
     { label: "토글 제목2", type: "toggleH2", icon: <H2BlockIcon color="#5f5e5b" /> },
     { label: "토글 제목3", type: "toggleH3", icon: <H3BlockIcon color="#5f5e5b" /> },
     { divider: true },
+    { label: "표", type: "table", icon: <TableIcon color="#5f5e5b" /> },
     { label: "가로 막대그래프", type: "barChartH", icon: <BarChartHIcon color="#5f5e5b" /> },
     { label: "세로 막대그래프", type: "barChartV", icon: <BarChartVIcon color="#5f5e5b" /> },
 ];

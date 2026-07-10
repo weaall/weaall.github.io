@@ -93,9 +93,10 @@ export const ImgWrap = tw.span`w-full mx-auto py-6 text-center flex flex-col`;
 export const Img = tw.img`mx-auto`;
 export const ImgTitle = tw.span`w-full text-center text-xs text-gray-400`;
 
-export const Table = tw.table`w-full my-4 table-fixed mb-8`;
-export const Thead = tw.thead`bg-gray-50 text-left border-t border-t-gray-400 border-b border-b-gray-200 `;
+// 표: 에디터 TableBlock과 동일한 노션풍 보더 테이블 (내용 폭에 맞춤, 셀 보더 + 헤더 음영)
+export const Table = tw.table`my-3 border-collapse`;
+export const Thead = tw.thead``;
 export const Tbody = tw.tbody``;
 export const Tr = tw.tr``;
-export const Th = tw.th`text-2xs text-gray-500 font-medium px-3 py-1`;
-export const Td = tw.td`text-3xs px-3 py-1.5 font-medium border-b`;
+export const Th = tw.th`border border-(--border) bg-(--hover-bg) px-2 py-1 text-left align-top text-[14px] font-semibold text-(--text)`;
+export const Td = tw.td`border border-(--border) px-2 py-1 text-left align-top text-[14px] text-(--text)`;
