@@ -7,8 +7,10 @@ export interface TableData {
     rows: string[][];
     headerRow?: boolean;
     headerCol?: boolean;
-    rowColors?: (string | null)[];
-    colColors?: (string | null)[];
+    rowColors?: (string | null)[]; // 행 배경색
+    colColors?: (string | null)[]; // 열 배경색
+    rowTextColors?: (string | null)[]; // 행 글자색
+    colTextColors?: (string | null)[]; // 열 글자색
     colWidths?: (number | null)[]; // 열별 고정 너비(px). 없으면 내용에 맞춰 자동.
 }
 
@@ -29,6 +31,10 @@ export const HEADER_BG = "#f4f4f2";
 
 export function cellBg(td: TableData, r: number, c: number, isHeaderCell: boolean): string | undefined {
     return td.rowColors?.[r] || td.colColors?.[c] || (isHeaderCell ? HEADER_BG : undefined);
+}
+
+export function cellText(td: TableData, r: number, c: number): string | undefined {
+    return td.rowTextColors?.[r] || td.colTextColors?.[c] || undefined;
 }
 
 // 제목 행/열은 보더를 더 두껍게: 헤더와 본문 사이 경계선을 inset box-shadow로 2px 덧그린다.
@@ -66,6 +72,7 @@ export default function DataTable({ data }: { data?: string }) {
                                         className={TABLE_CELL_CLASS}
                                         style={{
                                             background: cellBg(td, r, c, isHeader),
+                                            color: cellText(td, r, c),
                                             fontWeight: isHeader ? 600 : undefined,
                                             boxShadow: headerShadow(td, r, c),
                                             width: td.colWidths?.[c] || undefined,

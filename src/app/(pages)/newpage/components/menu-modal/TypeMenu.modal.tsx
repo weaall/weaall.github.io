@@ -13,7 +13,7 @@ interface TypeMenuModalProps {
     elements: TypeMenuElement[];
 }
 
-const TEXT_COLORS = [
+export const TEXT_COLORS = [
     { color: "#37352f", label: "기본 텍스트" },
     { color: "#b5b5b5", label: "회색 텍스트" },
     { color: "#e9bfa8", label: "갈색 텍스트" },

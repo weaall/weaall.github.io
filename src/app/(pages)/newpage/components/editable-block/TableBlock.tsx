@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { TableData, cellBg, headerShadow } from "@/components/mdx/mdx-components/DataTable";
+import { TableData, cellBg, cellText, headerShadow } from "@/components/mdx/mdx-components/DataTable";
 import * as tm from "../menu-modal/TypeMenu.modal.styles";
-import { RightIcon } from "@/components/ui/icons/TypeMenuSvg";
+import { TEXT_COLORS } from "../menu-modal/TypeMenu.modal";
+import { RightIcon, FontIcon, ColorPainterIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
 
-// 배경색 팔레트(라벨 포함) — 전환 메뉴 색 드로워와 동일한 형식으로 표시
-const BG_COLORS: { c: string | null; label: string }[] = [
-    { c: null, label: "없음" },
+// 글자색: 전환(태그) 모달과 동일한 팔레트/아이콘 사용
+const TEXT_OPTS: { c: string | null; label: string }[] = TEXT_COLORS.map((t) => ({ c: t.color, label: t.label }));
+// 배경색(노션풍 옅은 톤)
+const BG_OPTS: { c: string | null; label: string }[] = [
+    { c: null, label: "기본 배경" },
     { c: "#f1f0ef", label: "회색 배경" },
     { c: "#faebdd", label: "갈색 배경" },
     { c: "#fbf3db", label: "노란색 배경" },
@@ -33,6 +36,8 @@ function parseTable(content: string): TableData {
                     headerCol: !!p.headerCol,
                     rowColors: Array.isArray(p.rowColors) ? p.rowColors : [],
                     colColors: Array.isArray(p.colColors) ? p.colColors : [],
+                    rowTextColors: Array.isArray(p.rowTextColors) ? p.rowTextColors : [],
+                    colTextColors: Array.isArray(p.colTextColors) ? p.colTextColors : [],
                     colWidths: Array.isArray(p.colWidths) ? p.colWidths : [],
                 };
             }
@@ -58,8 +63,6 @@ const P_CLEAR =
     "M10 2.375a7.625 7.625 0 1 0 0 15.25 7.625 7.625 0 0 0 0-15.25m2.817 4.808a.625.625 0 0 1 0 .884L10.884 10l1.933 1.933a.625.625 0 1 1-.884.884L10 10.884l-1.933 1.933a.625.625 0 1 1-.884-.884L9.116 10 7.183 8.067a.625.625 0 1 1 .884-.884L10 9.116l1.933-1.933a.625.625 0 0 1 .884 0";
 const P_TRASH =
     "M6.386 3.925v1.464H3.523a.625.625 0 1 0 0 1.25h.897l.393 8.646A2.425 2.425 0 0 0 7.236 17.6h5.528a2.425 2.425 0 0 0 2.422-2.315l.393-8.646h.898a.625.625 0 1 0 0-1.25h-2.863V3.925c0-.842-.683-1.525-1.525-1.525H7.91c-.842 0-1.524.683-1.524 1.525M7.91 3.65h4.18c.15 0 .274.123.274.275v1.464H7.636V3.925c0-.152.123-.275.274-.275m-.9 2.99h7.318l-.39 8.588a1.175 1.175 0 0 1-1.174 1.122H7.236a1.175 1.175 0 0 1-1.174-1.122l-.39-8.589z";
-const P_COLOR =
-    "M5.606 2.669a1.55 1.55 0 0 0-1.55 1.55v.379l-.069-.004h-.693a.55.55 0 0 0 0 1.1h.693l.069-.004v.379c0 .856.694 1.55 1.55 1.55h8.787a1.55 1.55 0 0 0 1.55-1.55v-.375h.3c.208 0 .376.168.376.375v2.023a.375.375 0 0 1-.375.375h-5.32c-.814 0-1.474.66-1.474 1.475v.592a1.55 1.55 0 0 0-1.463 1.547v3.7c0 .856.694 1.55 1.55 1.55h.925a1.55 1.55 0 0 0 1.55-1.55v-3.7a1.55 1.55 0 0 0-1.462-1.547v-.592c0-.207.168-.375.375-.375h5.319c.814 0 1.475-.66 1.475-1.475V6.069c0-.815-.66-1.475-1.475-1.475h-.3v-.375a1.55 1.55 0 0 0-1.55-1.55zm-.3 1.55a.3.3 0 0 1 .3-.3h8.787a.3.3 0 0 1 .3.3v1.85a.3.3 0 0 1-.3.3H5.606a.3.3 0 0 1-.3-.3z";
 const P_HEADER = "M3.75 5.5h12.5v3H3.75z";
 
 type MenuState = { kind: "row" | "col"; index: number; top: number; left: number } | null;
@@ -125,6 +128,8 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     const d = dataRef.current;
     d.rowColors ||= [];
     d.colColors ||= [];
+    d.rowTextColors ||= [];
+    d.colTextColors ||= [];
     d.colWidths ||= [];
     const cols = d.rows[0]?.length ?? 0;
 
@@ -136,19 +141,23 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     const insertRowAt = (i: number) => {
         d.rows.splice(i, 0, Array(cols || 1).fill(""));
         d.rowColors!.splice(i, 0, null);
+        d.rowTextColors!.splice(i, 0, null);
     };
     const insertColAt = (i: number) => {
         d.rows.forEach((row) => row.splice(i, 0, ""));
         d.colColors!.splice(i, 0, null);
+        d.colTextColors!.splice(i, 0, null);
         d.colWidths!.splice(i, 0, null); // 새 열은 자동 너비
     };
     const duplicateRow = (r: number) => {
         d.rows.splice(r + 1, 0, [...d.rows[r]]);
         d.rowColors!.splice(r + 1, 0, d.rowColors![r] ?? null);
+        d.rowTextColors!.splice(r + 1, 0, d.rowTextColors![r] ?? null);
     };
     const duplicateCol = (c: number) => {
         d.rows.forEach((row) => row.splice(c + 1, 0, row[c]));
         d.colColors!.splice(c + 1, 0, d.colColors![c] ?? null);
+        d.colTextColors!.splice(c + 1, 0, d.colTextColors![c] ?? null);
         d.colWidths!.splice(c + 1, 0, d.colWidths![c] ?? null);
     };
     const clearRow = (r: number) => (d.rows[r] = d.rows[r].map(() => ""));
@@ -157,11 +166,13 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         if (d.rows.length <= 1) return;
         d.rows.splice(r, 1);
         d.rowColors!.splice(r, 1);
+        d.rowTextColors!.splice(r, 1);
     };
     const removeCol = (c: number) => {
         if (cols <= 1) return;
         d.rows.forEach((row) => row.splice(c, 1));
         d.colColors!.splice(c, 1);
+        d.colTextColors!.splice(c, 1);
         d.colWidths!.splice(c, 1);
     };
 
@@ -218,10 +229,10 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     const addBtn =
         "absolute flex items-center justify-center rounded-[4px] border border-(--border) bg-(--hover-bg) text-(--text-muted) opacity-0 transition-opacity group-hover/table:opacity-100 hover:!bg-[#e3e2df]";
 
-    type Item = { icon: string; label: string; run?: () => void; danger?: boolean; rotate?: number; color?: boolean; on?: boolean };
+    type Item = { icon?: string; iconNode?: React.ReactNode; label: string; run?: () => void; danger?: boolean; rotate?: number; color?: boolean; on?: boolean };
     const items: Item[] = menu
         ? [
-              { icon: P_COLOR, label: "색", color: true },
+              { iconNode: <ColorPainterIcon color="#5f5e5b" />, label: "색", color: true },
               ...(menu.index === 0
                   ? [
                         menu.kind === "row"
@@ -237,14 +248,19 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                   : { icon: P_DOWN, rotate: -90, label: "오른쪽에 삽입", run: () => insertColAt(menu.index + 1) },
               { icon: P_DUP, label: "복제", run: () => (menu.kind === "row" ? duplicateRow(menu.index) : duplicateCol(menu.index)) },
               { icon: P_CLEAR, label: "콘텐츠 삭제", run: () => (menu.kind === "row" ? clearRow(menu.index) : clearCol(menu.index)) },
-              { icon: P_TRASH, label: "삭제", danger: true, run: () => (menu.kind === "row" ? removeRow(menu.index) : removeCol(menu.index)) },
+              { iconNode: <TrashBinIcon color="#5f5e5b" />, label: "삭제", danger: true, run: () => (menu.kind === "row" ? removeRow(menu.index) : removeCol(menu.index)) },
           ]
         : [];
 
-    const setColor = (color: string | null) => {
+    const setBgColor = (color: string | null) => {
         if (!menu) return;
         if (menu.kind === "row") d.rowColors![menu.index] = color;
         else d.colColors![menu.index] = color;
+    };
+    const setTextColor = (color: string | null) => {
+        if (!menu) return;
+        if (menu.kind === "row") d.rowTextColors![menu.index] = color;
+        else d.colTextColors![menu.index] = color;
     };
 
     return (
@@ -269,7 +285,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                             contentEditable
                                             suppressContentEditableWarning
                                             className="min-h-[20px] break-words px-[8px] py-[5px] text-[14px] leading-[20px] text-(--text) outline-none"
-                                            style={{ fontWeight: isHeader ? 600 : undefined }}
+                                            style={{ fontWeight: isHeader ? 600 : undefined, color: cellText(d, r, c) }}
                                             onInput={(e) => setCell(r, c, e.currentTarget.innerText)}
                                             dangerouslySetInnerHTML={{ __html: esc(cell) }}
                                         />
@@ -340,7 +356,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                         onMouseDown={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); setColorDrawer(true); }}
                                     >
                                         <tm.LabelWrap>
-                                            <tm.SvgWrap><Ico d={it.icon} /></tm.SvgWrap>
+                                            <tm.SvgWrap>{it.iconNode}</tm.SvgWrap>
                                             {it.label}
                                         </tm.LabelWrap>
                                         <tm.SvgWrap><RightIcon color="#5f5e5b" /></tm.SvgWrap>
@@ -353,7 +369,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                         style={it.danger ? { color: "#e65b58" } : undefined}
                                     >
                                         <tm.LabelWrap>
-                                            <tm.SvgWrap><Ico d={it.icon} rotate={it.rotate} /></tm.SvgWrap>
+                                            <tm.SvgWrap>{it.iconNode ?? <Ico d={it.icon!} rotate={it.rotate} />}</tm.SvgWrap>
                                             {it.label}
                                         </tm.LabelWrap>
                                         {it.on !== undefined && <tm.ExpLabel style={{ color: "#3b82f6" }}>{it.on ? "✓" : ""}</tm.ExpLabel>}
@@ -363,13 +379,24 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                         </tm.Menu>
                         {colorDrawer && (
                             <tm.DrawerMenu
-                                style={{ left: "calc(100% + 6px)" }}
+                                style={{ left: "calc(100% + 6px)", maxHeight: "70vh", overflowY: "auto" }}
                                 onMouseEnter={() => setColorDrawer(true)}
                                 onMouseLeave={() => setColorDrawer(false)}
                             >
-                                <tm.Label>배경 색상</tm.Label>
-                                {BG_COLORS.map(({ c, label }) => (
-                                    <tm.MenuButton key={label} onMouseDown={noFocus(() => apply(() => setColor(c)))}>
+                                <tm.Label>색</tm.Label>
+                                {TEXT_OPTS.map(({ c, label }) => (
+                                    <tm.MenuButton key={`t-${label}`} onMouseDown={noFocus(() => apply(() => setTextColor(c)))}>
+                                        <tm.LabelWrap>
+                                            <tm.SvgWrap>
+                                                <FontIcon color={c ?? "#5f5e5b"} />
+                                            </tm.SvgWrap>
+                                            {label}
+                                        </tm.LabelWrap>
+                                    </tm.MenuButton>
+                                ))}
+                                <tm.Label>배경</tm.Label>
+                                {BG_OPTS.map(({ c, label }) => (
+                                    <tm.MenuButton key={`b-${label}`} onMouseDown={noFocus(() => apply(() => setBgColor(c)))}>
                                         <tm.LabelWrap>
                                             <tm.SvgWrap>
                                                 <div className="h-4 w-4 rounded-[4px] border border-black/15" style={{ background: c ?? "#ffffff" }} />
