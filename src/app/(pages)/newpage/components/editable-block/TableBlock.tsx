@@ -270,7 +270,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         const tableEl = wrapRef.current?.querySelector("table");
         const tableLeft = tableEl?.getBoundingClientRect().left ?? 0;
         const colRight = wrapRef.current?.closest("[data-editor-col]")?.getBoundingClientRect().right ?? window.innerWidth;
-        return Math.max(200, colRight - tableLeft - 2); // 텍스트 우측 라인과 맞춤
+        return Math.max(200, colRight - tableLeft - 24); // 포스트에서 가로 스크롤 안 생기게 여유
     };
 
     // 열 추가: 표가 최대폭을 넘지 않게. 공간이 부족하면 기존 열을 비례 축소해 자리를 만든다.
