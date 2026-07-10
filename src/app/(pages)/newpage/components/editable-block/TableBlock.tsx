@@ -351,7 +351,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     };
 
     return (
-        <div ref={wrapRef} id={id} className="group/table relative my-2 w-fit p-[18px]">
+        <div ref={wrapRef} id={id} className="group/table relative my-2 w-fit py-[18px] pr-[18px]">
             <table className="border-collapse">
                 <tbody>
                     {grid.map((row, r) => (
@@ -441,7 +441,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
             <button className={`${addBtn} top-[18px] right-0 bottom-[18px] w-[14px]`} onMouseDown={noFocus(() => apply(() => insertColFit(cols)))} title="열 추가">
                 +
             </button>
-            <button className={`${addBtn} bottom-0 left-[18px] right-[18px] h-[14px]`} onMouseDown={noFocus(() => apply(() => insertRowAt(grid.length)))} title="행 추가">
+            <button className={`${addBtn} bottom-0 left-0 right-[18px] h-[14px]`} onMouseDown={noFocus(() => apply(() => insertRowAt(grid.length)))} title="행 추가">
                 +
             </button>
             <button className={`${addBtn} bottom-0 right-0 h-[14px] w-[14px]`} onMouseDown={noFocus(() => apply(() => { insertColFit(cols); insertRowAt(grid.length); }))} title="행·열 추가">

@@ -1146,6 +1146,22 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                     onDragEnter={(e) => handleDragEnter(e, blocks.length, true)}
                     onDragOver={handleDragOver}
                 />
+
+                {/* 마지막 블록 아래 빈 공간 클릭 → 마지막이 빈 텍스트가 아니면 빈 텍스트 블록 하나 추가 */}
+                <div
+                    className="min-h-[30vh] w-full cursor-text"
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={() => {
+                        const last = blocks[blocks.length - 1];
+                        if (last && last.type === "p" && last.content === "") {
+                            document.getElementById(last.id)?.focus();
+                            return;
+                        }
+                        const nid = crypto.randomUUID();
+                        setBlocks((prev) => [...prev, { id: nid, type: "p", content: "", indentationLevel: 0 }]);
+                        setTimeout(() => document.getElementById(nid)?.focus(), 0);
+                    }}
+                />
             </div>
             
             <ShareModal
