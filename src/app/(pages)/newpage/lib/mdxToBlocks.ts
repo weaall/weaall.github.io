@@ -55,6 +55,12 @@ function parseInline(s: string): { text: string; ranges: FormattedRange[] } {
         text += child.text;
     };
     while (i < s.length) {
+        // MDX 이스케이프 되돌리기: \< → < , \{ → {
+        if (s[i] === "\\" && (s[i + 1] === "<" || s[i + 1] === "{")) {
+            text += s[i + 1];
+            i += 2;
+            continue;
+        }
         if (s.startsWith("**", i)) {
             const end = s.indexOf("**", i + 2);
             if (end !== -1) {

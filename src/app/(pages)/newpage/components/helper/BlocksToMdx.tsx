@@ -50,10 +50,14 @@ export function blocksToMDX(
         frontmatter += `---\n\n`;
     }
 
+    // MDX 이스케이프: 사용자 텍스트의 '<'(태그 시작)와 '{'(표현식 시작)를 리터럴로.
+    // 이걸 안 하면 본문에 <ToggleText> 같은 글자나 코드가 있을 때 MDX 컴파일이 깨진다.
+    const escMdx = (s: string) => s.replace(/([<{])/g, "\\$1");
+
     // 텍스트에 포맷팅을 적용하는 함수
     const applyFormattingToText = (text: string, formattedRanges: FormattedRange[] = []): string => {
         if (!formattedRanges || formattedRanges.length === 0) {
-            return text;
+            return escMdx(text);
         }
 
         // 범위를 시작 위치 순으로 정렬
@@ -63,10 +67,10 @@ export function blocksToMDX(
 
         for (const range of sortedRanges) {
             // 이전 범위와 현재 범위 사이의 텍스트
-            result += text.slice(lastIndex, range.start);
-            
+            result += escMdx(text.slice(lastIndex, range.start));
+
             // 현재 범위의 텍스트
-            let rangeText = text.slice(range.start, range.end);
+            let rangeText = escMdx(text.slice(range.start, range.end));
             const format = range.format;
 
             // 포맷팅 적용 (중첩 적용 순서: 굵게 -> 기울임 -> 색상/밑줄/취소선)
@@ -106,8 +110,8 @@ export function blocksToMDX(
         }
         
         // 마지막 범위 이후의 텍스트
-        result += text.slice(lastIndex);
-        
+        result += escMdx(text.slice(lastIndex));
+
         return result;
     };
 
