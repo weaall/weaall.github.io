@@ -186,12 +186,15 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         const startWc = measure(c);
         const hasNext = c + 1 < cols;
         const startWn = hasNext ? measure(c + 1) : 0;
-        // 마지막 열(이웃 없음)을 늘릴 때 표가 편집 영역을 넘지 않도록 최대 너비 계산
+        // 마지막 열(이웃 없음)을 늘릴 때 표가 편집 영역(고정 712 컬럼)을 넘지 않도록 최대 너비 계산.
+        // 부모(flex-1)는 표 따라 커지므로 기준으로 못 씀 → 폭이 고정된 [data-editor-col]을 기준으로.
         const tableEl = wrapRef.current?.querySelector("table");
-        const tableW = tableEl?.getBoundingClientRect().width ?? 0;
-        const tableLeft = tableEl?.getBoundingClientRect().left ?? 0;
-        const parentRight = wrapRef.current?.parentElement?.getBoundingClientRect().right ?? tableLeft + tableW;
-        const maxTableW = Math.max(200, parentRight - tableLeft); // 사용 가능한 최대 표 너비
+        const tableRect = tableEl?.getBoundingClientRect();
+        const tableW = tableRect?.width ?? 0;
+        const tableLeft = tableRect?.left ?? 0;
+        const colEl = wrapRef.current?.closest("[data-editor-col]");
+        const colRight = colEl?.getBoundingClientRect().right ?? window.innerWidth;
+        const maxTableW = Math.max(200, colRight - tableLeft - 24); // 우측 wrapper 패딩(18)+여백 고려
         const maxWcLast = Math.max(MIN_W, Math.round(maxTableW - (tableW - startWc))); // 마지막 열 최대
         const startX = e.clientX;
         const onMove = (ev: MouseEvent) => {

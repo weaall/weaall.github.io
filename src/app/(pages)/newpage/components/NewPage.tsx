@@ -902,7 +902,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                 transition: "padding-left 0.2s",
             }}
         >
-            <div className="max-w-[712px] min-w-[712px] w-[712px] mx-10" style={{ position: "relative" }}>
+            <div data-editor-col className="max-w-[712px] min-w-[712px] w-[712px] mx-10" style={{ position: "relative" }}>
                 <tw.BlockWrap>
                     <div className="group/title">
                         {/* 페이지 아이콘 (노션식): 있으면 크게 표시, 없으면 호버 시 추가 버튼 */}
