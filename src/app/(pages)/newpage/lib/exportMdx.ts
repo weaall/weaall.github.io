@@ -23,10 +23,14 @@ export function buildMdx(doc: LocalDoc): string {
     }));
 
     return blocksToMDX(blocksWithFormatting, {
+        label: doc.label || "",
         title: doc.title || "",
+        subTitle: doc.subTitle || "",
         date: formatPostDate(new Date()),
         mins: 2,
-        tags: ["default-tag"],
+        tags: doc.tags && doc.tags.length ? doc.tags : ["default-tag"],
+        imageUrl: doc.imageUrl || "",
+        icon: doc.icon || "",
     });
 }
 

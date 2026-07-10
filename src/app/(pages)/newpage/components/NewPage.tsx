@@ -15,7 +15,7 @@ import { getDoc, saveDoc, listCategories } from "../lib/localDocs";
 import { slugifyTitle } from "../lib/exportMdx";
 import CategoryPicker from "./category-picker/CategoryPicker";
 import { parseImageContent, serializeImageContent } from "../lib/imageContent";
-import { PageIcon } from "../lib/pageIcon";
+import { PageIcon, fileToWebp } from "../lib/pageIcon";
 import IconPicker from "./icon-picker/IconPicker";
 
 import { formatPostDate } from "@/util/date";
@@ -386,7 +386,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         date: "",
         mins: 0,
         tags: initialDoc?.tags || [],
-        imageUrl: "",
+        imageUrl: initialDoc?.imageUrl || "",
         icon: initialDoc?.icon || "",
     });
     // 아이콘/카테고리 선택기 위치(null이면 닫힘)
@@ -396,6 +396,15 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
     // 부제목/태그는 버튼으로 추가(아이콘처럼). 이미 내용이 있으면 열린 상태로 시작.
     const [showSubtitle, setShowSubtitle] = useState(!!initialDoc?.subTitle);
     const [showTags, setShowTags] = useState(!!(initialDoc?.tags && initialDoc.tags.length));
+    // 커버 사진 업로드
+    const coverInputRef = useRef<HTMLInputElement>(null);
+    const handleCoverFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        e.target.value = "";
+        if (!file || !file.type.startsWith("image/")) return;
+        const webp = await fileToWebp(file, 1280);
+        setMeta((prev) => ({ ...prev, imageUrl: webp }));
+    };
 
     const { draggingIdx, insertLineIdx, dragPreview, dragPos, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } =
         useBlockDnD(
@@ -501,6 +510,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 label: meta.label || undefined,
                 subTitle: meta.subTitle || undefined,
                 tags: meta.tags,
+                imageUrl: meta.imageUrl || undefined,
                 updatedAt: Date.now(),
                 blocks,
                 blockColors,
@@ -508,7 +518,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             });
         }, 800);
         return () => clearTimeout(t);
-    }, [docId, meta.title, meta.icon, meta.label, meta.subTitle, meta.tags, blocks, blockColors, blockFormattedRanges]);
+    }, [docId, meta.title, meta.icon, meta.label, meta.subTitle, meta.tags, meta.imageUrl, blocks, blockColors, blockFormattedRanges]);
 
     // 문서 전환/이탈(언마운트) 시 최신 상태를 즉시 저장 (디바운스 대기분 유실 방지)
     const latestRef = useRef({ docId, meta, blocks, blockColors, blockFormattedRanges });
@@ -523,6 +533,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 label: l.meta.label || undefined,
                 subTitle: l.meta.subTitle || undefined,
                 tags: l.meta.tags,
+                imageUrl: l.meta.imageUrl || undefined,
                 updatedAt: Date.now(),
                 blocks: l.blocks,
                 blockColors: l.blockColors,
@@ -927,8 +938,36 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             <div data-editor-col className="max-w-[712px] min-w-[712px] w-[712px] mx-10" style={{ position: "relative" }}>
                 <tw.BlockWrap>
                     <div className="group/title">
-                        {/* 페이지 아이콘 (노션식): 있으면 크게 표시 */}
-                        {meta.icon && (
+                        {/* 커버 사진: 상단 배너, 아이콘이 하단에 겹쳐 표시 */}
+                        {meta.imageUrl && (
+                            <div className="group/cover relative mb-8">
+                                <div className="flex h-[300px] w-full content-center justify-center rounded-[6px] bg-white p-4">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={meta.imageUrl} alt="" className="h-full w-full rounded-[4px] object-contain" />
+                                </div>
+                                <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover/cover:opacity-100">
+                                    <button className="rounded bg-black/50 px-2 py-1 text-xs text-white hover:bg-black/70" onClick={() => coverInputRef.current?.click()}>
+                                        커버 변경
+                                    </button>
+                                    <button className="rounded bg-black/50 px-2 py-1 text-xs text-white hover:bg-black/70" onClick={() => setMeta((p) => ({ ...p, imageUrl: "" }))}>
+                                        제거
+                                    </button>
+                                </div>
+                                {meta.icon && (
+                                    <button
+                                        className="absolute -bottom-6 left-0 flex h-[64px] w-[64px] items-center justify-center rounded-[8px] bg-(--page-bg) p-[4px] shadow hover:bg-(--hover-bg)"
+                                        onClick={(e) => {
+                                            const r = e.currentTarget.getBoundingClientRect();
+                                            setIconPicker({ top: r.bottom + 6, left: r.left });
+                                        }}
+                                    >
+                                        <PageIcon icon={meta.icon} size={56} />
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                        {/* 페이지 아이콘 (커버 없을 때 위에 크게) */}
+                        {meta.icon && !meta.imageUrl && (
                             <button
                                 className="mb-1 flex h-[64px] w-[64px] items-center justify-center rounded-[8px] p-[4px] hover:bg-(--hover-bg)"
                                 onClick={(e) => {
@@ -973,6 +1012,14 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                         }}
                                     >
                                         📁 카테고리 추가
+                                    </button>
+                                )}
+                                {!meta.imageUrl && (
+                                    <button
+                                        className="flex items-center gap-1 rounded-[6px] px-2 py-1 text-sm text-(--text-muted) hover:bg-(--hover-bg)"
+                                        onClick={() => coverInputRef.current?.click()}
+                                    >
+                                        🖼️ 커버 추가
                                     </button>
                                 )}
                                 {!showSubtitle && (
@@ -1058,6 +1105,9 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                         )}
                     </div>
                 </tw.BlockWrap>
+
+                {/* 커버 사진 업로드용 숨은 input */}
+                <input ref={coverInputRef} type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" className="hidden" onChange={handleCoverFile} />
 
                 <IconPicker
                     open={iconPicker !== null}

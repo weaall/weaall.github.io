@@ -42,6 +42,7 @@ export interface LocalDoc {
     label?: string; // 카테고리
     subTitle?: string; // 부제목
     tags?: string[];
+    imageUrl?: string; // 커버 사진(webp data URL)
     updatedAt: number;
     blocks: Block[];
     blockColors: { [id: string]: string };
