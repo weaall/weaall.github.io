@@ -77,12 +77,13 @@ export const Ul = tw.ul`
 export const Ol = tw.ol`list-decimal pl-[1.9em] my-0 marker:font-medium marker:text-(--text)`;
 export const Li = tw.li`py-[3px] text-[16px] leading-[1.4] text-(--text)`;
 
-// 노션식 코드블록: 어두운 배경 컨테이너 + 미니 언어라벨 + 모노. 색상은 hljs(atom-one-dark)가 담당.
-export const CodeWrapC = tw.div`relative my-5 rounded-lg overflow-hidden bg-[#282c34] text-[13px] leading-relaxed`;
+// 노션식 코드블록(라이트): 연한 회색 배경 + 라운드 + 여유 패딩 + 미니 언어라벨.
+// 구문 색은 .post-content .hljs 스코프(globals.css)의 라이트 팔레트가 담당.
+export const CodeWrapC = tw.div`relative my-4 rounded-[10px] overflow-hidden border border-(--border) bg-[#f7f6f3] text-[14px] leading-relaxed`;
 export const ClassWrap = tw.div`absolute top-0 right-0 z-10 px-3 py-2 select-none`;
-export const ClassLabel = tw.span`text-[11px] font-mono lowercase text-white/40`;
-export const CodeBoxC = tw.div`overflow-x-auto px-3 py-2`;
-export const Code = tw.code`font-mono whitespace-pre`;
+export const ClassLabel = tw.span`text-[11px] font-mono lowercase text-(--text-muted)`;
+export const CodeBoxC = tw.div`overflow-x-auto px-[22px] py-[16px]`;
+export const Code = tw.code`font-mono whitespace-pre text-[13.5px]`;
 
 export const Strong = tw.strong`font-bold`;
 

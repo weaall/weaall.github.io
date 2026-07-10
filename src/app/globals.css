@@ -152,6 +152,55 @@
     transform: rotate(45deg);
   }
 
+  /* 노션식 코드블록(라이트) 구문 색 — .post-content 스코프로만 적용해 다른 페이지(다크 atom-one-dark)는 유지 */
+  .post-content .hljs {
+    color: #24292e;
+    background: transparent;
+  }
+  .post-content .hljs-comment,
+  .post-content .hljs-quote {
+    color: #6a737d;
+    font-style: italic;
+  }
+  .post-content .hljs-keyword,
+  .post-content .hljs-selector-tag,
+  .post-content .hljs-literal,
+  .post-content .hljs-type {
+    color: #d73a49;
+  }
+  .post-content .hljs-string,
+  .post-content .hljs-meta .hljs-string,
+  .post-content .hljs-regexp {
+    color: #032f62;
+  }
+  .post-content .hljs-number,
+  .post-content .hljs-attr,
+  .post-content .hljs-attribute,
+  .post-content .hljs-variable,
+  .post-content .hljs-template-variable {
+    color: #005cc5;
+  }
+  .post-content .hljs-title,
+  .post-content .hljs-title.function_,
+  .post-content .hljs-section {
+    color: #6f42c1;
+  }
+  .post-content .hljs-built_in,
+  .post-content .hljs-name,
+  .post-content .hljs-symbol,
+  .post-content .hljs-meta {
+    color: #e36209;
+  }
+  .post-content .hljs-tag {
+    color: #22863a;
+  }
+  .post-content .hljs-emphasis {
+    font-style: italic;
+  }
+  .post-content .hljs-strong {
+    font-weight: 600;
+  }
+
   /* 라이트 테마 스코프: placeholder / 텍스트 선택 색 */
   [data-theme="light"] [contenteditable][placeholder]:empty::after {
     color: var(--placeholder);
