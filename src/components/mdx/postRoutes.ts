@@ -16,7 +16,8 @@ const postsDir = (folder: string) => path.join(process.cwd(), "posts", folder);
 export const makeGenerateStaticParams = (folder: string) => async () => {
     try {
         const files = await readdir(postsDir(folder));
-        return files.filter((f) => f.endsWith(".mdx")).map((f) => ({ slug: f.replace(/\.mdx$/, "") }));
+        // 한글 등 비ASCII 파일명은 NFC로 정규화해야 URL 디코딩 값과 일치(파일시스템이 NFD로 줄 수 있음)
+        return files.filter((f) => f.endsWith(".mdx")).map((f) => ({ slug: f.replace(/\.mdx$/, "").normalize("NFC") }));
     } catch {
         return [];
     }
@@ -28,6 +29,15 @@ async function readPostFile(folder: string, slug: string): Promise<string | null
         await access(filePath);
         return await readFile(filePath, { encoding: "utf8" });
     } catch {
+        // 정규화(NFC/NFD) 불일치 폴백: 디렉터리에서 이름을 NFC로 맞춰 매칭
+        try {
+            const want = `${slug}.mdx`.normalize("NFC");
+            const files = await readdir(postsDir(folder));
+            const hit = files.find((f) => f.normalize("NFC") === want);
+            if (hit) return await readFile(path.join(postsDir(folder), hit), { encoding: "utf8" });
+        } catch {
+            /* 무시 */
+        }
         return null;
     }
 }
