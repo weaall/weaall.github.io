@@ -2,6 +2,18 @@ import { blocksToMDX } from "../components/helper/BlocksToMdx";
 import { LocalDoc } from "./localDocs";
 import { formatPostDate } from "@/util/date";
 
+// 제목 → 파일명 슬러그(ASCII). 한글 등 비ASCII는 URL/정적export에서 문제되므로 제거하고,
+// 결과가 비면 doc id 기반 대체 슬러그를 쓴다. (제목 자체는 frontmatter에 그대로 보존)
+export function slugifyTitle(title: string, fallbackId?: string): string {
+    const s = (title || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    if (s.length >= 2) return s;
+    const fb = (fallbackId || "").replace(/[^a-z0-9]/gi, "").slice(0, 6).toLowerCase();
+    return `post-${fb || "untitled"}`;
+}
+
 // LocalDoc → MDX 문자열
 export function buildMdx(doc: LocalDoc): string {
     const blocksWithFormatting = doc.blocks.map((block) => ({
@@ -21,7 +33,7 @@ export function buildMdx(doc: LocalDoc): string {
 // MDX 내보내기: 개발 모드는 posts/post에 저장 시도, 실패 시 브라우저 다운로드.
 export async function exportDoc(doc: LocalDoc): Promise<void> {
     const mdx = buildMdx(doc);
-    const filename = `${(doc.title || "untitled").replace(/ /g, "_")}.mdx`;
+    const filename = `${slugifyTitle(doc.title, doc.id)}.mdx`;
 
     try {
         const res = await fetch("/api/save-mdx", {

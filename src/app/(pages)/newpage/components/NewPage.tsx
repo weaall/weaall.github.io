@@ -12,6 +12,7 @@ import { ChartRow } from "@/components/mdx/mdx-components/BarChart";
 import { useBlockHistory } from "../hooks/useBlockHistory";
 import { useBlockDnD } from "../hooks/useBlockDnD";
 import { getDoc, saveDoc } from "../lib/localDocs";
+import { slugifyTitle } from "../lib/exportMdx";
 import { parseImageContent, serializeImageContent } from "../lib/imageContent";
 import { PageIcon } from "../lib/pageIcon";
 import IconPicker from "./icon-picker/IconPicker";
@@ -558,8 +559,8 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
             icon: meta.icon || "",
         });
 
-        // 파일명은 페이지 제목으로, 공백은 밑줄로. 제목이 없으면 'untitled'.
-        const filename = `${(meta.title || "untitled").replace(/ /g, "_")}.mdx`;
+        // 파일명(슬러그)은 ASCII로. 한글 제목은 frontmatter에 그대로 보존.
+        const filename = `${slugifyTitle(meta.title, docId)}.mdx`;
 
         // 개발 모드: posts/post 폴더에 바로 저장 시도. 실패하면 브라우저 다운로드로 폴백.
         try {
