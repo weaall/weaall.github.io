@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// 노션식 심플 테이블. 첫 행은 헤더. 셀은 contentEditable, 우측/하단 +로 열/행 추가,
-// 호버 시 나오는 −로 특정 행/열 삭제. 데이터는 block.content에 {rows} JSON으로 저장.
-// content = {"rows": string[][]} — 첫 배열이 헤더 행.
+// 노션 심플 테이블. 모든 셀 동일(플레인), 1px 보더.
+// - 열/행 셀렉터 바(회색 둥근 바)를 클릭하면 해당 열/행 삭제
+// - 우측 +(열), 하단 +(행), 우하단 코너 +(행+열) 로 추가 (호버 시 표시)
+// content = {"rows": string[][]} (첫 행이 GFM 헤더로 나감)
 
 function parseTable(content: string): string[][] {
     if (content && content[0] === "{") {
@@ -16,13 +17,23 @@ function parseTable(content: string): string[][] {
         }
     }
     return [
-        ["제목1", "제목2"],
-        ["", ""],
-        ["", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
     ];
 }
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+const PlusIcon = () => (
+    <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden>
+        <path d="M8 2.65a.75.75 0 0 1 .75.75v3.85h3.85a.75.75 0 0 1 0 1.5H8.75v3.85l-.004.077a.75.75 0 0 1-1.492 0L7.25 12.6V8.75H3.4a.75.75 0 0 1 0-1.5h3.85V3.4A.75.75 0 0 1 8 2.65" />
+    </svg>
+);
+
+// 호버 시 나오는 회색 셀렉터 바 (클릭 → 삭제)
+const selectorBase =
+    "absolute z-[4] rounded-[4px] bg-[#c4c4c2] opacity-0 transition-opacity group-hover/table:opacity-100 hover:!bg-[#3b82f6] pointer-events-auto";
 
 export default function TableBlock({ id, content }: { id: string; content: string }) {
     const dataRef = useRef<string[][]>(parseTable(content));
@@ -41,7 +52,6 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         commit();
     };
 
-    // 처음 만들 때(content 비어있음) 기본 표를 바로 저장
     useEffect(() => {
         if (!content) commit();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,6 +71,11 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         dataRef.current.push(Array(cols || 1).fill(""));
         rerenderAndCommit();
     };
+    const addBoth = () => {
+        dataRef.current.forEach((row) => row.push(""));
+        dataRef.current.push(Array((cols || 0) + 1).fill(""));
+        rerenderAndCommit();
+    };
     const removeCol = (c: number) => {
         if (cols <= 1) return;
         dataRef.current.forEach((row) => row.splice(c, 1));
@@ -72,78 +87,64 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         rerenderAndCommit();
     };
 
+    const noFocus = (fn: () => void) => (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        fn();
+    };
+
     const grid = dataRef.current;
+    const addBtn = "flex items-center justify-center rounded-[4px] border border-(--border) text-(--text-muted) opacity-0 transition-opacity hover:bg-(--hover-bg) group-hover/table:opacity-100";
 
     return (
-        <div id={id} className="group/table my-2 flex w-fit max-w-full items-start gap-1 overflow-x-auto">
-            <div>
-                <table className="border-collapse">
-                    <tbody>
-                        {/* 열 삭제 가터 (호버 시) */}
-                        <tr className="opacity-0 transition-opacity group-hover/table:opacity-100">
-                            <td className="w-4 border-0 p-0" />
-                            {Array.from({ length: cols }).map((_, c) => (
-                                <td key={c} className="border-0 p-0 text-center">
-                                    <button
-                                        className="mx-auto flex h-4 w-full items-center justify-center rounded text-[12px] text-(--text-muted) hover:bg-(--hover-bg) hover:text-[#e65b58]"
-                                        onClick={() => removeCol(c)}
-                                        title="열 삭제"
-                                    >
-                                        −
-                                    </button>
+        <div id={id} className="group/table relative my-2 w-fit max-w-full overflow-x-auto pr-[20px] pb-[20px]">
+            <table className="border-collapse">
+                <tbody>
+                    {grid.map((row, r) => (
+                        <tr key={r}>
+                            {row.map((cell, c) => (
+                                <td key={c} className="relative border border-(--border) p-0 align-top">
+                                    <div
+                                        contentEditable
+                                        suppressContentEditableWarning
+                                        className="min-h-[20px] min-w-[120px] px-[9px] py-[7px] text-[14px] leading-[20px] text-(--text) outline-none"
+                                        onInput={(e) => setCell(r, c, e.currentTarget.innerText)}
+                                        dangerouslySetInnerHTML={{ __html: esc(cell) }}
+                                    />
+                                    {/* 열 셀렉터 (첫 행 셀 상단 중앙) → 열 삭제 */}
+                                    {r === 0 && (
+                                        <div
+                                            title="열 삭제"
+                                            className={`${selectorBase} left-1/2 top-[-3px] h-[6px] w-[18px] -translate-x-1/2 cursor-pointer border-2 border-(--page-bg)`}
+                                            onMouseDown={noFocus(() => removeCol(c))}
+                                        />
+                                    )}
+                                    {/* 행 셀렉터 (첫 열 셀 좌측 중앙) → 행 삭제 */}
+                                    {c === 0 && (
+                                        <div
+                                            title="행 삭제"
+                                            className={`${selectorBase} top-1/2 left-[-3px] h-[18px] w-[6px] -translate-y-1/2 cursor-pointer border-2 border-(--page-bg)`}
+                                            onMouseDown={noFocus(() => removeRow(r))}
+                                        />
+                                    )}
                                 </td>
                             ))}
                         </tr>
-                        {grid.map((row, r) => (
-                            <tr key={r}>
-                                {/* 행 삭제 가터 (호버 시) */}
-                                <td className="border-0 p-0 opacity-0 transition-opacity group-hover/table:opacity-100">
-                                    <button
-                                        className="flex h-full w-4 items-center justify-center rounded text-[12px] text-(--text-muted) hover:bg-(--hover-bg) hover:text-[#e65b58]"
-                                        onClick={() => removeRow(r)}
-                                        title="행 삭제"
-                                    >
-                                        −
-                                    </button>
-                                </td>
-                                {row.map((cell, c) => {
-                                    const isHeader = r === 0;
-                                    const Tag = (isHeader ? "th" : "td") as "th" | "td";
-                                    return (
-                                        <Tag
-                                            key={c}
-                                            className={`border border-(--border) p-0 text-left align-top ${
-                                                isHeader ? "bg-(--hover-bg) font-semibold" : ""
-                                            }`}
-                                        >
-                                            <div
-                                                contentEditable
-                                                suppressContentEditableWarning
-                                                className="min-w-[90px] px-2 py-1 text-[14px] leading-[1.4] text-(--text) outline-none"
-                                                onInput={(e) => setCell(r, c, e.currentTarget.innerText)}
-                                                dangerouslySetInnerHTML={{ __html: esc(cell) }}
-                                            />
-                                        </Tag>
-                                    );
-                                })}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                {/* 행 추가 */}
-                <button
-                    className="mt-1 flex w-full items-center justify-center rounded border border-dashed border-(--border) py-0.5 text-[13px] text-(--text-muted) opacity-0 transition-opacity hover:bg-(--hover-bg) group-hover/table:opacity-100"
-                    onClick={addRow}
-                >
-                    + 행
-                </button>
-            </div>
-            {/* 열 추가 */}
-            <button
-                className="flex items-center justify-center self-stretch rounded border border-dashed border-(--border) px-1 text-[13px] text-(--text-muted) opacity-0 transition-opacity hover:bg-(--hover-bg) group-hover/table:opacity-100"
-                onClick={addCol}
-            >
-                +
+                    ))}
+                </tbody>
+            </table>
+
+            {/* 열 추가 (우측 전체 높이) */}
+            <button className={`${addBtn} absolute top-0 right-0 bottom-[20px] w-4`} onMouseDown={noFocus(addCol)} title="열 추가">
+                <PlusIcon />
+            </button>
+            {/* 행 추가 (하단 전체 너비) */}
+            <button className={`${addBtn} absolute bottom-0 left-0 right-[20px] h-4`} onMouseDown={noFocus(addRow)} title="행 추가">
+                <PlusIcon />
+            </button>
+            {/* 코너 (행+열 추가) */}
+            <button className={`${addBtn} absolute right-0 bottom-0 h-4 w-4`} onMouseDown={noFocus(addBoth)} title="행·열 추가">
+                <PlusIcon />
             </button>
         </div>
     );
