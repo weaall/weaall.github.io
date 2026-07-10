@@ -95,7 +95,8 @@ export function ToggleText({
     const PAD = 3;
     const s = SIZES[heading || ""] ?? SIZES[""];
 
-    const Triangle = ({ o }: { o: boolean }) => (
+    // 삼각형 SVG를 인라인으로(컴포넌트로 감싸면 매 렌더마다 remount돼 회전 트랜지션이 안 먹음)
+    const triangle = (o: boolean) => (
         <span
             className="flex shrink-0 items-center justify-center text-(--text-muted)"
             style={{ height: s.lh + PAD, paddingTop: PAD, width: s.arrow + 8 }}
@@ -105,7 +106,7 @@ export function ToggleText({
                 height={s.arrow}
                 viewBox="0 0 20 20"
                 fill="none"
-                style={{ transform: o ? "rotate(90deg)" : "rotate(0deg)", transition: "transform .15s" }}
+                style={{ transform: o ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.15s ease" }}
             >
                 <path
                     d="M15.795 11.272L7.795 16.272C6.79593 16.8964 5.5 16.1782 5.5 15L5.5 5.00002C5.5 3.82186 6.79593 3.1036 7.795 3.72802L15.795 8.72802C16.735 9.31552 16.735 10.6845 15.795 11.272Z"
@@ -119,7 +120,7 @@ export function ToggleText({
     if (text === undefined) {
         return (
             <div className="flex items-start">
-                <Triangle o />
+                {triangle(true)}
                 <span className="py-[3px] text-[16px] leading-[24px] text-(--text)">{children}</span>
             </div>
         );
@@ -136,7 +137,7 @@ export function ToggleText({
         <div className="my-[2px]">
             <div className="flex items-start">
                 <button type="button" className="cursor-pointer" onClick={() => setOpen((o) => !o)} aria-label="토글">
-                    <Triangle o={open} />
+                    {triangle(open)}
                 </button>
                 <span className={`px-[2px] text-(--text) ${s.cls}`} style={{ color, lineHeight: `${s.lh}px`, paddingTop: PAD }}>
                     {label}
