@@ -29,6 +29,24 @@ export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatte
                     )
                 )}
                 <tw.Title>{frontmatter.title}</tw.Title>
+                {/* 부제목 (에디터와 동일 디자인) */}
+                {frontmatter.subTitle && frontmatter.subTitle !== "none" && (
+                    <div className="px-[2px] text-[16px] text-(--text-muted)">{frontmatter.subTitle}</div>
+                )}
+                {/* 태그 (에디터와 동일 디자인, default-tag 센티넬은 숨김) */}
+                {(() => {
+                    const tags = (frontmatter.tags || []).filter((t) => t && t !== "default-tag");
+                    if (!tags.length) return null;
+                    return (
+                        <div className="mt-2 flex flex-wrap gap-1 px-[2px]">
+                            {tags.map((t, i) => (
+                                <span key={`${t}-${i}`} className="rounded-[6px] bg-(--hover-bg) px-2 py-0.5 text-xs text-(--text-muted)">
+                                    #{t}
+                                </span>
+                            ))}
+                        </div>
+                    );
+                })()}
             </tw.Container>
         </>
     );
