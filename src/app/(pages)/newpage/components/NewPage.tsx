@@ -14,6 +14,8 @@ import { useBlockDnD } from "../hooks/useBlockDnD";
 import { getDoc, saveDoc, listCategories } from "../lib/localDocs";
 import { slugifyTitle, editorDataComment } from "../lib/exportMdx";
 import { mdxToBlocks } from "../lib/mdxToBlocks";
+import { htmlToBlocks } from "../lib/htmlToBlocks";
+import type { EditorData } from "../lib/exportMdx";
 import CategoryPicker from "./category-picker/CategoryPicker";
 import { parseImageContent, serializeImageContent } from "../lib/imageContent";
 import { PageIcon, fileToWebp } from "../lib/pageIcon";
@@ -360,11 +362,8 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 pasteBlocksAfter(pasteTarget(), payload);
                 return;
             }
-            // 2) 마크다운/MDX 텍스트 → 블록으로 변환해 삽입 (노션식)
-            const text = e.clipboardData?.getData("text/plain") || "";
-            if (looksLikeMarkdown(text)) {
-                e.preventDefault();
-                const parsed = mdxToBlocks(text);
+            // 파싱된 EditorData를 현재 위치에 블록으로 삽입 (+ 프론트매터 있으면 메타 반영)
+            const applyParsed = (parsed: EditorData) => {
                 if (!parsed.blocks.length) return;
                 const insertAt = pasteTarget() + 1;
                 setBlocks((prev) => {
@@ -375,7 +374,6 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 if (Object.keys(parsed.blockFormattedRanges).length) {
                     setBlockFormattedRanges((prev) => ({ ...prev, ...parsed.blockFormattedRanges }));
                 }
-                // 프론트매터가 있으면 메타에 반영(비어있지 않은 값만)
                 if (parsed.title || parsed.label || parsed.subTitle || parsed.icon || parsed.imageUrl || parsed.tags?.length) {
                     setMeta((prev) => ({
                         ...prev,
@@ -388,6 +386,26 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                     }));
                 }
                 setSelRange({ a: insertAt, b: insertAt + parsed.blocks.length - 1 });
+            };
+
+            // 2) 서식 있는(리치/HTML) 내용 → HTML 파싱. 구조가 있을 때만 블록 변환(단순 인라인은 네이티브).
+            const html = e.clipboardData?.getData("text/html");
+            if (html) {
+                const parsed = htmlToBlocks(html);
+                const structured = parsed.blocks.length > 1 || parsed.blocks.some((b) => b.type !== "p");
+                if (structured) {
+                    e.preventDefault();
+                    applyParsed(parsed);
+                    return;
+                }
+            }
+
+            // 3) 마크다운/MDX plain 텍스트 → 블록 변환
+            const text = e.clipboardData?.getData("text/plain") || "";
+            if (looksLikeMarkdown(text)) {
+                e.preventDefault();
+                applyParsed(mdxToBlocks(text));
+                return;
             }
             // 그 외(일반 텍스트) → 네이티브 붙여넣기
         };
