@@ -68,7 +68,7 @@ export default function ChartModal({ open, orient, initialTitle, initialRows, on
         >
             <div
                 data-theme="light"
-                className="animate-popIn flex max-h-[86vh] w-[440px] max-w-[94vw] flex-col rounded-[10px] border border-(--border) bg-(--menu-bg) p-[16px] text-(--text) shadow-2xl"
+                className="animate-popIn flex max-h-[86vh] w-[440px] max-w-[94vw] flex-col rounded-[14px] border border-(--border) bg-(--menu-bg) p-[16px] text-(--text) shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* 헤더 */}
