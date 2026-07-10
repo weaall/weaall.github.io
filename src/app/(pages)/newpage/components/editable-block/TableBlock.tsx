@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 
 // 노션 심플 테이블. 모든 셀 동일(플레인), 1px 보더.
-// - 열/행 셀렉터 바(회색 둥근 바)를 클릭하면 해당 열/행 삭제
-// - 우측 +(열), 하단 +(행), 우하단 코너 +(행+열) 로 추가 (호버 시 표시)
+// 표 둘레에 대칭 여백(18px)을 두고 컨트롤을 배치:
+// - 상단(열)/좌측(행) 가장자리: 회색 라운드 버튼(−) → 해당 열/행 삭제 (호버 시 표시, 호버하면 빨강)
+// - 우측 +(열)·하단 +(행)·우하단 코너 +(행+열)
 // content = {"rows": string[][]} (첫 행이 GFM 헤더로 나감)
 
 function parseTable(content: string): string[][] {
@@ -26,14 +27,10 @@ function parseTable(content: string): string[][] {
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 const PlusIcon = () => (
-    <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden>
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor" aria-hidden>
         <path d="M8 2.65a.75.75 0 0 1 .75.75v3.85h3.85a.75.75 0 0 1 0 1.5H8.75v3.85l-.004.077a.75.75 0 0 1-1.492 0L7.25 12.6V8.75H3.4a.75.75 0 0 1 0-1.5h3.85V3.4A.75.75 0 0 1 8 2.65" />
     </svg>
 );
-
-// 호버 시 나오는 회색 셀렉터 바 (클릭 → 삭제)
-const selectorBase =
-    "absolute z-[4] rounded-[4px] bg-[#c4c4c2] opacity-0 transition-opacity group-hover/table:opacity-100 hover:!bg-[#3b82f6] pointer-events-auto";
 
 export default function TableBlock({ id, content }: { id: string; content: string }) {
     const dataRef = useRef<string[][]>(parseTable(content));
@@ -94,10 +91,15 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     };
 
     const grid = dataRef.current;
-    const addBtn = "flex items-center justify-center rounded-[4px] border border-(--border) text-(--text-muted) opacity-0 transition-opacity hover:bg-(--hover-bg) group-hover/table:opacity-100";
+    // 삭제 핸들: 회색으로 감싼 버튼 느낌, 호버 시 표시, 커서 올리면 빨강
+    const delBtn =
+        "absolute z-[4] flex items-center justify-center rounded-[4px] bg-(--hover-bg) text-[12px] leading-none text-(--text-muted) opacity-0 transition-opacity group-hover/table:opacity-100 hover:!bg-[#e65b58] hover:!text-white";
+    // 추가 버튼: 보더 + 회색, 호버 시 표시
+    const addBtn =
+        "absolute flex items-center justify-center rounded-[4px] border border-(--border) bg-(--hover-bg) text-(--text-muted) opacity-0 transition-opacity group-hover/table:opacity-100 hover:!bg-[#e3e2df]";
 
     return (
-        <div id={id} className="group/table relative my-2 w-fit max-w-full overflow-x-auto pr-[20px] pb-[20px]">
+        <div id={id} className="group/table relative my-2 w-fit max-w-full p-[18px]">
             <table className="border-collapse">
                 <tbody>
                     {grid.map((row, r) => (
@@ -111,21 +113,25 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                         onInput={(e) => setCell(r, c, e.currentTarget.innerText)}
                                         dangerouslySetInnerHTML={{ __html: esc(cell) }}
                                     />
-                                    {/* 열 셀렉터 (첫 행 셀 상단 중앙) → 열 삭제 */}
+                                    {/* 열 삭제 (첫 행 셀 위) */}
                                     {r === 0 && (
-                                        <div
+                                        <button
                                             title="열 삭제"
-                                            className={`${selectorBase} left-1/2 top-[-3px] h-[6px] w-[18px] -translate-x-1/2 cursor-pointer border-2 border-(--page-bg)`}
+                                            className={`${delBtn} -top-[15px] left-1/2 h-[13px] w-[26px] -translate-x-1/2`}
                                             onMouseDown={noFocus(() => removeCol(c))}
-                                        />
+                                        >
+                                            −
+                                        </button>
                                     )}
-                                    {/* 행 셀렉터 (첫 열 셀 좌측 중앙) → 행 삭제 */}
+                                    {/* 행 삭제 (첫 열 셀 왼쪽) */}
                                     {c === 0 && (
-                                        <div
+                                        <button
                                             title="행 삭제"
-                                            className={`${selectorBase} top-1/2 left-[-3px] h-[18px] w-[6px] -translate-y-1/2 cursor-pointer border-2 border-(--page-bg)`}
+                                            className={`${delBtn} -left-[15px] top-1/2 h-[26px] w-[13px] -translate-y-1/2`}
                                             onMouseDown={noFocus(() => removeRow(r))}
-                                        />
+                                        >
+                                            −
+                                        </button>
                                     )}
                                 </td>
                             ))}
@@ -134,16 +140,16 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                 </tbody>
             </table>
 
-            {/* 열 추가 (우측 전체 높이) */}
-            <button className={`${addBtn} absolute top-0 right-0 bottom-[20px] w-4`} onMouseDown={noFocus(addCol)} title="열 추가">
+            {/* 열 추가 (우측, 표 높이) */}
+            <button className={`${addBtn} top-[18px] right-0 bottom-[18px] w-[14px]`} onMouseDown={noFocus(addCol)} title="열 추가">
                 <PlusIcon />
             </button>
-            {/* 행 추가 (하단 전체 너비) */}
-            <button className={`${addBtn} absolute bottom-0 left-0 right-[20px] h-4`} onMouseDown={noFocus(addRow)} title="행 추가">
+            {/* 행 추가 (하단, 표 너비) */}
+            <button className={`${addBtn} bottom-0 left-[18px] right-[18px] h-[14px]`} onMouseDown={noFocus(addRow)} title="행 추가">
                 <PlusIcon />
             </button>
-            {/* 코너 (행+열 추가) */}
-            <button className={`${addBtn} absolute right-0 bottom-0 h-4 w-4`} onMouseDown={noFocus(addBoth)} title="행·열 추가">
+            {/* 코너 (행+열) */}
+            <button className={`${addBtn} bottom-0 right-0 h-[14px] w-[14px]`} onMouseDown={noFocus(addBoth)} title="행·열 추가">
                 <PlusIcon />
             </button>
         </div>
