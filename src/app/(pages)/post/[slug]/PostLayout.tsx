@@ -8,6 +8,7 @@ import { MDXContent } from "@/components/mdx/mdx-content/MDXContent";
 import { useHoverHeader } from "@/hooks/useHoverHeader";
 import { PostData, PostFrontmatter } from "@/interface/PostData";
 import { extractEditorData } from "@/app/(pages)/newpage/lib/exportMdx";
+import { mdxToBlocks } from "@/app/(pages)/newpage/lib/mdxToBlocks";
 import { saveDoc, setActivePointer } from "@/app/(pages)/newpage/lib/localDocs";
 
 interface MDXContentProps {
@@ -35,11 +36,8 @@ export default function PostLayout({ postsData, content, frontmatter, slug }: MD
                 return;
             }
             const { content: raw } = await res.json();
-            const data = extractEditorData(raw);
-            if (!data) {
-                alert("이 게시물은 편집 데이터가 없어 수정할 수 없어요. (에디터로 작성·저장한 글만 수정 가능)");
-                return;
-            }
+            // 에디터로 만든 글이면 무손실 복원, 아니면 본문을 블록으로 파싱(폴백)
+            const data = extractEditorData(raw) ?? mdxToBlocks(raw);
             const id = crypto.randomUUID();
             saveDoc({
                 id,
