@@ -110,6 +110,12 @@
     margin: 0;
   }
 
+  /* 버튼은 호버 시 포인터 커서 (리셋으로 default가 되는 것 방지) */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
   [contenteditable][placeholder]:empty::after {
     content: attr(data-placeholder);
     color: #999;
