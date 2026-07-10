@@ -186,16 +186,24 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         const startWc = measure(c);
         const hasNext = c + 1 < cols;
         const startWn = hasNext ? measure(c + 1) : 0;
+        // 마지막 열(이웃 없음)을 늘릴 때 표가 편집 영역을 넘지 않도록 최대 너비 계산
+        const tableEl = wrapRef.current?.querySelector("table");
+        const tableW = tableEl?.getBoundingClientRect().width ?? 0;
+        const tableLeft = tableEl?.getBoundingClientRect().left ?? 0;
+        const parentRight = wrapRef.current?.parentElement?.getBoundingClientRect().right ?? tableLeft + tableW;
+        const maxTableW = Math.max(200, parentRight - tableLeft); // 사용 가능한 최대 표 너비
+        const maxWcLast = Math.max(MIN_W, Math.round(maxTableW - (tableW - startWc))); // 마지막 열 최대
         const startX = e.clientX;
         const onMove = (ev: MouseEvent) => {
             let dx = ev.clientX - startX;
             if (hasNext) {
-                // 두 열 모두 최소 너비를 지키도록 dx 클램프
+                // 두 열 모두 최소 너비를 지키도록 dx 클램프 (전체 폭 유지)
                 dx = Math.max(-(startWc - MIN_W), Math.min(dx, startWn - MIN_W));
                 d.colWidths![c] = Math.round(startWc + dx);
                 d.colWidths![c + 1] = Math.round(startWn - dx);
             } else {
-                d.colWidths![c] = Math.max(MIN_W, Math.round(startWc + dx));
+                // 마지막 열: 최소~최대(편집 영역) 사이로 클램프
+                d.colWidths![c] = Math.min(maxWcLast, Math.max(MIN_W, Math.round(startWc + dx)));
             }
             setVersion((v) => v + 1);
         };
