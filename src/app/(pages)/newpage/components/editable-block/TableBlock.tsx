@@ -284,8 +284,17 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                         <div
                                             contentEditable
                                             suppressContentEditableWarning
-                                            className="min-h-[20px] break-words px-[8px] py-[5px] text-[14px] leading-[20px] text-(--text) outline-none"
-                                            style={{ fontWeight: isHeader ? 600 : undefined, color: cellText(d, r, c) }}
+                                            className={`min-h-[20px] px-[8px] py-[5px] text-[14px] leading-[20px] text-(--text) outline-none ${
+                                                cw ? "" : "min-w-[120px] break-words"
+                                            }`}
+                                            style={{
+                                                fontWeight: isHeader ? 600 : undefined,
+                                                color: cellText(d, r, c),
+                                                // 너비를 지정한 열은 그 폭으로 고정하고 내용은 줄바꿈(→ 세로로 늘어남, 폭 불변)
+                                                width: cw ? cw : undefined,
+                                                overflowWrap: cw ? "anywhere" : undefined,
+                                                whiteSpace: cw ? "normal" : undefined,
+                                            }}
                                             onInput={(e) => setCell(r, c, e.currentTarget.innerText)}
                                             dangerouslySetInnerHTML={{ __html: esc(cell) }}
                                         />

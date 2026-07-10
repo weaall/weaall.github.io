@@ -65,21 +65,31 @@ export default function DataTable({ data }: { data?: string }) {
                         <tr key={r}>
                             {row.map((cell, c) => {
                                 const isHeader = (!!td.headerRow && r === 0) || (!!td.headerCol && c === 0);
+                                const cw = td.colWidths?.[c] || undefined;
                                 const Tag = (isHeader ? "th" : "td") as "th" | "td";
                                 return (
                                     <Tag
                                         key={c}
-                                        className={TABLE_CELL_CLASS}
+                                        className="border border-[#d3d2ce] p-0 text-left align-top"
                                         style={{
                                             background: cellBg(td, r, c, isHeader),
-                                            color: cellText(td, r, c),
-                                            fontWeight: isHeader ? 600 : undefined,
                                             boxShadow: headerShadow(td, r, c),
-                                            width: td.colWidths?.[c] || undefined,
-                                            minWidth: td.colWidths?.[c] ? undefined : 120,
+                                            width: cw,
+                                            minWidth: cw ? undefined : 120,
                                         }}
                                     >
-                                        {cell}
+                                        <div
+                                            className={`px-[8px] py-[5px] text-[14px] leading-[20px] ${cw ? "" : "break-words"}`}
+                                            style={{
+                                                color: cellText(td, r, c),
+                                                fontWeight: isHeader ? 600 : undefined,
+                                                width: cw ? cw : undefined,
+                                                overflowWrap: cw ? "anywhere" : undefined,
+                                                whiteSpace: cw ? "normal" : undefined,
+                                            }}
+                                        >
+                                            {cell}
+                                        </div>
                                     </Tag>
                                 );
                             })}
