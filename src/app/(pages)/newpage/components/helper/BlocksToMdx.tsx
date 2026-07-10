@@ -50,8 +50,6 @@ export function blocksToMDX(
         frontmatter += `---\n\n`;
     }
 
-    let numberedListCounter = 1;
-
     // 텍스트에 포맷팅을 적용하는 함수
     const applyFormattingToText = (text: string, formattedRanges: FormattedRange[] = []): string => {
         if (!formattedRanges || formattedRanges.length === 0) {
@@ -113,115 +111,106 @@ export function blocksToMDX(
         return result;
     };
 
-    // 블록을 MDX로 변환하는 메인 로직
-    const body = blocks
-        .filter(
-            (b) =>
-                b.content.trim() !== "" ||
-                b.type === "divider" ||
-                b.type === "image" ||
-                b.type === "table" ||
-                b.type.startsWith("barChart"),
-        )
-        .map((b, index) => {
-            const indentation = "  ".repeat(b.indentationLevel);
-            
-            // 포맷팅이 적용된 콘텐츠 생성
-            const formattedContent = applyFormattingToText(b.content, b.formattedRanges);
-            
-            // 블록 전체 색상이 있는 경우 추가로 적용
-            const contentWithColor = b.color ? 
-                `<span style={{ color: '${b.color}' }}>${formattedContent}</span>` : 
-                formattedContent;
+    // 내보내기 대상 블록만
+    const keep = (b: Block) =>
+        b.content.trim() !== "" ||
+        b.type === "divider" ||
+        b.type === "image" ||
+        b.type === "table" ||
+        b.type.startsWith("barChart") ||
+        b.type.startsWith("toggle");
+    const isToggle = (t: string) => t === "toggleText" || t === "toggleH1" || t === "toggleH2" || t === "toggleH3";
 
-            switch (b.type) {
-                case "h1":
-                    numberedListCounter = 1;
-                    return `# ${contentWithColor}`;
-                case "h2":
-                    numberedListCounter = 1;
-                    return `## ${contentWithColor}`;
-                case "h3":
-                    numberedListCounter = 1;
-                    return `### ${contentWithColor}`;
-                case "p":
-                    numberedListCounter = 1;
-                    return contentWithColor;
-                case "ul":
-                    numberedListCounter = 1;
-                    return `${indentation}- ${contentWithColor}`;
-                case "numberedList": {
-                    const prevBlock = blocks.filter((block) => block.content.trim() !== "" || block.type === "divider")[index - 1];
-
-                    if (!prevBlock || prevBlock.type !== "numberedList" || prevBlock.indentationLevel !== b.indentationLevel) {
-                        numberedListCounter = 1;
-                    }
-
-                    const currentNumber = numberedListCounter++;
-                    return `${indentation}${currentNumber}. ${contentWithColor}`;
-                }
-                case "checkedList": {
-                    numberedListCounter = 1;
-                    const checkedState = b.isChecked ? "x" : " ";
-                    return `${indentation}- [${checkedState}] ${contentWithColor}`;
-                }
-                case "divider":
-                    numberedListCounter = 1;
-                    return "---";
-                case "toggleText":
-                    return `${indentation}<ToggleText>${contentWithColor}</ToggleText>`;
-                case "toggleH1":
-                    numberedListCounter = 1;
-                    return `${indentation}# ${contentWithColor}`;
-                case "toggleH2":
-                    numberedListCounter = 1;
-                    return `${indentation}## ${contentWithColor}`;
-                case "toggleH3":
-                    numberedListCounter = 1;
-                    return `${indentation}### ${contentWithColor}`;
-                case "image": {
-                    numberedListCounter = 1;
-                    // content = {src, width} JSON (과거 raw dataURL도 호환). Img 컴포넌트로 매핑됨.
-                    let src = b.content;
-                    let width: number | undefined;
-                    if (b.content && b.content[0] === "{") {
-                        try {
-                            const p = JSON.parse(b.content);
-                            if (typeof p.src === "string") src = p.src;
-                            if (typeof p.width === "number") width = p.width;
-                        } catch {
-                            /* 폴백: content 그대로 src */
-                        }
-                    }
-                    return `<img src="${src}" alt=""${width ? ` width="${width}"` : ""} />`;
-                }
-                case "barChartH":
-                case "barChartV":
-                    numberedListCounter = 1;
-                    // content = {title, rows} JSON. 속성 안전을 위해 URI 인코딩해서 전달.
-                    return `<BarChart orient="${b.type === "barChartH" ? "h" : "v"}" data="${encodeURIComponent(
-                        b.content || "{}",
-                    )}" />`;
-                case "table": {
-                    numberedListCounter = 1;
-                    // 배경색/제목행·열을 보존하려고 GFM 표가 아니라 <DataTable> 컴포넌트로 내보낸다.
-                    // content = {rows, headerRow, headerCol, rowColors, colColors} JSON → URI 인코딩.
-                    let ok = false;
+    // 토글이 아닌 한 블록의 MDX 라인 (num: 번호목록 번호)
+    const lineFor = (b: Block, num: number): string => {
+        const indentation = "  ".repeat(b.indentationLevel);
+        const formattedContent = applyFormattingToText(b.content, b.formattedRanges);
+        const contentWithColor = b.color ? `<span style={{ color: '${b.color}' }}>${formattedContent}</span>` : formattedContent;
+        switch (b.type) {
+            case "h1":
+                return `# ${contentWithColor}`;
+            case "h2":
+                return `## ${contentWithColor}`;
+            case "h3":
+                return `### ${contentWithColor}`;
+            case "ul":
+                return `${indentation}- ${contentWithColor}`;
+            case "numberedList":
+                return `${indentation}${num}. ${contentWithColor}`;
+            case "checkedList":
+                return `${indentation}- [${b.isChecked ? "x" : " "}] ${contentWithColor}`;
+            case "divider":
+                return "---";
+            case "image": {
+                let src = b.content;
+                let width: number | undefined;
+                if (b.content && b.content[0] === "{") {
                     try {
-                        const p = JSON.parse(b.content || "{}");
-                        ok = Array.isArray(p.rows) && p.rows.length > 0;
+                        const p = JSON.parse(b.content);
+                        if (typeof p.src === "string") src = p.src;
+                        if (typeof p.width === "number") width = p.width;
                     } catch {
-                        ok = false;
+                        /* 폴백: content 그대로 src */
                     }
-                    if (!ok) return "";
-                    return `<DataTable data="${encodeURIComponent(b.content)}" />`;
                 }
-                default:
-                    numberedListCounter = 1;
-                    return contentWithColor;
+                return `<img src="${src}" alt=""${width ? ` width="${width}"` : ""} />`;
             }
-        })
-        .join("\n\n");
+            case "barChartH":
+            case "barChartV":
+                return `<BarChart orient="${b.type === "barChartH" ? "h" : "v"}" data="${encodeURIComponent(b.content || "{}")}" />`;
+            case "table": {
+                let ok = false;
+                try {
+                    const p = JSON.parse(b.content || "{}");
+                    ok = Array.isArray(p.rows) && p.rows.length > 0;
+                } catch {
+                    ok = false;
+                }
+                if (!ok) return "";
+                return `<DataTable data="${encodeURIComponent(b.content)}" />`;
+            }
+            case "p":
+            default:
+                return contentWithColor;
+        }
+    };
 
+    // 토글은 자식(더 깊은 들여쓰기)을 <ToggleText> 안에 중첩 → 포스트에서 접기/펼치기.
+    const renderRange = (list: Block[]): string => {
+        const parts: string[] = [];
+        let counter = 1;
+        let prevNumIndent = -1;
+        for (let i = 0; i < list.length; i++) {
+            const b = list[i];
+            if (isToggle(b.type)) {
+                let j = i + 1;
+                while (j < list.length && list[j].indentationLevel > b.indentationLevel) j++;
+                const kids = list
+                    .slice(i + 1, j)
+                    .map((c) => ({ ...c, indentationLevel: Math.max(0, c.indentationLevel - (b.indentationLevel + 1)) }));
+                const heading = b.type === "toggleH1" ? "h1" : b.type === "toggleH2" ? "h2" : b.type === "toggleH3" ? "h3" : "";
+                const colorAttr = b.color ? ` color="${b.color}"` : "";
+                const inner = renderRange(kids);
+                const open = `<ToggleText heading="${heading}" text="${encodeURIComponent(b.content)}"${colorAttr}>`;
+                parts.push(inner ? `${open}\n\n${inner}\n\n</ToggleText>` : `${open}</ToggleText>`);
+                prevNumIndent = -1;
+                i = j - 1;
+                continue;
+            }
+            let num = 0;
+            if (b.type === "numberedList") {
+                if (prevNumIndent !== b.indentationLevel) counter = 1;
+                num = counter++;
+                prevNumIndent = b.indentationLevel;
+            } else {
+                prevNumIndent = -1;
+            }
+            const line = lineFor(b, num);
+            if (line !== "") parts.push(line);
+        }
+        return parts.join("\n\n");
+    };
+
+    const body = renderRange(blocks.filter(keep));
     return frontmatter + body;
 }
