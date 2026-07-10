@@ -1,7 +1,22 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { TableData, TABLE_COLORS, cellBg, headerShadow } from "@/components/mdx/mdx-components/DataTable";
+import { TableData, cellBg, headerShadow } from "@/components/mdx/mdx-components/DataTable";
+import * as tm from "../menu-modal/TypeMenu.modal.styles";
+import { RightIcon } from "@/components/ui/icons/TypeMenuSvg";
+
+// 배경색 팔레트(라벨 포함) — 전환 메뉴 색 드로워와 동일한 형식으로 표시
+const BG_COLORS: { c: string | null; label: string }[] = [
+    { c: null, label: "없음" },
+    { c: "#f1f0ef", label: "회색 배경" },
+    { c: "#faebdd", label: "갈색 배경" },
+    { c: "#fbf3db", label: "노란색 배경" },
+    { c: "#ddedea", label: "초록색 배경" },
+    { c: "#ddebf1", label: "파란색 배경" },
+    { c: "#eae4f2", label: "보라색 배경" },
+    { c: "#f4dfeb", label: "분홍색 배경" },
+    { c: "#fbe4e4", label: "빨간색 배경" },
+];
 
 // 노션 심플 테이블(에디터). 셀 편집 + 행/열 셀렉터 → 옵션 메뉴(색/제목행·열/삽입/복제/콘텐츠삭제/삭제).
 // 선택(메뉴 열림) 행·열은 파란 테두리로 표시. content = TableData JSON.
@@ -52,7 +67,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     const dataRef = useRef<TableData>(parseTable(content));
     const [version, setVersion] = useState(0);
     const [menu, setMenu] = useState<MenuState>(null);
-    const [menuMode, setMenuMode] = useState<"main" | "color">("main");
+    const [colorDrawer, setColorDrawer] = useState(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const wrapRef = useRef<HTMLDivElement>(null);
     // 선택(메뉴 열린) 행/열 위에 덮어씌울 두꺼운 파란 아웃라인의 위치
@@ -98,7 +113,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         setVersion((v) => v + 1);
         commit();
         setMenu(null);
-        setMenuMode("main");
+        setColorDrawer(false);
     };
 
     useEffect(() => {
@@ -154,8 +169,8 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         e.preventDefault();
         e.stopPropagation();
         const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
-        setMenuMode("main");
-        setMenu({ kind, index, top: r.bottom + 4, left: Math.min(r.left, window.innerWidth - 220) });
+        setColorDrawer(false);
+        setMenu({ kind, index, top: r.bottom + 4, left: Math.min(r.left, window.innerWidth - 420) });
     };
 
     const grid = d.rows;
@@ -262,51 +277,63 @@ export default function TableBlock({ id, content }: { id: string; content: strin
 
             {menu && (
                 <>
-                    <div className="fixed inset-0 z-[1900]" onMouseDown={(e) => e.stopPropagation()} onClick={() => { setMenu(null); setMenuMode("main"); }} />
+                    <div className="fixed inset-0 z-[1900]" onMouseDown={(e) => e.stopPropagation()} onClick={() => { setMenu(null); setColorDrawer(false); }} />
+                    {/* 전환(태그) 모달과 동일한 드로워 디자인 */}
                     <div
                         data-theme="light"
-                        className="animate-popIn fixed z-[2000] min-w-[200px] rounded-[10px] border border-(--border) bg-(--menu-bg) p-[4px] shadow-xl"
-                        style={{ top: menu.top, left: menu.left }}
+                        className="animate-popIn fixed z-[2000] flex"
+                        style={{ top: menu.top, left: menu.left, transformOrigin: "top left" }}
                         onMouseDown={(e) => e.stopPropagation()}
                     >
-                        {menuMode === "color" ? (
-                            <div className="flex flex-wrap gap-[6px] p-[6px]">
-                                {TABLE_COLORS.map((color, i) => (
-                                    <button
-                                        key={i}
-                                        title={color ?? "없음"}
-                                        className="h-6 w-6 rounded-full border border-black/10 transition-transform hover:scale-110"
-                                        style={{ background: color ?? "transparent", backgroundImage: color ? undefined : "linear-gradient(45deg,transparent 45%,#e65b58 45%,#e65b58 55%,transparent 55%)" }}
-                                        onMouseDown={noFocus(() => apply(() => setColor(color)))}
-                                    />
-                                ))}
-                            </div>
-                        ) : (
-                            items.map((it) =>
+                        <tm.Menu style={{ minWidth: "180px", position: "relative" }}>
+                            {items.map((it) =>
                                 it.color ? (
-                                    <button
+                                    <tm.MenuButton
                                         key={it.label}
-                                        className="flex h-8 w-full items-center gap-[8px] rounded-[6px] px-[8px] text-left text-[14px] text-(--text) hover:bg-(--menu-hover-bg)"
-                                        onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); setMenuMode("color"); }}
+                                        className={colorDrawer ? "bg-(--menu-hover-bg)" : ""}
+                                        onMouseEnter={() => setColorDrawer(true)}
+                                        onMouseDown={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); setColorDrawer(true); }}
                                     >
-                                        <span className="flex h-[18px] w-[18px] items-center justify-center text-(--text-muted)"><Ico d={it.icon} /></span>
-                                        {it.label}
-                                        <span className="ml-auto text-(--text-muted)">›</span>
-                                    </button>
+                                        <tm.LabelWrap>
+                                            <tm.SvgWrap><Ico d={it.icon} /></tm.SvgWrap>
+                                            {it.label}
+                                        </tm.LabelWrap>
+                                        <tm.SvgWrap><RightIcon color="#5f5e5b" /></tm.SvgWrap>
+                                    </tm.MenuButton>
                                 ) : (
-                                    <button
+                                    <tm.MenuButton
                                         key={it.label}
-                                        className={`flex h-8 w-full items-center gap-[8px] rounded-[6px] px-[8px] text-left text-[14px] hover:bg-(--menu-hover-bg) ${
-                                            it.danger ? "text-[#e65b58]" : "text-(--text)"
-                                        }`}
+                                        onMouseEnter={() => setColorDrawer(false)}
                                         onMouseDown={noFocus(() => apply(it.run!))}
+                                        style={it.danger ? { color: "#e65b58" } : undefined}
                                     >
-                                        <span className="flex h-[18px] w-[18px] items-center justify-center text-(--text-muted)"><Ico d={it.icon} rotate={it.rotate} /></span>
-                                        {it.label}
-                                        {it.on !== undefined && <span className="ml-auto text-[#3b82f6]">{it.on ? "✓" : ""}</span>}
-                                    </button>
+                                        <tm.LabelWrap>
+                                            <tm.SvgWrap><Ico d={it.icon} rotate={it.rotate} /></tm.SvgWrap>
+                                            {it.label}
+                                        </tm.LabelWrap>
+                                        {it.on !== undefined && <tm.ExpLabel style={{ color: "#3b82f6" }}>{it.on ? "✓" : ""}</tm.ExpLabel>}
+                                    </tm.MenuButton>
                                 ),
-                            )
+                            )}
+                        </tm.Menu>
+                        {colorDrawer && (
+                            <tm.DrawerMenu
+                                style={{ left: "calc(100% + 6px)" }}
+                                onMouseEnter={() => setColorDrawer(true)}
+                                onMouseLeave={() => setColorDrawer(false)}
+                            >
+                                <tm.Label>배경 색상</tm.Label>
+                                {BG_COLORS.map(({ c, label }) => (
+                                    <tm.MenuButton key={label} onMouseDown={noFocus(() => apply(() => setColor(c)))}>
+                                        <tm.LabelWrap>
+                                            <tm.SvgWrap>
+                                                <span className="h-4 w-4 rounded-[3px] border border-black/10" style={{ background: c ?? "#ffffff" }} />
+                                            </tm.SvgWrap>
+                                            {label}
+                                        </tm.LabelWrap>
+                                    </tm.MenuButton>
+                                ))}
+                            </tm.DrawerMenu>
                         )}
                     </div>
                 </>
