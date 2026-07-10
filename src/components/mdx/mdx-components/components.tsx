@@ -84,28 +84,43 @@ export function ToggleText({
     children?: React.ReactNode;
 }) {
     const [open, setOpen] = React.useState(true);
-    const Triangle = ({ open: o }: { open: boolean }) => (
-        <svg
-            width="16"
-            height="16"
-            viewBox="0 0 20 20"
-            fill="none"
-            className="mt-[5px] mr-[6px] shrink-0 text-(--text-muted)"
-            style={{ transform: o ? "rotate(90deg)" : "rotate(0deg)", transition: "transform .15s" }}
+
+    // 에디터 토글과 동일: 타입별 삼각형 크기 / 줄높이 / 글자 스타일
+    const SIZES: { [k: string]: { arrow: number; lh: number; cls: string } } = {
+        "": { arrow: 16, lh: 24, cls: "text-[16px]" },
+        h3: { arrow: 19, lh: 28, cls: "text-[20px] font-medium" },
+        h2: { arrow: 23, lh: 34, cls: "text-[24px] font-semibold" },
+        h1: { arrow: 28, lh: 42, cls: "text-[30px] font-bold" },
+    };
+    const PAD = 3;
+    const s = SIZES[heading || ""] ?? SIZES[""];
+
+    const Triangle = ({ o }: { o: boolean }) => (
+        <span
+            className="flex shrink-0 items-center justify-center text-(--text-muted)"
+            style={{ height: s.lh + PAD, paddingTop: PAD, width: s.arrow + 8 }}
         >
-            <path
-                d="M15.795 11.272L7.795 16.272C6.79593 16.8964 5.5 16.1782 5.5 15L5.5 5.00002C5.5 3.82186 6.79593 3.1036 7.795 3.72802L15.795 8.72802C16.735 9.31552 16.735 10.6845 15.795 11.272Z"
-                fill="currentColor"
-            />
-        </svg>
+            <svg
+                width={s.arrow}
+                height={s.arrow}
+                viewBox="0 0 20 20"
+                fill="none"
+                style={{ transform: o ? "rotate(90deg)" : "rotate(0deg)", transition: "transform .15s" }}
+            >
+                <path
+                    d="M15.795 11.272L7.795 16.272C6.79593 16.8964 5.5 16.1782 5.5 15L5.5 5.00002C5.5 3.82186 6.79593 3.1036 7.795 3.72802L15.795 8.72802C16.735 9.31552 16.735 10.6845 15.795 11.272Z"
+                    fill="currentColor"
+                />
+            </svg>
+        </span>
     );
 
     // 구버전 호환: text 없으면 children이 제목, 정적 표시
     if (text === undefined) {
         return (
-            <div className="flex items-start text-[16px] leading-[1.4] text-(--text)">
-                <Triangle open />
-                <span className="py-[3px]">{children}</span>
+            <div className="flex items-start">
+                <Triangle o />
+                <span className="py-[3px] text-[16px] leading-[24px] text-(--text)">{children}</span>
             </div>
         );
     }
@@ -116,17 +131,18 @@ export function ToggleText({
     } catch {
         /* 원문 유지 */
     }
-    const size = heading === "h1" ? "text-[30px] font-bold" : heading === "h2" ? "text-[24px] font-semibold" : heading === "h3" ? "text-[20px] font-medium" : "text-[16px]";
 
     return (
         <div className="my-[2px]">
-            <button type="button" className="flex w-full items-start text-left" onClick={() => setOpen((o) => !o)}>
-                <Triangle open={open} />
-                <span className={`py-[3px] leading-[1.4] text-(--text) ${size}`} style={{ color }}>
+            <div className="flex items-start">
+                <button type="button" className="cursor-pointer" onClick={() => setOpen((o) => !o)} aria-label="토글">
+                    <Triangle o={open} />
+                </button>
+                <span className={`px-[2px] text-(--text) ${s.cls}`} style={{ color, lineHeight: `${s.lh}px`, paddingTop: PAD }}>
                     {label}
                 </span>
-            </button>
-            {open && <div className="ml-6">{children}</div>}
+            </div>
+            {open && <div style={{ marginLeft: s.arrow + 8 }}>{children}</div>}
         </div>
     );
 }
