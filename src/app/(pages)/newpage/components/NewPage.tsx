@@ -13,6 +13,7 @@ import { useBlockHistory } from "../hooks/useBlockHistory";
 import { useBlockDnD } from "../hooks/useBlockDnD";
 import { getDoc, saveDoc, listCategories } from "../lib/localDocs";
 import { slugifyTitle, editorDataComment } from "../lib/exportMdx";
+import { mdxToBlocks } from "../lib/mdxToBlocks";
 import CategoryPicker from "./category-picker/CategoryPicker";
 import { parseImageContent, serializeImageContent } from "../lib/imageContent";
 import { PageIcon, fileToWebp } from "../lib/pageIcon";
@@ -20,6 +21,13 @@ import IconPicker from "./icon-picker/IconPicker";
 
 import { formatPostDate } from "@/util/date";
 import * as tw from "./Newpage.styles";
+
+// 붙여넣은 텍스트가 마크다운/MDX 구조인지 판별 (구조가 있으면 블록으로 변환)
+function looksLikeMarkdown(t: string): boolean {
+    if (!t) return false;
+    if (/^---\r?\n/.test(t)) return true; // 프론트매터
+    return /(^|\n)\s*(#{1,3}\s|[-*+]\s|\d+\.\s|>\s|`{3}|\|.*\|\s*$|---\s*$|<(?:ToggleText|DataTable|BarChart|img)\b)/.test(t);
+}
 
 // 이미지 파일 드래그 중, 삽입될 위치에 뜨는 자리표시자 (공간이 열리며 "여기 들어감" 표시)
 function ImageDropZone() {
@@ -326,30 +334,62 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         };
         // 붙여넣기: 클립보드에 블록 데이터가 있으면(=블록을 복사했으면) 편집 중이어도 현재 블록 아래에 블록 삽입.
         // 없으면(일반 텍스트) 네이티브 그대로.
-        const onPaste = (e: ClipboardEvent) => {
-            const data = e.clipboardData?.getData(CLIP_TYPE);
-            if (!data) return;
-            let payload;
-            try {
-                payload = JSON.parse(data);
-            } catch {
-                return;
-            }
-            if (!payload?.blocks?.length) return;
-            e.preventDefault();
-
-            let target: number;
+        // 붙여넣을 위치(현재 편집 블록 뒤 / 선택 뒤 / 맨 끝)
+        const pasteTarget = () => {
             if (isEditingText()) {
                 const activeId = (document.activeElement as HTMLElement).id;
-                target = blocksRef.current.findIndex((b) => b.id === activeId);
-                if (target === -1) target = blocksRef.current.length - 1;
-                (document.activeElement as HTMLElement).blur(); // 붙여넣은 블록 선택이 보이게
-            } else if (selRange) {
-                target = selMax;
-            } else {
-                target = blocksRef.current.length - 1;
+                const t = blocksRef.current.findIndex((b) => b.id === activeId);
+                (document.activeElement as HTMLElement).blur();
+                return t === -1 ? blocksRef.current.length - 1 : t;
             }
-            pasteBlocksAfter(target, payload);
+            return selRange ? selMax : blocksRef.current.length - 1;
+        };
+
+        const onPaste = (e: ClipboardEvent) => {
+            const data = e.clipboardData?.getData(CLIP_TYPE);
+            // 1) 내부에서 복사한 블록 → 블록 붙여넣기
+            if (data) {
+                let payload;
+                try {
+                    payload = JSON.parse(data);
+                } catch {
+                    return;
+                }
+                if (!payload?.blocks?.length) return;
+                e.preventDefault();
+                pasteBlocksAfter(pasteTarget(), payload);
+                return;
+            }
+            // 2) 마크다운/MDX 텍스트 → 블록으로 변환해 삽입 (노션식)
+            const text = e.clipboardData?.getData("text/plain") || "";
+            if (looksLikeMarkdown(text)) {
+                e.preventDefault();
+                const parsed = mdxToBlocks(text);
+                if (!parsed.blocks.length) return;
+                const insertAt = pasteTarget() + 1;
+                setBlocks((prev) => {
+                    const arr = [...prev];
+                    arr.splice(insertAt, 0, ...parsed.blocks);
+                    return arr;
+                });
+                if (Object.keys(parsed.blockFormattedRanges).length) {
+                    setBlockFormattedRanges((prev) => ({ ...prev, ...parsed.blockFormattedRanges }));
+                }
+                // 프론트매터가 있으면 메타에 반영(비어있지 않은 값만)
+                if (parsed.title || parsed.label || parsed.subTitle || parsed.icon || parsed.imageUrl || parsed.tags?.length) {
+                    setMeta((prev) => ({
+                        ...prev,
+                        title: parsed.title || prev.title,
+                        label: parsed.label || prev.label,
+                        subTitle: parsed.subTitle || prev.subTitle,
+                        icon: parsed.icon || prev.icon,
+                        imageUrl: parsed.imageUrl || prev.imageUrl,
+                        tags: parsed.tags && parsed.tags.length ? parsed.tags : prev.tags,
+                    }));
+                }
+                setSelRange({ a: insertAt, b: insertAt + parsed.blocks.length - 1 });
+            }
+            // 그 외(일반 텍스트) → 네이티브 붙여넣기
         };
 
         // Delete/Backspace: 선택된 블록 전체 삭제 / Escape: 선택 해제
