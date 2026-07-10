@@ -236,7 +236,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     };
 
     return (
-        <div ref={wrapRef} id={id} className="group/table relative my-2 w-fit max-w-full p-[18px]">
+        <div ref={wrapRef} id={id} className="group/table relative my-2 w-fit p-[18px]">
             <table className="border-collapse">
                 <tbody>
                     {grid.map((row, r) => (
