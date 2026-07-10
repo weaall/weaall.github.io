@@ -76,6 +76,42 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     const wrapRef = useRef<HTMLDivElement>(null);
     // 선택(메뉴 열린) 행/열 위에 덮어씌울 두꺼운 파란 아웃라인의 위치
     const [overlay, setOverlay] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
+    // 열 경계 리사이즈 hover/드래그 시 그 열 경계선(전체 높이)을 파랗게
+    const [resizeCol, setResizeCol] = useState<number | null>(null);
+    const [resizeLine, setResizeLine] = useState<{ left: number; top: number; height: number } | null>(null);
+    const resizingRef = useRef(false);
+    // 셀 DOM 참조 (비제어 편집: 포커스된 셀은 리렌더로 innerHTML 재설정하지 않아 커서 튐 방지)
+    const cellRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+    // 셀 내용 동기화: 포커스 안 된 셀만 dataRef 값으로 맞춘다(타이핑 중인 셀은 건드리지 않음).
+    useLayoutEffect(() => {
+        dataRef.current.rows.forEach((row, r) =>
+            row.forEach((cell, c) => {
+                const el = cellRefs.current.get(`${r}_${c}`);
+                if (el && document.activeElement !== el && el.innerText !== cell) el.innerText = cell;
+            }),
+        );
+    });
+
+    // 리사이즈 대상 열 경계선(전체 표 높이) 위치 계산
+    useLayoutEffect(() => {
+        const wrap = wrapRef.current;
+        if (resizeCol === null || !wrap) {
+            setResizeLine(null);
+            return;
+        }
+        const cells = Array.from(wrap.querySelectorAll<HTMLElement>(`td[data-c="${resizeCol}"]`));
+        const tableEl = wrap.querySelector("table");
+        if (!cells.length || !tableEl) {
+            setResizeLine(null);
+            return;
+        }
+        const w = wrap.getBoundingClientRect();
+        const tr = tableEl.getBoundingClientRect();
+        let right = -Infinity;
+        cells.forEach((el) => (right = Math.max(right, el.getBoundingClientRect().right)));
+        setResizeLine({ left: right - w.left, top: tr.top - w.top, height: tr.height });
+    }, [resizeCol, version]);
 
     useLayoutEffect(() => {
         const wrap = wrapRef.current;
@@ -190,6 +226,8 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         const colRight = colEl?.getBoundingClientRect().right ?? window.innerWidth;
         const maxTableW = Math.max(200, colRight - tableLeft - 24); // 우측 wrapper 패딩(18)+여백 고려
         const maxWcLast = Math.max(MIN_W, Math.round(maxTableW - (tableW - startWc))); // 마지막 열 최대
+        resizingRef.current = true;
+        setResizeCol(c);
         const startX = e.clientX;
         const onMove = (ev: MouseEvent) => {
             let dx = ev.clientX - startX;
@@ -207,10 +245,22 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         const onUp = () => {
             window.removeEventListener("mousemove", onMove);
             window.removeEventListener("mouseup", onUp);
+            resizingRef.current = false;
+            setResizeCol(null);
             commit();
         };
         window.addEventListener("mousemove", onMove);
         window.addEventListener("mouseup", onUp);
+    };
+
+    // 표 너비를 편집 영역 최대폭으로 채우기(현재 비율 유지하며 스케일)
+    const fitFull = () => {
+        const maxW = maxTableWidth();
+        const widths: number[] = [];
+        for (let k = 0; k < cols; k++) widths.push(d.colWidths![k] || Math.round(measureCol(k)));
+        const sum = widths.reduce((a, b) => a + b, 0) || 1;
+        const factor = maxW / sum;
+        d.colWidths = widths.map((w) => Math.max(MIN_W, Math.round(w * factor)));
     };
 
     // 현재 열 실제 렌더 너비
@@ -319,6 +369,11 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                         style={{ background: bg, boxShadow: headerShadow(d, r, c), width: cw, minWidth: cw ? undefined : 120 }}
                                     >
                                         <div
+                                            ref={(el) => {
+                                                const k = `${r}_${c}`;
+                                                if (el) cellRefs.current.set(k, el);
+                                                else cellRefs.current.delete(k);
+                                            }}
                                             contentEditable
                                             suppressContentEditableWarning
                                             className={`min-h-[20px] px-[8px] py-[5px] text-[14px] leading-[20px] text-(--text) outline-none ${
@@ -333,15 +388,14 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                                 whiteSpace: cw ? "normal" : undefined,
                                             }}
                                             onInput={(e) => setCell(r, c, e.currentTarget.innerText)}
-                                            dangerouslySetInnerHTML={{ __html: esc(cell) }}
                                         />
-                                        {/* 열 너비 조절 핸들 (오른쪽 경계) */}
+                                        {/* 열 너비 조절 핸들 (오른쪽 경계) — 호버/드래그 시 그 경계선 전체가 파랗게 */}
                                         <div
-                                            className="group/resize absolute top-0 right-[-3px] z-[5] h-full w-[6px] cursor-col-resize"
+                                            className="absolute top-0 right-[-3px] z-[5] h-full w-[6px] cursor-col-resize"
                                             onMouseDown={startColResize(c)}
-                                        >
-                                            <div className="mx-auto h-full w-[2px] bg-[#3b82f6] opacity-0 group-hover/resize:opacity-100" />
-                                        </div>
+                                            onMouseEnter={() => !resizingRef.current && setResizeCol(c)}
+                                            onMouseLeave={() => !resizingRef.current && setResizeCol(null)}
+                                        />
                                         {r === 0 && (
                                             <div
                                                 title="열 옵션"
@@ -371,6 +425,18 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                     style={{ top: overlay.top, left: overlay.left, width: overlay.width, height: overlay.height }}
                 />
             )}
+            {/* 리사이즈 대상 열 경계선(전체 높이) 파란 표시 */}
+            {resizeLine && (
+                <div
+                    className="pointer-events-none absolute z-[6] w-[2px] bg-[#3b82f6]"
+                    style={{ left: resizeLine.left - 1, top: resizeLine.top, height: resizeLine.height }}
+                />
+            )}
+
+            {/* 좌상단: 너비 풀로 맞추기 */}
+            <button className={`${addBtn} top-0 left-[18px] right-[18px] h-[14px]`} onMouseDown={noFocus(() => apply(fitFull))} title="너비 맞추기">
+                <span className="text-[11px] leading-none">↔</span>
+            </button>
 
             <button className={`${addBtn} top-[18px] right-0 bottom-[18px] w-[14px]`} onMouseDown={noFocus(() => apply(() => insertColFit(cols)))} title="열 추가">
                 +
