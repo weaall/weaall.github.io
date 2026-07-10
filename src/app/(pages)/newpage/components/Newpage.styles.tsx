@@ -41,5 +41,5 @@ export const EditableTitle = tw.div`
 `;
 
 export const TitleBlock = tw.div`
-  text-[40px] font-bold pt-0.5 pb-1 text-(--text) relative w-full
+  text-[40px] font-bold pt-0.5 pb-0 text-(--text) relative w-full
 `;

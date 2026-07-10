@@ -433,8 +433,8 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                 />
             )}
 
-            {/* 좌상단 코너: 너비 풀로 맞추기 (표에 붙게 — 우하단 코너 +와 대칭) */}
-            <button className={`${addBtn} top-0 left-0 h-[14px] w-[14px]`} onMouseDown={noFocus(() => apply(fitFull))} title="너비 맞추기">
+            {/* 우측 상단: 너비 풀로 맞추기 (우측 컨트롤 열의 맨 위 — 아래로 +열, 코너와 정렬) */}
+            <button className={`${addBtn} top-0 right-[-16px] h-[14px] w-[14px]`} onMouseDown={noFocus(() => apply(fitFull))} title="너비 맞추기">
                 <span className="text-[10px] leading-none">↔</span>
             </button>
 

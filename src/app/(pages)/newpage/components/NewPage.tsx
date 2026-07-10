@@ -941,9 +941,10 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                         {/* 커버 사진: 상단 배너, 아이콘이 하단에 겹쳐 표시 */}
                         {meta.imageUrl && (
                             <div className="group/cover relative mb-8">
-                                <div className="flex h-[300px] w-full content-center justify-center rounded-[6px] bg-white p-4">
+                                {/* 포스트(PostTitle)의 커버 마크업과 동일하게 */}
+                                <div className="w-full h-[400px] rounded-basic content-center flex justify-center p-4 bg-white">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img src={meta.imageUrl} alt="" className="h-full w-full rounded-[4px] object-contain" />
+                                    <img src={meta.imageUrl} alt="" className="rounded-basic h-full w-full object-contain" />
                                 </div>
                                 <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover/cover:opacity-100">
                                     <button className="rounded bg-black/50 px-2 py-1 text-xs text-white hover:bg-black/70" onClick={() => coverInputRef.current?.click()}>
@@ -1056,7 +1057,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                         {showSubtitle && (
                             <input
                                 autoFocus={!meta.subTitle}
-                                className="mt-1 w-full bg-transparent px-[2px] text-[16px] text-(--text-muted) outline-none placeholder:text-(--placeholder)"
+                                className="w-full bg-transparent px-[2px] text-[16px] text-(--text-muted) outline-none placeholder:text-(--placeholder)"
                                 placeholder="부제목을 입력하세요"
                                 value={meta.subTitle}
                                 onChange={(e) => setMeta((prev) => ({ ...prev, subTitle: e.target.value }))}
