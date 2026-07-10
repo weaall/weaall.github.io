@@ -387,7 +387,15 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                 const min = inSel ? sel!.min : fromIdx;
                 const max = inSel ? sel!.max : fromIdx;
                 const first = blocks[min];
-                const label = (first?.content || "").trim() || "빈 블록";
+                // 차트/표/이미지 등은 content가 JSON이라 그대로 보이면 안 됨 → 타입별 라벨
+                const typeLabel: { [k: string]: string } = {
+                    image: "🖼 이미지",
+                    table: "▦ 표",
+                    barChartH: "▤ 가로 막대그래프",
+                    barChartV: "▥ 세로 막대그래프",
+                    divider: "구분선",
+                };
+                const label = first ? typeLabel[first.type] ?? ((first.content || "").trim() || "빈 블록") : "빈 블록";
                 return { count: max - min + 1, label };
             },
         );
