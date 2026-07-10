@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { TableData, TABLE_COLORS, cellBg } from "@/components/mdx/mdx-components/DataTable";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { TableData, TABLE_COLORS, cellBg, headerShadow } from "@/components/mdx/mdx-components/DataTable";
 
 // 노션 심플 테이블(에디터). 셀 편집 + 행/열 셀렉터 → 옵션 메뉴(색/제목행·열/삽입/복제/콘텐츠삭제/삭제).
 // 선택(메뉴 열림) 행·열은 파란 테두리로 표시. content = TableData JSON.
@@ -50,10 +50,41 @@ type MenuState = { kind: "row" | "col"; index: number; top: number; left: number
 
 export default function TableBlock({ id, content }: { id: string; content: string }) {
     const dataRef = useRef<TableData>(parseTable(content));
-    const [, setVersion] = useState(0);
+    const [version, setVersion] = useState(0);
     const [menu, setMenu] = useState<MenuState>(null);
     const [menuMode, setMenuMode] = useState<"main" | "color">("main");
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const wrapRef = useRef<HTMLDivElement>(null);
+    // 선택(메뉴 열린) 행/열 위에 덮어씌울 두꺼운 파란 아웃라인의 위치
+    const [overlay, setOverlay] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
+
+    useLayoutEffect(() => {
+        const wrap = wrapRef.current;
+        if (!menu || !wrap) {
+            setOverlay(null);
+            return;
+        }
+        const sel = Array.from(
+            wrap.querySelectorAll<HTMLElement>(menu.kind === "row" ? `td[data-r="${menu.index}"]` : `td[data-c="${menu.index}"]`),
+        );
+        if (!sel.length) {
+            setOverlay(null);
+            return;
+        }
+        const w = wrap.getBoundingClientRect();
+        let top = Infinity,
+            left = Infinity,
+            right = -Infinity,
+            bottom = -Infinity;
+        sel.forEach((el) => {
+            const r = el.getBoundingClientRect();
+            top = Math.min(top, r.top);
+            left = Math.min(left, r.left);
+            right = Math.max(right, r.right);
+            bottom = Math.max(bottom, r.bottom);
+        });
+        setOverlay({ top: top - w.top, left: left - w.left, width: right - left, height: bottom - top });
+    }, [menu, version]);
 
     const commit = () => {
         window.dispatchEvent(new CustomEvent("newpage:settable", { detail: { id, content: JSON.stringify(dataRef.current) } }));
@@ -165,7 +196,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     };
 
     return (
-        <div id={id} className="group/table relative my-2 w-fit max-w-full p-[18px]">
+        <div ref={wrapRef} id={id} className="group/table relative my-2 w-fit max-w-full p-[18px]">
             <table className="border-collapse">
                 <tbody>
                     {grid.map((row, r) => (
@@ -173,12 +204,13 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                             {row.map((cell, c) => {
                                 const isHeader = (!!d.headerRow && r === 0) || (!!d.headerCol && c === 0);
                                 const bg = cellBg(d, r, c, isHeader);
-                                const selected = menu ? (menu.kind === "row" ? menu.index === r : menu.index === c) : false;
                                 return (
                                     <td
                                         key={c}
-                                        className={`relative border p-0 align-top ${selected ? "border-[#3b82f6]" : "border-[#d3d2ce]"}`}
-                                        style={{ background: bg }}
+                                        data-r={r}
+                                        data-c={c}
+                                        className="relative border border-[#d3d2ce] p-0 align-top"
+                                        style={{ background: bg, boxShadow: headerShadow(d, r, c) }}
                                     >
                                         <div
                                             contentEditable
@@ -209,6 +241,14 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                     ))}
                 </tbody>
             </table>
+
+            {/* 선택된 행/열 위에 덮어씌우는 두꺼운 파란 아웃라인 */}
+            {overlay && (
+                <div
+                    className="pointer-events-none absolute z-[3] rounded-[2px] border-2 border-[#3b82f6]"
+                    style={{ top: overlay.top, left: overlay.left, width: overlay.width, height: overlay.height }}
+                />
+            )}
 
             <button className={`${addBtn} top-[18px] right-0 bottom-[18px] w-[14px]`} onMouseDown={noFocus(() => apply(() => insertColAt(cols)))} title="열 추가">
                 +

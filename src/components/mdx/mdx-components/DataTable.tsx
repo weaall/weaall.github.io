@@ -30,6 +30,14 @@ export function cellBg(td: TableData, r: number, c: number, isHeaderCell: boolea
     return td.rowColors?.[r] || td.colColors?.[c] || (isHeaderCell ? HEADER_BG : undefined);
 }
 
+// 제목 행/열은 보더를 더 두껍게: 헤더와 본문 사이 경계선을 inset box-shadow로 2px 덧그린다.
+export function headerShadow(td: TableData, r: number, c: number): string | undefined {
+    const s: string[] = [];
+    if (td.headerRow && r === 0) s.push("inset 0 -2px 0 0 #b9b8b4");
+    if (td.headerCol && c === 0) s.push("inset -2px 0 0 0 #b9b8b4");
+    return s.length ? s.join(", ") : undefined;
+}
+
 export const TABLE_CELL_CLASS = "border border-[#d3d2ce] px-[9px] py-[7px] text-left align-top text-[14px] leading-[20px] text-(--text)";
 
 export default function DataTable({ data }: { data?: string }) {
@@ -55,7 +63,11 @@ export default function DataTable({ data }: { data?: string }) {
                                     <Tag
                                         key={c}
                                         className={TABLE_CELL_CLASS}
-                                        style={{ background: cellBg(td, r, c, isHeader), fontWeight: isHeader ? 600 : undefined }}
+                                        style={{
+                                            background: cellBg(td, r, c, isHeader),
+                                            fontWeight: isHeader ? 600 : undefined,
+                                            boxShadow: headerShadow(td, r, c),
+                                        }}
                                     >
                                         {cell}
                                     </Tag>
