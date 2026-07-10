@@ -165,15 +165,27 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         d.colWidths!.splice(c, 1);
     };
 
-    // 열 너비 드래그 조절
+    // 열 너비 드래그 조절: 경계를 끌면 그 열과 "오른쪽 이웃 열"을 함께 조절해
+    // 전체 표 너비는 유지(왼쪽 열들은 그대로). 마지막 열이면 표가 늘어난다.
+    const MIN_W = 48;
     const startColResize = (c: number) => (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        const cell = wrapRef.current?.querySelector<HTMLElement>(`td[data-c="${c}"]`);
-        const startW = cell?.getBoundingClientRect().width ?? 120;
+        const measure = (i: number) => wrapRef.current?.querySelector<HTMLElement>(`td[data-c="${i}"]`)?.getBoundingClientRect().width ?? 120;
+        const startWc = measure(c);
+        const hasNext = c + 1 < cols;
+        const startWn = hasNext ? measure(c + 1) : 0;
         const startX = e.clientX;
         const onMove = (ev: MouseEvent) => {
-            d.colWidths![c] = Math.max(48, Math.round(startW + (ev.clientX - startX)));
+            let dx = ev.clientX - startX;
+            if (hasNext) {
+                // 두 열 모두 최소 너비를 지키도록 dx 클램프
+                dx = Math.max(-(startWc - MIN_W), Math.min(dx, startWn - MIN_W));
+                d.colWidths![c] = Math.round(startWc + dx);
+                d.colWidths![c + 1] = Math.round(startWn - dx);
+            } else {
+                d.colWidths![c] = Math.max(MIN_W, Math.round(startWc + dx));
+            }
             setVersion((v) => v + 1);
         };
         const onUp = () => {
