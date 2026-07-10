@@ -311,10 +311,10 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                         />
                                         {/* 열 너비 조절 핸들 (오른쪽 경계) */}
                                         <div
-                                            className="absolute top-0 right-[-3px] z-[5] h-full w-[6px] cursor-col-resize opacity-0 hover:opacity-100 group-hover/table:opacity-100"
+                                            className="group/resize absolute top-0 right-[-3px] z-[5] h-full w-[6px] cursor-col-resize"
                                             onMouseDown={startColResize(c)}
                                         >
-                                            <div className="mx-auto h-full w-[2px] bg-[#3b82f6]/40" />
+                                            <div className="mx-auto h-full w-[2px] bg-[#3b82f6] opacity-0 group-hover/resize:opacity-100" />
                                         </div>
                                         {r === 0 && (
                                             <div
