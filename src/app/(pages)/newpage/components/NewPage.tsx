@@ -30,7 +30,7 @@ function ImageDropZone() {
     );
 }
 
-export default function NewPage({ collapsed, docId }: { collapsed: boolean; docId: string }) {
+export default function NewPage({ collapsed, docId, categories = [] }: { collapsed: boolean; docId: string; categories?: string[] }) {
     // 이 컴포넌트는 docId로 key되어 remount되므로, 초기값을 localStorage에서 한 번 읽어오면 된다.
     const initialDoc = getDoc(docId);
 
@@ -1013,6 +1013,10 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                                 placeholder="부제목을 입력하세요"
                                 value={meta.subTitle}
                                 onChange={(e) => setMeta((prev) => ({ ...prev, subTitle: e.target.value }))}
+                                // 비운 채로 포커스가 빠지면 부제목 영역을 접는다
+                                onBlur={() => {
+                                    if (!meta.subTitle.trim()) setShowSubtitle(false);
+                                }}
                             />
                         )}
                         {/* 태그 (버튼으로 추가) */}
@@ -1045,6 +1049,10 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                                         setMeta((prev) => ({ ...prev, tags: prev.tags.slice(0, -1) }));
                                     }
                                 }}
+                                // 태그도 없고 입력도 비었는데 포커스가 빠지면 접는다
+                                onBlur={() => {
+                                    if (!tagInput.trim() && meta.tags.length === 0) setShowTags(false);
+                                }}
                             />
                         </div>
                         )}
@@ -1063,7 +1071,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                     open={catPicker !== null}
                     position={catPicker}
                     current={meta.label}
-                    options={listCategories()}
+                    options={Array.from(new Set([...categories, ...listCategories()]))}
                     onSelect={(label) => setMeta((prev) => ({ ...prev, label }))}
                     onClose={() => setCatPicker(null)}
                 />

@@ -40,11 +40,14 @@ export default function NewPageLayout({ postsData }: { postsData: PostData[] }) 
         });
     }, []);
 
+    // 기존 게시물의 카테고리(label) 목록 — 카테고리 선택 제안용
+    const postCategories = Array.from(new Set(postsData.map((p) => p.label).filter(Boolean)));
+
     return (
         <div id="main-bg-container" data-theme="light" className="w-full h-full flex flex-col bg-(--page-bg) relative">
             <HoverHeader visible={showHeader} collapsed={collapsed} />
             <PostListDrawer posts={postsData} collapsed={collapsed} setCollapsed={setCollapsed} />
-            {activeDocId && <NewPage key={activeDocId} collapsed={collapsed} docId={activeDocId} />}
+            {activeDocId && <NewPage key={activeDocId} collapsed={collapsed} docId={activeDocId} categories={postCategories} />}
         </div>
     );
 }
