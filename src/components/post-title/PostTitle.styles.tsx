@@ -1,6 +1,6 @@
 import tw from "tailwind-styled-components"
 
-export const Container = tw.div`text-(--text)`
+export const Container = tw.div`text-(--text) mb-8`
 
 export const ImgWrap = tw.div`w-full bg-main h-[400px] rounded-basic content-center flex justify-center p-4 bg-white`
 export const Img = tw.img`rounded-basic h-full w-full object-contain`

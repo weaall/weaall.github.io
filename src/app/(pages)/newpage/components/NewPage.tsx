@@ -57,6 +57,14 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
     const [menuId, setMenuId] = useState<string | null>(null);
     const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
     const [showShare, setShowShare] = useState(false);
+    // 저장 알림 토스트 (브라우저 alert 대체)
+    const [toast, setToast] = useState<{ text: string; ok: boolean } | null>(null);
+    const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const showToast = (text: string, ok = true) => {
+        setToast({ text, ok });
+        if (toastTimer.current) clearTimeout(toastTimer.current);
+        toastTimer.current = setTimeout(() => setToast(null), 2500);
+    };
 
     // 상단 헤더의 "공유" 버튼(HoverHeader) 클릭 시 커스텀 이벤트로 공유 모달을 연다.
     useEffect(() => {
@@ -620,7 +628,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             });
             if (res.ok) {
                 const data = await res.json();
-                alert(`저장되었습니다 → ${data.path}`);
+                showToast(`저장되었습니다 · ${data.path}`, true);
                 return;
             }
         } catch {
@@ -637,6 +645,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        showToast("파일로 내려받았어요 (서버 저장 불가)", true);
     };
 
     // Ctrl/Cmd+S로 저장(내보내기). 최신 handleExport를 ref로 참조해 stale 방지.
@@ -968,7 +977,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         >
             <div data-editor-col className="max-w-[712px] min-w-[712px] w-[712px] mx-10" style={{ position: "relative" }}>
                 <tw.BlockWrap>
-                    <div className="group/title">
+                    <div className="group/title mb-8">
                         {/* 커버 사진: 상단 배너, 아이콘이 하단에 겹쳐 표시 */}
                         {meta.imageUrl && (
                             <div className="group/cover relative mb-8">
@@ -1252,6 +1261,17 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 onExport={handleExport}
                 postUrl={`https://weaall.github.io/post/${(meta.title || "untitled").replace(/ /g, "_")}`}
             />
+
+            {/* 저장 알림 토스트 */}
+            {toast && (
+                <div
+                    className="animate-popIn fixed bottom-6 left-1/2 z-[3000] flex -translate-x-1/2 items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white shadow-2xl"
+                    style={{ background: toast.ok ? "#2f6fe0" : "#e65b58" }}
+                >
+                    <span>{toast.ok ? "✓" : "!"}</span>
+                    {toast.text}
+                </div>
+            )}
 
             {(() => {
                 if (!chartEditId) return null;
