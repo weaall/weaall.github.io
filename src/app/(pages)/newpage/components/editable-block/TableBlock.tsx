@@ -33,6 +33,7 @@ function parseTable(content: string): TableData {
                     headerCol: !!p.headerCol,
                     rowColors: Array.isArray(p.rowColors) ? p.rowColors : [],
                     colColors: Array.isArray(p.colColors) ? p.colColors : [],
+                    colWidths: Array.isArray(p.colWidths) ? p.colWidths : [],
                 };
             }
         } catch {
@@ -124,6 +125,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     const d = dataRef.current;
     d.rowColors ||= [];
     d.colColors ||= [];
+    d.colWidths ||= [];
     const cols = d.rows[0]?.length ?? 0;
 
     const setCell = (r: number, c: number, val: string) => {
@@ -138,6 +140,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     const insertColAt = (i: number) => {
         d.rows.forEach((row) => row.splice(i, 0, ""));
         d.colColors!.splice(i, 0, null);
+        d.colWidths!.splice(i, 0, null); // 새 열은 자동 너비
     };
     const duplicateRow = (r: number) => {
         d.rows.splice(r + 1, 0, [...d.rows[r]]);
@@ -146,6 +149,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     const duplicateCol = (c: number) => {
         d.rows.forEach((row) => row.splice(c + 1, 0, row[c]));
         d.colColors!.splice(c + 1, 0, d.colColors![c] ?? null);
+        d.colWidths!.splice(c + 1, 0, d.colWidths![c] ?? null);
     };
     const clearRow = (r: number) => (d.rows[r] = d.rows[r].map(() => ""));
     const clearCol = (c: number) => d.rows.forEach((row) => (row[c] = ""));
@@ -158,6 +162,27 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         if (cols <= 1) return;
         d.rows.forEach((row) => row.splice(c, 1));
         d.colColors!.splice(c, 1);
+        d.colWidths!.splice(c, 1);
+    };
+
+    // 열 너비 드래그 조절
+    const startColResize = (c: number) => (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const cell = wrapRef.current?.querySelector<HTMLElement>(`td[data-c="${c}"]`);
+        const startW = cell?.getBoundingClientRect().width ?? 120;
+        const startX = e.clientX;
+        const onMove = (ev: MouseEvent) => {
+            d.colWidths![c] = Math.max(48, Math.round(startW + (ev.clientX - startX)));
+            setVersion((v) => v + 1);
+        };
+        const onUp = () => {
+            window.removeEventListener("mousemove", onMove);
+            window.removeEventListener("mouseup", onUp);
+            commit();
+        };
+        window.addEventListener("mousemove", onMove);
+        window.addEventListener("mouseup", onUp);
     };
 
     const noFocus = (fn: () => void) => (e: React.MouseEvent) => {
@@ -219,22 +244,30 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                             {row.map((cell, c) => {
                                 const isHeader = (!!d.headerRow && r === 0) || (!!d.headerCol && c === 0);
                                 const bg = cellBg(d, r, c, isHeader);
+                                const cw = d.colWidths![c] || undefined;
                                 return (
                                     <td
                                         key={c}
                                         data-r={r}
                                         data-c={c}
                                         className="relative border border-[#d3d2ce] p-0 align-top"
-                                        style={{ background: bg, boxShadow: headerShadow(d, r, c) }}
+                                        style={{ background: bg, boxShadow: headerShadow(d, r, c), width: cw, minWidth: cw ? undefined : 120 }}
                                     >
                                         <div
                                             contentEditable
                                             suppressContentEditableWarning
-                                            className="min-h-[20px] min-w-[120px] px-[9px] py-[7px] text-[14px] leading-[20px] text-(--text) outline-none"
+                                            className="min-h-[20px] break-words px-[8px] py-[5px] text-[14px] leading-[20px] text-(--text) outline-none"
                                             style={{ fontWeight: isHeader ? 600 : undefined }}
                                             onInput={(e) => setCell(r, c, e.currentTarget.innerText)}
                                             dangerouslySetInnerHTML={{ __html: esc(cell) }}
                                         />
+                                        {/* 열 너비 조절 핸들 (오른쪽 경계) */}
+                                        <div
+                                            className="absolute top-0 right-[-3px] z-[5] h-full w-[6px] cursor-col-resize opacity-0 hover:opacity-100 group-hover/table:opacity-100"
+                                            onMouseDown={startColResize(c)}
+                                        >
+                                            <div className="mx-auto h-full w-[2px] bg-[#3b82f6]/40" />
+                                        </div>
                                         {r === 0 && (
                                             <div
                                                 title="열 옵션"

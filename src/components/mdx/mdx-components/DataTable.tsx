@@ -9,6 +9,7 @@ export interface TableData {
     headerCol?: boolean;
     rowColors?: (string | null)[];
     colColors?: (string | null)[];
+    colWidths?: (number | null)[]; // 열별 고정 너비(px). 없으면 내용에 맞춰 자동.
 }
 
 // 셀 배경 팔레트(노션풍 옅은 배경). null = 없음(기본).
@@ -38,7 +39,7 @@ export function headerShadow(td: TableData, r: number, c: number): string | unde
     return s.length ? s.join(", ") : undefined;
 }
 
-export const TABLE_CELL_CLASS = "border border-[#d3d2ce] px-[9px] py-[7px] text-left align-top text-[14px] leading-[20px] text-(--text)";
+export const TABLE_CELL_CLASS = "border border-[#d3d2ce] px-[8px] py-[5px] text-left align-top text-[14px] leading-[20px] break-words text-(--text)";
 
 export default function DataTable({ data }: { data?: string }) {
     let td: TableData = { rows: [] };
@@ -67,6 +68,8 @@ export default function DataTable({ data }: { data?: string }) {
                                             background: cellBg(td, r, c, isHeader),
                                             fontWeight: isHeader ? 600 : undefined,
                                             boxShadow: headerShadow(td, r, c),
+                                            width: td.colWidths?.[c] || undefined,
+                                            minWidth: td.colWidths?.[c] ? undefined : 120,
                                         }}
                                     >
                                         {cell}
