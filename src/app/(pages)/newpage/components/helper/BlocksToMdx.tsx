@@ -22,6 +22,7 @@ export function blocksToMDX(
         mins?: number;
         tags?: string[];
         imageUrl?: string;
+        icon?: string;
     },
 ) {
     let frontmatter = "";
@@ -45,6 +46,7 @@ export function blocksToMDX(
         if (meta.mins) frontmatter += `mins: ${meta.mins}\n`;
         if (meta.tags) frontmatter += `tags: [${meta.tags.map(yamlValue).join(", ")}]\n`;
         if (meta.imageUrl) frontmatter += `imageUrl: ${yamlValue(meta.imageUrl)}\n`;
+        if (meta.icon) frontmatter += `icon: ${yamlValue(meta.icon)}\n`;
         frontmatter += `---\n\n`;
     }
 

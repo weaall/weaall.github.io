@@ -13,6 +13,8 @@ import { useBlockHistory } from "../hooks/useBlockHistory";
 import { useBlockDnD } from "../hooks/useBlockDnD";
 import { getDoc, saveDoc } from "../lib/localDocs";
 import { parseImageContent, serializeImageContent } from "../lib/imageContent";
+import { PageIcon } from "../lib/pageIcon";
+import IconPicker from "./icon-picker/IconPicker";
 
 import { formatPostDate } from "@/util/date";
 import * as tw from "./Newpage.styles";
@@ -374,7 +376,10 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         mins: 0,
         tags: [],
         imageUrl: "",
+        icon: initialDoc?.icon || "",
     });
+    // 아이콘 선택기 위치(null이면 닫힘)
+    const [iconPicker, setIconPicker] = useState<{ top: number; left: number } | null>(null);
 
     const { draggingIdx, insertLineIdx, dragPreview, dragPos, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } =
         useBlockDnD(
@@ -476,6 +481,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
             saveDoc({
                 id: docId,
                 title: meta.title || "새 페이지",
+                icon: meta.icon || undefined,
                 updatedAt: Date.now(),
                 blocks,
                 blockColors,
@@ -483,17 +489,18 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
             });
         }, 800);
         return () => clearTimeout(t);
-    }, [docId, meta.title, blocks, blockColors, blockFormattedRanges]);
+    }, [docId, meta.title, meta.icon, blocks, blockColors, blockFormattedRanges]);
 
     // 문서 전환/이탈(언마운트) 시 최신 상태를 즉시 저장 (디바운스 대기분 유실 방지)
-    const latestRef = useRef({ docId, title: meta.title, blocks, blockColors, blockFormattedRanges });
-    latestRef.current = { docId, title: meta.title, blocks, blockColors, blockFormattedRanges };
+    const latestRef = useRef({ docId, title: meta.title, icon: meta.icon, blocks, blockColors, blockFormattedRanges });
+    latestRef.current = { docId, title: meta.title, icon: meta.icon, blocks, blockColors, blockFormattedRanges };
     useEffect(() => {
         return () => {
             const l = latestRef.current;
             saveDoc({
                 id: l.docId,
                 title: l.title || "새 페이지",
+                icon: l.icon || undefined,
                 updatedAt: Date.now(),
                 blocks: l.blocks,
                 blockColors: l.blockColors,
@@ -548,6 +555,7 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
             mins: meta.mins || 2,
             tags: exportedTags,
             imageUrl: meta.imageUrl || "",
+            icon: meta.icon || "",
         });
 
         // 파일명은 페이지 제목으로, 공백은 밑줄로. 제목이 없으면 'untitled'.
@@ -896,19 +904,51 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
         >
             <div className="max-w-[712px] min-w-[712px] w-[712px] mx-10" style={{ position: "relative" }}>
                 <tw.BlockWrap>
-                    <tw.TitleBlock>
-                        <tw.EditableTitle
-                            ref={divRef}
-                            contentEditable
-                            suppressContentEditableWarning
-                            spellCheck={true}
-                            className="notranslate"
-                            onInput={handleTitleInput}
-                            onKeyDown={handleTitleKeyDown}
-                            data-placeholder="새 페이지"
-                        />
-                    </tw.TitleBlock>
+                    <div className="group/title">
+                        {/* 페이지 아이콘 (노션식): 있으면 크게 표시, 없으면 호버 시 추가 버튼 */}
+                        {meta.icon ? (
+                            <button
+                                className="mb-1 flex h-[64px] w-[64px] items-center justify-center rounded-[8px] hover:bg-(--hover-bg)"
+                                onClick={(e) => {
+                                    const r = e.currentTarget.getBoundingClientRect();
+                                    setIconPicker({ top: r.bottom + 6, left: r.left });
+                                }}
+                            >
+                                <PageIcon icon={meta.icon} size={56} />
+                            </button>
+                        ) : (
+                            <button
+                                className="mb-1 flex items-center gap-1 rounded-[6px] px-2 py-1 text-sm text-(--text-muted) opacity-0 transition-opacity hover:bg-(--hover-bg) group-hover/title:opacity-100"
+                                onClick={(e) => {
+                                    const r = e.currentTarget.getBoundingClientRect();
+                                    setIconPicker({ top: r.bottom + 6, left: r.left });
+                                }}
+                            >
+                                <span className="text-base">😀</span> 아이콘 추가
+                            </button>
+                        )}
+                        <tw.TitleBlock>
+                            <tw.EditableTitle
+                                ref={divRef}
+                                contentEditable
+                                suppressContentEditableWarning
+                                spellCheck={true}
+                                className="notranslate"
+                                onInput={handleTitleInput}
+                                onKeyDown={handleTitleKeyDown}
+                                data-placeholder="새 페이지"
+                            />
+                        </tw.TitleBlock>
+                    </div>
                 </tw.BlockWrap>
+
+                <IconPicker
+                    open={iconPicker !== null}
+                    position={iconPicker}
+                    onPick={(icon) => setMeta((prev) => ({ ...prev, icon }))}
+                    onRemove={() => setMeta((prev) => ({ ...prev, icon: "" }))}
+                    onClose={() => setIconPicker(null)}
+                />
                 
                 <TypeMenuModal
                     open={menuId !== null}

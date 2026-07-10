@@ -8,6 +8,7 @@ import { AddDockIcon } from "../ui/icons/PostsSvg";
 import { PostData } from "@/interface/PostData";
 import { LocalDocMeta, listDocs, deleteDoc, getDoc, getActivePointer, setActivePointer, subscribeDocsChanged } from "@/app/(pages)/newpage/lib/localDocs";
 import { exportDoc } from "@/app/(pages)/newpage/lib/exportMdx";
+import { PageIcon } from "@/app/(pages)/newpage/lib/pageIcon";
 
 interface PostsProps {
     posts: PostData[];
@@ -194,7 +195,13 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                                         >
                                             <tw.DocRow $active={isActive} onClick={() => openDoc(doc.id)}>
                                                 <tw.SvgWrap>
-                                                    {isHover ? <RightIcon color="currentColor" /> : <DocIcon color="currentColor" />}
+                                                    {doc.icon ? (
+                                                        <PageIcon icon={doc.icon} size={18} />
+                                                    ) : isHover ? (
+                                                        <RightIcon color="currentColor" />
+                                                    ) : (
+                                                        <DocIcon color="currentColor" />
+                                                    )}
                                                 </tw.SvgWrap>
                                                 <tw.LabelWrap>
                                                     <tw.Label>{doc.title || "제목 없음"}</tw.Label>
@@ -238,7 +245,15 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                                                 onMouseLeave={() => setHoveredSlug(null)}
                                             >
                                                 <tw.PostLink href={post.postUrl} $active={isActive}>
-                                                    <tw.SvgWrap>{isHover ? <RightIcon color="currentColor" /> : <DocIcon color="currentColor" />}</tw.SvgWrap>
+                                                    <tw.SvgWrap>
+                                                        {post.icon ? (
+                                                            <PageIcon icon={post.icon} size={18} />
+                                                        ) : isHover ? (
+                                                            <RightIcon color="currentColor" />
+                                                        ) : (
+                                                            <DocIcon color="currentColor" />
+                                                        )}
+                                                    </tw.SvgWrap>
                                                     <tw.LabelWrap>
                                                         <tw.Label>{post.title}</tw.Label>
                                                         {isHover && (

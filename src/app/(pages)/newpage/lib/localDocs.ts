@@ -38,13 +38,14 @@ export function setActivePointer(id: string) {
 export interface LocalDoc {
     id: string;
     title: string;
+    icon?: string; // 이모지 문자열 또는 커스텀 webp data URL
     updatedAt: number;
     blocks: Block[];
     blockColors: { [id: string]: string };
     blockFormattedRanges: { [id: string]: FormattedRange[] };
 }
 
-export type LocalDocMeta = Pick<LocalDoc, "id" | "title" | "updatedAt">;
+export type LocalDocMeta = Pick<LocalDoc, "id" | "title" | "icon" | "updatedAt">;
 
 function readAll(): Record<string, LocalDoc> {
     if (typeof window === "undefined") return {};
@@ -63,7 +64,7 @@ function writeAll(docs: Record<string, LocalDoc>) {
 // 최근 수정순 메타 목록
 export function listDocs(): LocalDocMeta[] {
     return Object.values(readAll())
-        .map(({ id, title, updatedAt }) => ({ id, title, updatedAt }))
+        .map(({ id, title, icon, updatedAt }) => ({ id, title, icon, updatedAt }))
         .sort((a, b) => b.updatedAt - a.updatedAt);
 }
 

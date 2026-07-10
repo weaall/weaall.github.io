@@ -9,6 +9,7 @@ export interface PostFrontmatter {
     tags: string[];
     mins: string;
     imageUrl: string;
+    icon?: string; // 페이지 아이콘(이모지 또는 webp data URL)
 }
 
 // 목록/라우팅용: 프론트매터 + 파일에서 파생되는 slug/postUrl
@@ -21,4 +22,5 @@ export interface PostData {
     slug: string;
     postUrl: string;
     imageUrl: string;
+    icon?: string;
 }

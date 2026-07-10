@@ -30,7 +30,8 @@ export default async function getPostsData(dir: string) {
                 tags: frontmatter.tags,
                 slug,
                 postUrl,
-                imageUrl: frontmatter.imageUrl
+                imageUrl: frontmatter.imageUrl,
+                icon: frontmatter.icon,
             };
         }),
     );
