@@ -641,6 +641,8 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                 }}
                 onFormat={handleFormatText}
                 currentFormat={currentFormat}
+                type={type}
+                onTypeChange={onTypeChange}
             />
         );
 

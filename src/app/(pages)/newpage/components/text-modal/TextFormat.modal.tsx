@@ -1,5 +1,12 @@
 // TextFormattingModal — 텍스트 선택 시 뜨는 서식 툴바 (노션 툴바 디자인에 맞춤)
 import React, { useRef, useEffect, useState } from "react";
+import { ELEMENTS } from "../menu-modal/TypeElement";
+
+// 인라인 타입 전환 목록 (구분선/그래프 등 텍스트 전환과 무관한 타입은 제외)
+const TYPE_ITEMS = ELEMENTS.filter(
+    (e): e is { label: string; type: string; icon: React.ReactNode } =>
+        "type" in e && e.type !== "divider" && !e.type.startsWith("barChart"),
+);
 
 export interface FormattedRange {
     start: number;
@@ -21,7 +28,15 @@ interface TextFormattingModalProps {
     onClose: () => void;
     onFormat: (format: TextFormat) => void;
     currentFormat: TextFormat;
+    type?: string; // 현재 블록 타입 (타입 셀렉터 표시/전환용)
+    onTypeChange?: (type: string) => void;
 }
+
+const ChevronDown = () => (
+    <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden>
+        <path d="M3.238 5.778a.625.625 0 0 1 .884 0L8 9.657l3.878-3.879a.625.625 0 1 1 .884.884l-4.32 4.32a.625.625 0 0 1-.884 0l-4.32-4.32a.625.625 0 0 1 0-.884" />
+    </svg>
+);
 
 // 노션 서식 툴바에서 가져온 아이콘들 (viewBox 0 0 20 20, fill=currentColor)
 const BoldIcon = () => (
@@ -53,9 +68,11 @@ const ClearIcon = () => (
 
 const COLORS = ["#37352f", "#b5b5b5", "#e9bfa8", "#ffb86b", "#ffe066", "#b6e3b6", "#8ecae6", "#cbb7f0", "#f7b7d7", "#ff7b7b"];
 
-const TextFormattingModal: React.FC<TextFormattingModalProps> = ({ open, position, onClose, onFormat, currentFormat }) => {
+const TextFormattingModal: React.FC<TextFormattingModalProps> = ({ open, position, onClose, onFormat, currentFormat, type, onTypeChange }) => {
     const modalRef = useRef<HTMLDivElement>(null);
     const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
+    const [isTypeOpen, setIsTypeOpen] = useState(false);
+    const currentTypeLabel = TYPE_ITEMS.find((t) => t.type === type)?.label ?? "텍스트";
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -80,8 +97,28 @@ const TextFormattingModal: React.FC<TextFormattingModalProps> = ({ open, positio
             className="fixed z-50 flex items-center gap-[2px] rounded-[14px] border border-(--border) bg-(--menu-bg) p-[6px] shadow-xl"
             style={{ top: position.top, left: position.left }}
         >
+            {/* 블록(태그) 타입 전환 */}
+            {onTypeChange && (
+                <>
+                    <button
+                        title="블록 타입 변경"
+                        className="flex h-7 items-center gap-[4px] rounded-[6px] px-[8px] text-[14px] text-(--text) transition-colors hover:bg-(--menu-hover-bg)"
+                        onClick={() => {
+                            setIsTypeOpen((v) => !v);
+                            setIsColorPickerOpen(false);
+                        }}
+                    >
+                        <span className="max-w-[120px] truncate">{currentTypeLabel}</span>
+                        <span className="text-(--text-muted)">
+                            <ChevronDown />
+                        </span>
+                    </button>
+                    <div className="mx-[4px] h-5 w-[1px] bg-(--border)" />
+                </>
+            )}
+
             {/* 색상 */}
-            <button title="텍스트 색상" className={btn(isColorPickerOpen)} onClick={() => setIsColorPickerOpen((v) => !v)}>
+            <button title="텍스트 색상" className={btn(isColorPickerOpen)} onClick={() => { setIsColorPickerOpen((v) => !v); setIsTypeOpen(false); }}>
                 <span
                     className="flex h-5 w-5 items-center justify-center rounded-[6px] text-[12px] font-semibold"
                     style={{ color: currentFormat.color || "var(--text)", boxShadow: "inset 0 0 0 1px var(--border)" }}
@@ -127,6 +164,28 @@ const TextFormattingModal: React.FC<TextFormattingModalProps> = ({ open, positio
                             }}
                             aria-label={color}
                         />
+                    ))}
+                </div>
+            )}
+
+            {/* 타입 전환 드롭다운 */}
+            {isTypeOpen && onTypeChange && (
+                <div className="animate-popIn absolute left-0 top-[calc(100%+6px)] flex max-h-[300px] w-[220px] flex-col gap-[1px] overflow-y-auto rounded-[12px] border border-(--border) bg-(--menu-bg) p-[4px] shadow-xl">
+                    {TYPE_ITEMS.map((t) => (
+                        <button
+                            key={t.type}
+                            className={`flex h-7 items-center gap-[8px] rounded-[6px] px-[8px] text-left text-[14px] hover:bg-(--menu-hover-bg) ${
+                                t.type === type ? "text-[#3b82f6]" : "text-(--text)"
+                            }`}
+                            onClick={() => {
+                                onTypeChange(t.type);
+                                setIsTypeOpen(false);
+                                onClose();
+                            }}
+                        >
+                            <span className="flex h-4 w-4 items-center justify-center">{t.icon}</span>
+                            {t.label}
+                        </button>
                     ))}
                 </div>
             )}
