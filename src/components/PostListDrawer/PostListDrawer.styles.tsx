@@ -22,6 +22,11 @@ export const PostLink = tw(Link)<{ $active?: boolean }>`
   flex items-center max-w-[244px] px-2 py-5px rounded-md hover:bg-(--hover-bg) font-medium overflow-hidden text-(--text-faint)
   ${({ $active }) => ($active ? "bg-(--hover-bg) text-(--text-strong)" : "")}
 `;
+// 게시물 링크와 동일한 모양의 클릭 가능한 행 (로컬 저장 문서용 — Link가 아님)
+export const DocRow = tw.div<{ $active?: boolean }>`
+  flex items-center max-w-[244px] px-2 py-5px rounded-md hover:bg-(--hover-bg) font-medium overflow-hidden text-(--text-faint) cursor-pointer
+  ${({ $active }) => ($active ? "bg-(--hover-bg) text-(--text-strong)" : "")}
+`;
 
 export const SvgWrap = tw.div`w-5 h-5 flex-shrink-0 mr-2 flex items-center justify-center text-(--text-faint)`;
 export const LabelWrap = tw.div`flex items-center justify-between w-full min-w-0`;

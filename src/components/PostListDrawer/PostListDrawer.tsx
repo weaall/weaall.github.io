@@ -101,6 +101,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
     }, [openCategory]);
 
     const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
+    const [hoveredDocId, setHoveredDocId] = useState<string | null>(null);
 
     // 카테고리별 그룹핑
     const grouped = posts.reduce((acc, post) => {
@@ -181,33 +182,38 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                             <div className="px-2 py-1 text-xs text-(--text-faint)">저장된 문서 없음</div>
                         ) : (
                             <tw.CategoryList>
-                                {localDocs.map((doc) => (
-                                    <tw.CategoryItem key={doc.id}>
-                                        <div
-                                            className={`group flex items-center w-full rounded-md px-2 py-1 cursor-pointer hover:bg-(--hover-bg) ${
-                                                doc.id === activeDocId && pathname === "/newpage"
-                                                    ? "bg-(--hover-bg) text-(--text-strong)"
-                                                    : "text-(--text-faint)"
-                                            }`}
-                                            onClick={() => openDoc(doc.id)}
+                                {localDocs.map((doc) => {
+                                    const isActive = doc.id === activeDocId && pathname === "/newpage";
+                                    const isHover = hoveredDocId === doc.id || docMenuId === doc.id;
+                                    return (
+                                        <tw.CategoryItem
+                                            key={doc.id}
+                                            className="group"
+                                            onMouseEnter={() => setHoveredDocId(doc.id)}
+                                            onMouseLeave={() => setHoveredDocId(null)}
                                         >
-                                            <span className="w-5 h-5 mr-2 shrink-0 flex items-center justify-center">
-                                                <DocIcon color="currentColor" width="16" height="16" />
-                                            </span>
-                                            <span className="flex-1 truncate text-sm">{doc.title || "제목 없음"}</span>
-                                            <span
-                                                role="button"
-                                                aria-label="옵션"
-                                                className={`ml-1 items-center rounded p-0.5 hover:bg-(--hover-bg) ${
-                                                    docMenuId === doc.id ? "flex" : "hidden group-hover:flex"
-                                                }`}
-                                                onClick={(e) => openDocMenu(e, doc.id)}
-                                            >
-                                                <DotListIcon color="currentColor" width="16" height="16" />
-                                            </span>
-                                        </div>
-                                    </tw.CategoryItem>
-                                ))}
+                                            <tw.DocRow $active={isActive} onClick={() => openDoc(doc.id)}>
+                                                <tw.SvgWrap>
+                                                    {isHover ? <RightIcon color="currentColor" /> : <DocIcon color="currentColor" />}
+                                                </tw.SvgWrap>
+                                                <tw.LabelWrap>
+                                                    <tw.Label>{doc.title || "제목 없음"}</tw.Label>
+                                                    {isHover && (
+                                                        <tw.LabelIcons>
+                                                            <tw.LabelIconBtn
+                                                                type="button"
+                                                                aria-label="옵션"
+                                                                onClick={(e: React.MouseEvent<HTMLButtonElement>) => openDocMenu(e, doc.id)}
+                                                            >
+                                                                <DotListIcon color="currentColor" width="16" height="16" />
+                                                            </tw.LabelIconBtn>
+                                                        </tw.LabelIcons>
+                                                    )}
+                                                </tw.LabelWrap>
+                                            </tw.DocRow>
+                                        </tw.CategoryItem>
+                                    );
+                                })}
                             </tw.CategoryList>
                         )}
                     </div>
