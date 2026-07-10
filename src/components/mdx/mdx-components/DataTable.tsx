@@ -45,8 +45,6 @@ export function headerShadow(td: TableData, r: number, c: number): string | unde
     return s.length ? s.join(", ") : undefined;
 }
 
-export const TABLE_CELL_CLASS = "border border-[#d3d2ce] px-[8px] py-[5px] text-left align-top text-[14px] leading-[20px] break-words text-(--text)";
-
 export default function DataTable({ data }: { data?: string }) {
     let td: TableData = { rows: [] };
     try {
