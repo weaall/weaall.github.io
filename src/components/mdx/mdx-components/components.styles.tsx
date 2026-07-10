@@ -99,5 +99,5 @@ export const Thead = tw.thead``;
 export const Tbody = tw.tbody``;
 export const Tr = tw.tr``;
 // 노션 심플 테이블 기본은 헤더 음영 없음 → th도 td와 동일 플레인 (에디터 표와 일치)
-export const Th = tw.th`border border-(--border) px-[9px] py-[7px] text-left align-top text-[14px] font-normal text-(--text)`;
-export const Td = tw.td`border border-(--border) px-[9px] py-[7px] text-left align-top text-[14px] text-(--text)`;
+export const Th = tw.th`border border-[#d3d2ce] px-[9px] py-[7px] text-left align-top text-[14px] font-normal text-(--text)`;
+export const Td = tw.td`border border-[#d3d2ce] px-[9px] py-[7px] text-left align-top text-[14px] text-(--text)`;

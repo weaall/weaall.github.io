@@ -11,8 +11,6 @@ export const InputWrap = tw.div`
   flex-1 transition-colors
   rounded-md
   py-[2px]
-  hover:bg-(--active-bg)
-  focus-within:bg-(--active-bg)
 `;
 
 export const PlusButton = tw.button`

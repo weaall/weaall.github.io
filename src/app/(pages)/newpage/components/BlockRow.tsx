@@ -157,13 +157,7 @@ export default function BlockRow({
                 )}
 
                 <tw.InputWrap
-                    className={
-                        selected
-                            ? "bg-(--active-bg) hover:bg-(--active-bg) focus-within:bg-(--active-bg)"
-                            : menuId === block.id
-                              ? "bg-(--hover-bg)"
-                              : ""
-                    }
+                    className={selected || menuId === block.id ? "bg-(--active-bg)" : ""}
                     style={{ marginLeft: block.indentationLevel * 25 }}
                     onMouseDown={onClearSelection}
                     onMouseEnter={() => setHoverId(block.id)}

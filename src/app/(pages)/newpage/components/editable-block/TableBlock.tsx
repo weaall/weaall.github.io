@@ -103,7 +103,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                     {grid.map((row, r) => (
                         <tr key={r}>
                             {row.map((cell, c) => (
-                                <td key={c} className="relative border border-(--border) p-0 align-top">
+                                <td key={c} className="relative border border-[#d3d2ce] p-0 align-top">
                                     <div
                                         contentEditable
                                         suppressContentEditableWarning
