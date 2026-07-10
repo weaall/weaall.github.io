@@ -43,6 +43,7 @@ export interface LocalDoc {
     subTitle?: string; // 부제목
     tags?: string[];
     imageUrl?: string; // 커버 사진(webp data URL)
+    sourceSlug?: string; // 기존 게시물 수정 중이면 원본 파일 슬러그(저장 시 덮어쓰기)
     updatedAt: number;
     blocks: Block[];
     blockColors: { [id: string]: string };

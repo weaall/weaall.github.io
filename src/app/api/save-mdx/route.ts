@@ -13,7 +13,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "이 기능은 개발 모드(next dev)에서만 사용할 수 있습니다." }, { status: 403 });
     }
 
-    let body: { filename?: unknown; content?: unknown };
+    let body: { filename?: unknown; content?: unknown; overwrite?: unknown };
     try {
         body = await request.json();
     } catch {
@@ -22,6 +22,7 @@ export async function POST(request: Request) {
 
     const rawName = typeof body.filename === "string" ? body.filename : "";
     const content = typeof body.content === "string" ? body.content : "";
+    const overwrite = body.overwrite === true; // 수정 저장: 같은 파일 덮어쓰기(중복 접미사 없이)
 
     if (!content) {
         return NextResponse.json({ error: "내용이 비어 있습니다." }, { status: 400 });
@@ -38,16 +39,18 @@ export async function POST(request: Request) {
     try {
         await mkdir(dir, { recursive: true });
 
-        // 덮어쓰기 방지: 이미 있으면 -1, -2 … 접미사
         let finalPath = filePath;
         let finalName = safe;
-        for (let i = 1; ; i++) {
-            try {
-                await access(finalPath);
-                finalName = safe.replace(/\.mdx$/i, `-${i}.mdx`);
-                finalPath = path.join(dir, finalName);
-            } catch {
-                break;
+        // overwrite=false(신규)일 때만 중복 접미사(-1, -2 …). 수정 저장은 같은 파일 덮어쓰기.
+        if (!overwrite) {
+            for (let i = 1; ; i++) {
+                try {
+                    await access(finalPath);
+                    finalName = safe.replace(/\.mdx$/i, `-${i}.mdx`);
+                    finalPath = path.join(dir, finalName);
+                } catch {
+                    break;
+                }
             }
         }
 

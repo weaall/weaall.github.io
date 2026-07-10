@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 interface HoverHeaderProps {
     visible: boolean;
     collapsed: boolean;
+    onEdit?: () => void; // 게시물 페이지에서 "편집" 클릭 시 수정 진입
 }
 
-export default function HoverHeader({ visible, collapsed }: HoverHeaderProps) {
+export default function HoverHeader({ visible, collapsed, onEdit }: HoverHeaderProps) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -27,9 +28,7 @@ export default function HoverHeader({ visible, collapsed }: HoverHeaderProps) {
                 paddingLeft: collapsed ? 50 : 260,
             }}
         >
-            <tw.LeftWrap>
-                <tw.LabelBtn>편집</tw.LabelBtn>
-            </tw.LeftWrap>
+            <tw.LeftWrap>{onEdit && <tw.LabelBtn onClick={onEdit}>편집</tw.LabelBtn>}</tw.LeftWrap>
             <tw.RightWrap>
                 <tw.LabelBtn onClick={() => window.dispatchEvent(new Event("newpage:share"))}>공유</tw.LabelBtn>
             </tw.RightWrap>

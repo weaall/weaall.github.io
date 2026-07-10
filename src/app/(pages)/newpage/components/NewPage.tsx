@@ -12,7 +12,7 @@ import { ChartRow } from "@/components/mdx/mdx-components/BarChart";
 import { useBlockHistory } from "../hooks/useBlockHistory";
 import { useBlockDnD } from "../hooks/useBlockDnD";
 import { getDoc, saveDoc, listCategories } from "../lib/localDocs";
-import { slugifyTitle } from "../lib/exportMdx";
+import { slugifyTitle, editorDataComment } from "../lib/exportMdx";
 import CategoryPicker from "./category-picker/CategoryPicker";
 import { parseImageContent, serializeImageContent } from "../lib/imageContent";
 import { PageIcon, fileToWebp } from "../lib/pageIcon";
@@ -33,6 +33,7 @@ function ImageDropZone() {
 export default function NewPage({ collapsed, docId, categories = [] }: { collapsed: boolean; docId: string; categories?: string[] }) {
     // 이 컴포넌트는 docId로 key되어 remount되므로, 초기값을 localStorage에서 한 번 읽어오면 된다.
     const initialDoc = getDoc(docId);
+    const sourceSlug = initialDoc?.sourceSlug; // 기존 게시물 수정 중이면 원본 슬러그(저장 시 덮어쓰기)
 
     // blocks / colors / formattedRanges 상태 + 되돌리기(Ctrl+Z)·다시실행(Ctrl+Y) 히스토리는 훅이 소유
     const {
@@ -511,6 +512,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 subTitle: meta.subTitle || undefined,
                 tags: meta.tags,
                 imageUrl: meta.imageUrl || undefined,
+                sourceSlug,
                 updatedAt: Date.now(),
                 blocks,
                 blockColors,
@@ -534,6 +536,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 subTitle: l.meta.subTitle || undefined,
                 tags: l.meta.tags,
                 imageUrl: l.meta.imageUrl || undefined,
+                sourceSlug,
                 updatedAt: Date.now(),
                 blocks: l.blocks,
                 blockColors: l.blockColors,
@@ -580,26 +583,40 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
 
         const exportedTags = meta.tags.length > 0 ? meta.tags : ["default-tag"];
         
-        const mdx = blocksToMDX(blocksWithFormatting, {
-            label: meta.label || "",
-            title: meta.title || "",
-            subTitle: meta.subTitle || "",
-            date: meta.date || formatPostDate(new Date()),
-            mins: meta.mins || 2,
-            tags: exportedTags,
-            imageUrl: meta.imageUrl || "",
-            icon: meta.icon || "",
-        });
+        const mdx =
+            blocksToMDX(blocksWithFormatting, {
+                label: meta.label || "",
+                title: meta.title || "",
+                subTitle: meta.subTitle || "",
+                date: meta.date || formatPostDate(new Date()),
+                mins: meta.mins || 2,
+                tags: exportedTags,
+                imageUrl: meta.imageUrl || "",
+                icon: meta.icon || "",
+            }) +
+            // 무손실 재편집용 원본 데이터 임베드
+            editorDataComment({
+                v: 1,
+                title: meta.title,
+                label: meta.label,
+                subTitle: meta.subTitle,
+                tags: meta.tags,
+                imageUrl: meta.imageUrl,
+                icon: meta.icon,
+                blocks,
+                blockColors,
+                blockFormattedRanges,
+            });
 
-        // 파일명(슬러그)은 ASCII로. 한글 제목은 frontmatter에 그대로 보존.
-        const filename = `${slugifyTitle(meta.title, docId)}.mdx`;
+        // 수정 중이면 원본 파일명으로 덮어쓰기, 아니면 제목 슬러그로 신규 저장.
+        const filename = `${sourceSlug || slugifyTitle(meta.title, docId)}.mdx`;
 
         // 개발 모드: posts/post 폴더에 바로 저장 시도. 실패하면 브라우저 다운로드로 폴백.
         try {
             const res = await fetch("/api/save-mdx", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ filename, content: mdx }),
+                body: JSON.stringify({ filename, content: mdx, overwrite: !!sourceSlug }),
             });
             if (res.ok) {
                 const data = await res.json();
@@ -621,6 +638,20 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     };
+
+    // Ctrl/Cmd+S로 저장(내보내기). 최신 handleExport를 ref로 참조해 stale 방지.
+    const exportRef = useRef(handleExport);
+    exportRef.current = handleExport;
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+                e.preventDefault();
+                exportRef.current();
+            }
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, []);
 
     const changeBlockType = (idx: number, type: string) => {
         // 함수형 업데이트: 뒤이어 호출될 수 있는 onContentChange("")와 합쳐지도록
