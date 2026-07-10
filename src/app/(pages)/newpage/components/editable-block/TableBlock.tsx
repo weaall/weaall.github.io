@@ -270,7 +270,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
         const tableEl = wrapRef.current?.querySelector("table");
         const tableLeft = tableEl?.getBoundingClientRect().left ?? 0;
         const colRight = wrapRef.current?.closest("[data-editor-col]")?.getBoundingClientRect().right ?? window.innerWidth;
-        return Math.max(200, colRight - tableLeft - 24);
+        return Math.max(200, colRight - tableLeft - 2); // 텍스트 우측 라인과 맞춤
     };
 
     // 열 추가: 표가 최대폭을 넘지 않게. 공간이 부족하면 기존 열을 비례 축소해 자리를 만든다.
@@ -351,7 +351,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
     };
 
     return (
-        <div ref={wrapRef} id={id} className="group/table relative my-2 w-fit py-[18px] pr-[18px]">
+        <div ref={wrapRef} id={id} className="group/table relative my-2 w-fit py-[18px]">
             <table className="border-collapse">
                 <tbody>
                     {grid.map((row, r) => (
@@ -433,18 +433,18 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                 />
             )}
 
-            {/* 좌상단: 너비 풀로 맞추기 (우하단 코너 +와 같은 크기) */}
+            {/* 좌상단 코너: 너비 풀로 맞추기 (표에 붙게 — 우하단 코너 +와 대칭) */}
             <button className={`${addBtn} top-0 left-0 h-[14px] w-[14px]`} onMouseDown={noFocus(() => apply(fitFull))} title="너비 맞추기">
                 <span className="text-[10px] leading-none">↔</span>
             </button>
 
-            <button className={`${addBtn} top-[18px] right-0 bottom-[18px] w-[14px]`} onMouseDown={noFocus(() => apply(() => insertColFit(cols)))} title="열 추가">
+            <button className={`${addBtn} top-[18px] right-[-16px] bottom-[18px] w-[14px]`} onMouseDown={noFocus(() => apply(() => insertColFit(cols)))} title="열 추가">
                 +
             </button>
-            <button className={`${addBtn} bottom-0 left-0 right-[18px] h-[14px]`} onMouseDown={noFocus(() => apply(() => insertRowAt(grid.length)))} title="행 추가">
+            <button className={`${addBtn} bottom-0 left-0 right-0 h-[14px]`} onMouseDown={noFocus(() => apply(() => insertRowAt(grid.length)))} title="행 추가">
                 +
             </button>
-            <button className={`${addBtn} bottom-0 right-0 h-[14px] w-[14px]`} onMouseDown={noFocus(() => apply(() => { insertColFit(cols); insertRowAt(grid.length); }))} title="행·열 추가">
+            <button className={`${addBtn} bottom-0 right-[-16px] h-[14px] w-[14px]`} onMouseDown={noFocus(() => apply(() => { insertColFit(cols); insertRowAt(grid.length); }))} title="행·열 추가">
                 +
             </button>
 
