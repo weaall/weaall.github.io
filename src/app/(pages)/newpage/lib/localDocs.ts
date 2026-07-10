@@ -39,13 +39,16 @@ export interface LocalDoc {
     id: string;
     title: string;
     icon?: string; // 이모지 문자열 또는 커스텀 webp data URL
+    label?: string; // 카테고리
+    subTitle?: string; // 부제목
+    tags?: string[];
     updatedAt: number;
     blocks: Block[];
     blockColors: { [id: string]: string };
     blockFormattedRanges: { [id: string]: FormattedRange[] };
 }
 
-export type LocalDocMeta = Pick<LocalDoc, "id" | "title" | "icon" | "updatedAt">;
+export type LocalDocMeta = Pick<LocalDoc, "id" | "title" | "icon" | "label" | "updatedAt">;
 
 function readAll(): Record<string, LocalDoc> {
     if (typeof window === "undefined") return {};
@@ -64,8 +67,17 @@ function writeAll(docs: Record<string, LocalDoc>) {
 // 최근 수정순 메타 목록
 export function listDocs(): LocalDocMeta[] {
     return Object.values(readAll())
-        .map(({ id, title, icon, updatedAt }) => ({ id, title, icon, updatedAt }))
+        .map(({ id, title, icon, label, updatedAt }) => ({ id, title, icon, label, updatedAt }))
         .sort((a, b) => b.updatedAt - a.updatedAt);
+}
+
+// 기존 문서들의 카테고리(label) 고유 목록 — 카테고리 선택 제안용
+export function listCategories(): string[] {
+    const set = new Set<string>();
+    Object.values(readAll()).forEach((d) => {
+        if (d.label && d.label.trim()) set.add(d.label.trim());
+    });
+    return Array.from(set).sort();
 }
 
 export function getDoc(id: string): LocalDoc | null {

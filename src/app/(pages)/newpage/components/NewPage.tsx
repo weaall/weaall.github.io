@@ -11,8 +11,9 @@ import ChartModal from "./chart-modal/ChartModal";
 import { ChartRow } from "@/components/mdx/mdx-components/BarChart";
 import { useBlockHistory } from "../hooks/useBlockHistory";
 import { useBlockDnD } from "../hooks/useBlockDnD";
-import { getDoc, saveDoc } from "../lib/localDocs";
+import { getDoc, saveDoc, listCategories } from "../lib/localDocs";
 import { slugifyTitle } from "../lib/exportMdx";
+import CategoryPicker from "./category-picker/CategoryPicker";
 import { parseImageContent, serializeImageContent } from "../lib/imageContent";
 import { PageIcon } from "../lib/pageIcon";
 import IconPicker from "./icon-picker/IconPicker";
@@ -369,18 +370,29 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
     const divRef = useRef<HTMLDivElement>(null);
     const dotRefs = useRef<{ [id: string]: HTMLButtonElement | null }>({});
     const [isTitleEmpty, setIsTitleEmpty] = useState(true);
-    const [meta, setMeta] = useState({
-        label: "",
+    const [meta, setMeta] = useState<{
+        label: string;
+        title: string;
+        subTitle: string;
+        date: string;
+        mins: number;
+        tags: string[];
+        imageUrl: string;
+        icon: string;
+    }>({
+        label: initialDoc?.label || "",
         title: initialDoc?.title || "새 페이지",
-        subTitle: "",
+        subTitle: initialDoc?.subTitle || "",
         date: "",
         mins: 0,
-        tags: [],
+        tags: initialDoc?.tags || [],
         imageUrl: "",
         icon: initialDoc?.icon || "",
     });
-    // 아이콘 선택기 위치(null이면 닫힘)
+    // 아이콘/카테고리 선택기 위치(null이면 닫힘)
     const [iconPicker, setIconPicker] = useState<{ top: number; left: number } | null>(null);
+    const [catPicker, setCatPicker] = useState<{ top: number; left: number } | null>(null);
+    const [tagInput, setTagInput] = useState("");
 
     const { draggingIdx, insertLineIdx, dragPreview, dragPos, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } =
         useBlockDnD(
@@ -483,6 +495,9 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                 id: docId,
                 title: meta.title || "새 페이지",
                 icon: meta.icon || undefined,
+                label: meta.label || undefined,
+                subTitle: meta.subTitle || undefined,
+                tags: meta.tags,
                 updatedAt: Date.now(),
                 blocks,
                 blockColors,
@@ -490,18 +505,21 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
             });
         }, 800);
         return () => clearTimeout(t);
-    }, [docId, meta.title, meta.icon, blocks, blockColors, blockFormattedRanges]);
+    }, [docId, meta.title, meta.icon, meta.label, meta.subTitle, meta.tags, blocks, blockColors, blockFormattedRanges]);
 
     // 문서 전환/이탈(언마운트) 시 최신 상태를 즉시 저장 (디바운스 대기분 유실 방지)
-    const latestRef = useRef({ docId, title: meta.title, icon: meta.icon, blocks, blockColors, blockFormattedRanges });
-    latestRef.current = { docId, title: meta.title, icon: meta.icon, blocks, blockColors, blockFormattedRanges };
+    const latestRef = useRef({ docId, meta, blocks, blockColors, blockFormattedRanges });
+    latestRef.current = { docId, meta, blocks, blockColors, blockFormattedRanges };
     useEffect(() => {
         return () => {
             const l = latestRef.current;
             saveDoc({
                 id: l.docId,
-                title: l.title || "새 페이지",
-                icon: l.icon || undefined,
+                title: l.meta.title || "새 페이지",
+                icon: l.meta.icon || undefined,
+                label: l.meta.label || undefined,
+                subTitle: l.meta.subTitle || undefined,
+                tags: l.meta.tags,
                 updatedAt: Date.now(),
                 blocks: l.blocks,
                 blockColors: l.blockColors,
@@ -906,10 +924,10 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
             <div data-editor-col className="max-w-[712px] min-w-[712px] w-[712px] mx-10" style={{ position: "relative" }}>
                 <tw.BlockWrap>
                     <div className="group/title">
-                        {/* 페이지 아이콘 (노션식): 있으면 크게 표시, 없으면 호버 시 추가 버튼 */}
-                        {meta.icon ? (
+                        {/* 페이지 아이콘 (노션식): 있으면 크게 표시 */}
+                        {meta.icon && (
                             <button
-                                className="mb-1 flex h-[64px] w-[64px] items-center justify-center rounded-[8px] hover:bg-(--hover-bg)"
+                                className="mb-1 flex h-[64px] w-[64px] items-center justify-center rounded-[8px] p-[4px] hover:bg-(--hover-bg)"
                                 onClick={(e) => {
                                     const r = e.currentTarget.getBoundingClientRect();
                                     setIconPicker({ top: r.bottom + 6, left: r.left });
@@ -917,17 +935,45 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                             >
                                 <PageIcon icon={meta.icon} size={56} />
                             </button>
-                        ) : (
-                            <button
-                                className="mb-1 flex items-center gap-1 rounded-[6px] px-2 py-1 text-sm text-(--text-muted) opacity-0 transition-opacity hover:bg-(--hover-bg) group-hover/title:opacity-100"
-                                onClick={(e) => {
-                                    const r = e.currentTarget.getBoundingClientRect();
-                                    setIconPicker({ top: r.bottom + 6, left: r.left });
-                                }}
-                            >
-                                <span className="text-base">😀</span> 아이콘 추가
-                            </button>
                         )}
+                        {/* 컨트롤 행: 카테고리 칩 + (호버 시) 아이콘/카테고리 추가 */}
+                        <div className="mb-1 flex min-h-[26px] items-center gap-1">
+                            {meta.label && (
+                                <button
+                                    className="flex items-center gap-1 rounded-[6px] bg-(--hover-bg) px-2 py-1 text-xs font-medium text-(--text-muted) hover:bg-(--menu-hover-bg)"
+                                    onClick={(e) => {
+                                        const r = e.currentTarget.getBoundingClientRect();
+                                        setCatPicker({ top: r.bottom + 6, left: r.left });
+                                    }}
+                                >
+                                    📁 {meta.label}
+                                </button>
+                            )}
+                            <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover/title:opacity-100">
+                                {!meta.icon && (
+                                    <button
+                                        className="flex items-center gap-1 rounded-[6px] px-2 py-1 text-sm text-(--text-muted) hover:bg-(--hover-bg)"
+                                        onClick={(e) => {
+                                            const r = e.currentTarget.getBoundingClientRect();
+                                            setIconPicker({ top: r.bottom + 6, left: r.left });
+                                        }}
+                                    >
+                                        <span className="text-base">😀</span> 아이콘 추가
+                                    </button>
+                                )}
+                                {!meta.label && (
+                                    <button
+                                        className="flex items-center gap-1 rounded-[6px] px-2 py-1 text-sm text-(--text-muted) hover:bg-(--hover-bg)"
+                                        onClick={(e) => {
+                                            const r = e.currentTarget.getBoundingClientRect();
+                                            setCatPicker({ top: r.bottom + 6, left: r.left });
+                                        }}
+                                    >
+                                        📁 카테고리 추가
+                                    </button>
+                                )}
+                            </div>
+                        </div>
                         <tw.TitleBlock>
                             <tw.EditableTitle
                                 ref={divRef}
@@ -940,6 +986,44 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                                 data-placeholder="새 페이지"
                             />
                         </tw.TitleBlock>
+                        {/* 부제목 */}
+                        <input
+                            className="mt-1 w-full bg-transparent px-[2px] text-[16px] text-(--text-muted) outline-none placeholder:text-(--placeholder)"
+                            placeholder="부제목을 입력하세요"
+                            value={meta.subTitle}
+                            onChange={(e) => setMeta((prev) => ({ ...prev, subTitle: e.target.value }))}
+                        />
+                        {/* 태그 */}
+                        <div className="mt-2 mb-1 flex flex-wrap items-center gap-1 px-[2px]">
+                            {meta.tags.map((t, i) => (
+                                <span key={`${t}-${i}`} className="flex items-center gap-1 rounded-[6px] bg-(--hover-bg) px-2 py-0.5 text-xs text-(--text-muted)">
+                                    #{t}
+                                    <button
+                                        className="text-(--text-muted) hover:text-[#e65b58]"
+                                        onClick={() => setMeta((prev) => ({ ...prev, tags: prev.tags.filter((_, idx) => idx !== i) }))}
+                                        aria-label="태그 삭제"
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            ))}
+                            <input
+                                className="min-w-[90px] flex-1 bg-transparent py-0.5 text-xs outline-none placeholder:text-(--placeholder)"
+                                placeholder="태그 추가"
+                                value={tagInput}
+                                onChange={(e) => setTagInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if ((e.key === "Enter" || e.key === ",") && tagInput.trim()) {
+                                        e.preventDefault();
+                                        const t = tagInput.trim().replace(/^#/, "");
+                                        if (t && !meta.tags.includes(t)) setMeta((prev) => ({ ...prev, tags: [...prev.tags, t] }));
+                                        setTagInput("");
+                                    } else if (e.key === "Backspace" && !tagInput && meta.tags.length) {
+                                        setMeta((prev) => ({ ...prev, tags: prev.tags.slice(0, -1) }));
+                                    }
+                                }}
+                            />
+                        </div>
                     </div>
                 </tw.BlockWrap>
 
@@ -949,6 +1033,15 @@ export default function NewPage({ collapsed, docId }: { collapsed: boolean; docI
                     onPick={(icon) => setMeta((prev) => ({ ...prev, icon }))}
                     onRemove={() => setMeta((prev) => ({ ...prev, icon: "" }))}
                     onClose={() => setIconPicker(null)}
+                />
+
+                <CategoryPicker
+                    open={catPicker !== null}
+                    position={catPicker}
+                    current={meta.label}
+                    options={listCategories()}
+                    onSelect={(label) => setMeta((prev) => ({ ...prev, label }))}
+                    onClose={() => setCatPicker(null)}
                 />
                 
                 <TypeMenuModal
