@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
 import { useHoverHeader } from "@/hooks/useHoverHeader";
-import { PostData } from "@/interface/PostData";
+import { PostData } from "@/types/PostData";
 import { listDocs, getActivePointer, setActivePointer, subscribeDocsChanged } from "./lib/localDocs";
 
 // 에디터는 순수 클라이언트 도구(contentEditable, crypto.randomUUID 등)라

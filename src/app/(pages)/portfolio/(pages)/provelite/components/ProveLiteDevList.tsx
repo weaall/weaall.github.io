@@ -2,7 +2,7 @@
 
 import { AdminLayoutIcon, AWSIcon, CodeIcon, EtcIcon, LogicIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioSvg";
 import ApplicationArchitecture from "./ApplicationArchitecture";
-import { roboto } from "@/util/font";
+import { roboto } from "@/utils/font";
 import SystemArchitecture from "./SystemArchitecture";
 import UserLayout from "./UserLayout";
 import { useRef } from "react";
@@ -24,10 +24,10 @@ export default function ProveLiteDevList() {
             <h2 className="text-[2.625rem] text-[#191918] text-center font-bold tracking-[-0.09375rem]">프로젝트 오버뷰</h2>
 
             <div className="w-full flex flex-col pt-6 gap-6">
-                <div className="w-full flex gap-6">
+                <div className="w-full flex gap-6 m:flex-col">
                     <div
                         onClick={() => scrollToRef(awsArchRef)}
-                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
+                        className="w-1/3 h-[22rem] bg-[#f6f5f4] m:w-full rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
                     >
                         <div className="w-full h-1/2 flex flex-col p-8">
                             <div className="w-8 h-8 mb-2">
@@ -47,7 +47,7 @@ export default function ProveLiteDevList() {
 
                     <div
                         onClick={() => scrollToRef(appArchRef)}
-                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
+                        className="w-1/3 h-[22rem] bg-[#f6f5f4] m:w-full rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
                     >
                         <div className="w-full h-1/2 flex flex-col p-8">
                             <div className="w-8 h-8 mb-2">
@@ -67,7 +67,7 @@ export default function ProveLiteDevList() {
 
                     <div 
                         onClick={() => scrollToRef(serviceFlowRef)}
-                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
+                        className="w-1/3 h-[22rem] bg-[#f6f5f4] m:w-full rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
                         <div className="w-full h-1/2 flex flex-col p-8">
                             <div className="w-8 h-8 mb-2 p-[1px]">
                                 <LogicIcon color="#416bac" />
@@ -85,10 +85,10 @@ export default function ProveLiteDevList() {
                     </div>
                 </div>
 
-                <div className="w-full flex gap-6">
+                <div className="w-full flex gap-6 m:flex-col">
                     <div
                         onClick={() => scrollToRef(userLayoutRef)}
-                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
+                        className="w-1/3 h-[22rem] bg-[#f6f5f4] m:w-full rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
                     >
                         <div className="w-full h-1/2 flex flex-col p-8">
                             <div className="w-8 h-8 mb-2">
@@ -108,7 +108,7 @@ export default function ProveLiteDevList() {
 
                     <div
                         onClick={() => scrollToRef(adminLayoutRef)}
-                        className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
+                        className="w-1/3 h-[22rem] bg-[#f6f5f4] m:w-full rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group"
                     >
                         <div className="w-full h-1/2 flex flex-col p-8">
                             <div className="w-8 h-8 mb-2">
@@ -126,7 +126,7 @@ export default function ProveLiteDevList() {
                         </div>
                     </div>
 
-                    <div className="w-1/3 h-[22rem] bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
+                    <div className="w-1/3 h-[22rem] bg-[#f6f5f4] m:w-full rounded-2xl flex flex-col border-2 border-transparent overflow-hidden cursor-pointer group">
                         <div className="w-full h-1/2 flex flex-col p-8">
                             <div className="w-8 h-8 mb-2">
                                 <EtcIcon color="#416bac" />

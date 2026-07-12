@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import * as tw from "./DevList.styles"
-import { PostData } from "@/interface/PostData"
+import { PostData } from "@/types/PostData"
 
 interface PostsProps {
     posts: PostData[]

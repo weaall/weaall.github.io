@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as tw from "./page.styles";
-import { roboto } from "@/util/font";
+import { roboto } from "@/utils/font";
 import { WebImageSlider } from "./components/ImageSlider/ImageSlider";
 import { ImageWithTransition } from "./components/ImageWithTransition/ImageWithTransition";
 

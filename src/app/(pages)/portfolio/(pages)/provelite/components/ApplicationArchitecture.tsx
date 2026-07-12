@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { roboto } from "@/util/font";
+import { roboto } from "@/utils/font";
 
 export default function ApplicationArchitecture() {
     return (

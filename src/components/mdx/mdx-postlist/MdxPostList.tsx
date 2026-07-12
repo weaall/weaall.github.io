@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import * as tw from "./MdxPostList.styles";
-import { PostData } from "@/interface/PostData";
+import { PostData } from "@/types/PostData";
 
 interface PostListProps {
     latestPosts: PostData[];
@@ -25,13 +25,13 @@ export default function MdxPostList({ latestPosts, collapsed }: PostListProps) {
 
     return (
         <tw.Container
+            className={`${collapsed ? "pl-[50px]" : "pl-[260px]"} m:pl-0!`}
             style={{
-                paddingLeft: collapsed ? 50 : 260,
                 transition: "padding-left 0.2s",
             }}
         >
             {/* 가운데에 현재 포스트만 크게 */}
-            <div className="flex flex-col items-center justify-center w-full h-full">
+            <div className="flex flex-col items-center justify-center w-full h-full m:px-4">
                 <tw.MainPostWrap href={currentPost.postUrl}>
                     {currentPost.imageUrl && <img src={currentPost.imageUrl} alt={currentPost.title} className="w-full h-64 object-cover rounded-2xl mb-6" />}
                     <tw.TopWrap>

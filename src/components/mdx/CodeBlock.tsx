@@ -3,7 +3,7 @@ import hljs from "highlight.js";
 
 // post/dev 코드블록이 스타일만 다르고 로직이 동일해 공유 컴포넌트로 통합.
 // 각 변형은 자신의 styled 모듈(components.styles / devComponents.styles)을 styles로 주입한다.
-interface CodeStyles {
+export interface CodeStyles {
     CodeWrapC: React.ElementType;
     ClassWrap: React.ElementType;
     ClassLabel: React.ElementType;

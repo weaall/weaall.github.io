@@ -21,7 +21,7 @@ import { parseImageContent, serializeImageContent } from "../lib/imageContent";
 import { PageIcon, fileToWebp } from "../lib/pageIcon";
 import IconPicker from "./icon-picker/IconPicker";
 
-import { formatPostDate } from "@/util/date";
+import { formatPostDate } from "@/utils/date";
 import * as tw from "./Newpage.styles";
 
 // 붙여넣은 텍스트가 마크다운/MDX 구조인지 판별 (구조가 있으면 블록으로 변환)

@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import dynamic from "next/dynamic"; 
 import * as tw from "./components.styles";
+import { makeCode } from "../makeCode";
 
-export const Code = dynamic(() => import("./Code"), { ssr: false });
+export const Code = makeCode(tw);
 
 export function H1({ children }: { children?: React.ReactNode }) {
     return <tw.H1>{children}</tw.H1>;

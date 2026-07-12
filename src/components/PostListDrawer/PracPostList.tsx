@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import * as tw from "./PostListDrawer.styles";
-import { PostData } from "@/interface/PostData";
+import { PostData } from "@/types/PostData";
 
 interface PostsProps {
     posts: PostData[];

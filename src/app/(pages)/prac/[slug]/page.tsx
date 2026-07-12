@@ -1,7 +1,7 @@
 import { Hr, H1, H2, P, Code, Strong, Pre, H3, A, Li, Ul, Ol, Em, Img, ToggleText } from "@/components/mdx/mdx-components/components"
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
-import { getArticleMetadata, JSONLD } from "@/util/seo"
+import { getArticleMetadata, JSONLD } from "@/utils/seo"
 import PracTitle from "@/components/post-title/PracTitle"
 import { compilePost, makeGenerateStaticParams } from "@/components/mdx/postRoutes"
 
@@ -38,5 +38,5 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { frontmatter } = await compilePostMarkdown(slug)
 
     if (!frontmatter) return {}
-    return getArticleMetadata(frontmatter, slug)
+    return getArticleMetadata(frontmatter, `/${FOLDER}/${slug}`)
 }

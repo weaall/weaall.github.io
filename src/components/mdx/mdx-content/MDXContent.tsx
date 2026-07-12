@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import PostTitle from "@/components/post-title/PostTitle";
 
 import * as tw from "./MDXContent.styles";
-import { PostFrontmatter } from "@/interface/PostData";
+import { PostFrontmatter } from "@/types/PostData";
 
 interface MDXContentProps {
     content: React.ReactNode;

@@ -3,7 +3,7 @@ import { Inter, Noto_Sans_KR } from "next/font/google"
 import "./globals.css"
 
 import { Layout } from "@/components/layout/Layout"
-import { getBaseMetadata } from "@/util/seo"
+import { getBaseMetadata, siteConfig } from "@/utils/seo"
 
 const inter = Inter({
     subsets: ["latin"],
@@ -18,7 +18,11 @@ const notoSansKr = Noto_Sans_KR({
     display: "swap",
 });
 
-export const metadata: Metadata = getBaseMetadata({ title: "WeHub" })
+export const metadata: Metadata = {
+    ...getBaseMetadata({ title: siteConfig.title, path: "/" }),
+    // 하위 페이지가 짧은 제목만 넘기면 "제목 | WeHub" 형태로 자동 완성된다.
+    title: { default: siteConfig.title, template: `%s | ${siteConfig.title}` },
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (

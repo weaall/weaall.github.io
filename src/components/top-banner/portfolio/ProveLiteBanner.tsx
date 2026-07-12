@@ -1,11 +1,11 @@
-import { roboto } from "@/util/font";
+import { roboto } from "@/utils/font";
 
 import * as tw from "../MainBanner.styles";
 
 export default function ProveLiteBanner() {
     return (
         <div className="w-full h-auto flex flex-col m:flex-col-reverse">
-            <div className="w-full h-auto flex flex-reverse m:flex-col-reverse">
+            <div className="w-full h-auto flex m:flex-col-reverse">
                 <tw.StartWrap>
                     <tw.Title className="hidden m:block">{"PROVE LITE 설문"}</tw.Title>
                     <tw.Title className="block m:hidden text-[#191918] tracking-[-0.1em]">
@@ -44,9 +44,9 @@ export default function ProveLiteBanner() {
                 </tw.EndWrap>
             </div>
 
-            <div className="flex flex-col w-full mb-4 mt-32">
+            <div className="flex flex-col w-full mb-4 mt-32 m:mt-16">
                 <p className="font-normal text-xs leading-4 mx-auto mb-4 tracking-[-0.0078125rem]">PROVE Lite를 사용하는 파트너</p>
-                <div className="w-full flex justify-between px-20">
+                <div className="w-full flex justify-between px-20 m:px-0 m:flex-wrap m:justify-center m:gap-x-8 m:gap-y-4">
                     <img className="w-32 object-contain" src="/assets/portfolio/prove-lite/medicheck_logo.jpg" alt="" />
                     <img className="w-32 object-contain" src="/assets/portfolio/prove-lite/nurseorg_logo.jpg" alt="" />
                     <img className="w-32 object-contain" src="/assets/portfolio/prove-lite/samsunglogitech_logo.png" alt="" />

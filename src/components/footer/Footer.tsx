@@ -1,6 +1,6 @@
 "use client";
 
-import { roboto } from "@/util/font";
+import { roboto } from "@/utils/font";
 import { usePathname } from "next/navigation";
 
 import * as tw from "./Footer.styles";

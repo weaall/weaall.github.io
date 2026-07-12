@@ -1,7 +1,7 @@
 import { blocksToMDX, Block } from "../components/helper/BlocksToMdx";
 import { LocalDoc } from "./localDocs";
 import { FormattedRange } from "../components/text-modal/TextFormat.modal";
-import { formatPostDate } from "@/util/date";
+import { formatPostDate } from "@/utils/date";
 
 // 무손실 재편집을 위해 에디터 원본 데이터를 MDX에 주석으로 임베드한다.
 // {/* ... */}는 MDX 주석이라 렌더에 영향 없음.

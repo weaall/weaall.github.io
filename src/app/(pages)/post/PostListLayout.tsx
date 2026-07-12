@@ -5,7 +5,7 @@ import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
 import MdxPostList from "@/components/mdx/mdx-postlist/MdxPostList";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
 import { useHoverHeader } from "@/hooks/useHoverHeader";
-import { PostData } from "@/interface/PostData";
+import { PostData } from "@/types/PostData";
 
 export default function PostListLayout({ postsData }: { postsData: PostData[] }) {
     const [collapsed, setCollapsed] = useState(false);

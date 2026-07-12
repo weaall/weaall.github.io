@@ -6,7 +6,7 @@ import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
 import { MDXContent } from "@/components/mdx/mdx-content/MDXContent";
 import { useHoverHeader } from "@/hooks/useHoverHeader";
-import { PostData, PostFrontmatter } from "@/interface/PostData";
+import { PostData, PostFrontmatter } from "@/types/PostData";
 import { extractEditorData } from "@/app/(pages)/newpage/lib/exportMdx";
 import { mdxToBlocks } from "@/app/(pages)/newpage/lib/mdxToBlocks";
 import { saveDoc, setActivePointer } from "@/app/(pages)/newpage/lib/localDocs";
@@ -64,9 +64,8 @@ export default function PostLayout({ postsData, content, frontmatter, slug }: MD
         <div
             id="main-bg-container"
             data-theme="light"
-            className="w-full h-full flex flex-col bg-(--page-bg) relative"
+            className={`w-full h-full flex flex-col bg-(--page-bg) relative ${collapsed ? "pl-[50px]" : "pl-[350px]"} m:pl-0!`}
             style={{
-                paddingLeft: collapsed ? 50 : 350,
                 transition: "padding-left 0.2s",
             }}
         >

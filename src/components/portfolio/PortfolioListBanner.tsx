@@ -1,14 +1,14 @@
-import { roboto } from "@/util/font";
+import { roboto } from "@/utils/font";
 import { RightIcon } from "../ui/icons/TypeMenuSvg";
 
 export default function PortfolioListBanner() {
     return (
         <div className="w-full flex flex-col">
-            <h2 className="text-[3.25rem] text-[#191918] font-bold">포트폴리오</h2>
+            <h2 className="text-[3.25rem] text-[#191918] font-bold m:text-[2.25rem]">포트폴리오</h2>
 
             <div className="w-full flex gap-8 pt-6">
-                <div className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex bg-white">
-                    <div className="flex p-6 justify-between w-1/3">
+                <div className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex bg-white m:flex-col m:h-auto">
+                    <div className="flex p-6 justify-between w-1/3 m:w-full">
                         <div className="w-full flex flex-col gap-2">
                             <div>
                                 <label className="text-base">맞춤 에이전트</label>
@@ -29,11 +29,11 @@ export default function PortfolioListBanner() {
                             </div>
                         </div>
                     </div>
-                    <div className="flex-1 rounded-r-2xl bg-[#78736f]"></div>
+                    <div className="flex-1 rounded-r-2xl bg-[#78736f] m:rounded-r-none m:rounded-b-2xl m:h-56 m:w-full"></div>
                 </div>
             </div>
 
-            <div className="w-full flex gap-6 pt-6">
+            <div className="w-full flex gap-6 pt-6 m:flex-col">
                 <a href="/portfolio/provelite" className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex flex-col bg-white overflow-hidden group">
                     <div className="flex p-6 justify-between">
                         <div className="w-full flex flex-col gap-2">
@@ -93,8 +93,8 @@ export default function PortfolioListBanner() {
             </div>
 
             <div className="w-full flex gap-8 pt-6">
-                <div className="w-full rounded-2xl h-[18rem] shadow cursor-pointer flex bg-white">
-                    <div className="flex p-6 justify-between w-1/3">
+                <div className="w-full rounded-2xl h-[18rem] shadow cursor-pointer flex bg-white m:flex-col m:h-auto">
+                    <div className="flex p-6 justify-between w-1/3 m:w-full">
                         <div className="w-full flex flex-col gap-2">
                             <div>
                                 <label className="text-base">포트폴리오3에 대한 설명</label>
@@ -107,7 +107,7 @@ export default function PortfolioListBanner() {
                             </div>
                         </div>
                     </div>
-                    <div className="flex-1 rounded-r-2xl bg-[#78736f]"></div>
+                    <div className="flex-1 rounded-r-2xl bg-[#78736f] m:rounded-r-none m:rounded-b-2xl m:h-48 m:w-full"></div>
                 </div>
             </div>
         </div>

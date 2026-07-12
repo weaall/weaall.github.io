@@ -1,6 +1,6 @@
 "use client";
 
-import { roboto } from "@/util/font";
+import { roboto } from "@/utils/font";
 import React from "react";
 
 export default function ServiceFlow() {

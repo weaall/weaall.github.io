@@ -3,12 +3,13 @@ import {
     Table, Thead, Tbody, Tr, Th, Td,
 } from "@/components/mdx/mdx-dev-components/devComponents"
 import { Metadata } from "next"
+import { notFound } from "next/navigation"
 import DevList from "@/components/dev-list/DevList"
 import getPostsData from "@/components/mdx/getMdx"
 import * as tw from "./page.styles"
 import { DevMDXContent } from "@/components/dev-mdx/DevMDXContent"
 import { compilePost, makeGenerateStaticParams } from "@/components/mdx/postRoutes"
-import { JSONLD } from "@/util/seo"
+import { getArticleMetadata, JSONLD } from "@/utils/seo"
 
 const FOLDER = "dev"
 
@@ -25,6 +26,9 @@ const compilePostMarkdown = (slug: string) => compilePost(FOLDER, slug, componen
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     const { content, frontmatter } = await compilePostMarkdown(slug)
+
+    if (!content) notFound()
+
     const postsData = await getPostsData("dev")
     const jsonLd = JSONLD(frontmatter, `https://weaall.github.io/${FOLDER}/${slug}`)
 
@@ -41,10 +45,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params;
     const { frontmatter } = await compilePostMarkdown(slug)
 
-    const metadata: Metadata = {
-        title: frontmatter.title,
-        description: frontmatter.subTitle,
-    }
-
-    return metadata
+    if (!frontmatter) return {}
+    return getArticleMetadata(frontmatter, `/${FOLDER}/${slug}`)
 }

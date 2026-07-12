@@ -1,5 +1,5 @@
 import * as tw from "./PostTitle.styles"
-import { PostFrontmatter } from "@/interface/PostData"
+import { PostFrontmatter } from "@/types/PostData"
 
 export default function PracTitle({ frontmatter }: { frontmatter: PostFrontmatter }) {
     return (

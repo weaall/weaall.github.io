@@ -1,4 +1,4 @@
-import { roboto } from "@/util/font";
+import { roboto } from "@/utils/font";
 import * as tw from "../MainBanner.styles";
 
 const partners = [

@@ -1,10 +1,10 @@
-import { roboto } from "@/util/font";
+import { roboto } from "@/utils/font";
 
 import * as tw from "./MainBanner.styles";
 
 export default function PortfolioBanner() {
     return (
-        <div className="w-full h-auto flex flex-reverse m:flex-col-reverse">
+        <div className="w-full h-auto flex m:flex-col-reverse">
             <tw.StartWrap>
                 <tw.Title className="hidden m:block">{"나만을 위한 AI 워크스페이스"}</tw.Title>
                 <tw.Title className="block m:hidden">

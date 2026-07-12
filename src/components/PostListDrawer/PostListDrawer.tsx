@@ -1,11 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { roboto } from "@/utils/font";
 import * as tw from "./PostListDrawer.styles";
-import { DocIcon, DotListIcon, HomeIcon, PlusIcon, PostIcon, ReduceIcon, RightIcon, SearchIcon } from "./SvgDrawer";
+import { DocIcon, DotListIcon, HomeIcon, ListIcon, PlusIcon, PostIcon, ReduceIcon, RightIcon, SearchIcon } from "./SvgDrawer";
 import { useEffect, useRef, useState } from "react";
-import { AddDockIcon } from "../ui/icons/PostsSvg";
-import { PostData } from "@/interface/PostData";
+import { AddDockIcon } from "../ui/icons/CommonSvg";
+import { PostData } from "@/types/PostData";
 import { LocalDocMeta, listDocs, deleteDoc, getDoc, getActivePointer, setActivePointer, subscribeDocsChanged } from "@/app/(pages)/newpage/lib/localDocs";
 import { exportDoc } from "@/app/(pages)/newpage/lib/exportMdx";
 import { PageIcon } from "@/app/(pages)/newpage/lib/pageIcon";
@@ -19,6 +21,13 @@ interface PostsProps {
 export default function PostListDrawer({ posts, collapsed, setCollapsed }: PostsProps) {
     const pathname = usePathname();
     const router = useRouter();
+
+    // 모바일 드로어 열림 상태 (데스크톱에서는 사용하지 않음)
+    const [mobileOpen, setMobileOpen] = useState(false);
+    // 경로가 바뀌면(메뉴에서 이동하면) 드로어를 닫는다.
+    useEffect(() => {
+        setMobileOpen(false);
+    }, [pathname]);
 
     // 로컬 저장 문서는 드로어가 직접 localStorage에서 읽어 어느 페이지에서든 표시한다.
     const [localDocs, setLocalDocs] = useState<LocalDocMeta[]>([]);
@@ -122,8 +131,39 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
     };
 
     return (
-        <tw.Container>
+        <>
+            {/* 모바일 전용 상단 앱바 */}
+            <header className="hidden m:flex fixed top-0 left-0 z-30 w-full h-14 items-center px-3 bg-(--panel-bg)/80 backdrop-blur-md border-b border-(--border)">
+                <button
+                    type="button"
+                    aria-label="메뉴 열기"
+                    onClick={() => setMobileOpen(true)}
+                    className="p-2 -ml-1 rounded-lg text-(--text-strong) hover:bg-(--hover-bg) active:scale-90 transition"
+                >
+                    <div className="w-[22px] h-[22px]">
+                        <ListIcon color="currentColor" width="22" height="22" />
+                    </div>
+                </button>
+
+                <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+                    <img src="/assets/weaall-ui.png" alt="WeHub" className="h-6 w-6 object-contain" />
+                    <span className={`${roboto.className} text-[1.05rem] font-semibold tracking-tight text-(--text-strong)`}>
+                        WeHub
+                    </span>
+                </Link>
+            </header>
+
+            {/* 모바일 드로어 백드롭 */}
+            {mobileOpen && (
+                <div
+                    className="hidden m:block fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] animate-fadeIn"
+                    onClick={() => setMobileOpen(false)}
+                />
+            )}
+
+            <tw.Container>
             <tw.SideContainer
+                className={`m:w-[260px]! m:min-w-[260px]! m:z-50 m:shadow-2xl m:transition-transform m:duration-300 m:ease-out ${mobileOpen ? "m:translate-x-0" : "m:-translate-x-full"}`}
                 style={{
                     width: collapsed ? 50 : 260,
                     minWidth: collapsed ? 50 : 260,
@@ -131,8 +171,19 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                 }}
             >
                 <tw.Fixedwrap>
-                    <div className="flex items-center justify-end tracking-tight">
-                        <tw.IconBtn onClick={() => setCollapsed(!collapsed)}>
+                    <div className="flex items-center justify-between tracking-tight">
+                        {/* 모바일: 닫기 버튼 / 데스크톱: 접기 버튼 */}
+                        <button
+                            type="button"
+                            aria-label="메뉴 닫기"
+                            onClick={() => setMobileOpen(false)}
+                            className="hidden m:flex p-5px items-center justify-center rounded-md hover:bg-(--hover-bg) text-(--text-faint)"
+                        >
+                            <div className="w-5 h-5 rotate-45">
+                                <PlusIcon color="currentColor" width="20" height="20" />
+                            </div>
+                        </button>
+                        <tw.IconBtn className="m:hidden" onClick={() => setCollapsed(!collapsed)}>
                             {collapsed ? <RightIcon color="currentColor" width="20" height="20" /> : <ReduceIcon color="currentColor" width="20" height="20" />}
                         </tw.IconBtn>
                     </div>
@@ -306,6 +357,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                     </div>
                 </>
             )}
-        </tw.Container>
+            </tw.Container>
+        </>
     );
 }

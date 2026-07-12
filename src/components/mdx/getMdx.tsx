@@ -1,8 +1,8 @@
 import { compileMDX } from "next-mdx-remote/rsc";
 import fs from "fs";
 import path from "path";
-import { formatPostDate } from "@/util/date";
-import { PostData } from "@/interface/PostData";
+import { formatPostDate } from "@/utils/date";
+import { PostData } from "@/types/PostData";
 
 export default async function getPostsData(dir: string) {
     const lowerDir = dir.toLowerCase();

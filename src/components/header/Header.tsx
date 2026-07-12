@@ -3,8 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import * as tw from "./Header.styles";
-import { DownIcon, UpIcon } from "../ui/icons/PostsSvg";
-import { roboto } from "@/util/font";
+import { DownIcon, UpIcon } from "../ui/icons/CommonSvg";
+import { roboto } from "@/utils/font";
 import WeHubHoverMenu from "./WeHubHoverMenu";
 
 // Header 컴포넌트
@@ -67,10 +67,9 @@ export default function Header() {
         };
     }, [isMenuClicked]);
     
-    // ... (경로 체크 및 navItems 생략) ...
     if (pathname.startsWith("/post") || pathname.startsWith("/newpage")) return null;
 
-    const validPaths = ["/dev", "/prac", "/project"];
+    const validPaths = ["/dev", "/prac"];
     const headerLayout = validPaths.some((path) => pathname.startsWith(path));
 
     const navItems = [
@@ -78,7 +77,7 @@ export default function Header() {
         { p: "PRAC", path: "/prac" },
         { p: "ME", path: "/me" },
         { p: "GITHUB", path: "https://github.com/weaall" },
-        { p: "DEV", path: "/dev/intro" },
+        { p: "DEV", path: "/dev" },
         { p: "PORTFOLIO", path: "/portfolio" },
     ];
 
@@ -122,12 +121,8 @@ export default function Header() {
                 </tw.Nav>
             </tw.NavWrap>
 
-            <tw.RearWrap>
-                <tw.Nav>
-                    <tw.NavDirectP href="/login">로그인</tw.NavDirectP>
-                    <tw.SubBtn href="/weaall-hub">WeHub 이용하기</tw.SubBtn>
-                </tw.Nav>
-            </tw.RearWrap>
+            {/* 우측 컬럼: 중앙 내비 정렬용 스페이서 (로그인/이용하기 라우트 준비 전까지 비움) */}
+            <tw.RearWrap />
 
             {/* 2. 메뉴 렌더링 래퍼 */}
             {isMenuOpen && (

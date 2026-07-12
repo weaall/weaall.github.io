@@ -1,7 +1,7 @@
 import React from "react";
 import * as tw from "./Newpage.styles";
 import ContentEditableBlock from "./editable-block/ContentEditableBlock";
-import { GripDotsIcon, PlusIcon } from "@/components/ui/icons/PostsSvg";
+import { GripDotsIcon, PlusIcon } from "@/components/ui/icons/CommonSvg";
 import { Block } from "./helper/BlocksToMdx";
 import { FormattedRange } from "./text-modal/TextFormat.modal";
 

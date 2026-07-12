@@ -9,7 +9,7 @@ import { Metadata } from "next";
 import PostLayout from "./PostLayout";
 import getPostsData from "@/components/mdx/getMdx";
 import { compilePost, makeGenerateStaticParams } from "@/components/mdx/postRoutes";
-import { JSONLD } from "@/util/seo";
+import { getArticleMetadata, JSONLD } from "@/utils/seo";
 
 const FOLDER = "post";
 
@@ -45,10 +45,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params;
     const { frontmatter } = await compilePostMarkdown(slug);
 
-    const metadata: Metadata = {
-        title: frontmatter.title,
-        description: frontmatter.subTitle,
-    };
-
-    return metadata;
+    if (!frontmatter) return {};
+    return getArticleMetadata(frontmatter, `/${FOLDER}/${slug}`);
 }

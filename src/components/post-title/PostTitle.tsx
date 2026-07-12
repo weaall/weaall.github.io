@@ -1,5 +1,5 @@
 import * as tw from "./PostTitle.styles";
-import { PostFrontmatter } from "@/interface/PostData";
+import { PostFrontmatter } from "@/types/PostData";
 import { PageIcon } from "@/app/(pages)/newpage/lib/pageIcon";
 
 export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatter }) {

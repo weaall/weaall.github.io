@@ -3,7 +3,7 @@ import { readFile, access, readdir } from "fs/promises";
 import path from "path";
 import { notFound } from "next/navigation";
 import remarkGfm from "remark-gfm";
-import { PostFrontmatter } from "@/interface/PostData";
+import { PostFrontmatter } from "@/types/PostData";
 
 // post/dev/prac 라우트가 공통으로 쓰던 정적 파라미터 생성 · 파일 읽기 · MDX 컴파일 로직.
 // 각 라우트는 폴더명과 컴포넌트 맵(+gfm 여부)만 넘기면 된다.
