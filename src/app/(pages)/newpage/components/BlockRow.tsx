@@ -159,7 +159,8 @@ export default function BlockRow({
                 )}
 
                 <tw.InputWrap
-                    className={selected || menuId === block.id ? "bg-(--active-bg)" : ""}
+                    // 드래그 중에는 선택 배경(파란색)을 숨긴다 — 삽입선과 같은 색이라 겹쳐 헷갈림
+                    className={(selected && draggingIdx === null) || menuId === block.id ? "bg-(--active-bg)" : ""}
                     style={{ marginLeft: block.indentationLevel * 25 }}
                     // 선택된 블록은 본문을 잡아도 드래그(그룹 이동) + 누르기로 선택 해제 안 함
                     draggable={selected}
