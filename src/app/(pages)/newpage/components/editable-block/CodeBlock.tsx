@@ -22,11 +22,13 @@ const TEXT_STYLE: React.CSSProperties = {
     fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace",
     fontSize: "14px",
     lineHeight: "1.6",
+    letterSpacing: "normal",
     whiteSpace: "pre-wrap",
     wordBreak: "break-word",
     overflowWrap: "anywhere",
     tabSize: 2,
     border: 0,
+    boxSizing: "border-box",
 };
 
 function parseCode(content: string): { code: string; lang: string } {
@@ -192,8 +194,8 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                         persist(e.target.value, lang);
                     }}
                     onKeyDown={handleKeyDown}
-                    className="relative block w-full resize-none overflow-hidden bg-transparent text-transparent caret-black outline-none placeholder:text-(--text-muted)"
-                    style={TEXT_STYLE}
+                    className="relative block w-full resize-none overflow-hidden bg-transparent outline-none placeholder:text-(--text-muted)"
+                    style={{ ...TEXT_STYLE, color: "transparent", WebkitTextFillColor: "transparent", caretColor: "#24292e" }}
                     rows={1}
                 />
             </div>
