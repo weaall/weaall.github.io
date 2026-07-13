@@ -159,8 +159,11 @@ export default function BlockRow({
                 )}
 
                 <tw.InputWrap
-                    // 드래그 중에는 선택 배경(파란색)을 숨긴다 — 삽입선과 같은 색이라 겹쳐 헷갈림
-                    className={`relative ${(selected && draggingIdx === null) || menuId === block.id ? "bg-(--active-bg)" : ""}`}
+                    // 선택 하이라이트: 선택됐거나(드래그 중 제외) 이 블록 메뉴가 열렸을 때.
+                    // 코드 블록은 프레임(InputWrap 배경) 대신 박스 자체가 물드므로 여기선 배경 안 줌(두겹 방지).
+                    className={`relative ${
+                        ((selected && draggingIdx === null) || menuId === block.id) && block.type !== "code" ? "bg-(--active-bg)" : ""
+                    }`}
                     style={{ marginLeft: block.indentationLevel * 25 }}
                     // 선택된 블록은 본문을 잡아도 드래그(그룹 이동) + 누르기로 선택 해제 안 함
                     draggable={selected}
@@ -201,12 +204,12 @@ export default function BlockRow({
                         onFormattedRangesChange={(ranges) => onFormattedRangesChange(idx, ranges)}
                         collapsed={block.collapsed}
                         onToggleCollapse={() => onToggleCollapse(block.id)}
-                        selected={selected}
+                        // 코드 박스 물듦: 선택(드래그 중 제외) 또는 이 블록 메뉴 열림
+                        selected={(selected && draggingIdx === null) || menuId === block.id}
                     />
                     {/* 표/이미지/차트는 자체 배경이 불투명이라 뒤의 선택색이 안 보인다 → 위에 반투명 파란 오버레이.
                         코드는 CodeBlock이 박스 배경 자체를 선택색으로 바꾸므로 오버레이 제외. */}
-                    {selected &&
-                        draggingIdx === null &&
+                    {((selected && draggingIdx === null) || menuId === block.id) &&
                         ["table", "image", "barChartH", "barChartV"].includes(block.type) && (
                             <div className="pointer-events-none absolute inset-0 z-[15] rounded-[10px]" style={{ background: "rgba(35,131,226,0.3)" }} />
                         )}
