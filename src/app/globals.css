@@ -250,6 +250,14 @@
     color: #22863a;
   }
 
+  /* 에디터 입력 포커스: 은은한 파란 링 (노션식) — 언어 검색/표 셀 등 공통 */
+  .editor-field:focus,
+  .editor-field:focus-visible {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 1.5px rgba(35, 131, 226, 0.6);
+  }
+
   /* 라이트 테마 스코프: placeholder / 텍스트 선택 색 */
   [data-theme="light"] [contenteditable][placeholder]:empty::after {
     color: var(--placeholder);

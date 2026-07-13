@@ -218,7 +218,7 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                                             value={query}
                                             onChange={(e) => setQuery(e.target.value)}
                                             placeholder="언어를 검색하세요"
-                                            className="h-7 w-full rounded-md bg-(--hover-bg) px-2.5 text-[13px] outline-none placeholder:text-(--text-muted)"
+                                            className="editor-field h-7 w-full rounded-md bg-(--hover-bg) px-2.5 text-[13px] outline-none placeholder:text-(--text-muted)"
                                         />
                                     </div>
                                     <div className="overflow-y-auto px-1 pb-1">

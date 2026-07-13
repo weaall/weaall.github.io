@@ -376,7 +376,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                             }}
                                             contentEditable
                                             suppressContentEditableWarning
-                                            className={`min-h-[20px] px-[8px] py-[5px] text-[14px] leading-[20px] text-(--text) outline-none ${
+                                            className={`editor-field min-h-[20px] px-[8px] py-[5px] text-[14px] leading-[20px] text-(--text) outline-none ${
                                                 cw ? "" : "min-w-[120px] break-words"
                                             }`}
                                             style={{
