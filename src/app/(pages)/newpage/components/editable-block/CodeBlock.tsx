@@ -211,17 +211,17 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                                 </svg>
                             </button>
                             {langOpen && (
-                                <div className="absolute right-0 top-[calc(100%+4px)] flex max-h-72 w-56 flex-col overflow-hidden rounded-lg border border-(--border) bg-(--page-bg) shadow-lg">
-                                    <div className="p-1">
+                                <div className="absolute right-0 top-[calc(100%+6px)] flex max-h-[280px] w-60 flex-col overflow-hidden rounded-[10px] border border-(--border) bg-(--page-bg) shadow-xl">
+                                    <div className="px-2 pt-2 pb-1">
                                         <input
                                             autoFocus
                                             value={query}
                                             onChange={(e) => setQuery(e.target.value)}
                                             placeholder="언어를 검색하세요"
-                                            className="w-full rounded-sm border border-(--border) px-2 py-1.5 text-[12px] outline-none"
+                                            className="h-7 w-full rounded-md bg-(--hover-bg) px-2.5 text-[13px] outline-none placeholder:text-(--text-muted)"
                                         />
                                     </div>
-                                    <div className="overflow-y-auto py-1">
+                                    <div className="overflow-y-auto px-1 pb-1">
                                         {filtered.map((l) => (
                                             <button
                                                 key={l}
@@ -232,19 +232,19 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                                                     setQuery("");
                                                     persist(code, l);
                                                 }}
-                                                className={`flex w-full items-center justify-between gap-2 px-3 py-1 text-left text-[13px] hover:bg-(--menu-hover-bg) ${
-                                                    l === lang ? "text-(--text)" : "text-(--text-muted)"
+                                                className={`flex w-full items-center justify-between gap-2 rounded-md px-2.5 py-[6px] text-left text-[14px] text-(--text) hover:bg-(--menu-hover-bg) ${
+                                                    l === lang ? "bg-(--menu-hover-bg)" : ""
                                                 }`}
                                             >
                                                 <span className="truncate">{displayName(l)}</span>
                                                 {l === lang && (
-                                                    <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor" aria-hidden className="shrink-0">
+                                                    <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden className="shrink-0 text-(--text-muted)">
                                                         <path d="M15.784 4.002a.625.625 0 0 1 .214.857L9.445 15.784a.625.625 0 0 1-1.01.085l-4.37-5.098a.625.625 0 0 1 .948-.814l3.806 4.44 6.109-10.181a.625.625 0 0 1 .857-.214" />
                                                     </svg>
                                                 )}
                                             </button>
                                         ))}
-                                        {!filtered.length && <div className="px-3 py-1 text-[12px] text-(--text-muted)">결과 없음</div>}
+                                        {!filtered.length && <div className="px-2.5 py-1 text-[13px] text-(--text-muted)">결과 없음</div>}
                                     </div>
                                 </div>
                             )}
