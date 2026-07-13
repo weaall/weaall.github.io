@@ -1356,7 +1356,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             {/* 마퀴 선택 박스 */}
             {marquee && (Math.abs(marquee.x1 - marquee.x0) > 3 || Math.abs(marquee.y1 - marquee.y0) > 3) && (
                 <div
-                    className="pointer-events-none fixed z-[1500] rounded-[2px] bg-[#3772ff]/20"
+                    className="pointer-events-none fixed z-[1500] rounded-[2px] bg-(--active-bg)/70"
                     style={{
                         left: Math.min(marquee.x0, marquee.x1),
                         top: Math.min(marquee.y0, marquee.y1),
