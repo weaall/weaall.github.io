@@ -473,29 +473,36 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         setMeta((prev) => ({ ...prev, imageUrl: webp }));
     };
 
-    const { draggingIdx, insertLineIdx, dragPreview, dragPos, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } =
-        useBlockDnD(
-            setBlocks,
-            () => selectionRef.current,
-            (targetIdx, count) => setSelRange({ a: targetIdx, b: targetIdx + count - 1 }),
-            (fromIdx) => {
-                const sel = selectionRef.current;
-                const inSel = sel && sel.max > sel.min && fromIdx >= sel.min && fromIdx <= sel.max;
-                const min = inSel ? sel!.min : fromIdx;
-                const max = inSel ? sel!.max : fromIdx;
-                const first = blocks[min];
-                // 차트/표/이미지 등은 content가 JSON이라 그대로 보이면 안 됨 → 타입별 라벨
-                const typeLabel: { [k: string]: string } = {
-                    image: "🖼 이미지",
-                    table: "▦ 표",
-                    barChartH: "▤ 가로 막대그래프",
-                    barChartV: "▥ 세로 막대그래프",
-                    divider: "구분선",
-                };
-                const label = first ? typeLabel[first.type] ?? ((first.content || "").trim() || "빈 블록") : "빈 블록";
-                return { count: max - min + 1, label };
-            },
-        );
+    const { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } = useBlockDnD(
+        setBlocks,
+        () => selectionRef.current,
+        (targetIdx, count) => setSelRange({ a: targetIdx, b: targetIdx + count - 1 }),
+        // 드래그 미리보기: 실제 블록(선택 범위면 전부)을 복제해 커서를 따라오게
+        (fromIdx) => {
+            const sel = selectionRef.current;
+            const inSel = sel && sel.max > sel.min && fromIdx >= sel.min && fromIdx <= sel.max;
+            const from = inSel ? sel!.min : fromIdx;
+            const to = inSel ? sel!.max : fromIdx;
+            const firstEl = document.getElementById(blocksRef.current[from]?.id ?? "")?.closest(".group") as HTMLElement | null;
+            const width = firstEl?.getBoundingClientRect().width ?? 680;
+            const container = document.createElement("div");
+            container.setAttribute("data-theme", "light");
+            container.style.cssText = `position:fixed;top:-9999px;left:0;width:${Math.round(width)}px;box-sizing:border-box;background:var(--page-bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:.95;max-height:320px;overflow:hidden;`;
+            for (let i = from; i <= to; i++) {
+                const b = blocksRef.current[i];
+                if (!b) continue;
+                const el = document.getElementById(b.id);
+                const wrap = (el?.closest(".group") as HTMLElement | null) ?? el;
+                if (wrap) {
+                    const c = wrap.cloneNode(true) as HTMLElement;
+                    c.style.opacity = "1";
+                    c.style.width = "100%";
+                    container.appendChild(c);
+                }
+            }
+            return container.childElementCount ? container : null;
+        },
+    );
 
     const getListNumber = (currentIndex: number): number => {
         let counter = 1;
@@ -1366,17 +1373,6 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 />
             )}
 
-            {/* 노션식 드래그 미리보기: 커서를 따라다니며 내용 + 개수 표시 */}
-            {dragPreview && dragPos && (
-                <div className="pointer-events-none fixed z-[2000]" style={{ top: dragPos.y + 12, left: dragPos.x + 12 }}>
-                    <div className="flex max-w-[280px] items-center gap-2 rounded-md border border-(--border) bg-(--menu-bg) px-3 py-1.5 text-sm text-(--text) opacity-90 shadow-lg">
-                        <span className="truncate">{dragPreview.label}</span>
-                        {dragPreview.count > 1 && (
-                            <span className="rounded bg-[#3772ff] px-1.5 py-0.5 text-xs text-white">{dragPreview.count}</span>
-                        )}
-                    </div>
-                </div>
-            )}
         </tw.Container>
     );
 }
