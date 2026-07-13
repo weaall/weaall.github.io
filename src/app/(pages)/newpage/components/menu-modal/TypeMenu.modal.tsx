@@ -1,6 +1,6 @@
 import { ColorPainterIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
 import * as tw from "./TypeMenu.modal.styles";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { TypeMenuElement } from "./TypeElement";
 
 interface TypeMenuModalProps {
@@ -43,6 +43,15 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
     const [showDrawer, setShowDrawer] = useState<"전환" | "색" | null>(null);
     const [deleteHover, setDeleteHover] = useState(false);
 
+    // 드로워가 열리면 팝업이 길어져 화면 아래로 넘칠 수 있다 → 넘치면 위로 올려 옵션이 안 잘리게.
+    const rootRef = useRef<HTMLDivElement>(null);
+    const [top, setTop] = useState(position?.top ?? 0);
+    useLayoutEffect(() => {
+        if (!open || !position) return;
+        const h = rootRef.current?.offsetHeight ?? 0;
+        setTop(Math.max(8, Math.min(position.top, window.innerHeight - h - 8)));
+    }, [open, position, showDrawer]);
+
     const handleMenuButtonMouseEnter = (type: string) => {
         if (type === "전환" || type === "색") {
             setShowDrawer(type as "전환" | "색");
@@ -72,10 +81,11 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                 onClick={handleClose}
             />
             <div
+                ref={rootRef}
                 className="animate-popIn"
                 style={{
                     position: "fixed",
-                    top: position.top,
+                    top,
                     left: position.left,
                     zIndex: 1000,
                     display: "flex",
