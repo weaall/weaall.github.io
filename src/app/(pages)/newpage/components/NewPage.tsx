@@ -360,6 +360,11 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         };
 
         const onPaste = (e: ClipboardEvent) => {
+            // 코드 블록 등 네이티브 입력(textarea/input) 안에서는 블록 변환하지 않고 그대로 붙여넣기
+            const active = document.activeElement as HTMLElement | null;
+            if (active && (active.tagName === "TEXTAREA" || active.tagName === "INPUT" || active.closest?.(".code-block"))) {
+                return;
+            }
             const data = e.clipboardData?.getData(CLIP_TYPE);
             // 1) 내부에서 복사한 블록 → 블록 붙여넣기
             if (data) {
