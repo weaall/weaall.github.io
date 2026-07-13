@@ -22,12 +22,32 @@ export function useBlockDnD(
     // 커서를 따라다니는 커스텀 미리보기 요소 + 이동 핸들러(정리를 위해 ref 보관)
     const previewRef = useRef<HTMLElement | null>(null);
     const moveHandlerRef = useRef<((e: DragEvent) => void) | null>(null);
+    // 엣지 오토스크롤: 커서 Y 추적 + rAF 루프 (네이티브 DnD의 뚝뚝 끊기는 스크롤 대체)
+    const pointerYRef = useRef(0);
+    const rafRef = useRef<number | null>(null);
+
+    const autoScrollTick = () => {
+        const y = pointerYRef.current;
+        const h = window.innerHeight;
+        const EDGE = 110; // 가장자리 감지 영역(px)
+        const MAX = 24; // 프레임당 최대 스크롤(px)
+        let dy = 0;
+        if (y > 0 && y < EDGE) dy = -Math.ceil(((EDGE - y) / EDGE) * MAX);
+        else if (y > h - EDGE) dy = Math.ceil(((y - (h - EDGE)) / EDGE) * MAX);
+        if (dy !== 0) window.scrollBy(0, dy);
+        rafRef.current = requestAnimationFrame(autoScrollTick);
+    };
 
     const teardownPreview = () => {
         if (moveHandlerRef.current) {
             document.removeEventListener("dragover", moveHandlerRef.current);
             moveHandlerRef.current = null;
         }
+        if (rafRef.current !== null) {
+            cancelAnimationFrame(rafRef.current);
+            rafRef.current = null;
+        }
+        pointerYRef.current = 0;
         previewRef.current?.remove();
         previewRef.current = null;
     };
@@ -54,17 +74,21 @@ export function useBlockDnD(
             img.style.top = "-9999px"; // 첫 이동 전까지 화면 밖
             document.body.appendChild(img);
             previewRef.current = img;
+        }
 
-            const move = (ev: DragEvent) => {
-                if (!previewRef.current) return;
-                if (ev.clientX === 0 && ev.clientY === 0) return; // 유효하지 않은 좌표 무시
+        // dragover마다 커서 위치 추적(+미리보기 이동). 오토스크롤 루프도 시작.
+        const move = (ev: DragEvent) => {
+            if (ev.clientX === 0 && ev.clientY === 0) return; // 유효하지 않은 좌표 무시
+            pointerYRef.current = ev.clientY;
+            if (previewRef.current) {
                 // 커서보다 아래-오른쪽에 배치 → 커서 위 삽입선/블록을 가리지 않음
                 previewRef.current.style.left = `${ev.clientX + 12}px`;
                 previewRef.current.style.top = `${ev.clientY + 18}px`;
-            };
-            moveHandlerRef.current = move;
-            document.addEventListener("dragover", move);
-        }
+            }
+        };
+        moveHandlerRef.current = move;
+        document.addEventListener("dragover", move);
+        rafRef.current = requestAnimationFrame(autoScrollTick);
     };
 
     const handleDragEnter = (e: React.DragEvent<HTMLDivElement>, idx: number, isIndicator: boolean) => {
