@@ -5,7 +5,7 @@ import hljs from "highlight.js";
 import { canFormat, formatCode } from "../../lib/formatCode";
 import { usePopupDirection } from "../../hooks/usePopupDirection";
 import { useScrollLock } from "../../hooks/useScrollLock";
-import { highlightCode } from "@/components/mdx/highlightCode";
+import { highlightCode, splitHljsLines } from "@/components/mdx/highlightCode";
 
 // 노션풍 코드 블록(에디터). 왼쪽 줄번호 거터 + 투명 textarea + 뒤 hljs 색칠 오버레이.
 // 긴 줄은 자동 줄바꿈(가로 스크롤 없음), 줄번호는 각 논리 줄 상단에 정렬. 높이는 내용만큼 자동.
@@ -52,22 +52,6 @@ function parseCode(content: string): { code: string; lang: string } {
         }
     }
     return { code: content || "", lang: "auto" };
-}
-
-// hljs가 만든 HTML을 줄 단위로 분리(줄을 넘나드는 <span>은 각 줄에서 다시 열고 닫아 유지).
-function splitHljsLines(html: string): string[] {
-    const open: string[] = [];
-    return html.split("\n").map((line) => {
-        const prefix = open.join("");
-        const re = /<span[^>]*>|<\/span>/g;
-        let m: RegExpExecArray | null;
-        while ((m = re.exec(line))) {
-            if (m[0] === "</span>") open.pop();
-            else open.push(m[0]);
-        }
-        const suffix = "</span>".repeat(open.length);
-        return prefix + line + suffix;
-    });
 }
 
 export default function CodeBlock({ id, content }: { id: string; content: string }) {

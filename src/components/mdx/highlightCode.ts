@@ -8,6 +8,22 @@ const JS_FAMILY = new Set(["javascript", "typescript", "js", "ts", "jsx", "tsx"]
 
 const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+// hljs가 만든 HTML을 줄 단위로 분리(줄을 넘나드는 <span>은 각 줄에서 다시 열고 닫아 유지).
+export function splitHljsLines(html: string): string[] {
+    const open: string[] = [];
+    return html.split("\n").map((line) => {
+        const prefix = open.join("");
+        const re = /<span[^>]*>|<\/span>/g;
+        let m: RegExpExecArray | null;
+        while ((m = re.exec(line))) {
+            if (m[0] === "</span>") open.pop();
+            else open.push(m[0]);
+        }
+        const suffix = "</span>".repeat(open.length);
+        return prefix + line + suffix;
+    });
+}
+
 export function highlightCode(code: string, lang: string): { value: string; language: string } {
     if (lang === "plaintext") return { value: escapeHtml(code), language: "" };
 
