@@ -160,13 +160,9 @@ export default function BlockRow({
 
                 <tw.InputWrap
                     // 선택 하이라이트: 선택됐거나(드래그 중 제외) 이 블록 메뉴가 열렸을 때.
-                    // 일반 블록은 InputWrap 배경으로, 박스형(코드/표/이미지/차트)은 뒤에서 감싸는 레이어로.
-                    className={`relative isolate ${
-                        ((selected && draggingIdx === null) || menuId === block.id) &&
-                        !["code", "table", "image", "barChartH", "barChartV"].includes(block.type)
-                            ? "bg-(--active-bg)"
-                            : ""
-                    }`}
+                    // 모든 타입 공통으로 InputWrap 배경을 선택색으로 → 폭이 동일. 박스형(불투명)은
+                    // InputWrap의 px/여백만큼 파란 프레임이 박스를 감싼다.
+                    className={`relative ${(selected && draggingIdx === null) || menuId === block.id ? "bg-(--active-bg)" : ""}`}
                     style={{ marginLeft: block.indentationLevel * 25 }}
                     // 선택된 블록은 본문을 잡아도 드래그(그룹 이동) + 누르기로 선택 해제 안 함
                     draggable={selected}
@@ -207,14 +203,7 @@ export default function BlockRow({
                         onFormattedRangesChange={(ranges) => onFormattedRangesChange(idx, ranges)}
                         collapsed={block.collapsed}
                         onToggleCollapse={() => onToggleCollapse(block.id)}
-                        // 코드/표는 자기 박스를 직접 감싸므로 하이라이트 여부를 넘긴다
-                        selected={(selected && draggingIdx === null) || menuId === block.id}
                     />
-                    {/* 이미지/차트는 컴포넌트 폭이 대체로 꽉 차므로 BlockRow에서 뒤 레이어로 감싼다(색: 일반 선택색) */}
-                    {((selected && draggingIdx === null) || menuId === block.id) &&
-                        ["image", "barChartH", "barChartV"].includes(block.type) && (
-                            <div className="pointer-events-none absolute inset-0 -z-10 rounded-[12px] bg-(--active-bg)" />
-                        )}
                 </tw.InputWrap>
             </tw.BlockWrap>
         </>

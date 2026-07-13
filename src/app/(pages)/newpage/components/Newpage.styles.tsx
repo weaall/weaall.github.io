@@ -10,7 +10,7 @@ export const BlockWrap = tw.div` flex items-center relative transition-colors
 export const InputWrap = tw.div`
   flex-1 transition-colors
   rounded-md
-  py-[2px]
+  px-[6px] py-[2px]
 `;
 
 export const PlusButton = tw.button`

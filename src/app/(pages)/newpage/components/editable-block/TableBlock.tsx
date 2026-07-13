@@ -67,7 +67,7 @@ const P_HEADER = "M3.75 5.5h12.5v3H3.75z";
 
 type MenuState = { kind: "row" | "col"; index: number; top: number; left: number } | null;
 
-export default function TableBlock({ id, content, selected }: { id: string; content: string; selected?: boolean }) {
+export default function TableBlock({ id, content }: { id: string; content: string }) {
     const dataRef = useRef<TableData>(parseTable(content));
     const [version, setVersion] = useState(0);
     const [menu, setMenu] = useState<MenuState>(null);
@@ -351,9 +351,7 @@ export default function TableBlock({ id, content, selected }: { id: string; cont
     };
 
     return (
-        <div ref={wrapRef} id={id} className="group/table relative isolate my-2 w-fit py-[18px]">
-            {/* 선택 시: 표를 바깥에서 감싸는 배경(일반 텍스트 선택색과 동일) */}
-            {selected && <div className="pointer-events-none absolute -inset-x-1 inset-y-1 -z-10 rounded-[12px] bg-(--active-bg)" />}
+        <div ref={wrapRef} id={id} className="group/table relative my-2 w-fit py-[18px]">
             <table className="border-collapse">
                 <tbody>
                     {grid.map((row, r) => (

@@ -46,7 +46,6 @@ interface ContentEditableBlockProps {
     onFormattedRangesChange?: (ranges: FormattedRange[]) => void;
     collapsed?: boolean;
     onToggleCollapse?: () => void;
-    selected?: boolean;
 }
 
 const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: string }> = ({
@@ -71,7 +70,6 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
     onFormattedRangesChange,
     collapsed,
     onToggleCollapse,
-    selected,
 }) => {
     const ref = useRef<HTMLDivElement | null>(null);
     const isComposingRef = useRef(false);
@@ -765,9 +763,9 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         case "image":
             return <ImageBlock id={id} content={content} />;
         case "table":
-            return <TableBlock id={id} content={content} selected={selected} />;
+            return <TableBlock id={id} content={content} />;
         case "code":
-            return <CodeBlock id={id} content={content} selected={selected} />;
+            return <CodeBlock id={id} content={content} />;
         case "barChartH":
             return <ChartBlock id={id} orient="h" content={content} />;
         case "barChartV":
