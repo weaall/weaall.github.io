@@ -160,9 +160,12 @@ export default function BlockRow({
 
                 <tw.InputWrap
                     // 선택 하이라이트: 선택됐거나(드래그 중 제외) 이 블록 메뉴가 열렸을 때.
-                    // 코드 블록은 프레임(InputWrap 배경) 대신 박스 자체가 물드므로 여기선 배경 안 줌(두겹 방지).
-                    className={`relative ${
-                        ((selected && draggingIdx === null) || menuId === block.id) && block.type !== "code" ? "bg-(--active-bg)" : ""
+                    // 일반 블록은 InputWrap 배경으로, 박스형(코드/표/이미지/차트)은 뒤에서 감싸는 레이어로.
+                    className={`relative isolate ${
+                        ((selected && draggingIdx === null) || menuId === block.id) &&
+                        !["code", "table", "image", "barChartH", "barChartV"].includes(block.type)
+                            ? "bg-(--active-bg)"
+                            : ""
                     }`}
                     style={{ marginLeft: block.indentationLevel * 25 }}
                     // 선택된 블록은 본문을 잡아도 드래그(그룹 이동) + 누르기로 선택 해제 안 함
@@ -204,14 +207,13 @@ export default function BlockRow({
                         onFormattedRangesChange={(ranges) => onFormattedRangesChange(idx, ranges)}
                         collapsed={block.collapsed}
                         onToggleCollapse={() => onToggleCollapse(block.id)}
-                        // 코드 박스 물듦: 선택(드래그 중 제외) 또는 이 블록 메뉴 열림
+                        // 코드/표는 자기 박스를 직접 감싸므로 하이라이트 여부를 넘긴다
                         selected={(selected && draggingIdx === null) || menuId === block.id}
                     />
-                    {/* 표/이미지/차트는 자체 배경이 불투명이라 뒤의 선택색이 안 보인다 → 위에 반투명 파란 오버레이.
-                        코드는 CodeBlock이 박스 배경 자체를 선택색으로 바꾸므로 오버레이 제외. */}
+                    {/* 이미지/차트는 컴포넌트 폭이 대체로 꽉 차므로 BlockRow에서 뒤 레이어로 감싼다(색: 일반 선택색) */}
                     {((selected && draggingIdx === null) || menuId === block.id) &&
-                        ["table", "image", "barChartH", "barChartV"].includes(block.type) && (
-                            <div className="pointer-events-none absolute inset-0 z-[15] rounded-[10px]" style={{ background: "rgba(35,131,226,0.3)" }} />
+                        ["image", "barChartH", "barChartV"].includes(block.type) && (
+                            <div className="pointer-events-none absolute inset-0 -z-10 rounded-[12px] bg-(--active-bg)" />
                         )}
                 </tw.InputWrap>
             </tw.BlockWrap>

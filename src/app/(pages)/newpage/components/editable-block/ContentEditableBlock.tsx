@@ -761,11 +761,11 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             );
         }
         case "divider":
-            return <div className={`h-[2px] my-1.5 w-full rounded bg-(--border)`} />;
+            return <div className={`h-[2px] my-1.5 w-full rounded bg-[#d0cfca]`} />;
         case "image":
             return <ImageBlock id={id} content={content} />;
         case "table":
-            return <TableBlock id={id} content={content} />;
+            return <TableBlock id={id} content={content} selected={selected} />;
         case "code":
             return <CodeBlock id={id} content={content} selected={selected} />;
         case "barChartH":
