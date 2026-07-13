@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
+import { useScrollLock } from "../../hooks/useScrollLock";
 
 interface CategoryPickerProps {
     open: boolean;
@@ -14,6 +15,7 @@ interface CategoryPickerProps {
 // 카테고리 선택기: 기존 목록에서 검색/선택하거나 새로 입력해 추가.
 export default function CategoryPicker({ open, position, current, options, onSelect, onClose }: CategoryPickerProps) {
     const [q, setQ] = useState("");
+    useScrollLock(open); // 열려있는 동안 페이지 스크롤 잠금(스크롤바 유지)
     const panelRef = useRef<HTMLDivElement>(null);
     // 화면 아래로 넘치면 위로 뒤집어(트리거 위로) 잘리지 않게
     const [top, setTop] = useState(position?.top ?? 0);
@@ -55,7 +57,7 @@ export default function CategoryPicker({ open, position, current, options, onSel
                         if (e.key === "Enter" && query) pick(query);
                     }}
                 />
-                <div className="flex-1 overflow-y-auto">
+                <div data-scroll-allow className="flex-1 overflow-y-auto">
                     {current && (
                         <button
                             className="flex w-full items-center justify-between rounded-[6px] px-[8px] py-[6px] text-left text-[14px] text-(--text-muted) hover:bg-(--menu-hover-bg)"

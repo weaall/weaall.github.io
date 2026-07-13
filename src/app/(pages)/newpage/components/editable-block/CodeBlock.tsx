@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import hljs from "highlight.js";
 import { canFormat, formatCode } from "../../lib/formatCode";
 import { usePopupDirection } from "../../hooks/usePopupDirection";
+import { useScrollLock } from "../../hooks/useScrollLock";
 
 // 노션풍 코드 블록(에디터). 왼쪽 줄번호 거터 + 투명 textarea + 뒤 hljs 색칠 오버레이.
 // 긴 줄은 자동 줄바꿈(가로 스크롤 없음), 줄번호는 각 논리 줄 상단에 정렬. 높이는 내용만큼 자동.
@@ -191,6 +192,7 @@ export default function CodeBlock({ id, content }: { id: string; content: string
     const badge = lang === "auto" ? (detected ? `auto · ${displayName(detected)}` : "auto") : displayName(lang);
     const gutterW = Math.max(28, String(lineHtml.length).length * 9 + 16);
     const dropDir = usePopupDirection(langOpen, langWrapRef, 380); // 아래 공간 부족하면 위로
+    useScrollLock(langOpen); // 언어 드롭다운 열려있는 동안 페이지 스크롤 잠금
 
 
 
@@ -225,7 +227,7 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                                             className="editor-field h-7 w-full rounded-md bg-(--hover-bg) px-2.5 text-[13px] outline-none placeholder:text-(--text-muted)"
                                         />
                                     </div>
-                                    <div className="overflow-y-auto px-1 pb-1">
+                                    <div data-scroll-allow className="overflow-y-auto px-1 pb-1">
                                         {filtered.map((l) => (
                                             <button
                                                 key={l}

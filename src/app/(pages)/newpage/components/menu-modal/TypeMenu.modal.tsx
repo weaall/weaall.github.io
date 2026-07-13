@@ -2,6 +2,7 @@ import { ColorPainterIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@
 import * as tw from "./TypeMenu.modal.styles";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { TypeMenuElement } from "./TypeElement";
+import { useScrollLock } from "../../hooks/useScrollLock";
 
 interface TypeMenuModalProps {
     open: boolean;
@@ -42,6 +43,8 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
     }, [open, onDeleteBlock]);
     const [showDrawer, setShowDrawer] = useState<"전환" | "색" | null>(null);
     const [deleteHover, setDeleteHover] = useState(false);
+
+    useScrollLock(open); // 메뉴 열려있는 동안 페이지 스크롤 잠금(스크롤바는 유지)
 
     // 드로워가 열리면 팝업이 길어져 화면 아래로 넘칠 수 있다 → 넘치면 위로 올려 옵션이 안 잘리게.
     const rootRef = useRef<HTMLDivElement>(null);
@@ -136,7 +139,7 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                 </tw.Menu>
                 {/* 전환 드로워 */}
                 {showDrawer === "전환" && (
-                    <tw.DrawerMenu onMouseEnter={() => setShowDrawer("전환")} onMouseLeave={handleDrawerMouseLeave}>
+                    <tw.DrawerMenu data-scroll-allow onMouseEnter={() => setShowDrawer("전환")} onMouseLeave={handleDrawerMouseLeave}>
                         {elements.map((el, i) =>
                             "divider" in el ? (
                                 <hr key={`divider-${i}`} className="my-1 border-0 border-t border-(--border)" />
@@ -153,7 +156,7 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                 )}
                 {/* 색 드로워 */}
                 {showDrawer === "색" && (
-                    <tw.DrawerMenu onMouseEnter={() => setShowDrawer("색")} onMouseLeave={handleDrawerMouseLeave}>
+                    <tw.DrawerMenu data-scroll-allow onMouseEnter={() => setShowDrawer("색")} onMouseLeave={handleDrawerMouseLeave}>
                         <tw.Label>텍스트 색상</tw.Label>
                         {TEXT_COLORS.map(({ color, label }) => (
                             <tw.MenuButton
