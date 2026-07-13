@@ -56,7 +56,7 @@ export default function DataTable({ data }: { data?: string }) {
     if (!rows.length) return null;
 
     return (
-        <div className="my-2 w-fit max-w-full overflow-x-auto">
+        <div className="my-4 mx-auto w-fit max-w-full overflow-x-auto px-1 py-1">
             <table className="border-collapse">
                 <tbody>
                     {rows.map((row, r) => (
