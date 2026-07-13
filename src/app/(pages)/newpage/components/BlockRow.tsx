@@ -208,7 +208,7 @@ export default function BlockRow({
                     {selected &&
                         draggingIdx === null &&
                         ["table", "image", "barChartH", "barChartV"].includes(block.type) && (
-                            <div className="pointer-events-none absolute inset-0 z-[15] rounded-[10px]" style={{ background: "rgba(35,131,226,0.18)" }} />
+                            <div className="pointer-events-none absolute inset-0 z-[15] rounded-[10px]" style={{ background: "rgba(35,131,226,0.3)" }} />
                         )}
                 </tw.InputWrap>
             </tw.BlockWrap>
