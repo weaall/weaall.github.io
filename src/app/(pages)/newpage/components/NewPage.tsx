@@ -1099,20 +1099,19 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                 )}
                             </div>
                         )}
-                        {/* 페이지 아이콘 (커버 없을 때 위에 크게) */}
-                        {meta.icon && !meta.imageUrl && (
-                            <button
-                                className="mb-1 flex h-[64px] w-[64px] items-center justify-center rounded-[8px] p-[4px] hover:bg-(--hover-bg)"
-                                onClick={(e) => {
-                                    const r = e.currentTarget.getBoundingClientRect();
-                                    setIconPicker({ top: r.bottom + 6, left: r.left });
-                                }}
-                            >
-                                <PageIcon icon={meta.icon} size={56} />
-                            </button>
-                        )}
-                        {/* 컨트롤 행: 카테고리 칩 + (호버 시) 아이콘/카테고리 추가 */}
-                        <div className="mb-1 flex min-h-[26px] items-center gap-1">
+                        {/* 컨트롤 행: (커버 없을 때) 아이콘 + 카테고리 칩 한 줄 + (호버 시) 추가 버튼들 */}
+                        <div className="mb-1 flex min-h-[26px] flex-wrap items-center gap-2">
+                            {meta.icon && !meta.imageUrl && (
+                                <button
+                                    className="flex h-[52px] w-[52px] items-center justify-center rounded-[8px] p-[4px] hover:bg-(--hover-bg)"
+                                    onClick={(e) => {
+                                        const r = e.currentTarget.getBoundingClientRect();
+                                        setIconPicker({ top: r.bottom + 6, left: r.left });
+                                    }}
+                                >
+                                    <PageIcon icon={meta.icon} size={44} />
+                                </button>
+                            )}
                             {meta.label && (
                                 <button
                                     className="flex items-center gap-1 rounded-[6px] bg-(--hover-bg) px-2 py-1 text-xs font-medium text-(--text-muted) hover:bg-(--menu-hover-bg)"
