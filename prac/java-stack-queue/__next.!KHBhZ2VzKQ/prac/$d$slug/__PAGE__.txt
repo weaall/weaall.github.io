@@ -1,0 +1,55 @@
+1:"$Sreact.fragment"
+2:I[44649,["/_next/static/chunks/1tfx2920p1ijr.js","/_next/static/chunks/0jubty45h__ir.js","/_next/static/chunks/2b0mblx_b1dn6.js","/_next/static/chunks/2t_ohkwjg0nnl.js"],"H2"]
+3:I[44649,["/_next/static/chunks/1tfx2920p1ijr.js","/_next/static/chunks/0jubty45h__ir.js","/_next/static/chunks/2b0mblx_b1dn6.js","/_next/static/chunks/2t_ohkwjg0nnl.js"],"Pre"]
+4:I[44649,["/_next/static/chunks/1tfx2920p1ijr.js","/_next/static/chunks/0jubty45h__ir.js","/_next/static/chunks/2b0mblx_b1dn6.js","/_next/static/chunks/2t_ohkwjg0nnl.js"],"Code"]
+6:I[44649,["/_next/static/chunks/1tfx2920p1ijr.js","/_next/static/chunks/0jubty45h__ir.js","/_next/static/chunks/2b0mblx_b1dn6.js","/_next/static/chunks/2t_ohkwjg0nnl.js"],"Hr"]
+10:I[97367,["/_next/static/chunks/1tfx2920p1ijr.js","/_next/static/chunks/0jubty45h__ir.js","/_next/static/chunks/2b0mblx_b1dn6.js"],"OutletBoundary"]
+11:"$Sreact.suspense"
+5:T583,import java.util.*;
+
+class Solution {
+    public int solution(int[] priorities, int location) {
+        int answer = 0; // 인쇄된 문서 수를 저장할 변수
+        int l = location; // 관심 있는 문서의 현재 위치
+
+        // 큐 초기화
+        Queue<Integer> que = new LinkedList<>();
+        for(int i : priorities){
+            que.add(i);
+        }
+
+        // 우선순위 배열을 정렬하여 높은 순서대로 정렬
+        Arrays.sort(priorities);
+        int size = priorities.length - 1; // 가장 높은 우선순위의 인덱스
+
+        // 큐가 빌 때까지 반복
+        while(!que.isEmpty()){
+            Integer i = que.poll(); // 큐의 첫 번째 요소를 꺼냄
+            if(i == priorities[size - answer]){ // 현재 우선순위가 가장 높은 문서와 비교
+                answer++; // 인쇄된 문서 수 증가
+                l--; // 관심 있는 문서의 위치 감소
+                if(l < 0)
+                    break; // 관심 있는 문서가 인쇄된 경우 루프 종료
+            } else {
+                que.add(i); // 문서를 큐의 뒤로 다시 추가
+                l--; // 관심 있는 문서의 위치 감소
+                if(l < 0)
+                    l = que.size() - 1; // 문서가 큐의 끝으로 이동
+            }
+        }
+
+        return answer; // 결과 반환
+    }
+}
+
+0:{"rsc":["$","$1","c",{"children":[[["$","script",null,{"type":"application/ld+json","dangerouslySetInnerHTML":{"__html":"{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"author\":{\"@type\":\"Person\",\"name\":\"weaall\",\"email\":\"weaall88@gmail.com\",\"url\":\"https://weaall.github.io\",\"nationality\":{\"@type\":\"Country\",\"name\":\"South Korea\"}},\"publisher\":{\"@type\":\"Organization\",\"name\":\"WeHub\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://weaall.github.io/assets/weaall-ui.png\"}},\"image\":\"https://weaall.github.io/assets/weaall-ui.png\",\"description\":\"Stack, Queue, Heap\",\"headline\":\"Java) Stack, Queue, Heap 활용하기\",\"datePublished\":\"2023-12-31T15:00:00.000Z\",\"inLanguage\":\"ko\",\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://weaall.github.io/prac/java-stack-queue\"}}"}}],["$","div",null,{"children":["$","div",null,{"children":[["$","h1",null,{"children":"Java) Stack, Queue, Heap 활용하기","style":{},"className":"text-[40px] font-bold pt-[11px] px-[2px] pb-[4px] text-(--text) relative w-full"}],["$","p",null,{"children":"Stack, Queue, Heap","style":{},"className":"text-lg pb-2"}],["$","div",null,{"children":[["$","div","0",{"children":"java","style":{},"className":"mt-1 text-xs bg-t-main px-3 py-1.5 rounded-full cursor-pointer"}],["$","div","1",{"children":"Stack","style":{},"className":"mt-1 text-xs bg-t-main px-3 py-1.5 rounded-full cursor-pointer"}],["$","div","2",{"children":"Queue","style":{},"className":"mt-1 text-xs bg-t-main px-3 py-1.5 rounded-full cursor-pointer"}],["$","div","3",{"children":"Heap","style":{},"className":"mt-1 text-xs bg-t-main px-3 py-1.5 rounded-full cursor-pointer"}],["$","div","4",{"children":"LinkedList","style":{},"className":"mt-1 text-xs bg-t-main px-3 py-1.5 rounded-full cursor-pointer"}]],"style":{},"className":"flex space-x-3 h-auto text-black font-medium"}]],"style":{},"className":"pb-8 space-y-3 border-b"}],"style":{},"className":"text-(--text) mb-8"}],[["$","$L2",null,{"children":"Queue 활용"}],"\n",["$","$L3",null,{"children":["$","$L4",null,{"className":"language-java","children":"$5"}]}],"\n",["$","$L6",null,{}],"\n",["$","$L2",null,{"children":"Stack 활용"}],"\n",["$","$L3",null,{"children":["$","$L4",null,{"className":"language-java","children":"import java.util.*;\r\n\r\nclass Solution {\r\n    public int[] solution(int[] prices) {\r\n        int n = prices.length;  // 주식 가격 배열의 길이\r\n        int[] answer = new int[n];  // 결과를 저장할 배열\r\n        Stack<Integer> stack = new Stack<>();  // 인덱스를 저장할 스택\r\n\r\n        // 주식 가격 배열을 순회\r\n        for (int i = 0; i < n; i++) {\r\n            // 현재 가격이 스택에 저장된 가격보다 낮아지는 시점을 찾기\r\n            while (!stack.isEmpty() && prices[stack.peek()] > prices[i]) {\r\n                int j = stack.pop();  // 스택에서 인덱스를 꺼냄\r\n                answer[j] = i - j;  // 가격이 떨어진 시점까지의 기간 계산\r\n            }\r\n            stack.push(i);  // 현재 인덱스를 스택에 추가\r\n        }\r\n\r\n        // 순회가 끝난 후에도 스택에 남아있는 인덱스 처리\r\n        while (!stack.isEmpty()) {\r\n            int j = stack.pop();  // 스택에서 인덱스를 꺼냄\r\n            answer[j] = n - 1 - j;  // 끝까지 가격이 떨어지지 않은 기간 계산\r\n        }\r\n\r\n        return answer;  // 결과 배열 반환\r\n    }\r\n}\r\n\n"}]}],"\n","$L7","\n","$L8","\n","$L9","\n","$La","\n","$Lb","\n","$Lc","\n","$Ld"]],["$Le"],"$Lf"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"_1qpvxs0F1csUx_C0NKNe"}
+7:["$","$L6",null,{}]
+8:["$","$L2",null,{"children":"PriorityQueue 활용"}]
+9:["$","$L3",null,{"children":["$","$L4",null,{"className":"language-java","children":"import java.util.*;\r\n\r\nclass Solution {\r\n    public int solution(int[] scoville, int K) {\r\n        int answer = 0;\r\n        \r\n        PriorityQueue<Integer> minHeap = new PriorityQueue<>();\r\n        \r\n        for(int s : scoville){\r\n            minHeap.add(s);\r\n        }\r\n        \r\n       while(minHeap.size() > 1 && minHeap.peek() < K) {\r\n            int firstMin = minHeap.poll(); // 가장 작은 요소 꺼내기\r\n            int secondMin = minHeap.poll(); // 두 번째로 작은 요소 꺼내기\r\n            \r\n            int newScoville = firstMin + (secondMin * 2); // 새로운 스코빌 지수 계산\r\n            minHeap.add(newScoville); // 계산된 새로운 스코빌 지수를 힙에 추가\r\n            answer++; // 섞은 횟수 증가\r\n        }\r\n        \r\n        if(minHeap.peek() < K) {\r\n            return -1;\r\n        }\r\n        \r\n        return answer;\r\n    }\r\n}\n"}]}]
+a:["$","$L6",null,{}]
+b:["$","$L2",null,{"children":"PriorityQueue +"}]
+c:["$","$L3",null,{"children":["$","$L4",null,{"className":"language-java","children":"import java.util.*;\r\n\r\nclass Solution {\r\n    public int solution(int[] scoville, int K) {\r\n        int answer = 0;\r\n        \r\n        PriorityQueue<Integer> minHeap = new PriorityQueue<>();\r\n        \r\n        for(int s : scoville){\r\n            minHeap.add(s);\r\n        }\r\n        \r\n       while(minHeap.size() > 1 && minHeap.peek() < K) {\r\n            int firstMin = minHeap.poll(); // 가장 작은 요소 꺼내기\r\n            int secondMin = minHeap.poll(); // 두 번째로 작은 요소 꺼내기\r\n            \r\n            int newScoville = firstMin + (secondMin * 2); // 새로운 스코빌 지수 계산\r\n            minHeap.add(newScoville); // 계산된 새로운 스코빌 지수를 힙에 추가\r\n            answer++; // 섞은 횟수 증가\r\n        }\r\n        \r\n        if(minHeap.peek() < K) {\r\n            return -1;\r\n        }\r\n        \r\n        return answer;\r\n    }\r\n}\n"}]}]
+d:["$","$L6",null,{}]
+e:["$","script","script-0",{"src":"/_next/static/chunks/2t_ohkwjg0nnl.js","async":true}]
+f:["$","$L10",null,{"children":["$","$11",null,{"name":"Next.MetadataOutlet","children":"$@12"}]}]
+12:null
