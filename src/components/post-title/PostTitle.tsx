@@ -6,29 +6,44 @@ export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatte
     const hasCover = frontmatter.imageUrl && frontmatter.imageUrl !== "none";
     // 커버가 data URL(webp)이면 그대로, 아니면 기존처럼 상대경로
     const coverSrc = frontmatter.imageUrl?.startsWith("data:") ? frontmatter.imageUrl : `../../${frontmatter.imageUrl}`;
+    const label = frontmatter.label && frontmatter.label !== "none" ? frontmatter.label : "";
+
+    const CategoryChip = () =>
+        label ? (
+            <span className="flex items-center gap-1 rounded-[6px] bg-(--hover-bg) px-2 py-1 text-xs font-medium text-(--text-muted)">📁 {label}</span>
+        ) : null;
 
     return (
         <>
             <tw.Container>
                 {hasCover ? (
-                    <div className="relative mb-8">
-                        <tw.ImgWrap>
-                            <tw.Img alt={frontmatter.title} src={coverSrc}></tw.Img>
-                        </tw.ImgWrap>
-                        {frontmatter.icon && (
-                            // 하드한 박스 대신, 흰색이 가장자리로 점점 흐려지는 글로우 위에 아이콘
-                            <div
-                                className="absolute -bottom-5 left-1 flex h-[72px] w-[72px] items-center justify-center"
-                                style={{ background: "radial-gradient(closest-side, rgba(255,255,255,0.95) 55%, rgba(255,255,255,0) 100%)" }}
-                            >
-                                <PageIcon icon={frontmatter.icon} size={56} />
+                    <>
+                        <div className="relative mb-8">
+                            <tw.ImgWrap>
+                                <tw.Img alt={frontmatter.title} src={coverSrc}></tw.Img>
+                            </tw.ImgWrap>
+                            {frontmatter.icon && (
+                                // 하드한 박스 대신, 흰색이 가장자리로 점점 흐려지는 글로우 위에 아이콘
+                                <div
+                                    className="absolute -bottom-5 left-1 flex h-[72px] w-[72px] items-center justify-center"
+                                    style={{ background: "radial-gradient(closest-side, rgba(255,255,255,0.95) 55%, rgba(255,255,255,0) 100%)" }}
+                                >
+                                    <PageIcon icon={frontmatter.icon} size={56} />
+                                </div>
+                            )}
+                        </div>
+                        {label && (
+                            <div className="mb-1">
+                                <CategoryChip />
                             </div>
                         )}
-                    </div>
+                    </>
                 ) : (
-                    frontmatter.icon && (
-                        <div className="mb-1">
-                            <PageIcon icon={frontmatter.icon} size={56} />
+                    // 커버 없을 때: 아이콘 + 카테고리 한 줄 (에디터와 동일)
+                    (frontmatter.icon || label) && (
+                        <div className="mb-1 flex items-center gap-2">
+                            {frontmatter.icon && <PageIcon icon={frontmatter.icon} size={44} />}
+                            <CategoryChip />
                         </div>
                     )
                 )}
