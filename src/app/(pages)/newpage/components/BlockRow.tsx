@@ -201,11 +201,13 @@ export default function BlockRow({
                         onFormattedRangesChange={(ranges) => onFormattedRangesChange(idx, ranges)}
                         collapsed={block.collapsed}
                         onToggleCollapse={() => onToggleCollapse(block.id)}
+                        selected={selected}
                     />
-                    {/* 코드/표/이미지/차트는 자체 배경이 불투명이라 뒤의 선택색이 안 보인다 → 위에 반투명 파란 오버레이 */}
+                    {/* 표/이미지/차트는 자체 배경이 불투명이라 뒤의 선택색이 안 보인다 → 위에 반투명 파란 오버레이.
+                        코드는 CodeBlock이 박스 배경 자체를 선택색으로 바꾸므로 오버레이 제외. */}
                     {selected &&
                         draggingIdx === null &&
-                        ["code", "table", "image", "barChartH", "barChartV"].includes(block.type) && (
+                        ["table", "image", "barChartH", "barChartV"].includes(block.type) && (
                             <div className="pointer-events-none absolute inset-0 z-[15] rounded-[10px]" style={{ background: "rgba(35,131,226,0.18)" }} />
                         )}
                 </tw.InputWrap>

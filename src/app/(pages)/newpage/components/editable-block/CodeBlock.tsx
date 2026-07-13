@@ -70,7 +70,7 @@ function splitHljsLines(html: string): string[] {
     });
 }
 
-export default function CodeBlock({ id, content }: { id: string; content: string }) {
+export default function CodeBlock({ id, content, selected }: { id: string; content: string; selected?: boolean }) {
     const initial = parseCode(content);
     const [code, setCode] = useState(initial.code);
     const [lang, setLang] = useState(initial.lang || "auto");
@@ -182,8 +182,8 @@ export default function CodeBlock({ id, content }: { id: string; content: string
 
     return (
         <div data-block-id={id} className="code-block group/code relative my-1">
-            {/* 노션풍 코드 박스: 부드러운 회색 배경 + 라운드 + 넉넉한 패딩 */}
-            <div className="relative rounded-[10px] bg-[#f7f6f3]" style={{ padding: "18px 20px" }}>
+            {/* 노션풍 코드 박스: 부드러운 회색 배경 + 라운드 + 넉넉한 패딩. 선택되면 박스 전체가 선택색으로 */}
+            <div className="relative rounded-[10px]" style={{ padding: "18px 20px", background: selected ? "var(--active-bg)" : "#f7f6f3" }}>
                 {/* 우측 상단 작업 툴바(노션풍): 언어 드롭다운 | 포맷 | 복사 — hover 시 표시(드롭다운 열려있으면 계속 표시) */}
                 <div className={`absolute right-1 top-1 z-20 transition-opacity duration-200 ${langOpen ? "opacity-100" : "opacity-0 group-hover/code:opacity-100"}`}>
                     <div className="flex items-center rounded-md border border-(--border) bg-(--page-bg) p-[2px] shadow-md">
