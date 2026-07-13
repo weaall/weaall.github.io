@@ -1,6 +1,6 @@
 import { ColorPainterIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
 import * as tw from "./TypeMenu.modal.styles";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { TypeMenuElement } from "./TypeElement";
 import { useScrollLock } from "../../hooks/useScrollLock";
 
@@ -45,6 +45,22 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
     const [deleteHover, setDeleteHover] = useState(false);
 
     useScrollLock(open); // 메뉴 열려있는 동안 페이지 스크롤 잠금(스크롤바는 유지)
+
+    // 드로워는 기본 아래로(top-0) 펼쳐지는데, 아래 공간이 부족하면 위로 올려 안 잘리게.
+    // 메뉴는 버튼 옆에 그대로 두고 "드로워"만 세로 오프셋을 준다.
+    const drawerRef = useRef<HTMLDivElement>(null);
+    const [drawerTop, setDrawerTop] = useState(0);
+    useLayoutEffect(() => {
+        if (!showDrawer || !position) {
+            setDrawerTop(0);
+            return;
+        }
+        const h = drawerRef.current?.offsetHeight ?? 0;
+        const margin = 8;
+        const overflow = position.top + h + margin - window.innerHeight;
+        // 아래로 넘치면 그만큼(단, 위로도 화면 밖으로 안 나가게) 위로 끌어올림
+        setDrawerTop(overflow > 0 ? -Math.min(overflow, Math.max(0, position.top - margin)) : 0);
+    }, [showDrawer, position]);
 
     const handleMenuButtonMouseEnter = (type: string) => {
         if (type === "전환" || type === "색") {
@@ -129,7 +145,7 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                 </tw.Menu>
                 {/* 전환 드로워 */}
                 {showDrawer === "전환" && (
-                    <tw.DrawerMenu data-scroll-allow onMouseEnter={() => setShowDrawer("전환")} onMouseLeave={handleDrawerMouseLeave}>
+                    <tw.DrawerMenu ref={drawerRef} data-scroll-allow style={{ top: drawerTop }} onMouseEnter={() => setShowDrawer("전환")} onMouseLeave={handleDrawerMouseLeave}>
                         {elements.map((el, i) =>
                             "divider" in el ? (
                                 <hr key={`divider-${i}`} className="my-1 border-0 border-t border-(--border)" />
@@ -146,7 +162,7 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                 )}
                 {/* 색 드로워 */}
                 {showDrawer === "색" && (
-                    <tw.DrawerMenu data-scroll-allow onMouseEnter={() => setShowDrawer("색")} onMouseLeave={handleDrawerMouseLeave}>
+                    <tw.DrawerMenu ref={drawerRef} data-scroll-allow style={{ top: drawerTop }} onMouseEnter={() => setShowDrawer("색")} onMouseLeave={handleDrawerMouseLeave}>
                         <tw.Label>텍스트 색상</tw.Label>
                         {TEXT_COLORS.map(({ color, label }) => (
                             <tw.MenuButton
