@@ -522,6 +522,34 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             }
             return container.childElementCount ? container : null;
         },
+        // Alt/Ctrl+드래그 복사: 원본 유지 + 새 id로 복제(색/서식 함께 복제)해 드롭 위치에 삽입
+        (rangeStart, count, dropIdx) => {
+            const src = blocksRef.current.slice(rangeStart, rangeStart + count);
+            if (!src.length) return;
+            const idMap: Record<string, string> = {};
+            const copies = src.map((b) => {
+                const nid = crypto.randomUUID();
+                idMap[b.id] = nid;
+                return { ...b, id: nid };
+            });
+            const at = Math.min(Math.max(0, dropIdx), blocksRef.current.length);
+            setBlocks((prev) => {
+                const arr = [...prev];
+                arr.splice(at, 0, ...copies);
+                return arr;
+            });
+            setBlockColors((prev) => {
+                const n = { ...prev };
+                for (const oid in idMap) if (prev[oid]) n[idMap[oid]] = prev[oid];
+                return n;
+            });
+            setBlockFormattedRanges((prev) => {
+                const n = { ...prev };
+                for (const oid in idMap) if (prev[oid]) n[idMap[oid]] = prev[oid];
+                return n;
+            });
+            setSelRange({ a: at, b: at + count - 1 });
+        },
     );
 
     const getListNumber = (currentIndex: number): number => {

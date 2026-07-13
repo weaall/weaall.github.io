@@ -115,8 +115,12 @@ function BarsH({ items }: { items: ChartRow[] }) {
                         </div>
                         <div className="relative flex-1">
                             <div
-                                className="h-5 rounded-md transition-[width] duration-300"
-                                style={{ width: `${(r.value / niceMax) * 100}%`, minWidth: 2, background: r.color || colorAt(i) }}
+                                className="h-5 rounded-lg transition-[width] duration-300"
+                                style={{
+                                    width: `${(r.value / niceMax) * 100}%`,
+                                    minWidth: 4,
+                                    background: `linear-gradient(90deg, ${r.color || colorAt(i)} 0%, ${(r.color || colorAt(i)) + "b3"} 100%)`,
+                                }}
                             />
                             <span className="absolute top-1/2 -translate-y-1/2 pl-1.5 text-xs font-semibold text-(--text-muted)" style={{ left: `${(r.value / niceMax) * 100}%` }}>
                                 {r.value}
@@ -156,7 +160,14 @@ function BarsV({ items }: { items: ChartRow[] }) {
                     {items.map((r, i) => (
                         <div key={i} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1.5">
                             <div className="text-xs font-semibold text-(--text-muted)">{r.value}</div>
-                            <div className="w-full max-w-[48px] rounded-t-md transition-[height] duration-300" style={{ height: `${(r.value / niceMax) * 100}%`, minHeight: 2, background: r.color || colorAt(i) }} />
+                            <div
+                                className="w-full max-w-[48px] rounded-lg transition-[height] duration-300"
+                                style={{
+                                    height: `${(r.value / niceMax) * 100}%`,
+                                    minHeight: 4,
+                                    background: `linear-gradient(180deg, ${r.color || colorAt(i)} 0%, ${(r.color || colorAt(i)) + "b3"} 100%)`,
+                                }}
+                            />
                         </div>
                     ))}
                 </div>

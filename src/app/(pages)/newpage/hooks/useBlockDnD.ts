@@ -15,9 +15,12 @@ export function useBlockDnD(
     getSelection?: () => { min: number; max: number } | null,
     onDropped?: (targetIdx: number, count: number) => void,
     buildDragImage?: (fromIdx: number) => HTMLElement | null,
+    // Alt/Ctrl 누르고 드래그하면 이동 대신 복제(복사). 색/서식까지 복제하려고 상위에 위임.
+    onCopy?: (rangeStart: number, count: number, dropIdx: number) => void,
 ) {
     const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
     const [insertLineIdx, setInsertLineIdx] = useState<number | null>(null);
+    const copyModeRef = useRef(false);
 
     // 커서를 따라다니는 커스텀 미리보기 요소 + 이동 핸들러(정리를 위해 ref 보관)
     const previewRef = useRef<HTMLElement | null>(null);
@@ -55,7 +58,8 @@ export function useBlockDnD(
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>, idx: number) => {
         e.stopPropagation();
         setDraggingIdx(idx);
-        e.dataTransfer.effectAllowed = "move";
+        copyModeRef.current = e.altKey || e.ctrlKey || e.metaKey; // 복사 모드
+        e.dataTransfer.effectAllowed = "copyMove";
         e.dataTransfer.setData("text/plain", `${idx}`);
 
         // 네이티브 드래그 이미지를 투명 1px로 숨긴다(브라우저가 항상 최상단에 그려 z-order 제어 불가).
@@ -119,6 +123,16 @@ export function useBlockDnD(
             const rangeStart = inSel ? sel!.min : fromIdx;
             const rangeEnd = inSel ? sel!.max : fromIdx;
             const count = rangeEnd - rangeStart + 1;
+
+            // 복사 모드(Alt/Ctrl+드래그): 원본은 두고 복제본을 드롭 위치에 삽입(상위가 색/서식까지 복제)
+            if (copyModeRef.current && onCopy) {
+                onCopy(rangeStart, count, dropIdx);
+                copyModeRef.current = false;
+                teardownPreview();
+                setDraggingIdx(null);
+                setInsertLineIdx(null);
+                return;
+            }
 
             // 삽입 위치 보정(순수 계산): 제거된 블록이 드롭지점 앞에 있었으면 그만큼 당김
             let targetIdx: number;
