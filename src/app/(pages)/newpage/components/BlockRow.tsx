@@ -159,7 +159,11 @@ export default function BlockRow({
                 <tw.InputWrap
                     className={selected || menuId === block.id ? "bg-(--active-bg)" : ""}
                     style={{ marginLeft: block.indentationLevel * 25 }}
-                    onMouseDown={onClearSelection}
+                    // 선택된 블록은 본문을 잡아도 드래그(그룹 이동) + 누르기로 선택 해제 안 함
+                    draggable={selected}
+                    onDragStart={selected ? (e: React.DragEvent<HTMLDivElement>) => onDragStart(e, idx) : undefined}
+                    onDragEnd={selected ? onDragEnd : undefined}
+                    onMouseDown={selected ? undefined : onClearSelection}
                     onMouseEnter={() => setHoverId(block.id)}
                     onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
                         const related = e.relatedTarget as HTMLElement | null;
