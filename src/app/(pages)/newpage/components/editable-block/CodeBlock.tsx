@@ -117,6 +117,17 @@ export default function CodeBlock({ id, content }: { id: string; content: string
     const detectLang = (src: string) => (lang !== "auto" ? lang : hljs.highlightAuto(src).language || "");
     const effectiveLang = lang !== "auto" ? lang : detected;
     const [formatting, setFormatting] = useState(false);
+    const [copied, setCopied] = useState(false);
+
+    const copyCode = async () => {
+        try {
+            await navigator.clipboard.writeText(code);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1200);
+        } catch {
+            /* 클립보드 접근 불가 무시 */
+        }
+    };
 
     // Prettier 포맷 실행(지원 언어만). 성공 시 코드 교체.
     const runFormat = async (src: string) => {
@@ -171,60 +182,92 @@ export default function CodeBlock({ id, content }: { id: string; content: string
     const gutterW = Math.max(28, String(lineHtml.length).length * 9 + 16);
 
     return (
-        <div data-block-id={id} className="code-block relative my-1">
-            {/* 언어 선택기 + 포맷 버튼: 코드 박스 바깥(위, 우측) */}
-            <div ref={langWrapRef} className="relative z-10 mb-1 flex justify-end gap-1">
-                {canFormat(effectiveLang) && (
-                    <button
-                        type="button"
-                        onClick={() => runFormat(code)}
-                        disabled={formatting}
-                        className="rounded-md border border-(--border) bg-(--page-bg) px-2 py-1 font-mono text-[11px] text-(--text-muted) hover:bg-(--menu-hover-bg) disabled:opacity-50"
-                        title="Prettier로 코드 정렬"
-                    >
-                        {formatting ? "정렬 중…" : "포맷"}
-                    </button>
-                )}
-                <button
-                    type="button"
-                    onClick={() => setLangOpen((o) => !o)}
-                    className="rounded-md border border-(--border) bg-(--page-bg) px-2 py-1 font-mono text-[11px] lowercase text-(--text-muted) hover:bg-(--menu-hover-bg)"
-                >
-                    {badge} ▾
-                </button>
-                {langOpen && (
-                    <div className="absolute right-0 top-[calc(100%+4px)] max-h-60 w-40 overflow-y-auto rounded-lg border border-(--border) bg-(--page-bg) py-1 shadow-lg">
-                        <input
-                            autoFocus
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder="언어 검색"
-                            className="mx-1 mb-1 w-[calc(100%-8px)] rounded-sm border border-(--border) px-2 py-1 text-[12px] outline-none"
-                        />
-                        {filtered.map((l) => (
-                            <button
-                                key={l}
-                                type="button"
-                                onClick={() => {
-                                    setLang(l);
-                                    setLangOpen(false);
-                                    setQuery("");
-                                    persist(code, l);
-                                }}
-                                className={`block w-full px-3 py-1 text-left font-mono text-[12px] lowercase hover:bg-(--menu-hover-bg) ${
-                                    l === lang ? "text-(--text) font-semibold" : "text-(--text-muted)"
-                                }`}
-                            >
-                                {l}
-                            </button>
-                        ))}
-                        {!filtered.length && <div className="px-3 py-1 text-[12px] text-(--text-muted)">결과 없음</div>}
-                    </div>
-                )}
-            </div>
-
+        <div data-block-id={id} className="code-block group/code relative my-1">
             {/* 노션풍 코드 박스: 부드러운 회색 배경 + 라운드 + 넉넉한 패딩 */}
-            <div className="overflow-hidden rounded-[10px] bg-[#f7f6f3]" style={{ padding: "18px 20px" }}>
+            <div className="relative rounded-[10px] bg-[#f7f6f3]" style={{ padding: "18px 20px" }}>
+                {/* 우측 상단 작업 툴바(노션풍): 언어 드롭다운 | 포맷 | 복사 — hover 시 표시 */}
+                <div className="absolute right-1 top-1 z-20 opacity-0 transition-opacity duration-200 group-hover/code:opacity-100">
+                    <div className="flex items-center rounded-md border border-(--border) bg-(--page-bg) p-[2px] shadow-md">
+                        {/* 언어 드롭다운 */}
+                        <div ref={langWrapRef} className="relative">
+                            <button
+                                type="button"
+                                onClick={() => setLangOpen((o) => !o)}
+                                aria-label="언어 선택"
+                                className="flex items-center gap-1 rounded-sm px-2 py-1 text-[12px] text-(--text) hover:bg-(--menu-hover-bg)"
+                            >
+                                {badge}
+                                <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" aria-hidden className="text-(--text-muted)">
+                                    <path d="m12.76 6.52-4.32 4.32a.62.62 0 0 1-.44.18.62.62 0 0 1-.44-.18L3.24 6.52a.63.63 0 0 1 0-.88c.24-.24.64-.24.88 0L8 9.52l3.88-3.88c.24-.24.64-.24.88 0s.24.64 0 .88" />
+                                </svg>
+                            </button>
+                            {langOpen && (
+                                <div className="absolute right-0 top-[calc(100%+4px)] max-h-60 w-40 overflow-y-auto rounded-lg border border-(--border) bg-(--page-bg) py-1 shadow-lg">
+                                    <input
+                                        autoFocus
+                                        value={query}
+                                        onChange={(e) => setQuery(e.target.value)}
+                                        placeholder="언어 검색"
+                                        className="mx-1 mb-1 w-[calc(100%-8px)] rounded-sm border border-(--border) px-2 py-1 text-[12px] outline-none"
+                                    />
+                                    {filtered.map((l) => (
+                                        <button
+                                            key={l}
+                                            type="button"
+                                            onClick={() => {
+                                                setLang(l);
+                                                setLangOpen(false);
+                                                setQuery("");
+                                                persist(code, l);
+                                            }}
+                                            className={`block w-full px-3 py-1 text-left font-mono text-[12px] lowercase hover:bg-(--menu-hover-bg) ${
+                                                l === lang ? "text-(--text) font-semibold" : "text-(--text-muted)"
+                                            }`}
+                                        >
+                                            {l}
+                                        </button>
+                                    ))}
+                                    {!filtered.length && <div className="px-3 py-1 text-[12px] text-(--text-muted)">결과 없음</div>}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="mx-1 h-4 w-px shrink-0 rounded bg-(--border)" />
+
+                        {/* 포맷(Prettier 지원 언어만) */}
+                        {canFormat(effectiveLang) && (
+                            <button
+                                type="button"
+                                onClick={() => runFormat(code)}
+                                disabled={formatting}
+                                className="rounded-sm px-2 py-1 text-[12px] text-(--text-muted) hover:bg-(--menu-hover-bg) disabled:opacity-50"
+                                title="Prettier로 코드 정렬"
+                            >
+                                {formatting ? "정렬 중…" : "포맷"}
+                            </button>
+                        )}
+
+                        {/* 복사 */}
+                        <button
+                            type="button"
+                            onClick={copyCode}
+                            aria-label="코드 복사"
+                            title="코드 복사"
+                            className="flex items-center rounded-sm px-1.5 py-1 text-(--text-muted) hover:bg-(--menu-hover-bg)"
+                        >
+                            {copied ? (
+                                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
+                                    <path d="M3.5 8.5l3 3 6-6.5" stroke="#22863a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            ) : (
+                                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
+                                    <path d="M3.25 1.375c-1.036 0-1.875.84-1.875 1.875v6c0 1.036.84 1.875 1.875 1.875h1.625v1.625c0 1.036.84 1.875 1.875 1.875h6c1.036 0 1.875-.84 1.875-1.875v-6c0-1.036-.84-1.875-1.875-1.875h-1.625V3.25c0-1.036-.84-1.875-1.875-1.875zM2.625 3.25c0-.345.28-.625.625-.625h6c.345 0 .625.28.625.625v1.625H6.75c-1.036 0-1.875.84-1.875 1.875v3.125H3.25a.625.625 0 0 1-.625-.625zm3.5 3.5c0-.345.28-.625.625-.625h6c.345 0 .625.28.625.625v6c0 .345-.28.625-.625.625h-6a.625.625 0 0 1-.625-.625z" />
+                                </svg>
+                            )}
+                        </button>
+                    </div>
+                </div>
+
                 <div className="relative">
                     {/* 색칠된 코드: [번호][코드셀] 한 행 → 줄바꿈돼도 번호가 그 줄 상단에 정렬 */}
                     <div aria-hidden>
