@@ -8,12 +8,20 @@ import { canFormat, formatCode } from "../../lib/formatCode";
 // 긴 줄은 자동 줄바꿈(가로 스크롤 없음), 줄번호는 각 논리 줄 상단에 정렬. 높이는 내용만큼 자동.
 // content = { code, lang } JSON. lang="auto"면 언어 자동감지. 편집은 newpage:setcode 로 상위 반영.
 
-export const CODE_LANGS = [
-    "auto", "plaintext", "bash", "c", "cpp", "csharp", "css", "dart", "diff", "dockerfile", "go",
-    "graphql", "html", "java", "javascript", "json", "kotlin", "less", "lua", "markdown",
-    "objectivec", "php", "python", "ruby", "rust", "scss", "shell", "sql", "swift",
-    "typescript", "tsx", "jsx", "xml", "yaml",
-];
+// hljs가 지원하는 모든 언어 + auto/plaintext (검색 드롭다운용)
+export const CODE_LANGS: string[] = ["auto", "plaintext", ...hljs.listLanguages().filter((l) => l !== "plaintext").sort()];
+
+// 표시용 친숙한 이름(없으면 첫 글자 대문자)
+const NICE: Record<string, string> = {
+    auto: "auto", plaintext: "Plain Text", javascript: "JavaScript", typescript: "TypeScript",
+    cpp: "C++", csharp: "C#", css: "CSS", scss: "SCSS", less: "Less", xml: "HTML/XML",
+    json: "JSON", yaml: "YAML", sql: "SQL", php: "PHP", go: "Go", rust: "Rust", ruby: "Ruby",
+    python: "Python", java: "Java", kotlin: "Kotlin", swift: "Swift", bash: "Bash", shell: "Shell",
+    graphql: "GraphQL", markdown: "Markdown", dockerfile: "Dockerfile", objectivec: "Objective-C",
+    perl: "Perl", lua: "Lua", dart: "Dart", scala: "Scala", haskell: "Haskell", elixir: "Elixir",
+    clojure: "Clojure", erlang: "Erlang", matlab: "MATLAB", powershell: "PowerShell", diff: "Diff",
+};
+const displayName = (l: string) => NICE[l] ?? l.charAt(0).toUpperCase() + l.slice(1);
 
 // pre(코드셀) / textarea가 정확히 겹치도록 공유하는 텍스트 메트릭 (패딩은 바깥 박스가 담당)
 const CODE_FONT: React.CSSProperties = {
@@ -177,8 +185,9 @@ export default function CodeBlock({ id, content }: { id: string; content: string
         }
     };
 
-    const filtered = query ? CODE_LANGS.filter((l) => l.includes(query.toLowerCase())) : CODE_LANGS;
-    const badge = lang === "auto" ? (detected ? `auto · ${detected}` : "auto") : lang;
+    const q = query.toLowerCase();
+    const filtered = query ? CODE_LANGS.filter((l) => l.includes(q) || displayName(l).toLowerCase().includes(q)) : CODE_LANGS;
+    const badge = lang === "auto" ? (detected ? `auto · ${displayName(detected)}` : "auto") : displayName(lang);
     const gutterW = Math.max(28, String(lineHtml.length).length * 9 + 16);
 
     return (
@@ -202,32 +211,41 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                                 </svg>
                             </button>
                             {langOpen && (
-                                <div className="absolute right-0 top-[calc(100%+4px)] max-h-60 w-40 overflow-y-auto rounded-lg border border-(--border) bg-(--page-bg) py-1 shadow-lg">
-                                    <input
-                                        autoFocus
-                                        value={query}
-                                        onChange={(e) => setQuery(e.target.value)}
-                                        placeholder="언어 검색"
-                                        className="mx-1 mb-1 w-[calc(100%-8px)] rounded-sm border border-(--border) px-2 py-1 text-[12px] outline-none"
-                                    />
-                                    {filtered.map((l) => (
-                                        <button
-                                            key={l}
-                                            type="button"
-                                            onClick={() => {
-                                                setLang(l);
-                                                setLangOpen(false);
-                                                setQuery("");
-                                                persist(code, l);
-                                            }}
-                                            className={`block w-full px-3 py-1 text-left font-mono text-[12px] lowercase hover:bg-(--menu-hover-bg) ${
-                                                l === lang ? "text-(--text) font-semibold" : "text-(--text-muted)"
-                                            }`}
-                                        >
-                                            {l}
-                                        </button>
-                                    ))}
-                                    {!filtered.length && <div className="px-3 py-1 text-[12px] text-(--text-muted)">결과 없음</div>}
+                                <div className="absolute right-0 top-[calc(100%+4px)] flex max-h-72 w-56 flex-col overflow-hidden rounded-lg border border-(--border) bg-(--page-bg) shadow-lg">
+                                    <div className="p-1">
+                                        <input
+                                            autoFocus
+                                            value={query}
+                                            onChange={(e) => setQuery(e.target.value)}
+                                            placeholder="언어를 검색하세요"
+                                            className="w-full rounded-sm border border-(--border) px-2 py-1.5 text-[12px] outline-none"
+                                        />
+                                    </div>
+                                    <div className="overflow-y-auto py-1">
+                                        {filtered.map((l) => (
+                                            <button
+                                                key={l}
+                                                type="button"
+                                                onClick={() => {
+                                                    setLang(l);
+                                                    setLangOpen(false);
+                                                    setQuery("");
+                                                    persist(code, l);
+                                                }}
+                                                className={`flex w-full items-center justify-between gap-2 px-3 py-1 text-left text-[13px] hover:bg-(--menu-hover-bg) ${
+                                                    l === lang ? "text-(--text)" : "text-(--text-muted)"
+                                                }`}
+                                            >
+                                                <span className="truncate">{displayName(l)}</span>
+                                                {l === lang && (
+                                                    <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor" aria-hidden className="shrink-0">
+                                                        <path d="M15.784 4.002a.625.625 0 0 1 .214.857L9.445 15.784a.625.625 0 0 1-1.01.085l-4.37-5.098a.625.625 0 0 1 .948-.814l3.806 4.44 6.109-10.181a.625.625 0 0 1 .857-.214" />
+                                                    </svg>
+                                                )}
+                                            </button>
+                                        ))}
+                                        {!filtered.length && <div className="px-3 py-1 text-[12px] text-(--text-muted)">결과 없음</div>}
+                                    </div>
                                 </div>
                             )}
                         </div>
