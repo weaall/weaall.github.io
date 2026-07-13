@@ -178,6 +178,18 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // 코드 블록 편집(코드/언어) → 해당 블록 content(JSON) 갱신
+    useEffect(() => {
+        const onC = (e: Event) => {
+            const { id, content } = (e as CustomEvent<{ id: string; content: string }>).detail || {};
+            if (!id) return;
+            setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, content } : b)));
+        };
+        window.addEventListener("newpage:setcode", onC);
+        return () => window.removeEventListener("newpage:setcode", onC);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     // 그래프 데이터 저장 → 해당 블록 content(JSON)를 갱신
     const saveChart = (title: string, rows: ChartRow[]) => {
         if (!chartEditId) return;
@@ -740,6 +752,15 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             return;
         }
         if (type === "image" || type === "table") return;
+        if (type === "code") {
+            // 코드 블록: contentEditable이 아니라 textarea → 해당 블록의 textarea에 포커스
+            setTimeout(() => {
+                if (!blockId) return;
+                const ta = document.querySelector<HTMLTextAreaElement>(`#block-${blockId} textarea, [data-block-id="${blockId}"] textarea`);
+                ta?.focus();
+            }, 0);
+            return;
+        }
         setTimeout(() => {
             if (!blockId) return;
             const blockElement = document.getElementById(blockId);

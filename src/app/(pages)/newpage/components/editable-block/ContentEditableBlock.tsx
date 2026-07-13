@@ -1,6 +1,7 @@
 // ContentEditableBlock.tsx (완전 버전)
 import * as tw from "./ContentEditableBlock.styles";
 import ChartBlock from "./ChartBlock";
+import CodeBlock from "./CodeBlock";
 import ImageBlock from "./ImageBlock";
 import TableBlock from "./TableBlock";
 import EmojiModal from "../emoji-modal/Emoji.modal";
@@ -537,6 +538,11 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             e.preventDefault();
             onTypeChange("checkedList");
             onContentChange("");
+        } else if (e.key === " " && (ref.current?.innerText ?? "").replace(/\s+/g, "") === "<>") {
+            // "<>" + space → 코드 블록
+            e.preventDefault();
+            onTypeChange("code");
+            onContentChange("");
         }
     };
     
@@ -758,6 +764,8 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             return <ImageBlock id={id} content={content} />;
         case "table":
             return <TableBlock id={id} content={content} />;
+        case "code":
+            return <CodeBlock id={id} content={content} />;
         case "barChartH":
             return <ChartBlock id={id} orient="h" content={content} />;
         case "barChartV":

@@ -169,3 +169,9 @@ export const TableIcon = ({ color = "#000", width = "100%", height = "100%" }) =
         <path d="M3.5 9.5H20.5M3.5 14.5H20.5M9 4.5V19.5" stroke={color} strokeWidth="1.6" />
     </svg>
 );
+
+export const CodeBlockIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 8.5L5.5 12L9 15.5M15 8.5L18.5 12L15 15.5" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);

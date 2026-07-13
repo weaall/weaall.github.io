@@ -134,6 +134,22 @@ export function mdxToBlocks(mdx: string): EditorData {
     for (let li = 0; li < lines.length; li++) {
         const line = lines[li];
         const trimmed = line.trim();
+
+        // 펜스 코드 블록: ```lang ... ``` (빈 줄 스킵보다 먼저 처리해 내부 빈 줄 보존)
+        const fenceOpen = /^(`{3,})\s*([\w+#.-]*)\s*$/.exec(trimmed);
+        if (fenceOpen) {
+            const lang = fenceOpen[2] || "";
+            const codeLines: string[] = [];
+            let k = li + 1;
+            while (k < lines.length && !/^`{3,}\s*$/.test(lines[k].trim())) {
+                codeLines.push(lines[k]);
+                k++;
+            }
+            pushRaw("code", JSON.stringify({ code: codeLines.join("\n"), lang: lang || "plaintext" }));
+            li = k; // 닫는 펜스 줄 건너뛰기
+            continue;
+        }
+
         if (!trimmed) continue;
         const indent = Math.min(6, Math.floor((/^(\s*)/.exec(line)?.[1].length ?? 0) / 2));
 

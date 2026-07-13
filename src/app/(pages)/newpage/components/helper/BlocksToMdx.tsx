@@ -121,6 +121,7 @@ export function blocksToMDX(
         b.type === "divider" ||
         b.type === "image" ||
         b.type === "table" ||
+        b.type === "code" ||
         b.type.startsWith("barChart") ||
         b.type.startsWith("toggle");
     const isToggle = (t: string) => t === "toggleText" || t === "toggleH1" || t === "toggleH2" || t === "toggleH3";
@@ -172,6 +173,25 @@ export function blocksToMDX(
                 }
                 if (!ok) return "";
                 return `<DataTable data="${encodeURIComponent(b.content)}" />`;
+            }
+            case "code": {
+                // content = { code, lang } JSON. ```lang 펜스로 내보냄(내부는 리터럴이라 이스케이프 불필요)
+                let code = b.content;
+                let lang = "";
+                if (b.content && b.content[0] === "{") {
+                    try {
+                        const p = JSON.parse(b.content);
+                        if (typeof p.code === "string") code = p.code;
+                        if (typeof p.lang === "string") lang = p.lang;
+                    } catch {
+                        /* 폴백: content 그대로 코드 */
+                    }
+                }
+                // 코드 안에 ``` 가 있으면 더 긴 펜스 사용
+                let fence = "```";
+                while (code.includes(fence)) fence += "`";
+                const langTag = lang && lang !== "plaintext" ? lang : "";
+                return `${fence}${langTag}\n${code}\n${fence}`;
             }
             case "p":
             default:
