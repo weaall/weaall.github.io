@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import hljs from "highlight.js";
+import { canFormat, formatCode } from "../../lib/formatCode";
 
 // 노션풍 코드 블록(에디터). 투명 textarea + 뒤에 hljs로 색칠된 <pre> 오버레이.
 // content = { code, lang } JSON. lang="auto"면 언어 자동감지. 편집 내용은 newpage:setcode 로 상위 반영.
@@ -102,6 +103,27 @@ export default function CodeBlock({ id, content }: { id: string; content: string
         return () => window.removeEventListener("mousedown", onDown);
     }, [langOpen]);
 
+    // 포맷 대상 언어(auto면 감지 언어)
+    const detectLang = (src: string) => (lang !== "auto" ? lang : hljs.highlightAuto(src).language || "");
+    const effectiveLang = lang !== "auto" ? lang : detected;
+    const [formatting, setFormatting] = useState(false);
+
+    // Prettier 포맷 실행(지원 언어만). 성공 시 코드 교체.
+    const runFormat = async (src: string) => {
+        const l = detectLang(src);
+        if (!canFormat(l)) return;
+        setFormatting(true);
+        try {
+            const f = await formatCode(src, l);
+            if (f !== src) {
+                setCode(f);
+                persist(f, lang);
+            }
+        } finally {
+            setFormatting(false);
+        }
+    };
+
     // 커서 위치를 유지하며 코드 갱신
     const replaceSelection = (ta: HTMLTextAreaElement, insert: string, start: number, end: number, caret: number) => {
         const next = code.slice(0, start) + insert + code.slice(end);
@@ -139,8 +161,19 @@ export default function CodeBlock({ id, content }: { id: string; content: string
 
     return (
         <div data-block-id={id} className="code-block relative my-1">
-            {/* 언어 선택기: 코드 박스 바깥(위, 우측). 드롭다운이 박스 overflow에 잘리지 않게 밖으로 뺌 */}
-            <div ref={langWrapRef} className="relative z-10 mb-1 flex justify-end">
+            {/* 언어 선택기 + 포맷 버튼: 코드 박스 바깥(위, 우측). 드롭다운이 박스 overflow에 잘리지 않게 밖으로 뺌 */}
+            <div ref={langWrapRef} className="relative z-10 mb-1 flex justify-end gap-1">
+                {canFormat(effectiveLang) && (
+                    <button
+                        type="button"
+                        onClick={() => runFormat(code)}
+                        disabled={formatting}
+                        className="rounded-md border border-(--border) bg-(--page-bg) px-2 py-1 font-mono text-[11px] text-(--text-muted) hover:bg-(--menu-hover-bg) disabled:opacity-50"
+                        title="Prettier로 코드 정렬"
+                    >
+                        {formatting ? "정렬 중…" : "포맷"}
+                    </button>
+                )}
                 <button
                     type="button"
                     onClick={() => setLangOpen((o) => !o)}
@@ -192,6 +225,13 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                     onChange={(e) => {
                         setCode(e.target.value);
                         persist(e.target.value, lang);
+                    }}
+                    onPaste={() => {
+                        // 붙여넣기 후 지원 언어면 자동 감지 → Prettier 포맷 (onChange 반영 뒤 실행)
+                        setTimeout(() => {
+                            const ta = taRef.current;
+                            if (ta) runFormat(ta.value);
+                        }, 0);
                     }}
                     onKeyDown={handleKeyDown}
                     className="relative block w-full resize-none overflow-hidden bg-transparent outline-none placeholder:text-(--text-muted)"
