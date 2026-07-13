@@ -207,6 +207,49 @@
     font-weight: 600;
   }
 
+  /* 에디터 코드블록(.code-block)에도 동일한 라이트 구문 색 적용 (하이라이트 오버레이용) */
+  .code-block .hljs {
+    color: #24292e;
+    background: transparent;
+  }
+  .code-block .hljs-comment,
+  .code-block .hljs-quote {
+    color: #6a737d;
+    font-style: italic;
+  }
+  .code-block .hljs-keyword,
+  .code-block .hljs-selector-tag,
+  .code-block .hljs-literal,
+  .code-block .hljs-type {
+    color: #d73a49;
+  }
+  .code-block .hljs-string,
+  .code-block .hljs-meta .hljs-string,
+  .code-block .hljs-regexp {
+    color: #032f62;
+  }
+  .code-block .hljs-number,
+  .code-block .hljs-attr,
+  .code-block .hljs-attribute,
+  .code-block .hljs-variable,
+  .code-block .hljs-template-variable {
+    color: #005cc5;
+  }
+  .code-block .hljs-title,
+  .code-block .hljs-title.function_,
+  .code-block .hljs-section {
+    color: #6f42c1;
+  }
+  .code-block .hljs-built_in,
+  .code-block .hljs-name,
+  .code-block .hljs-symbol,
+  .code-block .hljs-meta {
+    color: #e36209;
+  }
+  .code-block .hljs-tag {
+    color: #22863a;
+  }
+
   /* 라이트 테마 스코프: placeholder / 텍스트 선택 색 */
   [data-theme="light"] [contenteditable][placeholder]:empty::after {
     color: var(--placeholder);

@@ -190,7 +190,8 @@ export function blocksToMDX(
                 // 코드 안에 ``` 가 있으면 더 긴 펜스 사용
                 let fence = "```";
                 while (code.includes(fence)) fence += "`";
-                const langTag = lang && lang !== "plaintext" ? lang : "";
+                // auto/plaintext는 언어 태그 없이 → 포스트에서 자동감지
+                const langTag = lang && lang !== "plaintext" && lang !== "auto" ? lang : "";
                 return `${fence}${langTag}\n${code}\n${fence}`;
             }
             case "p":

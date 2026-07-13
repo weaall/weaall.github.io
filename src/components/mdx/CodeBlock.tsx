@@ -20,20 +20,26 @@ interface CodeBlockProps {
 export default function CodeBlock({ className, children, styles: S }: CodeBlockProps) {
     const language = className ? className.replace("language-", "") : "";
     const [highlightedCode, setHighlightedCode] = useState(children?.toString() || "");
+    // 언어가 지정 안 됐거나 미지원이면 자동감지 → 감지된 언어를 라벨로 표시
+    const [label, setLabel] = useState(language);
 
     useLayoutEffect(() => {
+        const code = children?.toString() || "";
         if (language && hljs.getLanguage(language)) {
-            setHighlightedCode(hljs.highlight(children?.toString() || "", { language }).value);
+            setHighlightedCode(hljs.highlight(code, { language, ignoreIllegals: true }).value);
+            setLabel(language);
         } else {
-            setHighlightedCode(children?.toString() || "");
+            const r = hljs.highlightAuto(code);
+            setHighlightedCode(r.value);
+            setLabel(r.language || "");
         }
     }, [children, language]);
 
     return (
         <S.CodeWrapC>
-            {language && (
+            {label && (
                 <S.ClassWrap>
-                    <S.ClassLabel>{language}</S.ClassLabel>
+                    <S.ClassLabel>{label}</S.ClassLabel>
                 </S.ClassWrap>
             )}
             <S.CodeBoxC>
