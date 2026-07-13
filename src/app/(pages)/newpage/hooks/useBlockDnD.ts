@@ -49,7 +49,7 @@ export function useBlockDnD(
             img.style.position = "fixed";
             img.style.pointerEvents = "none";
             img.style.zIndex = "1400"; // 삽입선(z-1500)보다 아래 → 드롭 위치선이 위에 보인다
-            img.style.opacity = "0.3";
+            img.style.opacity = "0.1";
             img.style.left = "0px";
             img.style.top = "-9999px"; // 첫 이동 전까지 화면 밖
             document.body.appendChild(img);
@@ -108,8 +108,7 @@ export function useBlockDnD(
 
                 // 앞 블록 들여쓰기를 base로, 선택 블록들의 상대 들여쓰기는 유지
                 const prevBlock = newBlocks[targetIdx - 1];
-                const prevIsToggle =
-                    !!prevBlock && (prevBlock.type === "toggleText" || prevBlock.type.startsWith("toggleH"));
+                const prevIsToggle = !!prevBlock && (prevBlock.type === "toggleText" || prevBlock.type.startsWith("toggleH"));
                 const baseIndent = prevBlock ? prevBlock.indentationLevel + (prevIsToggle ? 1 : 0) : 0;
                 const minIndent = Math.min(...moving.map((b) => b.indentationLevel));
                 const adjusted = moving.map((b) => ({

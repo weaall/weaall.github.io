@@ -81,24 +81,24 @@ export default function CodeBlock({ id, content }: { id: string; content: string
     const filtered = query ? CODE_LANGS.filter((l) => l.includes(query.toLowerCase())) : CODE_LANGS;
 
     return (
-        <div data-block-id={id} className="code-block relative my-1 overflow-hidden rounded-[10px] border border-(--border) bg-[#f7f6f3]">
-            {/* 우측 상단 언어 선택 */}
-            <div ref={langWrapRef} className="absolute right-2 top-2 z-10">
+        <div data-block-id={id} className="code-block relative my-1">
+            {/* 언어 선택기: 코드 박스 바깥(위, 우측). 박스 overflow에 드롭다운이 잘리지 않게 밖으로 뺌 */}
+            <div ref={langWrapRef} className="relative z-10 mb-1 flex justify-end">
                 <button
                     type="button"
                     onClick={() => setLangOpen((o) => !o)}
-                    className="rounded-[6px] bg-white/70 px-2 py-1 font-mono text-[11px] lowercase text-(--text-muted) hover:bg-white"
+                    className="rounded-md border border-(--border) bg-(--page-bg) px-2 py-1 font-mono text-[11px] lowercase text-(--text-muted) hover:bg-(--menu-hover-bg)"
                 >
-                    {lang}
+                    {lang} ▾
                 </button>
                 {langOpen && (
-                    <div className="absolute right-0 top-[calc(100%+4px)] max-h-[240px] w-[160px] overflow-y-auto rounded-[8px] border border-(--border) bg-(--page-bg) py-1 shadow-lg">
+                    <div className="absolute right-0 top-[calc(100%+4px)] max-h-60 w-40 overflow-y-auto rounded-lg border border-(--border) bg-(--page-bg) py-1 shadow-lg">
                         <input
                             autoFocus
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="언어 검색"
-                            className="mx-1 mb-1 w-[calc(100%-8px)] rounded-[4px] border border-(--border) px-2 py-1 text-[12px] outline-none"
+                            className="mx-1 mb-1 w-[calc(100%-8px)] rounded-sm border border-(--border) px-2 py-1 text-[12px] outline-none"
                         />
                         {filtered.map((l) => (
                             <button
@@ -122,19 +122,21 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                 )}
             </div>
 
-            <textarea
-                ref={taRef}
-                value={code}
-                spellCheck={false}
-                placeholder="코드를 입력하세요"
-                onChange={(e) => {
-                    setCode(e.target.value);
-                    persist(e.target.value, lang);
-                }}
-                onKeyDown={handleKeyDown}
-                className="block w-full resize-none whitespace-pre bg-transparent px-4 py-3 pr-16 font-mono text-[14px] leading-relaxed text-(--text) outline-none"
-                rows={1}
-            />
+            <div className="overflow-hidden rounded-[10px] border border-(--border) bg-[#f7f6f3]">
+                <textarea
+                    ref={taRef}
+                    value={code}
+                    spellCheck={false}
+                    placeholder="코드를 입력하세요"
+                    onChange={(e) => {
+                        setCode(e.target.value);
+                        persist(e.target.value, lang);
+                    }}
+                    onKeyDown={handleKeyDown}
+                    className="block w-full resize-none whitespace-pre bg-transparent px-4 py-3 font-mono text-[14px] leading-relaxed text-(--text) outline-none"
+                    rows={1}
+                />
+            </div>
         </div>
     );
 }
