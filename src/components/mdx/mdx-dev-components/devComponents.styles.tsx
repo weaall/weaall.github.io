@@ -26,8 +26,8 @@ mobile:text-sm`
 export const CodeWrapC = tw.div`relative my-5 rounded-lg overflow-hidden bg-[#282c34] text-[13px] leading-relaxed`
 export const ClassWrap = tw.div`absolute top-0 right-0 z-10 px-3 py-2 select-none`
 export const ClassLabel = tw.span`text-[11px] font-mono lowercase text-white/40`
-export const CodeBoxC = tw.div`overflow-x-auto px-3 py-2`
-export const Code = tw.code`font-mono whitespace-pre`
+export const CodeBoxC = tw.div`px-3 py-2`
+export const Code = tw.code`block font-mono whitespace-pre-wrap break-words [overflow-wrap:anywhere]`
 
 export const Strong = tw.strong`font-bold
 mobile:text-sm`

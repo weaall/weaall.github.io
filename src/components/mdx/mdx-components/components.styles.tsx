@@ -82,8 +82,8 @@ export const Li = tw.li`py-[3px] text-[16px] leading-[1.4] text-(--text)`;
 export const CodeWrapC = tw.div`relative my-4 rounded-[10px] overflow-hidden border border-(--border) bg-[#f7f6f3] text-[14px] leading-relaxed`;
 export const ClassWrap = tw.div`absolute top-0 right-0 z-10 px-3 py-2 select-none`;
 export const ClassLabel = tw.span`text-[11px] font-mono lowercase text-(--text-muted)`;
-export const CodeBoxC = tw.div`overflow-x-auto px-[22px] py-[16px]`;
-export const Code = tw.code`font-mono whitespace-pre text-[13.5px]`;
+export const CodeBoxC = tw.div`px-[22px] py-[16px]`;
+export const Code = tw.code`block font-mono whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-[13.5px]`;
 
 export const Strong = tw.strong`font-bold`;
 
