@@ -49,7 +49,7 @@ export function useBlockDnD(
             img.style.position = "fixed";
             img.style.pointerEvents = "none";
             img.style.zIndex = "1400"; // 삽입선(z-1500)보다 아래 → 드롭 위치선이 위에 보인다
-            img.style.opacity = "0.5";
+            img.style.opacity = "0.3";
             img.style.left = "0px";
             img.style.top = "-9999px"; // 첫 이동 전까지 화면 밖
             document.body.appendChild(img);
