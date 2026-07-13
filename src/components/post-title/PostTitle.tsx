@@ -16,7 +16,11 @@ export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatte
                             <tw.Img alt={frontmatter.title} src={coverSrc}></tw.Img>
                         </tw.ImgWrap>
                         {frontmatter.icon && (
-                            <div className="absolute -bottom-6 left-0 flex h-[64px] w-[64px] items-center justify-center rounded-[8px] bg-(--page-bg) p-[4px] shadow">
+                            // 하드한 박스 대신, 흰색이 가장자리로 점점 흐려지는 글로우 위에 아이콘
+                            <div
+                                className="absolute -bottom-5 left-1 flex h-[72px] w-[72px] items-center justify-center"
+                                style={{ background: "radial-gradient(closest-side, rgba(255,255,255,0.95) 55%, rgba(255,255,255,0) 100%)" }}
+                            >
                                 <PageIcon icon={frontmatter.icon} size={56} />
                             </div>
                         )}

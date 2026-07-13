@@ -1,4 +1,6 @@
 // 라우트 전환 시 보이는 목록 스켈레톤 (App Router Suspense fallback)
+import DrawerSkeleton from "@/components/PostListDrawer/DrawerSkeleton";
+
 const Bar = ({ className = "", style }: { className?: string; style?: React.CSSProperties }) => (
     <div className={`animate-pulse rounded bg-(--hover-bg) ${className}`} style={style} />
 );
@@ -25,13 +27,8 @@ function CardSkeleton() {
 export default function Loading() {
     return (
         <div data-theme="light" className="relative flex min-h-screen w-full bg-(--page-bg)">
-            {/* 드로워 자리 */}
-            <div className="w-[260px] shrink-0 space-y-3 border-r border-(--border) p-4 m:hidden">
-                <Bar className="h-6 w-32" />
-                {Array.from({ length: 8 }).map((_, i) => (
-                    <Bar key={i} className="h-4" style={{ width: `${60 + ((i * 7) % 35)}%` }} />
-                ))}
-            </div>
+            {/* 드로워(열린 상태) 스켈레톤 */}
+            <DrawerSkeleton />
 
             {/* 본문 */}
             <div className="flex-1">
