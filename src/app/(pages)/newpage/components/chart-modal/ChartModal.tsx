@@ -63,8 +63,13 @@ export default function ChartModal({ open, orient, initialTitle, initialRows, on
     return (
         <div
             className="fixed inset-0 z-[1900] flex items-center justify-center bg-black/20 p-4"
-            onClick={() => (palette ? setPalette(null) : onClose())}
-            onMouseDown={(e) => e.stopPropagation()}
+            // 백드롭(빈 영역) 자체를 눌렀을 때만 닫는다 — 입력창에서 드래그하다 밖에서 떼도 안 닫히게
+            onMouseDown={(e) => {
+                e.stopPropagation();
+                if (e.target !== e.currentTarget) return;
+                if (palette) setPalette(null);
+                else onClose();
+            }}
         >
             <div
                 data-theme="light"

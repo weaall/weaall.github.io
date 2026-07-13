@@ -19,6 +19,19 @@ function normalizeRows(rows: ChartRow[]): ChartRow[] {
         .map((r) => ({ label: String(r.label ?? ""), value: Number(r.value) || 0, ...(r.color ? { color: r.color } : {}) }));
 }
 
+// 데이터 최댓값을 보고 "예쁜" 축 최댓값과 눈금(기준선) 배열을 자동으로 계산한다.
+function niceScale(maxValue: number, tickCount = 4): { niceMax: number; ticks: number[] } {
+    if (!(maxValue > 0)) return { niceMax: 1, ticks: [0, 1] };
+    const rawStep = maxValue / tickCount;
+    const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+    const norm = rawStep / mag;
+    const niceStep = (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10) * mag;
+    const niceMax = Math.ceil(maxValue / niceStep) * niceStep;
+    const ticks: number[] = [];
+    for (let v = 0; v <= niceMax + niceStep * 1e-6; v += niceStep) ticks.push(Math.round(v * 1e6) / 1e6);
+    return { niceMax, ticks };
+}
+
 interface BarChartProps {
     orient?: "h" | "v";
     /** 포스트(MDX)에서는 encodeURIComponent(JSON.stringify({title, rows))) 문자열로 전달 */
@@ -53,50 +66,92 @@ export default function BarChart({ orient = "h", data, rows, title }: BarChartPr
         );
     }
 
-    const max = Math.max(1, ...items.map((r) => r.value));
+    const max = Math.max(0, ...items.map((r) => r.value));
+    const { niceMax, ticks } = niceScale(max);
+    const LABEL_W = 96; // 가로형 항목 라벨 폭(px)
 
     return (
         <div className="my-2 rounded-xl border border-(--border) px-5 py-4">
             {ttl && <div className="mb-4 text-sm font-semibold text-(--text-strong)">{ttl}</div>}
             {orient === "h" ? (
-                <div className="flex flex-col gap-3">
-                    {items.map((r, i) => (
-                        <div key={i} className="flex items-center gap-3">
-                            <div className="w-24 shrink-0 truncate text-right text-xs text-(--text-muted)" title={r.label}>
-                                {r.label}
+                <div className="relative">
+                    {/* 세로 기준선 (막대 영역에만) */}
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex justify-between" style={{ left: LABEL_W + 12 }}>
+                        {ticks.map((_, i) => (
+                            <div key={i} className="w-px bg-(--border)" />
+                        ))}
+                    </div>
+                    {/* 막대들 */}
+                    <div className="relative flex flex-col gap-3">
+                        {items.map((r, i) => (
+                            <div key={i} className="flex items-center gap-3">
+                                <div className="shrink-0 truncate text-right text-xs text-(--text-muted)" style={{ width: LABEL_W }} title={r.label}>
+                                    {r.label}
+                                </div>
+                                <div className="relative flex-1">
+                                    <div
+                                        className="flex h-5 items-center rounded-md transition-[width] duration-300"
+                                        style={{ width: `${(r.value / niceMax) * 100}%`, minWidth: 2, background: r.color || colorAt(i) }}
+                                    />
+                                    <span
+                                        className="absolute top-1/2 -translate-y-1/2 pl-1.5 text-xs font-semibold text-(--text-muted)"
+                                        style={{ left: `${(r.value / niceMax) * 100}%` }}
+                                    >
+                                        {r.value}
+                                    </span>
+                                </div>
                             </div>
-                            <div className="flex flex-1 items-center gap-2">
-                                <div
-                                    className="h-5 rounded-md transition-[width] duration-300"
-                                    style={{
-                                        width: `${(r.value / max) * 100}%`,
-                                        minWidth: 6,
-                                        background: r.color || colorAt(i),
-                                    }}
-                                />
-                                <span className="shrink-0 text-xs font-semibold text-(--text-muted)">{r.value}</span>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                    {/* x축 눈금 */}
+                    <div className="mt-2 flex justify-between text-[10px] tabular-nums text-(--text-faint)" style={{ marginLeft: LABEL_W + 12 }}>
+                        {ticks.map((t, i) => (
+                            <span key={i}>{t}</span>
+                        ))}
+                    </div>
                 </div>
             ) : (
-                <div className="flex h-52 items-end justify-around gap-4 px-1">
-                    {items.map((r, i) => (
-                        <div key={i} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1.5">
-                            <div className="text-xs font-semibold text-(--text-muted)">{r.value}</div>
-                            <div
-                                className="w-full max-w-[48px] rounded-t-md transition-[height] duration-300"
-                                style={{
-                                    height: `${(r.value / max) * 100}%`,
-                                    minHeight: 4,
-                                    background: r.color || colorAt(i),
-                                }}
-                            />
-                            <div className="w-full truncate text-center text-xs text-(--text-muted)" title={r.label}>
-                                {r.label}
-                            </div>
+                <div className="flex gap-2">
+                    {/* y축 눈금 */}
+                    <div className="relative h-52 w-7 shrink-0">
+                        {ticks.map((t, i) => (
+                            <span
+                                key={i}
+                                className="absolute right-0 -translate-y-1/2 text-[10px] tabular-nums text-(--text-faint)"
+                                style={{ bottom: `${(t / niceMax) * 100}%` }}
+                            >
+                                {t}
+                            </span>
+                        ))}
+                    </div>
+                    <div className="relative flex-1">
+                        {/* 가로 기준선 */}
+                        <div className="pointer-events-none absolute inset-x-0 top-0 h-52">
+                            {ticks.map((t, i) => (
+                                <div key={i} className="absolute inset-x-0 border-t border-(--border)" style={{ bottom: `${(t / niceMax) * 100}%` }} />
+                            ))}
                         </div>
-                    ))}
+                        {/* 막대들 */}
+                        <div className="relative flex h-52 items-end justify-around gap-4 px-1">
+                            {items.map((r, i) => (
+                                <div key={i} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1.5">
+                                    <div className="text-xs font-semibold text-(--text-muted)">{r.value}</div>
+                                    <div
+                                        className="w-full max-w-[48px] rounded-t-md transition-[height] duration-300"
+                                        style={{ height: `${(r.value / niceMax) * 100}%`, minHeight: 2, background: r.color || colorAt(i) }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                        {/* x축 라벨 */}
+                        <div className="flex justify-around gap-4 px-1 pt-1.5">
+                            {items.map((r, i) => (
+                                <div key={i} className="min-w-0 flex-1 truncate text-center text-xs text-(--text-muted)" title={r.label}>
+                                    {r.label}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
