@@ -770,6 +770,8 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             return <ChartBlock id={id} orient="h" content={content} />;
         case "barChartV":
             return <ChartBlock id={id} orient="v" content={content} />;
+        case "chart":
+            return <ChartBlock id={id} content={content} />;
         case "p":
         default:
             return (

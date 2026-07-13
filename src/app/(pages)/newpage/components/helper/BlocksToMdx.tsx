@@ -122,6 +122,7 @@ export function blocksToMDX(
         b.type === "image" ||
         b.type === "table" ||
         b.type === "code" ||
+        b.type === "chart" ||
         b.type.startsWith("barChart") ||
         b.type.startsWith("toggle");
     const isToggle = (t: string) => t === "toggleText" || t === "toggleH1" || t === "toggleH2" || t === "toggleH3";
@@ -163,6 +164,9 @@ export function blocksToMDX(
             case "barChartH":
             case "barChartV":
                 return `<BarChart orient="${b.type === "barChartH" ? "h" : "v"}" data="${encodeURIComponent(b.content || "{}")}" />`;
+            case "chart":
+                // 타입(barV/barH/line/area/donut)은 data JSON 안에 포함
+                return `<BarChart data="${encodeURIComponent(b.content || "{}")}" />`;
             case "table": {
                 let ok = false;
                 try {

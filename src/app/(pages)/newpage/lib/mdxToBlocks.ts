@@ -162,7 +162,15 @@ export function mdxToBlocks(mdx: string): EditorData {
         if (trimmed.startsWith("<BarChart")) {
             const o = /orient="([^"]*)"/.exec(trimmed);
             const d = /data="([^"]*)"/.exec(trimmed);
-            pushRaw(o && o[1] === "v" ? "barChartV" : "barChartH", d ? decodeURIComponent(d[1]) : "{}");
+            let obj: { type?: string; title?: string; rows?: unknown[] } = {};
+            try {
+                obj = d ? JSON.parse(decodeURIComponent(d[1])) : {};
+            } catch {
+                obj = {};
+            }
+            // 통합 chart 블록으로. 타입은 data.type → orient(구버전) 순으로 결정
+            if (!obj.type) obj.type = o && o[1] === "h" ? "barH" : "barV";
+            pushRaw("chart", JSON.stringify(obj));
             continue;
         }
         if (trimmed.startsWith("<img")) {

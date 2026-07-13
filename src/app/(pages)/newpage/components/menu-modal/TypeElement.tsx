@@ -1,5 +1,4 @@
 import {
-    BarChartHIcon,
     BarChartVIcon,
     BulletedListIcon,
     CheckedListIcon,
@@ -35,6 +34,5 @@ export const ELEMENTS: TypeMenuElement[] = [
     { divider: true },
     { label: "코드", type: "code", icon: <CodeBlockIcon color="#5f5e5b" /> },
     { label: "표", type: "table", icon: <TableIcon color="#5f5e5b" /> },
-    { label: "가로 막대그래프", type: "barChartH", icon: <BarChartHIcon color="#5f5e5b" /> },
-    { label: "세로 막대그래프", type: "barChartV", icon: <BarChartVIcon color="#5f5e5b" /> },
+    { label: "그래프", type: "chart", icon: <BarChartVIcon color="#5f5e5b" /> },
 ];

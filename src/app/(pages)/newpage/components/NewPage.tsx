@@ -193,10 +193,10 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // 그래프 데이터 저장 → 해당 블록 content(JSON)를 갱신
-    const saveChart = (title: string, rows: ChartRow[]) => {
+    // 그래프 데이터/타입 저장 → 해당 블록 content(JSON)를 갱신
+    const saveChart = (chartType: string, title: string, rows: ChartRow[]) => {
         if (!chartEditId) return;
-        setBlocks((prev) => prev.map((b) => (b.id === chartEditId ? { ...b, content: JSON.stringify({ title, rows }) } : b)));
+        setBlocks((prev) => prev.map((b) => (b.id === chartEditId ? { ...b, content: JSON.stringify({ type: chartType, title, rows }) } : b)));
     };
 
     // 여러 블록 선택 (빈 영역을 드래그하면 마퀴 박스가 커지며 겹치는 블록 선택)
@@ -755,8 +755,8 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         setMenuId(null);
         setMenuPos(null);
         // 그래프/이미지는 편집 가능한 텍스트가 아니므로 포커스 로직을 건너뛴다.
-        if (type === "barChartH" || type === "barChartV") {
-            if (blockId) setChartEditId(blockId); // 바로 데이터 입력 모달 열기
+        if (type === "barChartH" || type === "barChartV" || type === "chart") {
+            if (blockId) setChartEditId(blockId); // 바로 데이터/타입 입력 모달 열기
             return;
         }
         if (type === "image" || type === "table") return;
@@ -1386,17 +1386,19 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             {(() => {
                 if (!chartEditId) return null;
                 const block = blocks.find((b) => b.id === chartEditId);
-                if (!block || (block.type !== "barChartH" && block.type !== "barChartV")) return null;
-                let parsed: { title?: string; rows?: ChartRow[] } = {};
+                if (!block || (block.type !== "barChartH" && block.type !== "barChartV" && block.type !== "chart")) return null;
+                let parsed: { type?: string; title?: string; rows?: ChartRow[] } = {};
                 try {
                     parsed = JSON.parse(block.content || "{}");
                 } catch {
                     /* 손상된 값은 빈 데이터 */
                 }
+                // 구버전 blockType(barChartH/V)은 타입을 orient로 유추
+                const initialType = parsed.type || (block.type === "barChartH" ? "barH" : "barV");
                 return (
                     <ChartModal
                         open
-                        orient={block.type === "barChartH" ? "h" : "v"}
+                        initialType={initialType}
                         initialTitle={parsed.title ?? ""}
                         initialRows={parsed.rows ?? []}
                         onSave={saveChart}
