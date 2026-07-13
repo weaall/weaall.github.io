@@ -51,9 +51,11 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
     const [top, setTop] = useState(position?.top ?? 0);
     useLayoutEffect(() => {
         if (!open || !position) return;
-        const h = rootRef.current?.offsetHeight ?? 0;
-        setTop(Math.max(8, Math.min(position.top, window.innerHeight - h - 8)));
-    }, [open, position, showDrawer]);
+        // 메뉴/드로워가 absolute라 컨테이너 높이가 0. 드로워(전환 목록)까지 열릴 걸 감안해
+        // 열 때부터 넉넉한 높이로 위치를 잡아 hover 시 점프/깜빡임 없이 위로 뜨게 한다.
+        const POPUP_MAX_H = 470;
+        setTop(Math.max(8, Math.min(position.top, window.innerHeight - POPUP_MAX_H - 8)));
+    }, [open, position]);
 
     const handleMenuButtonMouseEnter = (type: string) => {
         if (type === "전환" || type === "색") {
