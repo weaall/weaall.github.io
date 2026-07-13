@@ -487,7 +487,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             const width = firstEl?.getBoundingClientRect().width ?? 680;
             const container = document.createElement("div");
             container.setAttribute("data-theme", "light");
-            container.style.cssText = `position:fixed;top:-9999px;left:0;width:${Math.round(width)}px;box-sizing:border-box;background:var(--page-bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:.95;max-height:320px;overflow:hidden;`;
+            container.style.cssText = `position:fixed;top:-9999px;left:0;width:${Math.round(width)}px;box-sizing:border-box;background:var(--page-bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;box-shadow:0 8px 24px rgba(0,0,0,.15);opacity:.45;max-height:320px;overflow:hidden;`;
             for (let i = from; i <= to; i++) {
                 const b = blocksRef.current[i];
                 if (!b) continue;
