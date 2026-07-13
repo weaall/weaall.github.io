@@ -66,6 +66,9 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
     const [hoverId, setHoverId] = useState<string | null>(null);
     const [menuId, setMenuId] = useState<string | null>(null);
     const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
+    // 토글 펼침 시 등장 애니메이션: 직전에 숨겨졌던 블록 집합 / 방금 드러난 블록 집합
+    const prevHiddenRef = useRef<Set<string>>(new Set());
+    const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
     const [showShare, setShowShare] = useState(false);
     // 저장 알림 토스트 (브라우저 alert 대체)
     const [toast, setToast] = useState<{ text: string; ok: boolean } | null>(null);
@@ -1055,6 +1058,20 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         }
     }
 
+    // 토글이 펼쳐져 방금 보이게 된 자식 블록 → 한 번만 스르르 등장 애니메이션
+    const hiddenKey = [...hiddenBlockIds].sort().join(",");
+    useEffect(() => {
+        const prev = prevHiddenRef.current;
+        const nowRevealed = [...prev].filter((id) => !hiddenBlockIds.has(id));
+        prevHiddenRef.current = new Set(hiddenBlockIds);
+        if (nowRevealed.length) {
+            setRevealedIds(new Set(nowRevealed));
+            const t = setTimeout(() => setRevealedIds(new Set()), 280);
+            return () => clearTimeout(t);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [hiddenKey]);
+
     return (
         <tw.Container
             onMouseDown={handleMarqueeDown}
@@ -1317,6 +1334,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                             onFormattedRangesChange={handleFormattedRangesChange}
                             selected={idx >= selMin && idx <= selMax}
                             onClearSelection={clearSelection}
+                            animateIn={revealedIds.has(block.id)}
                         />
                         )}
                     </React.Fragment>

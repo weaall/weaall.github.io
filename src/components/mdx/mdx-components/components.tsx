@@ -143,7 +143,13 @@ export function ToggleText({
                     {label}
                 </span>
             </div>
-            {open && <div style={{ marginLeft: s.arrow + 8 }}>{children}</div>}
+            {/* 자식: grid-rows 0fr↔1fr + opacity로 스르르 펼침/접힘 (내용 높이 몰라도 애니메이션됨) */}
+            <div
+                className="grid transition-all duration-200 ease-out"
+                style={{ marginLeft: s.arrow + 8, gridTemplateRows: open ? "1fr" : "0fr", opacity: open ? 1 : 0 }}
+            >
+                <div className="overflow-hidden">{children}</div>
+            </div>
         </div>
     );
 }

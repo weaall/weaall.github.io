@@ -40,6 +40,7 @@ interface BlockRowProps {
     onFormattedRangesChange: (idx: number, ranges: FormattedRange[]) => void;
     selected: boolean;
     onClearSelection: () => void;
+    animateIn?: boolean;
 }
 
 export default function BlockRow({
@@ -75,6 +76,7 @@ export default function BlockRow({
     onFormattedRangesChange,
     selected,
     onClearSelection,
+    animateIn,
 }: BlockRowProps) {
     return (
         <>
@@ -85,7 +87,7 @@ export default function BlockRow({
                 onDragOver={onDragOver}
             />
             <tw.BlockWrap
-                className={`group ${draggingIdx === idx ? "opacity-50" : ""}`}
+                className={`group ${draggingIdx === idx ? "opacity-50" : ""} ${animateIn ? "block-reveal" : ""}`}
                 style={{ position: "relative" }}
                 onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
                     const related = e.relatedTarget as HTMLElement | null;
