@@ -194,8 +194,8 @@ export default function CodeBlock({ id, content }: { id: string; content: string
         <div data-block-id={id} className="code-block group/code relative my-1">
             {/* 노션풍 코드 박스: 부드러운 회색 배경 + 라운드 + 넉넉한 패딩 */}
             <div className="relative rounded-[10px] bg-[#f7f6f3]" style={{ padding: "18px 20px" }}>
-                {/* 우측 상단 작업 툴바(노션풍): 언어 드롭다운 | 포맷 | 복사 — hover 시 표시 */}
-                <div className="absolute right-1 top-1 z-20 opacity-0 transition-opacity duration-200 group-hover/code:opacity-100">
+                {/* 우측 상단 작업 툴바(노션풍): 언어 드롭다운 | 포맷 | 복사 — hover 시 표시(드롭다운 열려있으면 계속 표시) */}
+                <div className={`absolute right-1 top-1 z-20 transition-opacity duration-200 ${langOpen ? "opacity-100" : "opacity-0 group-hover/code:opacity-100"}`}>
                     <div className="flex items-center rounded-md border border-(--border) bg-(--page-bg) p-[2px] shadow-md">
                         {/* 언어 드롭다운 */}
                         <div ref={langWrapRef} className="relative">
@@ -211,7 +211,7 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                                 </svg>
                             </button>
                             {langOpen && (
-                                <div className="absolute right-0 top-[calc(100%+6px)] flex max-h-[280px] w-60 flex-col overflow-hidden rounded-[10px] border border-(--border) bg-(--page-bg) shadow-xl">
+                                <div className="absolute right-0 top-[calc(100%+6px)] flex max-h-[380px] w-72 flex-col overflow-hidden rounded-[10px] border border-(--border) bg-(--page-bg) shadow-xl">
                                     <div className="px-2 pt-2 pb-1">
                                         <input
                                             autoFocus
@@ -232,7 +232,7 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                                                     setQuery("");
                                                     persist(code, l);
                                                 }}
-                                                className={`flex w-full items-center justify-between gap-2 rounded-md px-2.5 py-[6px] text-left text-[14px] text-(--text) hover:bg-(--menu-hover-bg) ${
+                                                className={`flex w-full items-center justify-between gap-2 rounded-md px-2.5 py-2 text-left text-[14px] text-(--text) hover:bg-(--menu-hover-bg) ${
                                                     l === lang ? "bg-(--menu-hover-bg)" : ""
                                                 }`}
                                             >
