@@ -40,6 +40,14 @@ export function useBlockDnD(
         e.preventDefault();
     };
 
+    // 블록 전체를 드롭 히트 영역으로: 커서가 블록 상/하 절반 중 어디냐로 위/아래 삽입 판정.
+    const handleBlockDragOver = (e: React.DragEvent<HTMLDivElement>, idx: number) => {
+        e.preventDefault();
+        const rect = e.currentTarget.getBoundingClientRect();
+        const isBottom = e.clientY > rect.top + rect.height / 2;
+        setInsertLineIdx(isBottom ? idx + 1 : idx);
+    };
+
     const handleDragEnd = () => {
         if (draggingIdx !== null && insertLineIdx !== null) {
             const fromIdx = draggingIdx;
@@ -82,5 +90,5 @@ export function useBlockDnD(
         setInsertLineIdx(null);
     };
 
-    return { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd };
+    return { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd };
 }

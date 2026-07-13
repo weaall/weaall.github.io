@@ -473,7 +473,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         setMeta((prev) => ({ ...prev, imageUrl: webp }));
     };
 
-    const { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleDragEnd } = useBlockDnD(
+    const { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd } = useBlockDnD(
         setBlocks,
         () => selectionRef.current,
         (targetIdx, count) => setSelRange({ a: targetIdx, b: targetIdx + count - 1 }),
@@ -1274,6 +1274,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                             onDragStart={handleDragStart}
                             onDragEnter={handleDragEnter}
                             onDragOver={handleDragOver}
+                            onBlockDragOver={handleBlockDragOver}
                             onDragEnd={handleDragEnd}
                             onAddBlock={handleAddBlock}
                             onPlusClick={handlePlusClick}

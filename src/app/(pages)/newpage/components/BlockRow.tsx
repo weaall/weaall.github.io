@@ -23,6 +23,7 @@ interface BlockRowProps {
     onDragStart: (e: React.DragEvent<HTMLDivElement>, idx: number) => void;
     onDragEnter: (e: React.DragEvent<HTMLDivElement>, idx: number, isIndicator: boolean) => void;
     onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
+    onBlockDragOver: (e: React.DragEvent<HTMLDivElement>, idx: number) => void;
     onDragEnd: () => void;
     onAddBlock: (idx: number) => void;
     onPlusClick: (id: string) => void;
@@ -57,6 +58,7 @@ export default function BlockRow({
     onDragStart,
     onDragEnter,
     onDragOver,
+    onBlockDragOver,
     onDragEnd,
     onAddBlock,
     onPlusClick,
@@ -92,8 +94,8 @@ export default function BlockRow({
                     }
                     setHoverId(null);
                 }}
-                onDragEnter={(e: React.DragEvent<HTMLDivElement>) => onDragEnter(e, idx, false)}
-                onDragOver={onDragOver}
+                onDragEnter={(e: React.DragEvent<HTMLDivElement>) => onBlockDragOver(e, idx)}
+                onDragOver={(e: React.DragEvent<HTMLDivElement>) => onBlockDragOver(e, idx)}
             >
                 {/* 왼쪽 갓터: 핸들 호버 영역 (여기서 빈 채로 드래그하면 상위에서 마퀴 선택 시작) */}
                 <div
