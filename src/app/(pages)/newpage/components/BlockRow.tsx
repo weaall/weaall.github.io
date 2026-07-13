@@ -164,6 +164,8 @@ export default function BlockRow({
                     onDragStart={selected ? (e: React.DragEvent<HTMLDivElement>) => onDragStart(e, idx) : undefined}
                     onDragEnd={selected ? onDragEnd : undefined}
                     onMouseDown={selected ? undefined : onClearSelection}
+                    // 인풋(포커스)으로 진입하면 다중 선택 해제
+                    onFocus={onClearSelection}
                     onMouseEnter={() => setHoverId(block.id)}
                     onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
                         const related = e.relatedTarget as HTMLElement | null;
