@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import hljs from "highlight.js";
 import { canFormat, formatCode } from "../../lib/formatCode";
+import { usePopupDirection } from "../../hooks/usePopupDirection";
 
 // 노션풍 코드 블록(에디터). 왼쪽 줄번호 거터 + 투명 textarea + 뒤 hljs 색칠 오버레이.
 // 긴 줄은 자동 줄바꿈(가로 스크롤 없음), 줄번호는 각 논리 줄 상단에 정렬. 높이는 내용만큼 자동.
@@ -189,6 +190,9 @@ export default function CodeBlock({ id, content }: { id: string; content: string
     const filtered = query ? CODE_LANGS.filter((l) => l.includes(q) || displayName(l).toLowerCase().includes(q)) : CODE_LANGS;
     const badge = lang === "auto" ? (detected ? `auto · ${displayName(detected)}` : "auto") : displayName(lang);
     const gutterW = Math.max(28, String(lineHtml.length).length * 9 + 16);
+    const dropDir = usePopupDirection(langOpen, langWrapRef, 380); // 아래 공간 부족하면 위로
+
+
 
     return (
         <div data-block-id={id} className="code-block group/code relative my-1">
@@ -211,7 +215,7 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                                 </svg>
                             </button>
                             {langOpen && (
-                                <div className="absolute right-0 top-[calc(100%+6px)] flex max-h-[380px] w-72 flex-col overflow-hidden rounded-[10px] border border-(--border) bg-(--page-bg) shadow-xl">
+                                <div className={`absolute right-0 flex max-h-[380px] w-72 flex-col overflow-hidden rounded-[10px] border border-(--border) bg-(--page-bg) shadow-xl ${dropDir === "up" ? "bottom-[calc(100%+6px)]" : "top-[calc(100%+6px)]"}`}>
                                     <div className="px-2 pt-2 pb-1">
                                         <input
                                             autoFocus

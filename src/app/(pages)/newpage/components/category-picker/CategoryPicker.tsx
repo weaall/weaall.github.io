@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 interface CategoryPickerProps {
     open: boolean;
@@ -14,6 +14,15 @@ interface CategoryPickerProps {
 // 카테고리 선택기: 기존 목록에서 검색/선택하거나 새로 입력해 추가.
 export default function CategoryPicker({ open, position, current, options, onSelect, onClose }: CategoryPickerProps) {
     const [q, setQ] = useState("");
+    const panelRef = useRef<HTMLDivElement>(null);
+    // 화면 아래로 넘치면 위로 뒤집어(트리거 위로) 잘리지 않게
+    const [top, setTop] = useState(position?.top ?? 0);
+    useLayoutEffect(() => {
+        if (!open || !position) return;
+        const h = panelRef.current?.offsetHeight ?? 300;
+        // 기본은 아래(position.top). 아래 공간 부족하면 위로 올림.
+        setTop(position.top + h + 8 > window.innerHeight ? Math.max(8, position.top - h - 8) : position.top);
+    }, [open, position, q]);
     if (!open || !position) return null;
 
     const query = q.trim();
@@ -28,10 +37,11 @@ export default function CategoryPicker({ open, position, current, options, onSel
     return (
         <div className="fixed inset-0 z-[1900]" onMouseDown={(e) => e.stopPropagation()} onClick={onClose}>
             <div
+                ref={panelRef}
                 data-theme="light"
                 data-modal
                 className="animate-popIn fixed z-[2000] flex max-h-[300px] w-[240px] max-w-[92vw] flex-col rounded-[10px] border border-(--border) bg-(--menu-bg) p-[6px] text-(--text) shadow-2xl"
-                style={{ top: position.top, left: Math.min(position.left, window.innerWidth - 256) }}
+                style={{ top, left: Math.min(position.left, window.innerWidth - 256) }}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => e.stopPropagation()}
             >
