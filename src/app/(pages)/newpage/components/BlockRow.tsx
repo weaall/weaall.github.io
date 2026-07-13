@@ -160,7 +160,7 @@ export default function BlockRow({
 
                 <tw.InputWrap
                     // 드래그 중에는 선택 배경(파란색)을 숨긴다 — 삽입선과 같은 색이라 겹쳐 헷갈림
-                    className={(selected && draggingIdx === null) || menuId === block.id ? "bg-(--active-bg)" : ""}
+                    className={`relative ${(selected && draggingIdx === null) || menuId === block.id ? "bg-(--active-bg)" : ""}`}
                     style={{ marginLeft: block.indentationLevel * 25 }}
                     // 선택된 블록은 본문을 잡아도 드래그(그룹 이동) + 누르기로 선택 해제 안 함
                     draggable={selected}
@@ -202,6 +202,12 @@ export default function BlockRow({
                         collapsed={block.collapsed}
                         onToggleCollapse={() => onToggleCollapse(block.id)}
                     />
+                    {/* 코드/표/이미지/차트는 자체 배경이 불투명이라 뒤의 선택색이 안 보인다 → 위에 반투명 파란 오버레이 */}
+                    {selected &&
+                        draggingIdx === null &&
+                        ["code", "table", "image", "barChartH", "barChartV"].includes(block.type) && (
+                            <div className="pointer-events-none absolute inset-0 z-[15] rounded-[10px]" style={{ background: "rgba(35,131,226,0.18)" }} />
+                        )}
                 </tw.InputWrap>
             </tw.BlockWrap>
         </>
