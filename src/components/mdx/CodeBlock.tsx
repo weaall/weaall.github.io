@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect } from "react";
-import hljs from "highlight.js";
+import { highlightCode } from "./highlightCode";
 
 // post/dev 코드블록이 스타일만 다르고 로직이 동일해 공유 컴포넌트로 통합.
 // 각 변형은 자신의 styled 모듈(components.styles / devComponents.styles)을 styles로 주입한다.
@@ -27,14 +27,9 @@ export default function CodeBlock({ className, children, styles: S }: CodeBlockP
 
     useLayoutEffect(() => {
         const code = children?.toString() || "";
-        if (language && hljs.getLanguage(language)) {
-            setHighlightedCode(hljs.highlight(code, { language, ignoreIllegals: true }).value);
-            setLabel(language);
-        } else {
-            const r = hljs.highlightAuto(code);
-            setHighlightedCode(r.value);
-            setLabel(r.language || "");
-        }
+        const { value, language: detected } = highlightCode(code, language || "auto");
+        setHighlightedCode(value);
+        setLabel(detected);
     }, [children, language]);
 
     const copy = async () => {

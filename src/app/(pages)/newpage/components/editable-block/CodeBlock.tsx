@@ -5,6 +5,7 @@ import hljs from "highlight.js";
 import { canFormat, formatCode } from "../../lib/formatCode";
 import { usePopupDirection } from "../../hooks/usePopupDirection";
 import { useScrollLock } from "../../hooks/useScrollLock";
+import { highlightCode } from "@/components/mdx/highlightCode";
 
 // 노션풍 코드 블록(에디터). 왼쪽 줄번호 거터 + 투명 textarea + 뒤 hljs 색칠 오버레이.
 // 긴 줄은 자동 줄바꿈(가로 스크롤 없음), 줄번호는 각 논리 줄 상단에 정렬. 높이는 내용만큼 자동.
@@ -53,8 +54,6 @@ function parseCode(content: string): { code: string; lang: string } {
     return { code: content || "", lang: "auto" };
 }
 
-const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
 // hljs가 만든 HTML을 줄 단위로 분리(줄을 넘나드는 <span>은 각 줄에서 다시 열고 닫아 유지).
 function splitHljsLines(html: string): string[] {
     const open: string[] = [];
@@ -88,25 +87,10 @@ export default function CodeBlock({ id, content }: { id: string; content: string
         );
     };
 
-    // 하이라이팅(언어 지정 or 자동감지) → 줄 단위 HTML 배열
+    // 하이라이팅(언어 지정 or 자동감지, 최상위 JSX 보정) → 줄 단위 HTML 배열
     useLayoutEffect(() => {
-        const known = lang && lang !== "auto" && lang !== "plaintext" && hljs.getLanguage(lang);
-        let value: string;
-        try {
-            if (known) {
-                value = hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
-                setDetected(lang);
-            } else if (lang === "plaintext") {
-                value = escapeHtml(code);
-                setDetected("");
-            } else {
-                const r = hljs.highlightAuto(code);
-                value = r.value;
-                setDetected(r.language || "");
-            }
-        } catch {
-            value = escapeHtml(code);
-        }
+        const { value, language } = highlightCode(code, lang);
+        setDetected(lang === "plaintext" ? "" : language);
         setLineHtml(splitHljsLines(value));
     }, [code, lang]);
 
