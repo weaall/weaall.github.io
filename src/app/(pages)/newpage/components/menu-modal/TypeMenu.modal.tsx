@@ -1,6 +1,6 @@
 import { ColorPainterIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
 import * as tw from "./TypeMenu.modal.styles";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { TypeMenuElement } from "./TypeElement";
 import { useScrollLock } from "../../hooks/useScrollLock";
 
@@ -46,17 +46,6 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
 
     useScrollLock(open); // 메뉴 열려있는 동안 페이지 스크롤 잠금(스크롤바는 유지)
 
-    // 드로워가 열리면 팝업이 길어져 화면 아래로 넘칠 수 있다 → 넘치면 위로 올려 옵션이 안 잘리게.
-    const rootRef = useRef<HTMLDivElement>(null);
-    const [top, setTop] = useState(position?.top ?? 0);
-    useLayoutEffect(() => {
-        if (!open || !position) return;
-        // 메뉴/드로워가 absolute라 컨테이너 높이가 0. 드로워(전환 목록)까지 열릴 걸 감안해
-        // 열 때부터 넉넉한 높이로 위치를 잡아 hover 시 점프/깜빡임 없이 위로 뜨게 한다.
-        const POPUP_MAX_H = 470;
-        setTop(Math.max(8, Math.min(position.top, window.innerHeight - POPUP_MAX_H - 8)));
-    }, [open, position]);
-
     const handleMenuButtonMouseEnter = (type: string) => {
         if (type === "전환" || type === "색") {
             setShowDrawer(type as "전환" | "색");
@@ -86,11 +75,10 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                 onClick={handleClose}
             />
             <div
-                ref={rootRef}
                 className="animate-popIn"
                 style={{
                     position: "fixed",
-                    top,
+                    top: position.top,
                     left: position.left,
                     zIndex: 1000,
                     display: "flex",

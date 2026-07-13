@@ -886,11 +886,13 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 const rect = btn.getBoundingClientRect();
                 // 메뉴는 position: fixed 라 뷰포트 기준 좌표를 그대로 쓴다(scroll 오프셋 더하지 않음).
                 const menuWidth = 265;
-                const menuHeight = 220;
+                // 전환/색 드로워(옆에서 세로로 길게 열림)까지 감안한 높이 — 이만큼으로 클램프해야
+                // 버튼 근처에 붙은 채로 아래 공간이 없으면 위로만 살짝 올라가 드로워가 안 잘린다.
+                const menuHeight = 470;
                 const margin = 12;
                 let left = rect.left - menuWidth - 45;
                 let top = rect.top - 70;
-                // 화면 밖으로 넘어가지 않도록 클램핑
+                // 화면 밖으로 넘어가지 않도록 클램핑(버튼 기준 위치 유지)
                 left = Math.max(margin, Math.min(left, window.innerWidth - menuWidth - margin));
                 top = Math.max(margin, Math.min(top, window.innerHeight - menuHeight - margin));
                 setMenuPos({ top, left });
