@@ -98,8 +98,8 @@ export default function BarChart({ type, orient, data, rows, title, subtitle }: 
         <div className="my-2 rounded-xl border border-(--border) px-5 py-4">
             {(ttl || sub) && (
                 <div className="mb-4">
-                    {ttl && <div className="text-sm font-semibold text-(--text-strong)">{ttl}</div>}
-                    {sub && <div className="mt-0.5 text-xs text-(--text-muted)">{sub}</div>}
+                    {sub && <div className="mb-0.5 text-xs font-medium text-(--text-muted)">{sub}</div>}
+                    {ttl && <div className="text-xl font-bold text-(--text-strong)">{ttl}</div>}
                 </div>
             )}
             {chartType === "barH" && <BarsH items={items} />}
@@ -216,10 +216,10 @@ function LineArea({ items, area }: { items: ChartRow[]; area: boolean }) {
 /* ── 도넛 (부채꼴 path: 안팎 동일 폭 간격) ──── */
 function Donut({ items }: { items: ChartRow[] }) {
     const total = items.reduce((s, r) => s + Math.max(0, r.value), 0) || 1;
-    const SIZE = 168; // 절대 크기 축소
-    const CX = SIZE / 2;
     const Ro = 70; // 바깥 반지름
     const Ri = 46; // 안쪽 반지름 (두께 24)
+    const SIZE = Ro * 2 + 8; // svg 여백 최소화 → 도넛이 오른쪽에 딱 붙음
+    const CX = SIZE / 2;
     const CORNER = 9; // 모서리 라운드용 stroke 두께 (클수록 더 둥글게)
     const GAP = items.length > 1 ? 8 + CORNER : 0; // 실제 간격 ≈ GAP-CORNER 이 되도록 보정
     const pt = (r: number, a: number) => `${(CX + r * Math.cos(a)).toFixed(2)} ${(CX + r * Math.sin(a)).toFixed(2)}`;
