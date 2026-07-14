@@ -26,6 +26,7 @@ interface BlockRowProps {
     onBlockDragOver: (e: React.DragEvent<HTMLDivElement>, idx: number) => void;
     onDragEnd: () => void;
     onAddBlock: (idx: number) => void;
+    onAddBlockWithMenu: (idx: number) => void;
     onPlusClick: (id: string) => void;
     onContentChange: (idx: number, value: string) => void;
     onTypeChange: (idx: number, type: string) => void;
@@ -64,6 +65,7 @@ export default function BlockRow({
     onBlockDragOver,
     onDragEnd,
     onAddBlock,
+    onAddBlockWithMenu,
     onPlusClick,
     onContentChange,
     onTypeChange,
@@ -160,7 +162,7 @@ export default function BlockRow({
                     >
                         {/* 칸 안에서는 좁은 갓터라 + 버튼은 숨기고 드래그/메뉴 손잡이만 */}
                         {!inColumn && (
-                            <tw.PlusButton onClick={() => onAddBlock(idx)}>
+                            <tw.PlusButton onClick={() => onAddBlockWithMenu(idx)}>
                                 <PlusIcon color={"#91918e"} />
                             </tw.PlusButton>
                         )}

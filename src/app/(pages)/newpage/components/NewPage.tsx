@@ -979,6 +979,36 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         }, 0);
     };
 
+    // "+" 버튼: 아래에 빈 블록을 추가하고 그 블록에 타입 선택(전환) 메뉴를 연다 → 무엇을 만들지 고를 수 있게
+    const handleAddBlockWithMenu = (idx: number) => {
+        const newBlockId = crypto.randomUUID();
+        const cur = blocks[idx];
+        setBlocks((prev) => {
+            const arr = [...prev];
+            arr.splice(idx + 1, 0, {
+                id: newBlockId,
+                type: "p",
+                content: "",
+                indentationLevel: cur?.indentationLevel ?? 0,
+                ...(cur?.colGroup ? { colGroup: cur.colGroup, col: cur.col ?? 0 } : {}),
+            });
+            return arr;
+        });
+        setTimeout(() => {
+            const el = document.getElementById(newBlockId);
+            el?.focus();
+            const r = el?.getBoundingClientRect();
+            if (!r) return;
+            const menuWidth = 265;
+            const menuHeight = 470;
+            const margin = 12;
+            const left = Math.max(margin, Math.min(r.left, window.innerWidth - menuWidth - margin));
+            const top = Math.max(margin, Math.min(r.bottom + 6, window.innerHeight - menuHeight - margin));
+            setMenuId(newBlockId);
+            setMenuPos({ top, left });
+        }, 0);
+    };
+
     const handleAddBlockAfterBullet = (idx: number) => {
         const newBlockId = crypto.randomUUID();
         setBlocks((prev) => {
@@ -1184,6 +1214,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             onBlockDragOver={handleBlockDragOver}
             onDragEnd={handleDragEnd}
             onAddBlock={handleAddBlock}
+            onAddBlockWithMenu={handleAddBlockWithMenu}
             onPlusClick={handlePlusClick}
             onContentChange={handleContentChange}
             onTypeChange={handleTypeChange}
