@@ -18,6 +18,7 @@ import { mdxToBlocks } from "../lib/mdxToBlocks";
 import { htmlToBlocks } from "../lib/htmlToBlocks";
 import type { EditorData } from "../lib/exportMdx";
 import CategoryPicker from "./category-picker/CategoryPicker";
+import DatePicker from "./date-picker/DatePicker";
 import { parseImageContent, serializeImageContent } from "../lib/imageContent";
 import { PageIcon, fileToWebp } from "../lib/pageIcon";
 import IconPicker from "./icon-picker/IconPicker";
@@ -69,6 +70,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
     const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
     // "+" / 빈 공간 클릭 시 뜨는 블록 검색 선택기 (전환 메뉴와 별개)
     const [typePicker, setTypePicker] = useState<{ top: number; left: number; blockId: string } | null>(null);
+    const [datePicker, setDatePicker] = useState<{ top: number; left: number } | null>(null);
     // 토글 펼침 시 등장 애니메이션: 직전에 숨겨졌던 블록 집합 / 방금 드러난 블록 집합
     const prevHiddenRef = useRef<Set<string>>(new Set());
     const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
@@ -1286,9 +1288,9 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                         {meta.imageUrl && (
                             <div className="group/cover relative mb-8">
                                 {/* 포스트(PostTitle)의 커버 마크업과 동일하게 */}
-                                <div className="w-[700px] max-w-full h-[400px] rounded-2xl content-center flex justify-center p-4 bg-white">
+                                <div className="w-[700px] max-w-full h-[400px] overflow-hidden rounded-2xl bg-(--hover-bg)">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img src={meta.imageUrl} alt="" className="rounded-xl h-full w-full object-contain" />
+                                    <img src={meta.imageUrl} alt="" className="h-full w-full object-cover" />
                                 </div>
                                 <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover/cover:opacity-100">
                                     <button className="rounded bg-black/50 px-2 py-1 text-xs text-white hover:bg-black/70" onClick={() => coverInputRef.current?.click()}>
@@ -1336,6 +1338,17 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                     📁 {meta.label}
                                 </button>
                             )}
+                            {meta.date && (
+                                <button
+                                    className="flex items-center gap-1 rounded-[6px] bg-(--hover-bg) px-2 py-1 text-xs font-medium text-(--text-muted) hover:bg-(--menu-hover-bg)"
+                                    onClick={(e) => {
+                                        const r = e.currentTarget.getBoundingClientRect();
+                                        setDatePicker({ top: r.bottom + 6, left: r.left });
+                                    }}
+                                >
+                                    📅 {meta.date}
+                                </button>
+                            )}
                             <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover/title:opacity-100">
                                 {!meta.icon && (
                                     <button
@@ -1381,6 +1394,17 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                         onClick={() => setShowTags(true)}
                                     >
                                         🏷️ 태그 추가
+                                    </button>
+                                )}
+                                {!meta.date && (
+                                    <button
+                                        className="flex items-center gap-1 rounded-[6px] px-2 py-1 text-sm text-(--text-muted) hover:bg-(--hover-bg)"
+                                        onClick={(e) => {
+                                            const r = e.currentTarget.getBoundingClientRect();
+                                            setDatePicker({ top: r.bottom + 6, left: r.left });
+                                        }}
+                                    >
+                                        📅 날짜 추가
                                     </button>
                                 )}
                             </div>
@@ -1469,6 +1493,15 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                     options={Array.from(new Set([...categories, ...listCategories()]))}
                     onSelect={(label) => setMeta((prev) => ({ ...prev, label }))}
                     onClose={() => setCatPicker(null)}
+                />
+
+                <DatePicker
+                    open={datePicker !== null}
+                    position={datePicker}
+                    value={meta.date}
+                    onSelect={(date) => setMeta((prev) => ({ ...prev, date }))}
+                    onClear={() => setMeta((prev) => ({ ...prev, date: "" }))}
+                    onClose={() => setDatePicker(null)}
                 />
                 
                 <TypeMenuModal
