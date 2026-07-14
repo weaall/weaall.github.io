@@ -1286,7 +1286,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                         {meta.imageUrl && (
                             <div className="group/cover relative mb-8">
                                 {/* 포스트(PostTitle)의 커버 마크업과 동일하게 */}
-                                <div className="w-full h-[400px] rounded-basic content-center flex justify-center p-4 bg-white">
+                                <div className="w-[700px] max-w-full h-[400px] rounded-basic content-center flex justify-center p-4 bg-white">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img src={meta.imageUrl} alt="" className="rounded-basic h-full w-full object-contain" />
                                 </div>
