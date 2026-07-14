@@ -11,16 +11,8 @@ export interface ChartRow {
 export type ChartType = "barV" | "barH" | "line" | "area" | "donut";
 
 // 막대/라인/도넛 색상 팔레트 (노션풍 부드러운 톤).
-// 아주 연한(파스텔) 팔레트
-export const CHART_COLORS = ["#cabff8", "#aadcf4", "#e3f4b4", "#f8c8df", "#fdd6b3", "#f9c4c4", "#fdeaad", "#b6e7d2"];
-// hex를 살짝 진하게(최댓값 강조 등)
-export const darken = (hex: string, f = 0.8) => {
-    const n = parseInt(hex.replace("#", ""), 16);
-    const r = Math.round(((n >> 16) & 255) * f);
-    const g = Math.round(((n >> 8) & 255) * f);
-    const b = Math.round((n & 255) * f);
-    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-};
+// 비비드 팔레트 (도넛은 최댓값만 full, 나머지는 opacity를 낮춰 흐리게 표현)
+export const CHART_COLORS = ["#8b5cf6", "#38bdf8", "#a3e635", "#f472b6", "#fb923c", "#f87171", "#facc15", "#34d399"];
 export const colorAt = (i: number) => CHART_COLORS[((i % CHART_COLORS.length) + CHART_COLORS.length) % CHART_COLORS.length];
 
 // 색 → 부드러운 그라데이션 배경
@@ -242,10 +234,14 @@ function Donut({ items }: { items: ChartRow[] }) {
             : "";
         const mid = (a0 + a1) / 2;
         const lr = (Ro + Ri) / 2; // 링 두께 가운데 → 숫자를 그래프 안에
-        // 최댓값 조각만 살짝 진하게
-        const base = r.color || colorAt(i);
-        const color = i === maxIdx ? darken(base, 0.82) : base;
-        return { color, d, pct: Math.round(frac * 100), lx: CX + Math.cos(mid) * lr, ly: CX + Math.sin(mid) * lr };
+        return {
+            color: r.color || colorAt(i),
+            max: i === maxIdx, // 최댓값 조각은 full opacity(비비드), 나머지는 흐리게
+            d,
+            pct: Math.round(frac * 100),
+            lx: CX + Math.cos(mid) * lr,
+            ly: CX + Math.sin(mid) * lr,
+        };
     });
     return (
         <div className="flex flex-wrap items-center gap-6">
@@ -260,15 +256,41 @@ function Donut({ items }: { items: ChartRow[] }) {
             </div>
             {/* 도넛 (가운데 비움, 트랙 없음 → 간격은 배경색). 단색이라 라운드 모서리도 같은 색. */}
             <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} className="shrink-0">
-                {segs.map((s, i) => (s.d ? <path key={i} d={s.d} fill={s.color} stroke={s.color} strokeWidth={CORNER} strokeLinejoin="round" /> : null))}
-                {/* 값 라벨: 링 안(두께 가운데)에 진한 숫자 */}
                 {segs.map((s, i) =>
-                    s.pct >= 6 ? (
-                        <text key={i} x={s.lx} y={s.ly + 4} textAnchor="middle" fontSize="13" fontWeight="700" className="tabular-nums" fill="#4a4458">
-                            {items[i].value}
-                        </text>
+                    s.d ? (
+                        <path
+                            key={i}
+                            d={s.d}
+                            fill={s.color}
+                            fillOpacity={s.max ? 1 : 0.4}
+                            stroke={s.color}
+                            strokeOpacity={s.max ? 1 : 0.4}
+                            strokeWidth={CORNER}
+                            strokeLinejoin="round"
+                        />
                     ) : null,
                 )}
+                {/* 값 라벨: 링 안(두께 가운데). 흐린 조각은 회색빛, 최댓값은 검은 알약 + 흰 숫자 */}
+                {segs.map((s, i) => {
+                    if (s.pct < 6) return null;
+                    const txt = String(items[i].value);
+                    if (s.max) {
+                        const w = txt.length * 8.5 + 16;
+                        return (
+                            <g key={i}>
+                                <rect x={s.lx - w / 2} y={s.ly - 11} width={w} height={22} rx={7} fill="#1a1a1f" />
+                                <text x={s.lx} y={s.ly + 4} textAnchor="middle" fontSize="13" fontWeight="700" className="tabular-nums" fill="#ffffff">
+                                    {txt}
+                                </text>
+                            </g>
+                        );
+                    }
+                    return (
+                        <text key={i} x={s.lx} y={s.ly + 4} textAnchor="middle" fontSize="13" fontWeight="600" className="tabular-nums" fill="#9a97a3">
+                            {txt}
+                        </text>
+                    );
+                })}
             </svg>
         </div>
     );
