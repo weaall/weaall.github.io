@@ -1246,7 +1246,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             const left = run.filter(([bl]) => (bl.col ?? 0) === 0);
             const right = run.filter(([bl]) => (bl.col ?? 0) === 1);
             renderUnits.push(
-                <div key={g} className="flex gap-4" data-col-group={g}>
+                <div key={g} className="flex gap-16" data-col-group={g}>
                     {[left, right].map((colBlocks, c) => (
                         <div key={c} className="min-w-0 flex-1">
                             {colBlocks.map(([bl, bi]) => (

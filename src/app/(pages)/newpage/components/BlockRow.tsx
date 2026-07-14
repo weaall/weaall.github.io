@@ -81,11 +81,10 @@ export default function BlockRow({
     selected,
     onClearSelection,
     animateIn,
-    inColumn,
     sideDropSide,
 }: BlockRowProps) {
-    // 칸(컬럼) 안 블록은 손잡이가 -56px로 튀면 옆 칸과 겹치므로 살짝만 왼쪽으로.
-    const gutterLeft = (inColumn ? -30 : -56) + block.indentationLevel * 25;
+    // 손잡이는 블록 왼쪽 -56 (칸일 때는 칸 사이 간격 안에 들어가도록 그룹 gap을 넓혀 둠)
+    const gutterLeft = -56 + block.indentationLevel * 25;
     return (
         <>
             <div
@@ -120,7 +119,7 @@ export default function BlockRow({
                         position: "absolute",
                         left: gutterLeft,
                         top: 0,
-                        width: inColumn ? 30 : 56,
+                        width: 56,
                         height: "100%",
                         zIndex: 5,
                     }}
@@ -145,7 +144,7 @@ export default function BlockRow({
                             display: "flex",
                             alignItems: "center",
                             zIndex: 10,
-                            width: inColumn ? 30 : 56,
+                            width: 56,
                             height: "100%",
                         }}
                         onMouseEnter={() => setHoverId(block.id)}
@@ -160,12 +159,9 @@ export default function BlockRow({
                         onDragStart={(e) => onDragStart(e, idx)}
                         onDragEnd={onDragEnd}
                     >
-                        {/* 칸 안에서는 좁은 갓터라 + 버튼은 숨기고 드래그/메뉴 손잡이만 */}
-                        {!inColumn && (
-                            <tw.PlusButton onClick={() => onAddBlockWithMenu(idx)}>
-                                <PlusIcon color={"#91918e"} />
-                            </tw.PlusButton>
-                        )}
+                        <tw.PlusButton onClick={() => onAddBlockWithMenu(idx)}>
+                            <PlusIcon color={"#91918e"} />
+                        </tw.PlusButton>
                         <tw.DotButton
                             ref={(el: HTMLButtonElement | null) => {
                                 dotRefs.current[block.id] = el;
