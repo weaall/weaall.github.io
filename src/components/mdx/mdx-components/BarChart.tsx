@@ -19,6 +19,16 @@ export const colorAt = (i: number) => CHART_COLORS[((i % CHART_COLORS.length) + 
 const grad = (c: string, deg = 180) => `linear-gradient(${deg}deg, ${c} 0%, ${c}cc 100%)`;
 // 연한 라벤더(기본 세로막대용)
 const SOFT = "linear-gradient(180deg, #efeafe 0%, #e2d8fb 100%)";
+// hex 색을 흰색과 섞어 밝게 (amt: 0=원본, 1=흰색)
+function lighten(hex: string, amt: number): string {
+    const m = hex.replace("#", "");
+    const n = m.length === 3 ? m.split("").map((c) => c + c).join("") : m;
+    const r = parseInt(n.slice(0, 2), 16);
+    const g = parseInt(n.slice(2, 4), 16);
+    const b = parseInt(n.slice(4, 6), 16);
+    const mix = (v: number) => Math.round(v + (255 - v) * amt);
+    return `#${[mix(r), mix(g), mix(b)].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+}
 
 function normalizeRows(rows: ChartRow[]): ChartRow[] {
     return rows
@@ -223,13 +233,14 @@ function LineArea({ items, area }: { items: ChartRow[]; area: boolean }) {
 
 /* ── 도넛 (부채꼴 path: 안팎 동일 폭 간격) ──── */
 function Donut({ items }: { items: ChartRow[] }) {
+    const uid = React.useId().replace(/:/g, "");
     const total = items.reduce((s, r) => s + Math.max(0, r.value), 0) || 1;
     const Ro = 70; // 바깥 반지름
     const Ri = 46; // 안쪽 반지름 (두께 24)
     const SIZE = Ro * 2 + 8; // svg 여백 최소화 → 도넛이 오른쪽에 딱 붙음
     const CX = SIZE / 2;
     const CORNER = 9; // 모서리 라운드용 stroke 두께 (클수록 더 둥글게)
-    const GAP = items.length > 1 ? 8 + CORNER : 0; // 실제 간격 ≈ GAP-CORNER 이 되도록 보정
+    const GAP = items.length > 1 ? 5 + CORNER : 0; // 실제 간격 ≈ GAP-CORNER 이 되도록 보정 (조금 더 좁게)
     const pt = (r: number, a: number) => `${(CX + r * Math.cos(a)).toFixed(2)} ${(CX + r * Math.sin(a)).toFixed(2)}`;
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
 
@@ -250,9 +261,15 @@ function Donut({ items }: { items: ChartRow[] }) {
             : "";
         const mid = (a0 + a1) / 2;
         const lr = (Ro + Ri) / 2; // 링 두께 가운데 → 숫자를 그래프 안에
+        const color = r.color || colorAt(i);
+        const isMax = i === maxIdx;
         return {
-            color: r.color || colorAt(i),
-            max: i === maxIdx, // 최댓값 조각은 full opacity(비비드), 나머지는 흐리게
+            color,
+            gradId: isMax ? `dg-${uid}-${i}` : "",
+            // 최댓값 조각은 끝을 흰색쪽으로 페이드하는 그라데이션 (링 두께 가운데선 방향)
+            g: { x1: CX + Math.cos(os) * lr, y1: CX + Math.sin(os) * lr, x2: CX + Math.cos(oe) * lr, y2: CX + Math.sin(oe) * lr },
+            gEnd: lighten(color, 0.55),
+            max: isMax, // 최댓값 조각은 full opacity(비비드), 나머지는 더 흐리게
             d,
             pct: Math.round(frac * 100),
             lx: CX + Math.cos(mid) * lr,
@@ -272,16 +289,26 @@ function Donut({ items }: { items: ChartRow[] }) {
             </div>
             {/* 도넛 (가운데 비움, 트랙 없음 → 간격은 배경색). 단색이라 라운드 모서리도 같은 색. */}
             <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} className="shrink-0">
+                <defs>
+                    {segs.map((s, i) =>
+                        s.max && s.d ? (
+                            <linearGradient key={i} id={s.gradId} gradientUnits="userSpaceOnUse" x1={s.g.x1} y1={s.g.y1} x2={s.g.x2} y2={s.g.y2}>
+                                <stop offset="0%" stopColor={s.color} />
+                                <stop offset="100%" stopColor={s.gEnd} />
+                            </linearGradient>
+                        ) : null,
+                    )}
+                </defs>
                 {segs.map((s, i) =>
                     s.d ? (
                         <path
                             key={i}
                             d={s.d}
-                            fill={s.color}
-                            stroke={s.color}
+                            fill={s.max ? `url(#${s.gradId})` : s.color}
+                            stroke={s.max ? `url(#${s.gradId})` : s.color}
                             strokeWidth={CORNER}
                             strokeLinejoin="round"
-                            opacity={s.max ? 1 : 0.4}
+                            opacity={s.max ? 1 : 0.25}
                         />
                     ) : null,
                 )}
