@@ -4,11 +4,11 @@ export const Container = tw.div`
   w-full flex justify-center py-16 flex-1 min-h-screen gap-2
 `;
 
-export const BlockWrap = tw.div` flex items-center relative transition-colors
+export const BlockWrap = tw.div` flex items-center relative transition-colors min-w-0
 `;
 
 export const InputWrap = tw.div`
-  flex-1 transition-colors
+  flex-1 min-w-0 transition-colors
   rounded-md
   px-[6px] py-[2px]
 `;
