@@ -19,15 +19,22 @@ export const colorAt = (i: number) => CHART_COLORS[((i % CHART_COLORS.length) + 
 const grad = (c: string, deg = 180) => `linear-gradient(${deg}deg, ${c} 0%, ${c}cc 100%)`;
 // 연한 라벤더(기본 세로막대용)
 const SOFT = "linear-gradient(180deg, #efeafe 0%, #e2d8fb 100%)";
-// hex 색을 흰색과 섞어 밝게 (amt: 0=원본, 1=흰색)
-function lighten(hex: string, amt: number): string {
+function hexToRgb(hex: string): [number, number, number] {
     const m = hex.replace("#", "");
     const n = m.length === 3 ? m.split("").map((c) => c + c).join("") : m;
-    const r = parseInt(n.slice(0, 2), 16);
-    const g = parseInt(n.slice(2, 4), 16);
-    const b = parseInt(n.slice(4, 6), 16);
-    const mix = (v: number) => Math.round(v + (255 - v) * amt);
-    return `#${[mix(r), mix(g), mix(b)].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+    return [parseInt(n.slice(0, 2), 16), parseInt(n.slice(2, 4), 16), parseInt(n.slice(4, 6), 16)];
+}
+const rgbToHex = (r: number, g: number, b: number) => `#${[r, g, b].map((v) => Math.round(v).toString(16).padStart(2, "0")).join("")}`;
+// hex 색을 흰색과 섞어 밝게 (amt: 0=원본, 1=흰색)
+function lighten(hex: string, amt: number): string {
+    const [r, g, b] = hexToRgb(hex);
+    return rgbToHex(r + (255 - r) * amt, g + (255 - g) * amt, b + (255 - b) * amt);
+}
+// 두 hex 색 선형 보간 (t: 0=a, 1=b)
+function mixHex(a: string, b: string, t: number): string {
+    const [ar, ag, ab] = hexToRgb(a);
+    const [br, bg, bb] = hexToRgb(b);
+    return rgbToHex(ar + (br - ar) * t, ag + (bg - ag) * t, ab + (bb - ab) * t);
 }
 
 function normalizeRows(rows: ChartRow[]): ChartRow[] {
@@ -244,6 +251,12 @@ function Donut({ items }: { items: ChartRow[] }) {
     const pt = (r: number, a: number) => `${(CX + r * Math.cos(a)).toFixed(2)} ${(CX + r * Math.sin(a)).toFixed(2)}`;
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
 
+    // 한 부채꼴(annular sector) path 생성: 바깥[oStart→oEnd] + 안쪽[iEnd→iStart]
+    const sector = (oStart: number, oEnd: number, iStart: number, iEnd: number) => {
+        const large = oEnd - oStart > Math.PI ? 1 : 0;
+        return `M ${pt(Ro, oStart)} A ${Ro} ${Ro} 0 ${large} 1 ${pt(Ro, oEnd)} L ${pt(Ri, iEnd)} A ${Ri} ${Ri} 0 ${large} 0 ${pt(Ri, iStart)} Z`;
+    };
+
     let acc = 0;
     const segs = items.map((r, i) => {
         const frac = Math.max(0, r.value) / total;
@@ -254,23 +267,43 @@ function Donut({ items }: { items: ChartRow[] }) {
         const dOut = GAP / 2 / Ro;
         const dIn = GAP / 2 / Ri;
         const os = a0 + dOut, oe = a1 - dOut, isg = a1 - dIn, ie = a0 + dIn;
-        const large = a1 - a0 > Math.PI ? 1 : 0;
         const drawable = oe > os && isg > ie;
-        const d = drawable
-            ? `M ${pt(Ro, os)} A ${Ro} ${Ro} 0 ${large} 1 ${pt(Ro, oe)} L ${pt(Ri, isg)} A ${Ri} ${Ri} 0 ${large} 0 ${pt(Ri, ie)} Z`
-            : "";
         const mid = (a0 + a1) / 2;
         const lr = (Ro + Ri) / 2; // 링 두께 가운데 → 숫자를 그래프 안에
         const color = r.color || colorAt(i);
         const isMax = i === maxIdx;
+        const gEnd = lighten(color, 0.55);
+
+        // 최댓값: 각도 기준으로 색을 보간해 "각(angular) 그라데이션"을 만든다.
+        // 선형 그라데이션은 곡선을 직선으로 투영해 안/밖 페이드 시작점이 어긋나므로,
+        // 부채꼴을 각도로 잘게 쪼개 각 조각을 보간색으로 채운다(안/밖 동일 각도에서 페이드).
+        const EDGE = 0.28; // 양끝 페이드 구간 비율
+        const colorAtT = (t: number) => {
+            if (t < EDGE) return mixHex(gEnd, color, t / EDGE);
+            if (t > 1 - EDGE) return mixHex(gEnd, color, (1 - t) / EDGE);
+            return color;
+        };
+        let slices: { d: string; color: string }[] = [];
+        if (isMax && drawable) {
+            const N = 40;
+            const oa = (f: number) => os + (oe - os) * f;
+            const ia = (f: number) => ie + (isg - ie) * f;
+            const OV = (oe - os) / N / 2; // 조각 간 미세 겹침(솔기 방지)
+            for (let k = 0; k < N; k++) {
+                const f0 = k / N, f1 = (k + 1) / N;
+                slices.push({
+                    d: sector(oa(f0) - (k > 0 ? OV : 0), oa(f1) + (k < N - 1 ? OV : 0), ia(f0) - (k > 0 ? OV : 0), ia(f1) + (k < N - 1 ? OV : 0)),
+                    color: colorAtT((f0 + f1) / 2),
+                });
+            }
+        }
+        const d = drawable ? sector(os, oe, ie, isg) : "";
         return {
             color,
-            gradId: isMax ? `dg-${uid}-${i}` : "",
-            // 최댓값 조각은 끝을 흰색쪽으로 페이드하는 그라데이션 (링 두께 가운데선 방향)
-            g: { x1: CX + Math.cos(os) * lr, y1: CX + Math.sin(os) * lr, x2: CX + Math.cos(oe) * lr, y2: CX + Math.sin(oe) * lr },
-            gEnd: lighten(color, 0.55),
+            gEnd,
             max: isMax, // 최댓값 조각은 full opacity(비비드), 나머지는 더 흐리게
             d,
+            slices,
             pct: Math.round(frac * 100),
             lx: CX + Math.cos(mid) * lr,
             ly: CX + Math.sin(mid) * lr,
@@ -289,29 +322,16 @@ function Donut({ items }: { items: ChartRow[] }) {
             </div>
             {/* 도넛 (가운데 비움, 트랙 없음 → 간격은 배경색). 단색이라 라운드 모서리도 같은 색. */}
             <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} className="shrink-0">
-                <defs>
-                    {segs.map((s, i) =>
-                        s.max && s.d ? (
-                            <linearGradient key={i} id={s.gradId} gradientUnits="userSpaceOnUse" x1={s.g.x1} y1={s.g.y1} x2={s.g.x2} y2={s.g.y2}>
-                                <stop offset="0%" stopColor={s.gEnd} />
-                                <stop offset="25%" stopColor={s.color} />
-                                <stop offset="75%" stopColor={s.color} />
-                                <stop offset="100%" stopColor={s.gEnd} />
-                            </linearGradient>
-                        ) : null,
-                    )}
-                </defs>
                 {segs.map((s, i) =>
-                    s.d ? (
-                        <path
-                            key={i}
-                            d={s.d}
-                            fill={s.max ? `url(#${s.gradId})` : s.color}
-                            stroke={s.max ? `url(#${s.gradId})` : s.color}
-                            strokeWidth={CORNER}
-                            strokeLinejoin="round"
-                            opacity={s.max ? 1 : 0.25}
-                        />
+                    s.max && s.slices.length ? (
+                        // 최댓값: 각도 보간 슬라이스들 (양끝이 안팎 동일하게 페이드)
+                        <g key={i}>
+                            {s.slices.map((sl, k) => (
+                                <path key={k} d={sl.d} fill={sl.color} stroke={sl.color} strokeWidth={CORNER} strokeLinejoin="round" />
+                            ))}
+                        </g>
+                    ) : s.d ? (
+                        <path key={i} d={s.d} fill={s.color} stroke={s.color} strokeWidth={CORNER} strokeLinejoin="round" opacity={0.25} />
                     ) : null,
                 )}
                 {/* 값 라벨: 링 안(두께 가운데). 흐린 조각은 회색빛, 최댓값은 검은 알약 + 흰 숫자 */}
