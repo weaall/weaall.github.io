@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import BarChart, { ChartRow, ChartType, CHART_COLORS, colorAt } from "@/components/mdx/mdx-components/BarChart";
+import EmojiInput from "../emoji/EmojiInput";
 
 interface ChartModalProps {
     open: boolean;
@@ -149,18 +150,12 @@ export default function ChartModal({ open, initialType, initialTitle, initialSub
                 <div className="flex min-h-0 flex-1 gap-4 m:flex-col">
                     {/* 왼쪽: 데이터 */}
                     <div className="flex w-[320px] shrink-0 flex-col m:w-full">
-                        <div className="mb-2 flex gap-2">
-                            <input
-                                className={`w-[46px] shrink-0 text-center ${inputCls}`}
-                                placeholder="🙂"
-                                maxLength={2}
-                                value={icon}
-                                onChange={(e) => setIcon(e.target.value)}
-                                title="이모지 (선택)"
-                            />
-                            <input className={`min-w-0 flex-1 ${inputCls}`} placeholder="그래프 제목 (선택)" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        <div className="mb-2">
+                            <EmojiInput className={inputCls} placeholder="그래프 제목 ( : 로 이모지 검색 )" value={title} onChange={setTitle} />
                         </div>
-                        <input className={`mb-3 w-full ${inputCls}`} placeholder="부제목 (선택)" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
+                        <div className="mb-3">
+                            <EmojiInput className={inputCls} placeholder="부제목 (선택, : 로 이모지)" value={subtitle} onChange={setSubtitle} />
+                        </div>
                         <div className="mb-[6px] flex items-center gap-[8px] px-[2px] text-[12px] font-[500] text-(--text-muted) select-none">
                             <span className="flex-1">항목</span>
                             <span className="w-[64px]">값</span>
@@ -170,7 +165,7 @@ export default function ChartModal({ open, initialType, initialTitle, initialSub
                         <div className="flex max-h-[280px] flex-col gap-[6px] overflow-y-auto pr-1">
                             {rows.map((r, i) => (
                                 <div key={i} className="flex items-center gap-[8px]">
-                                    <input className={`min-w-0 flex-1 ${inputCls}`} placeholder="이름" value={r.label} onChange={(e) => updateRow(i, { label: e.target.value })} />
+                                    <EmojiInput className={inputCls} placeholder="이름 ( : 이모지)" value={r.label} onChange={(v) => updateRow(i, { label: v })} />
                                     <input
                                         type="number"
                                         className={`w-[64px] ${inputCls}`}
