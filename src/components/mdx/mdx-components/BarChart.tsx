@@ -272,12 +272,12 @@ function Donut({ items }: { items: ChartRow[] }) {
         const lr = (Ro + Ri) / 2; // 링 두께 가운데 → 숫자를 그래프 안에
         const color = r.color || colorAt(i);
         const isMax = i === maxIdx;
-        const gEnd = lighten(color, 0.55);
+        const gEnd = lighten(color, 0.35);
 
         // 최댓값: 각도 기준으로 색을 보간해 "각(angular) 그라데이션"을 만든다.
         // 선형 그라데이션은 곡선을 직선으로 투영해 안/밖 페이드 시작점이 어긋나므로,
         // 부채꼴을 각도로 잘게 쪼개 각 조각을 보간색으로 채운다(안/밖 동일 각도에서 페이드).
-        const EDGE = 0.15; // 양끝 페이드 구간 비율 (작을수록 끝에서만 하얘짐)
+        const EDGE = 0.08; // 양끝 페이드 구간 비율 (작을수록 끝에서만 하얘짐)
         const colorAtT = (t: number) => {
             if (t < EDGE) return mixHex(gEnd, color, t / EDGE);
             if (t > 1 - EDGE) return mixHex(gEnd, color, (1 - t) / EDGE);
