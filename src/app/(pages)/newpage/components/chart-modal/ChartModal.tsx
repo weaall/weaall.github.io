@@ -8,8 +8,9 @@ interface ChartModalProps {
     initialType: string;
     initialTitle: string;
     initialSubtitle?: string;
+    initialIcon?: string;
     initialRows: ChartRow[];
-    onSave: (type: string, title: string, subtitle: string, rows: ChartRow[]) => void;
+    onSave: (type: string, title: string, subtitle: string, icon: string, rows: ChartRow[]) => void;
     onClose: () => void;
 }
 
@@ -65,10 +66,11 @@ function TypeIcon({ t }: { t: ChartType }) {
 }
 
 // 그래프 데이터/타입 편집 모달. 상단 타입 선택, 왼쪽 데이터 입력, 오른쪽 실시간 미리보기.
-export default function ChartModal({ open, initialType, initialTitle, initialSubtitle, initialRows, onSave, onClose }: ChartModalProps) {
+export default function ChartModal({ open, initialType, initialTitle, initialSubtitle, initialIcon, initialRows, onSave, onClose }: ChartModalProps) {
     const [type, setType] = useState<ChartType>((initialType as ChartType) || "barV");
     const [title, setTitle] = useState(initialTitle);
     const [subtitle, setSubtitle] = useState(initialSubtitle ?? "");
+    const [icon, setIcon] = useState(initialIcon ?? "");
     const [rows, setRows] = useState<ChartRow[]>(initialRows.length ? initialRows : [{ label: "", value: 0 }]);
     const [palette, setPalette] = useState<{ idx: number; top: number; left: number } | null>(null);
 
@@ -77,11 +79,12 @@ export default function ChartModal({ open, initialType, initialTitle, initialSub
             setType((initialType as ChartType) || "barV");
             setTitle(initialTitle);
             setSubtitle(initialSubtitle ?? "");
+            setIcon(initialIcon ?? "");
             setRows(initialRows.length ? initialRows : [{ label: "", value: 0 }]);
             setPalette(null);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [open, initialType, initialTitle, initialSubtitle, JSON.stringify(initialRows)]);
+    }, [open, initialType, initialTitle, initialSubtitle, initialIcon, JSON.stringify(initialRows)]);
 
     if (!open) return null;
 
@@ -91,7 +94,7 @@ export default function ChartModal({ open, initialType, initialTitle, initialSub
     const cleaned = rows.filter((r) => r.label.trim() !== "" || r.value !== 0);
 
     const handleSave = () => {
-        onSave(type, title.trim(), subtitle.trim(), cleaned);
+        onSave(type, title.trim(), subtitle.trim(), icon.trim(), cleaned);
         onClose();
     };
 
@@ -134,7 +137,7 @@ export default function ChartModal({ open, initialType, initialTitle, initialSub
                             type="button"
                             onClick={() => setType(t.key)}
                             className={`flex items-center gap-1.5 rounded-[8px] border px-3 py-1.5 text-[13px] transition-colors ${
-                                type === t.key ? "border-transparent bg-[#7c3aed] text-white" : "border-(--border) text-(--text-muted) hover:bg-(--menu-hover-bg)"
+                                type === t.key ? "border-transparent bg-(--active-bg) text-(--text)" : "border-(--border) text-(--text-muted) hover:bg-(--menu-hover-bg)"
                             }`}
                         >
                             <TypeIcon t={t.key} />
@@ -146,7 +149,17 @@ export default function ChartModal({ open, initialType, initialTitle, initialSub
                 <div className="flex min-h-0 flex-1 gap-4 m:flex-col">
                     {/* 왼쪽: 데이터 */}
                     <div className="flex w-[320px] shrink-0 flex-col m:w-full">
-                        <input className={`mb-2 w-full ${inputCls}`} placeholder="그래프 제목 (선택)" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        <div className="mb-2 flex gap-2">
+                            <input
+                                className={`w-[46px] shrink-0 text-center ${inputCls}`}
+                                placeholder="🙂"
+                                maxLength={2}
+                                value={icon}
+                                onChange={(e) => setIcon(e.target.value)}
+                                title="이모지 (선택)"
+                            />
+                            <input className={`min-w-0 flex-1 ${inputCls}`} placeholder="그래프 제목 (선택)" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </div>
                         <input className={`mb-3 w-full ${inputCls}`} placeholder="부제목 (선택)" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
                         <div className="mb-[6px] flex items-center gap-[8px] px-[2px] text-[12px] font-[500] text-(--text-muted) select-none">
                             <span className="flex-1">항목</span>
@@ -184,7 +197,7 @@ export default function ChartModal({ open, initialType, initialTitle, initialSub
                         <div className="mb-[6px] text-[12px] font-[500] text-(--text-muted) select-none">미리보기</div>
                         <div className="flex-1 overflow-auto rounded-[10px] border border-(--border) bg-(--page-bg) p-3">
                             {cleaned.length > 0 ? (
-                                <BarChart type={type} rows={cleaned} title={title.trim()} />
+                                <BarChart type={type} rows={cleaned} title={title.trim()} subtitle={subtitle.trim()} icon={icon.trim()} />
                             ) : (
                                 <div className="flex h-full items-center justify-center py-10 text-sm text-(--text-faint)">데이터를 입력하세요</div>
                             )}
@@ -192,7 +205,7 @@ export default function ChartModal({ open, initialType, initialTitle, initialSub
                     </div>
                 </div>
 
-                <button className="mt-[16px] w-full rounded-[6px] bg-[#7c3aed] py-[8px] text-[14px] font-[500] text-white hover:bg-[#6d28d9]" onClick={handleSave}>
+                <button className="mt-[16px] w-full rounded-[6px] bg-[#3b82f6] py-[8px] text-[14px] font-[500] text-white hover:bg-[#2f6fe0]" onClick={handleSave}>
                     적용
                 </button>
             </div>

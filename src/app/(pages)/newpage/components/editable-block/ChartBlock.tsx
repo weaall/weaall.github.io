@@ -7,11 +7,15 @@ import BarChart, { ChartRow, ChartType } from "@/components/mdx/mdx-components/B
 export default function ChartBlock({ id, orient, content }: { id: string; orient?: "h" | "v"; content: string }) {
     let rows: ChartRow[] = [];
     let title = "";
+    let subtitle = "";
+    let icon = "";
     let type: ChartType = orient === "h" ? "barH" : "barV";
     try {
         const parsed = JSON.parse(content || "{}");
         rows = parsed.rows ?? [];
         title = parsed.title ?? "";
+        subtitle = parsed.subtitle ?? "";
+        icon = parsed.icon ?? "";
         if (parsed.type) type = parsed.type;
     } catch {
         /* 손상된 값은 빈 그래프 */
@@ -30,7 +34,7 @@ export default function ChartBlock({ id, orient, content }: { id: string; orient
                     클릭해서 그래프 데이터를 입력하세요
                 </button>
             ) : (
-                <BarChart type={type} rows={rows} title={title} />
+                <BarChart type={type} rows={rows} title={title} subtitle={subtitle} icon={icon} />
             )}
             {rows.length > 0 && (
                 <button

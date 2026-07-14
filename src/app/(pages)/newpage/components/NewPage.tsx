@@ -199,9 +199,9 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
     }, []);
 
     // 그래프 데이터/타입 저장 → 해당 블록 content(JSON)를 갱신
-    const saveChart = (chartType: string, title: string, subtitle: string, rows: ChartRow[]) => {
+    const saveChart = (chartType: string, title: string, subtitle: string, icon: string, rows: ChartRow[]) => {
         if (!chartEditId) return;
-        setBlocks((prev) => prev.map((b) => (b.id === chartEditId ? { ...b, content: JSON.stringify({ type: chartType, title, subtitle, rows }) } : b)));
+        setBlocks((prev) => prev.map((b) => (b.id === chartEditId ? { ...b, content: JSON.stringify({ type: chartType, title, subtitle, icon, rows }) } : b)));
     };
 
     // 여러 블록 선택 (빈 영역을 드래그하면 마퀴 박스가 커지며 겹치는 블록 선택)
@@ -1594,7 +1594,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 if (!chartEditId) return null;
                 const block = blocks.find((b) => b.id === chartEditId);
                 if (!block || (block.type !== "barChartH" && block.type !== "barChartV" && block.type !== "chart")) return null;
-                let parsed: { type?: string; title?: string; subtitle?: string; rows?: ChartRow[] } = {};
+                let parsed: { type?: string; title?: string; subtitle?: string; icon?: string; rows?: ChartRow[] } = {};
                 try {
                     parsed = JSON.parse(block.content || "{}");
                 } catch {
@@ -1608,6 +1608,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                         initialType={initialType}
                         initialTitle={parsed.title ?? ""}
                         initialSubtitle={parsed.subtitle ?? ""}
+                        initialIcon={parsed.icon ?? ""}
                         initialRows={parsed.rows ?? []}
                         onSave={saveChart}
                         onClose={() => setChartEditId(null)}

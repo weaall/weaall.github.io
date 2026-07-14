@@ -67,12 +67,14 @@ interface BarChartProps {
     rows?: ChartRow[];
     title?: string;
     subtitle?: string;
+    icon?: string;
 }
 
-export default function BarChart({ type, orient, data, rows, title, subtitle }: BarChartProps) {
+export default function BarChart({ type, orient, data, rows, title, subtitle, icon }: BarChartProps) {
     let items: ChartRow[] = [];
     let ttl = title ?? "";
     let sub = subtitle ?? "";
+    let ico = icon ?? "";
     let resolvedType: ChartType | undefined = type;
     if (data) {
         try {
@@ -80,6 +82,7 @@ export default function BarChart({ type, orient, data, rows, title, subtitle }: 
             items = normalizeRows(parsed.rows ?? []);
             ttl = parsed.title ?? ttl;
             sub = parsed.subtitle ?? sub;
+            ico = parsed.icon ?? ico;
             if (parsed.type) resolvedType = parsed.type;
         } catch {
             items = [];
@@ -96,10 +99,15 @@ export default function BarChart({ type, orient, data, rows, title, subtitle }: 
 
     return (
         <div className="my-2 rounded-xl border border-(--border) px-5 py-4">
-            {(ttl || sub) && (
+            {(ttl || sub || ico) && (
                 <div className="mb-4">
                     {sub && <div className="mb-0.5 text-xs font-medium text-(--text-muted)">{sub}</div>}
-                    {ttl && <div className="text-xl font-bold text-(--text-strong)">{ttl}</div>}
+                    {(ttl || ico) && (
+                        <div className="flex items-center gap-2 text-xl font-bold text-(--text-strong)">
+                            {ico && <span className="text-[22px] leading-none">{ico}</span>}
+                            {ttl && <span>{ttl}</span>}
+                        </div>
+                    )}
                 </div>
             )}
             {chartType === "barH" && <BarsH items={items} />}
