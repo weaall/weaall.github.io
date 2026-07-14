@@ -12,13 +12,56 @@ interface ChartModalProps {
     onClose: () => void;
 }
 
-const TYPES: { key: ChartType; label: string; icon: string }[] = [
-    { key: "barV", label: "세로 막대", icon: "▉" },
-    { key: "barH", label: "가로 막대", icon: "▬" },
-    { key: "line", label: "선", icon: "〜" },
-    { key: "area", label: "영역", icon: "◣" },
-    { key: "donut", label: "도넛", icon: "◍" },
+const TYPES: { key: ChartType; label: string }[] = [
+    { key: "barV", label: "세로 막대" },
+    { key: "barH", label: "가로 막대" },
+    { key: "line", label: "선" },
+    { key: "area", label: "영역" },
+    { key: "donut", label: "도넛" },
 ];
+
+// 타입별 미니 아이콘
+function TypeIcon({ t }: { t: ChartType }) {
+    const s = { width: 16, height: 16, viewBox: "0 0 16 16", fill: "none" as const };
+    const c = "currentColor";
+    switch (t) {
+        case "barV":
+            return (
+                <svg {...s}>
+                    <rect x="2" y="8" width="3" height="6" rx="1" fill={c} />
+                    <rect x="6.5" y="4" width="3" height="10" rx="1" fill={c} />
+                    <rect x="11" y="6" width="3" height="8" rx="1" fill={c} />
+                </svg>
+            );
+        case "barH":
+            return (
+                <svg {...s}>
+                    <rect x="2" y="2.5" width="10" height="3" rx="1.5" fill={c} />
+                    <rect x="2" y="6.5" width="12" height="3" rx="1.5" fill={c} />
+                    <rect x="2" y="10.5" width="7" height="3" rx="1.5" fill={c} />
+                </svg>
+            );
+        case "line":
+            return (
+                <svg {...s}>
+                    <path d="M2 11 L6 6 L9 9 L14 3" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+            );
+        case "area":
+            return (
+                <svg {...s}>
+                    <path d="M2 11 L6 6 L9 9 L14 3 V14 H2 Z" fill={c} opacity="0.3" />
+                    <path d="M2 11 L6 6 L9 9 L14 3" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+            );
+        case "donut":
+            return (
+                <svg {...s}>
+                    <circle cx="8" cy="8" r="5" stroke={c} strokeWidth="2.6" fill="none" strokeDasharray="18 12" />
+                </svg>
+            );
+    }
+}
 
 // 그래프 데이터/타입 편집 모달. 상단 타입 선택, 왼쪽 데이터 입력, 오른쪽 실시간 미리보기.
 export default function ChartModal({ open, initialType, initialTitle, initialRows, onSave, onClose }: ChartModalProps) {
@@ -88,10 +131,10 @@ export default function ChartModal({ open, initialType, initialTitle, initialRow
                             type="button"
                             onClick={() => setType(t.key)}
                             className={`flex items-center gap-1.5 rounded-[8px] border px-3 py-1.5 text-[13px] transition-colors ${
-                                type === t.key ? "border-transparent bg-[#3b82f6] text-white" : "border-(--border) text-(--text-muted) hover:bg-(--menu-hover-bg)"
+                                type === t.key ? "border-transparent bg-[#7c3aed] text-white" : "border-(--border) text-(--text-muted) hover:bg-(--menu-hover-bg)"
                             }`}
                         >
-                            <span aria-hidden>{t.icon}</span>
+                            <TypeIcon t={t.key} />
                             {t.label}
                         </button>
                     ))}
@@ -145,7 +188,7 @@ export default function ChartModal({ open, initialType, initialTitle, initialRow
                     </div>
                 </div>
 
-                <button className="mt-[16px] w-full rounded-[6px] bg-[#3b82f6] py-[8px] text-[14px] font-[500] text-white hover:bg-[#2f6fe0]" onClick={handleSave}>
+                <button className="mt-[16px] w-full rounded-[6px] bg-[#7c3aed] py-[8px] text-[14px] font-[500] text-white hover:bg-[#6d28d9]" onClick={handleSave}>
                     적용
                 </button>
             </div>

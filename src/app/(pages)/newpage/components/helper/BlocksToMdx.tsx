@@ -10,6 +10,9 @@ export interface Block {
     collapsed?: boolean;
     color?: string;
     formattedRanges?: FormattedRange[];
+    // 2칸(컬럼) 레이아웃: 같은 colGroup을 가진 연속 블록들이 좌(col=0)/우(col=1) 두 칸으로 렌더된다.
+    colGroup?: string;
+    col?: number;
 }
 
 export function blocksToMDX(

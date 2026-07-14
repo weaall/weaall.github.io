@@ -21,6 +21,8 @@ export function useBlockDnD(
     const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
     const [insertLineIdx, setInsertLineIdx] = useState<number | null>(null);
     const copyModeRef = useRef(false);
+    // 2칸 컬럼 드롭 등 외부에서 이동을 처리했으면, 이어지는 handleDragEnd의 평면 이동을 건너뛴다.
+    const externalDropRef = useRef(false);
 
     // 커서를 따라다니는 커스텀 미리보기 요소 + 이동 핸들러(정리를 위해 ref 보관)
     const previewRef = useRef<HTMLElement | null>(null);
@@ -112,7 +114,20 @@ export function useBlockDnD(
         setInsertLineIdx(isBottom ? idx + 1 : idx);
     };
 
+    // 컬럼 드롭 등 외부에서 이동 처리 시 호출 → 다음 handleDragEnd의 평면 이동 스킵
+    const notifyExternalDrop = () => {
+        externalDropRef.current = true;
+    };
+
     const handleDragEnd = () => {
+        if (externalDropRef.current) {
+            externalDropRef.current = false;
+            copyModeRef.current = false;
+            teardownPreview();
+            setDraggingIdx(null);
+            setInsertLineIdx(null);
+            return;
+        }
         if (draggingIdx !== null && insertLineIdx !== null) {
             const fromIdx = draggingIdx;
             const dropIdx = insertLineIdx;
@@ -164,5 +179,5 @@ export function useBlockDnD(
         setInsertLineIdx(null);
     };
 
-    return { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd };
+    return { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd, notifyExternalDrop };
 }

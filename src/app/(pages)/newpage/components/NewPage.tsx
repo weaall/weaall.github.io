@@ -493,7 +493,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         setMeta((prev) => ({ ...prev, imageUrl: webp }));
     };
 
-    const { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd } = useBlockDnD(
+    const { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd, notifyExternalDrop } = useBlockDnD(
         setBlocks,
         () => selectionRef.current,
         (targetIdx, count) => setSelRange({ a: targetIdx, b: targetIdx + count - 1 }),
@@ -776,9 +776,23 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
     }, []);
 
     const changeBlockType = (idx: number, type: string) => {
+        const blockId = blocks[idx]?.id;
+        // "2칸 레이아웃": 이 블록을 왼쪽 칸으로, 오른쪽 칸엔 빈 블록을 추가해 2칸 그룹으로 만든다.
+        if (type === "columns") {
+            setMenuId(null);
+            setMenuPos(null);
+            const gid = crypto.randomUUID();
+            const rightId = crypto.randomUUID();
+            setBlocks((prev) => {
+                const arr = prev.map((b, i) => (i === idx ? { ...b, colGroup: gid, col: 0 } : b));
+                arr.splice(idx + 1, 0, { id: rightId, type: "p", content: "", indentationLevel: 0, colGroup: gid, col: 1 });
+                return arr;
+            });
+            setTimeout(() => document.getElementById(rightId)?.focus(), 0);
+            return;
+        }
         // 함수형 업데이트: 뒤이어 호출될 수 있는 onContentChange("")와 합쳐지도록
         // (예: "[]"+space 마크다운 단축 시 type 변경이 content 변경에 덮어써지던 버그 방지)
-        const blockId = blocks[idx]?.id;
         setBlocks((prev) => prev.map((b, i) => (i === idx ? { ...b, type } : b)));
         setMenuId(null);
         setMenuPos(null);
@@ -1100,6 +1114,136 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hiddenKey]);
 
+    // 2칸 그룹 자동 정리: 그룹에 블록이 1개 이하이거나 한쪽 칸만 있으면 그룹 해제(한 줄 복귀)
+    const colKey = blocks.map((b) => `${b.id}:${b.colGroup || ""}:${b.col ?? ""}`).join(",");
+    useEffect(() => {
+        const groups = new Map<string, { c0: number; c1: number }>();
+        blocks.forEach((b) => {
+            if (!b.colGroup) return;
+            const g = groups.get(b.colGroup) || { c0: 0, c1: 0 };
+            if ((b.col ?? 0) === 1) g.c1++;
+            else g.c0++;
+            groups.set(b.colGroup, g);
+        });
+        const dissolve = new Set<string>();
+        groups.forEach((g, id) => {
+            if (g.c0 + g.c1 < 2 || g.c0 === 0 || g.c1 === 0) dissolve.add(id);
+        });
+        if (dissolve.size) {
+            setBlocks((prev) =>
+                prev.map((b) => (b.colGroup && dissolve.has(b.colGroup) ? { ...b, colGroup: undefined, col: undefined } : b)),
+            );
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [colKey]);
+
+    // 드래그 중인 블록을 2칸 그룹 g의 c번째 칸으로 이동(색/서식은 id 유지라 그대로 따라감)
+    const dropIntoColumn = (g: string, c: number) => {
+        if (draggingIdx == null) return;
+        notifyExternalDrop(); // 이어지는 handleDragEnd의 평면 이동 스킵
+        setBlocks((prev) => {
+            const arr = [...prev];
+            const dragged = arr[draggingIdx];
+            if (!dragged) return prev;
+            arr.splice(draggingIdx, 1);
+            let end = arr.findIndex((b) => b.colGroup === g);
+            if (end === -1) return prev; // 그룹이 이미 사라졌으면 취소
+            while (end < arr.length && arr[end].colGroup === g) end++;
+            arr.splice(end, 0, { ...dragged, colGroup: g, col: c, indentationLevel: 0 });
+            return arr;
+        });
+        setSelRange(null);
+    };
+
+    // BlockRow 하나를 그리는 헬퍼 (평면/2칸 렌더 공용)
+    const renderBlockRow = (block: Block, idx: number) => (
+        <BlockRow
+            block={block}
+            idx={idx}
+            prevIndentLevel={blocks[idx - 1]?.indentationLevel ?? 0}
+            hoverId={hoverId}
+            menuId={menuId}
+            setHoverId={setHoverId}
+            draggingIdx={draggingIdx}
+            insertLineIdx={insertLineIdx}
+            dotRefs={dotRefs}
+            color={blockColors[block.id]}
+            formattedRanges={blockFormattedRanges[block.id] || []}
+            listNumber={block.type === "numberedList" ? getListNumber(idx) : undefined}
+            onDragStart={handleDragStart}
+            onDragEnter={handleDragEnter}
+            onDragOver={handleDragOver}
+            onBlockDragOver={handleBlockDragOver}
+            onDragEnd={handleDragEnd}
+            onAddBlock={handleAddBlock}
+            onPlusClick={handlePlusClick}
+            onContentChange={handleContentChange}
+            onTypeChange={handleTypeChange}
+            onAddBlockAfterBullet={handleAddBlockAfterBullet}
+            onAddChildBlock={handleAddBlockAsChild}
+            onDeleteBlock={handleDeleteBlockAndFocusPrevious}
+            onToggleChecked={handleToggleChecked}
+            onToggleCollapse={handleToggleCollapse}
+            onFocusNext={handleFocusNext}
+            onFocusPrev={handleFocusPrev}
+            onIndent={handleIndent}
+            onFormattedRangesChange={handleFormattedRangesChange}
+            selected={idx >= selMin && idx <= selMax}
+            onClearSelection={clearSelection}
+            animateIn={revealedIds.has(block.id)}
+        />
+    );
+
+    // 렌더 목록: 연속된 같은 colGroup은 2칸(좌/우)으로 묶고, 나머지는 평면 렌더
+    const renderUnits: React.ReactNode[] = [];
+    for (let i = 0; i < blocks.length; ) {
+        const b = blocks[i];
+        if (b.colGroup) {
+            const g = b.colGroup;
+            let j = i;
+            const run: [Block, number][] = [];
+            while (j < blocks.length && blocks[j].colGroup === g) {
+                run.push([blocks[j], j]);
+                j++;
+            }
+            const left = run.filter(([bl]) => (bl.col ?? 0) === 0);
+            const right = run.filter(([bl]) => (bl.col ?? 0) === 1);
+            renderUnits.push(
+                <div key={g} className="flex gap-4" data-col-group={g}>
+                    {[left, right].map((colBlocks, c) => (
+                        <div
+                            key={c}
+                            className="min-w-0 flex-1 rounded-lg"
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={(e) => {
+                                e.preventDefault();
+                                dropIntoColumn(g, c);
+                            }}
+                        >
+                            {colBlocks.map(([bl, bi]) => (
+                                <React.Fragment key={bl.id}>{renderBlockRow(bl, bi)}</React.Fragment>
+                            ))}
+                            {colBlocks.length === 0 && (
+                                <div className="rounded-lg border border-dashed border-(--border) px-3 py-6 text-center text-xs text-(--text-muted)">
+                                    여기로 블록을 끌어다 놓기
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>,
+            );
+            i = j;
+        } else {
+            renderUnits.push(
+                <React.Fragment key={b.id}>
+                    {fileDropIdx === i && <ImageDropZone />}
+                    {hiddenBlockIds.has(b.id) ? null : renderBlockRow(b, i)}
+                </React.Fragment>,
+            );
+            i++;
+        }
+    }
+
     return (
         <tw.Container
             onMouseDown={handleMarqueeDown}
@@ -1325,48 +1469,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                     elements={ELEMENTS}
                 />
                 
-                {blocks.map((block, idx) => (
-                    <React.Fragment key={block.id}>
-                        {fileDropIdx === idx && <ImageDropZone />}
-                        {hiddenBlockIds.has(block.id) ? null : (
-                        <BlockRow
-                            block={block}
-                            idx={idx}
-                            prevIndentLevel={blocks[idx - 1]?.indentationLevel ?? 0}
-                            hoverId={hoverId}
-                            menuId={menuId}
-                            setHoverId={setHoverId}
-                            draggingIdx={draggingIdx}
-                            insertLineIdx={insertLineIdx}
-                            dotRefs={dotRefs}
-                            color={blockColors[block.id]}
-                            formattedRanges={blockFormattedRanges[block.id] || []}
-                            listNumber={block.type === "numberedList" ? getListNumber(idx) : undefined}
-                            onDragStart={handleDragStart}
-                            onDragEnter={handleDragEnter}
-                            onDragOver={handleDragOver}
-                            onBlockDragOver={handleBlockDragOver}
-                            onDragEnd={handleDragEnd}
-                            onAddBlock={handleAddBlock}
-                            onPlusClick={handlePlusClick}
-                            onContentChange={handleContentChange}
-                            onTypeChange={handleTypeChange}
-                            onAddBlockAfterBullet={handleAddBlockAfterBullet}
-                            onAddChildBlock={handleAddBlockAsChild}
-                            onDeleteBlock={handleDeleteBlockAndFocusPrevious}
-                            onToggleChecked={handleToggleChecked}
-                            onToggleCollapse={handleToggleCollapse}
-                            onFocusNext={handleFocusNext}
-                            onFocusPrev={handleFocusPrev}
-                            onIndent={handleIndent}
-                            onFormattedRangesChange={handleFormattedRangesChange}
-                            selected={idx >= selMin && idx <= selMax}
-                            onClearSelection={clearSelection}
-                            animateIn={revealedIds.has(block.id)}
-                        />
-                        )}
-                    </React.Fragment>
-                ))}
+                {renderUnits}
                 {fileDropIdx === blocks.length && <ImageDropZone />}
 
                 <div

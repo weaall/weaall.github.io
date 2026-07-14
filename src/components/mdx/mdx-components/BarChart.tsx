@@ -139,7 +139,7 @@ function BarsV({ items }: { items: ChartRow[] }) {
                     <div key={i} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-2">
                         <span className={`text-sm font-semibold tabular-nums ${isMax ? "text-(--text)" : "text-(--text-muted)"}`}>{r.value}</span>
                         <div className="w-full max-w-[56px] rounded-[14px] transition-[height] duration-300" style={{ height: `${(r.value / max) * 100}%`, minHeight: 10, background: bg }} />
-                        <span className={`min-w-0 max-w-full truncate rounded-md px-2 text-xs ${isMax ? "bg-(--text) py-0.5 text-(--page-bg)" : "text-(--text-muted)"}`} title={r.label}>
+                        <span className={`min-w-0 max-w-full truncate text-xs ${isMax ? "font-bold text-(--text)" : "text-(--text-muted)"}`} title={r.label}>
                             {r.label}
                         </span>
                     </div>
@@ -207,31 +207,61 @@ function LineArea({ items, area }: { items: ChartRow[]; area: boolean }) {
 /* ── 도넛 ────────────────────────────────── */
 function Donut({ items }: { items: ChartRow[] }) {
     const total = items.reduce((s, r) => s + Math.max(0, r.value), 0) || 1;
-    const R = 62;
-    const SW = 20;
+    const SIZE = 210;
+    const CX = SIZE / 2;
+    const R = 68;
+    const SW = 24;
     const C = 2 * Math.PI * R;
-    const GAP = items.length > 1 ? 7 : 0; // 세그먼트 사이 간격(px)
-    let offset = 0;
+    const GAP = items.length > 1 ? 6 : 0; // 세그먼트 사이 간격(px)
+    const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
+    let acc = 0; // 누적 비율(0~1)
     const segs = items.map((r, i) => {
         const frac = Math.max(0, r.value) / total;
         const len = Math.max(0, frac * C - GAP);
-        const seg = { color: r.color || colorAt(i), len, offset, pct: Math.round(frac * 100) };
-        offset += frac * C;
-        return seg;
+        const startFrac = acc;
+        acc += frac;
+        const midAng = -Math.PI / 2 + (startFrac + frac / 2) * 2 * Math.PI; // 상단에서 시계방향
+        const lr = R + SW / 2 + 16;
+        return {
+            color: r.color || colorAt(i),
+            len,
+            offset: startFrac * C,
+            pct: Math.round(frac * 100),
+            lx: CX + Math.cos(midAng) * lr,
+            ly: CX + Math.sin(midAng) * lr,
+        };
     });
     return (
         <div className="flex flex-wrap items-center gap-6">
-            <svg width="164" height="164" viewBox="0 0 164 164" className="shrink-0">
-                <g transform="rotate(-90 82 82)">
-                    <circle cx="82" cy="82" r={R} fill="none" stroke="var(--hover-bg)" strokeWidth={SW} />
+            {/* 범례: 색점 + 이름만 (왼쪽) */}
+            <div className="flex min-w-[150px] flex-1 flex-col gap-2.5">
+                {items.map((r, i) => (
+                    <div key={i} className="flex items-center gap-2.5 text-[13px]">
+                        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: r.color || colorAt(i) }} />
+                        <span className="min-w-0 truncate text-(--text-muted)">{r.label || "-"}</span>
+                    </div>
+                ))}
+            </div>
+            {/* 도넛 (가운데 비움) */}
+            <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} className="shrink-0">
+                <defs>
+                    {segs.map((s, i) => (
+                        <linearGradient key={i} id={`dg-${i}`} x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stopColor={s.color} />
+                            <stop offset="100%" stopColor={s.color} stopOpacity="0.7" />
+                        </linearGradient>
+                    ))}
+                </defs>
+                <g transform={`rotate(-90 ${CX} ${CX})`}>
+                    <circle cx={CX} cy={CX} r={R} fill="none" stroke="var(--hover-bg)" strokeWidth={SW} />
                     {segs.map((s, i) => (
                         <circle
                             key={i}
-                            cx="82"
-                            cy="82"
+                            cx={CX}
+                            cy={CX}
                             r={R}
                             fill="none"
-                            stroke={s.color}
+                            stroke={`url(#dg-${i})`}
                             strokeWidth={SW}
                             strokeDasharray={`${s.len} ${C - s.len}`}
                             strokeDashoffset={-(s.offset + GAP / 2)}
@@ -239,22 +269,28 @@ function Donut({ items }: { items: ChartRow[] }) {
                         />
                     ))}
                 </g>
-                <text x="82" y="78" textAnchor="middle" fontSize="24" fontWeight="700" fill="var(--text-strong)">
-                    {total}
-                </text>
-                <text x="82" y="96" textAnchor="middle" fontSize="10" fill="var(--text-muted)">
-                    Total
-                </text>
+                {/* 값 라벨: 가장 큰 값만 검은 알약, 나머지는 진한 숫자 */}
+                {segs.map((s, i) => {
+                    if (s.pct < 3) return null;
+                    const txt = String(items[i].value);
+                    if (i === maxIdx) {
+                        const w = txt.length * 8.5 + 16;
+                        return (
+                            <g key={i}>
+                                <rect x={s.lx - w / 2} y={s.ly - 11} width={w} height={22} rx={7} fill="var(--text)" />
+                                <text x={s.lx} y={s.ly + 4} textAnchor="middle" fontSize="13" fontWeight="700" className="tabular-nums" fill="var(--page-bg)">
+                                    {txt}
+                                </text>
+                            </g>
+                        );
+                    }
+                    return (
+                        <text key={i} x={s.lx} y={s.ly + 4} textAnchor="middle" fontSize="13" fontWeight="600" className="tabular-nums" fill="var(--text)">
+                            {txt}
+                        </text>
+                    );
+                })}
             </svg>
-            <div className="flex flex-col gap-1.5">
-                {items.map((r, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs text-(--text-muted)">
-                        <span className="h-3 w-3 shrink-0 rounded-sm" style={{ background: r.color || colorAt(i) }} />
-                        <span className="truncate">{r.label || "-"}</span>
-                        <span className="ml-1 font-semibold text-(--text)">{segs[i].pct}%</span>
-                    </div>
-                ))}
-            </div>
         </div>
     );
 }
