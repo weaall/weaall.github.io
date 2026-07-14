@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
 import TypeMenuModal from "./menu-modal/TypeMenu.modal";
+import BlockTypePicker from "./menu-modal/BlockTypePicker";
 import { ELEMENTS } from "./menu-modal/TypeElement";
 import { Block, blocksToMDX } from "./helper/BlocksToMdx";
 import { FormattedRange } from "./text-modal/TextFormat.modal";
@@ -66,6 +67,8 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
     const [hoverId, setHoverId] = useState<string | null>(null);
     const [menuId, setMenuId] = useState<string | null>(null);
     const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
+    // "+" / 빈 공간 클릭 시 뜨는 블록 검색 선택기 (전환 메뉴와 별개)
+    const [typePicker, setTypePicker] = useState<{ top: number; left: number; blockId: string } | null>(null);
     // 토글 펼침 시 등장 애니메이션: 직전에 숨겨졌던 블록 집합 / 방금 드러난 블록 집합
     const prevHiddenRef = useRef<Set<string>>(new Set());
     const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
@@ -996,16 +999,9 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         });
         setTimeout(() => {
             const el = document.getElementById(newBlockId);
-            el?.focus();
             const r = el?.getBoundingClientRect();
             if (!r) return;
-            const menuWidth = 265;
-            const menuHeight = 470;
-            const margin = 12;
-            const left = Math.max(margin, Math.min(r.left, window.innerWidth - menuWidth - margin));
-            const top = Math.max(margin, Math.min(r.bottom + 6, window.innerHeight - menuHeight - margin));
-            setMenuId(newBlockId);
-            setMenuPos({ top, left });
+            setTypePicker({ top: r.bottom + 6, left: r.left, blockId: newBlockId });
         }, 0);
     };
 
@@ -1496,7 +1492,20 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                     }}
                     elements={ELEMENTS}
                 />
-                
+
+                {/* 블록 검색 선택기: +/빈 공간 클릭 시 → 만들 블록을 검색해 선택 */}
+                <BlockTypePicker
+                    open={typePicker !== null}
+                    position={typePicker}
+                    onSelect={(type) => {
+                        if (!typePicker) return;
+                        const idx = blocks.findIndex((b) => b.id === typePicker.blockId);
+                        setTypePicker(null);
+                        if (idx !== -1) changeBlockType(idx, type);
+                    }}
+                    onClose={() => setTypePicker(null)}
+                />
+
                 {renderUnits}
                 {fileDropIdx === blocks.length && <ImageDropZone />}
 
@@ -1513,13 +1522,19 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                     onMouseDown={(e) => e.stopPropagation()}
                     onClick={() => {
                         const last = blocks[blocks.length - 1];
-                        if (last && last.type === "p" && last.content === "") {
+                        // 이미 맨 끝이 빈 텍스트면 그냥 포커스
+                        if (last && last.type === "p" && last.content === "" && !last.colGroup) {
                             document.getElementById(last.id)?.focus();
                             return;
                         }
+                        // 빈 블록이 없으면: 빈 블록 추가 후 "무엇을 만들지" 선택기 열기 (텍스트 자동생성 대신)
                         const nid = crypto.randomUUID();
                         setBlocks((prev) => [...prev, { id: nid, type: "p", content: "", indentationLevel: 0 }]);
-                        setTimeout(() => document.getElementById(nid)?.focus(), 0);
+                        setTimeout(() => {
+                            const el = document.getElementById(nid);
+                            const r = el?.getBoundingClientRect();
+                            if (r) setTypePicker({ top: r.bottom + 6, left: r.left, blockId: nid });
+                        }, 0);
                     }}
                 />
             </div>
