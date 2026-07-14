@@ -262,11 +262,10 @@ function Donut({ items }: { items: ChartRow[] }) {
                             key={i}
                             d={s.d}
                             fill={s.color}
-                            fillOpacity={s.max ? 1 : 0.4}
                             stroke={s.color}
-                            strokeOpacity={s.max ? 1 : 0.4}
                             strokeWidth={CORNER}
                             strokeLinejoin="round"
+                            opacity={s.max ? 1 : 0.4}
                         />
                     ) : null,
                 )}
