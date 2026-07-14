@@ -237,9 +237,9 @@ function Donut({ items }: { items: ChartRow[] }) {
     const total = items.reduce((s, r) => s + Math.max(0, r.value), 0) || 1;
     const Ro = 82; // 바깥 반지름
     const Ri = 54; // 안쪽 반지름 (두께 28)
-    const SIZE = Ro * 2 + 8; // svg 여백 최소화 → 도넛이 오른쪽에 딱 붙음
-    const CX = SIZE / 2;
     const CORNER = 13; // 모서리 라운드용 stroke 두께 (클수록 더 둥글게)
+    const SIZE = Ro * 2 + CORNER + 8; // stroke가 Ro 밖으로 CORNER/2 만큼 나오므로 여백 확보(안 짤리게)
+    const CX = SIZE / 2;
     const GAP = items.length > 1 ? 5 + CORNER : 0; // 실제 간격 ≈ GAP-CORNER 이 되도록 보정 (조금 더 좁게)
     const pt = (r: number, a: number) => `${(CX + r * Math.cos(a)).toFixed(2)} ${(CX + r * Math.sin(a)).toFixed(2)}`;
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
