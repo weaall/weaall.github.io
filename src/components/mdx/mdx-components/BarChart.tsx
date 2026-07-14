@@ -11,7 +11,16 @@ export interface ChartRow {
 export type ChartType = "barV" | "barH" | "line" | "area" | "donut";
 
 // 막대/라인/도넛 색상 팔레트 (노션풍 부드러운 톤).
-export const CHART_COLORS = ["#8b5cf6", "#38bdf8", "#c0f23c", "#f472b6", "#fb923c", "#f87171", "#facc15", "#34d399"];
+// 아주 연한(파스텔) 팔레트
+export const CHART_COLORS = ["#cabff8", "#aadcf4", "#e3f4b4", "#f8c8df", "#fdd6b3", "#f9c4c4", "#fdeaad", "#b6e7d2"];
+// hex를 살짝 진하게(최댓값 강조 등)
+export const darken = (hex: string, f = 0.8) => {
+    const n = parseInt(hex.replace("#", ""), 16);
+    const r = Math.round(((n >> 16) & 255) * f);
+    const g = Math.round(((n >> 8) & 255) * f);
+    const b = Math.round((n & 255) * f);
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+};
 export const colorAt = (i: number) => CHART_COLORS[((i % CHART_COLORS.length) + CHART_COLORS.length) % CHART_COLORS.length];
 
 // 색 → 부드러운 그라데이션 배경
@@ -211,10 +220,10 @@ function Donut({ items }: { items: ChartRow[] }) {
     const CX = SIZE / 2;
     const Ro = 92; // 바깥 반지름
     const Ri = 60; // 안쪽 반지름 (두께 = Ro-Ri = 32)
-    const GAP = items.length > 1 ? 12 : 0; // 세그먼트 사이 간격(px, 안팎 동일; stroke 라운드분 보정 포함)
-    const CORNER = 4; // 모서리 라운드용 stroke 두께
-    const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
+    const CORNER = 11; // 모서리 라운드용 stroke 두께 (클수록 더 둥글게)
+    const GAP = items.length > 1 ? 8 + CORNER : 0; // 실제 간격 ≈ GAP-CORNER 이 되도록 보정
     const pt = (r: number, a: number) => `${(CX + r * Math.cos(a)).toFixed(2)} ${(CX + r * Math.sin(a)).toFixed(2)}`;
+    const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
 
     let acc = 0;
     const segs = items.map((r, i) => {
@@ -232,8 +241,11 @@ function Donut({ items }: { items: ChartRow[] }) {
             ? `M ${pt(Ro, os)} A ${Ro} ${Ro} 0 ${large} 1 ${pt(Ro, oe)} L ${pt(Ri, isg)} A ${Ri} ${Ri} 0 ${large} 0 ${pt(Ri, ie)} Z`
             : "";
         const mid = (a0 + a1) / 2;
-        const lr = Ro + 16;
-        return { color: r.color || colorAt(i), d, pct: Math.round(frac * 100), lx: CX + Math.cos(mid) * lr, ly: CX + Math.sin(mid) * lr };
+        const lr = (Ro + Ri) / 2; // 링 두께 가운데 → 숫자를 그래프 안에
+        // 최댓값 조각만 살짝 진하게
+        const base = r.color || colorAt(i);
+        const color = i === maxIdx ? darken(base, 0.82) : base;
+        return { color, d, pct: Math.round(frac * 100), lx: CX + Math.cos(mid) * lr, ly: CX + Math.sin(mid) * lr };
     });
     return (
         <div className="flex flex-wrap items-center gap-6">
@@ -246,42 +258,17 @@ function Donut({ items }: { items: ChartRow[] }) {
                     </div>
                 ))}
             </div>
-            {/* 도넛 (가운데 비움, 트랙 없음 → 간격은 배경색) */}
+            {/* 도넛 (가운데 비움, 트랙 없음 → 간격은 배경색). 단색이라 라운드 모서리도 같은 색. */}
             <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} className="shrink-0">
-                <defs>
-                    {segs.map((s, i) => (
-                        <linearGradient key={i} id={`dg-${i}`} x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stopColor={s.color} />
-                            <stop offset="100%" stopColor={s.color} stopOpacity="0.72" />
-                        </linearGradient>
-                    ))}
-                </defs>
+                {segs.map((s, i) => (s.d ? <path key={i} d={s.d} fill={s.color} stroke={s.color} strokeWidth={CORNER} strokeLinejoin="round" /> : null))}
+                {/* 값 라벨: 링 안(두께 가운데)에 진한 숫자 */}
                 {segs.map((s, i) =>
-                    s.d ? (
-                        <path key={i} d={s.d} fill={`url(#dg-${i})`} stroke={`url(#dg-${i})`} strokeWidth={CORNER} strokeLinejoin="round" />
+                    s.pct >= 6 ? (
+                        <text key={i} x={s.lx} y={s.ly + 4} textAnchor="middle" fontSize="13" fontWeight="700" className="tabular-nums" fill="#4a4458">
+                            {items[i].value}
+                        </text>
                     ) : null,
                 )}
-                {/* 값 라벨: 가장 큰 값만 검은 알약, 나머지는 진한 숫자 */}
-                {segs.map((s, i) => {
-                    if (s.pct < 3) return null;
-                    const txt = String(items[i].value);
-                    if (i === maxIdx) {
-                        const w = txt.length * 8.5 + 16;
-                        return (
-                            <g key={i}>
-                                <rect x={s.lx - w / 2} y={s.ly - 11} width={w} height={22} rx={7} fill="var(--text)" />
-                                <text x={s.lx} y={s.ly + 4} textAnchor="middle" fontSize="13" fontWeight="700" className="tabular-nums" fill="var(--page-bg)">
-                                    {txt}
-                                </text>
-                            </g>
-                        );
-                    }
-                    return (
-                        <text key={i} x={s.lx} y={s.ly + 4} textAnchor="middle" fontSize="13" fontWeight="600" className="tabular-nums" fill="var(--text)">
-                            {txt}
-                        </text>
-                    );
-                })}
             </svg>
         </div>
     );
