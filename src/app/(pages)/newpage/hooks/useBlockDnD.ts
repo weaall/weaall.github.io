@@ -17,9 +17,13 @@ export function useBlockDnD(
     buildDragImage?: (fromIdx: number) => HTMLElement | null,
     // Alt/Ctrl 누르고 드래그하면 이동 대신 복제(복사). 색/서식까지 복제하려고 상위에 위임.
     onCopy?: (rangeStart: number, count: number, dropIdx: number) => void,
+    // 블록을 다른 블록의 좌/우 가장자리에 드롭 → 2칸(컬럼) 구성. 상위에 위임.
+    onSideDrop?: (targetIdx: number, side: "left" | "right", fromIdx: number) => void,
 ) {
     const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
     const [insertLineIdx, setInsertLineIdx] = useState<number | null>(null);
+    // 좌/우 가장자리에 드롭할 때 표시할 세로 인디케이터 대상
+    const [sideDrop, setSideDrop] = useState<{ idx: number; side: "left" | "right" } | null>(null);
     const copyModeRef = useRef(false);
     // 2칸 컬럼 드롭 등 외부에서 이동을 처리했으면, 이어지는 handleDragEnd의 평면 이동을 건너뛴다.
     const externalDropRef = useRef(false);
@@ -106,10 +110,24 @@ export function useBlockDnD(
         e.preventDefault();
     };
 
-    // 블록 전체를 드롭 히트 영역으로: 커서가 블록 상/하 절반 중 어디냐로 위/아래 삽입 판정.
+    // 블록 위 드롭 히트: 좌/우 가장자리면 2칸(세로 인디케이터), 아니면 상/하 절반으로 위/아래 삽입.
     const handleBlockDragOver = (e: React.DragEvent<HTMLDivElement>, idx: number) => {
         e.preventDefault();
         const rect = e.currentTarget.getBoundingClientRect();
+        const EDGE = Math.min(70, rect.width * 0.28); // 가장자리 감지 폭
+        if (draggingIdx !== idx) {
+            if (e.clientX > rect.right - EDGE) {
+                setSideDrop({ idx, side: "right" });
+                setInsertLineIdx(null);
+                return;
+            }
+            if (e.clientX < rect.left + EDGE) {
+                setSideDrop({ idx, side: "left" });
+                setInsertLineIdx(null);
+                return;
+            }
+        }
+        setSideDrop(null);
         const isBottom = e.clientY > rect.top + rect.height / 2;
         setInsertLineIdx(isBottom ? idx + 1 : idx);
     };
@@ -120,12 +138,23 @@ export function useBlockDnD(
     };
 
     const handleDragEnd = () => {
+        // 좌/우 가장자리 드롭 → 2칸 구성 (평면 이동 대신)
+        if (draggingIdx !== null && sideDrop && onSideDrop && draggingIdx !== sideDrop.idx) {
+            onSideDrop(sideDrop.idx, sideDrop.side, draggingIdx);
+            copyModeRef.current = false;
+            teardownPreview();
+            setDraggingIdx(null);
+            setInsertLineIdx(null);
+            setSideDrop(null);
+            return;
+        }
         if (externalDropRef.current) {
             externalDropRef.current = false;
             copyModeRef.current = false;
             teardownPreview();
             setDraggingIdx(null);
             setInsertLineIdx(null);
+            setSideDrop(null);
             return;
         }
         if (draggingIdx !== null && insertLineIdx !== null) {
@@ -167,6 +196,9 @@ export function useBlockDnD(
                 const adjusted = moving.map((b) => ({
                     ...b,
                     indentationLevel: Math.max(0, baseIndent + (b.indentationLevel - minIndent)),
+                    // 일반 재정렬로 옮기면 컬럼에서 빠져나온 것 → 칸 정보 제거(한 줄 복귀)
+                    colGroup: undefined,
+                    col: undefined,
                 }));
 
                 newBlocks.splice(targetIdx, 0, ...adjusted);
@@ -177,7 +209,8 @@ export function useBlockDnD(
         teardownPreview();
         setDraggingIdx(null);
         setInsertLineIdx(null);
+        setSideDrop(null);
     };
 
-    return { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd, notifyExternalDrop };
+    return { draggingIdx, insertLineIdx, sideDrop, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd, notifyExternalDrop };
 }

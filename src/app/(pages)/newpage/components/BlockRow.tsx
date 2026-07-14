@@ -41,6 +41,8 @@ interface BlockRowProps {
     selected: boolean;
     onClearSelection: () => void;
     animateIn?: boolean;
+    inColumn?: boolean;
+    sideDropSide?: "left" | "right" | null;
 }
 
 export default function BlockRow({
@@ -77,7 +79,11 @@ export default function BlockRow({
     selected,
     onClearSelection,
     animateIn,
+    inColumn,
+    sideDropSide,
 }: BlockRowProps) {
+    // 칸(컬럼) 안 블록은 손잡이가 -56px로 튀면 옆 칸과 겹치므로 살짝만 왼쪽으로.
+    const gutterLeft = (inColumn ? -30 : -56) + block.indentationLevel * 25;
     return (
         <>
             <div
@@ -99,13 +105,20 @@ export default function BlockRow({
                 onDragEnter={(e: React.DragEvent<HTMLDivElement>) => onBlockDragOver(e, idx)}
                 onDragOver={(e: React.DragEvent<HTMLDivElement>) => onBlockDragOver(e, idx)}
             >
+                {/* 좌/우 가장자리 2칸 드롭 인디케이터 (세로 파란 선) */}
+                {sideDropSide && (
+                    <div
+                        className="pointer-events-none absolute top-1 bottom-1 z-20 w-[3px] rounded bg-[#3b82f6]"
+                        style={sideDropSide === "right" ? { right: -8 } : { left: -8 }}
+                    />
+                )}
                 {/* 왼쪽 갓터: 핸들 호버 영역 (여기서 빈 채로 드래그하면 상위에서 마퀴 선택 시작) */}
                 <div
                     style={{
                         position: "absolute",
-                        left: -56 + block.indentationLevel * 25,
+                        left: gutterLeft,
                         top: 0,
-                        width: 56,
+                        width: inColumn ? 30 : 56,
                         height: "100%",
                         zIndex: 5,
                     }}
@@ -124,13 +137,13 @@ export default function BlockRow({
                         data-btn-idx={block.id}
                         style={{
                             position: "absolute",
-                            left: -56 + block.indentationLevel * 25,
+                            left: gutterLeft,
                             top: "50%",
                             transform: "translateY(-50%)",
                             display: "flex",
                             alignItems: "center",
                             zIndex: 10,
-                            width: 56,
+                            width: inColumn ? 30 : 56,
                             height: "100%",
                         }}
                         onMouseEnter={() => setHoverId(block.id)}
@@ -145,9 +158,12 @@ export default function BlockRow({
                         onDragStart={(e) => onDragStart(e, idx)}
                         onDragEnd={onDragEnd}
                     >
-                        <tw.PlusButton onClick={() => onAddBlock(idx)}>
-                            <PlusIcon color={"#91918e"} />
-                        </tw.PlusButton>
+                        {/* 칸 안에서는 좁은 갓터라 + 버튼은 숨기고 드래그/메뉴 손잡이만 */}
+                        {!inColumn && (
+                            <tw.PlusButton onClick={() => onAddBlock(idx)}>
+                                <PlusIcon color={"#91918e"} />
+                            </tw.PlusButton>
+                        )}
                         <tw.DotButton
                             ref={(el: HTMLButtonElement | null) => {
                                 dotRefs.current[block.id] = el;

@@ -493,7 +493,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         setMeta((prev) => ({ ...prev, imageUrl: webp }));
     };
 
-    const { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd, notifyExternalDrop } = useBlockDnD(
+    const { draggingIdx, insertLineIdx, sideDrop, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd } = useBlockDnD(
         setBlocks,
         () => selectionRef.current,
         (targetIdx, count) => setSelRange({ a: targetIdx, b: targetIdx + count - 1 }),
@@ -549,6 +549,31 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 return n;
             });
             setSelRange({ a: at, b: at + count - 1 });
+        },
+        // 좌/우 가장자리 드롭 → 2칸 구성: 대상 블록과 드래그 블록을 같은 colGroup으로
+        (targetIdx, side, fromIdx) => {
+            setBlocks((prev) => {
+                const arr = [...prev];
+                const dragged = arr[fromIdx];
+                const target = arr[targetIdx];
+                if (!dragged || !target || dragged.id === target.id) return prev;
+                const draggedCol = side === "right" ? 1 : 0;
+                let gid = target.colGroup;
+                if (!gid) {
+                    gid = crypto.randomUUID();
+                    const ti = arr.findIndex((b) => b.id === target.id);
+                    arr[ti] = { ...target, colGroup: gid, col: side === "right" ? 0 : 1, indentationLevel: 0 };
+                }
+                // 드래그 블록 제거 후 그룹 연속 구간 끝에 삽입
+                const di = arr.findIndex((b) => b.id === dragged.id);
+                arr.splice(di, 1);
+                let end = arr.findIndex((b) => b.colGroup === gid);
+                if (end === -1) return prev;
+                while (end < arr.length && arr[end].colGroup === gid) end++;
+                arr.splice(end, 0, { ...dragged, colGroup: gid, col: draggedCol, indentationLevel: 0 });
+                return arr;
+            });
+            setSelRange(null);
         },
     );
 
@@ -777,20 +802,6 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
 
     const changeBlockType = (idx: number, type: string) => {
         const blockId = blocks[idx]?.id;
-        // "2칸 레이아웃": 이 블록을 왼쪽 칸으로, 오른쪽 칸엔 빈 블록을 추가해 2칸 그룹으로 만든다.
-        if (type === "columns") {
-            setMenuId(null);
-            setMenuPos(null);
-            const gid = crypto.randomUUID();
-            const rightId = crypto.randomUUID();
-            setBlocks((prev) => {
-                const arr = prev.map((b, i) => (i === idx ? { ...b, colGroup: gid, col: 0 } : b));
-                arr.splice(idx + 1, 0, { id: rightId, type: "p", content: "", indentationLevel: 0, colGroup: gid, col: 1 });
-                return arr;
-            });
-            setTimeout(() => document.getElementById(rightId)?.focus(), 0);
-            return;
-        }
         // 함수형 업데이트: 뒤이어 호출될 수 있는 onContentChange("")와 합쳐지도록
         // (예: "[]"+space 마크다운 단축 시 type 변경이 content 변경에 덮어써지던 버그 방지)
         setBlocks((prev) => prev.map((b, i) => (i === idx ? { ...b, type } : b)));
@@ -1152,24 +1163,6 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [colKey]);
 
-    // 드래그 중인 블록을 2칸 그룹 g의 c번째 칸으로 이동(색/서식은 id 유지라 그대로 따라감)
-    const dropIntoColumn = (g: string, c: number) => {
-        if (draggingIdx == null) return;
-        notifyExternalDrop(); // 이어지는 handleDragEnd의 평면 이동 스킵
-        setBlocks((prev) => {
-            const arr = [...prev];
-            const dragged = arr[draggingIdx];
-            if (!dragged) return prev;
-            arr.splice(draggingIdx, 1);
-            let end = arr.findIndex((b) => b.colGroup === g);
-            if (end === -1) return prev; // 그룹이 이미 사라졌으면 취소
-            while (end < arr.length && arr[end].colGroup === g) end++;
-            arr.splice(end, 0, { ...dragged, colGroup: g, col: c, indentationLevel: 0 });
-            return arr;
-        });
-        setSelRange(null);
-    };
-
     // BlockRow 하나를 그리는 헬퍼 (평면/2칸 렌더 공용)
     const renderBlockRow = (block: Block, idx: number) => (
         <BlockRow
@@ -1206,6 +1199,8 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             selected={idx >= selMin && idx <= selMax}
             onClearSelection={clearSelection}
             animateIn={revealedIds.has(block.id)}
+            inColumn={!!block.colGroup}
+            sideDropSide={sideDrop && sideDrop.idx === idx ? sideDrop.side : null}
         />
     );
 
@@ -1226,15 +1221,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             renderUnits.push(
                 <div key={g} className="flex gap-4" data-col-group={g}>
                     {[left, right].map((colBlocks, c) => (
-                        <div
-                            key={c}
-                            className="min-w-0 flex-1 rounded-lg"
-                            onDragOver={(e) => e.preventDefault()}
-                            onDrop={(e) => {
-                                e.preventDefault();
-                                dropIntoColumn(g, c);
-                            }}
-                        >
+                        <div key={c} className="min-w-0 flex-1">
                             {colBlocks.map(([bl, bi]) => (
                                 <React.Fragment key={bl.id}>{renderBlockRow(bl, bi)}</React.Fragment>
                             ))}
