@@ -195,7 +195,7 @@ export default function CodeBlock({ id, content }: { id: string; content: string
                                             className="editor-field h-7 w-full rounded-md bg-(--hover-bg) px-2.5 text-[13px] outline-none placeholder:text-(--text-muted)"
                                         />
                                     </div>
-                                    <div data-scroll-allow className="overflow-y-auto px-1 pb-1">
+                                    <div data-scroll-allow className="overflow-y-auto overscroll-contain px-1 pb-1">
                                         {filtered.map((l) => (
                                             <button
                                                 key={l}

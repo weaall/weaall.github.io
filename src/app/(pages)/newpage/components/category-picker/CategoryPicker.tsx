@@ -57,7 +57,7 @@ export default function CategoryPicker({ open, position, current, options, onSel
                         if (e.key === "Enter" && query) pick(query);
                     }}
                 />
-                <div data-scroll-allow className="flex-1 overflow-y-auto">
+                <div data-scroll-allow className="flex-1 overflow-y-auto overscroll-contain">
                     {current && (
                         <button
                             className="flex w-full items-center justify-between rounded-[6px] px-[8px] py-[6px] text-left text-[14px] text-(--text-muted) hover:bg-(--menu-hover-bg)"
