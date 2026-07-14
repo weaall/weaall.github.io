@@ -83,8 +83,9 @@ export default function BlockRow({
     animateIn,
     sideDropSide,
 }: BlockRowProps) {
-    // 손잡이는 블록 왼쪽 -56 (칸일 때는 칸 사이 간격 안에 들어가도록 그룹 gap을 넓혀 둠)
-    const gutterLeft = -56 + block.indentationLevel * 25;
+    // 손잡이 갓터: 블록에 가깝게(버튼은 오른쪽 정렬로 블록에 붙임). 칸일 때 이 폭이 칸 사이 gap에 들어감
+    const GUT = 44;
+    const gutterLeft = -GUT + block.indentationLevel * 25;
     return (
         <>
             <div
@@ -119,7 +120,7 @@ export default function BlockRow({
                         position: "absolute",
                         left: gutterLeft,
                         top: 0,
-                        width: 56,
+                        width: GUT,
                         height: "100%",
                         zIndex: 5,
                     }}
@@ -143,8 +144,10 @@ export default function BlockRow({
                             transform: "translateY(-50%)",
                             display: "flex",
                             alignItems: "center",
+                            justifyContent: "flex-end",
+                            paddingRight: 2,
                             zIndex: 10,
-                            width: 56,
+                            width: GUT,
                             height: "100%",
                         }}
                         onMouseEnter={() => setHoverId(block.id)}
