@@ -207,12 +207,12 @@ function LineArea({ items, area }: { items: ChartRow[]; area: boolean }) {
 /* ── 도넛 ────────────────────────────────── */
 function Donut({ items }: { items: ChartRow[] }) {
     const total = items.reduce((s, r) => s + Math.max(0, r.value), 0) || 1;
-    const SIZE = 210;
+    const SIZE = 224;
     const CX = SIZE / 2;
-    const R = 68;
-    const SW = 24;
+    const R = 66;
+    const SW = 32; // 더 굵게
     const C = 2 * Math.PI * R;
-    const GAP = items.length > 1 ? 6 : 0; // 세그먼트 사이 간격(px)
+    const GAP = items.length > 1 ? 9 : 0; // 세그먼트 사이 간격(px) — butt 캡이라 이 값이 그대로 패딩
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
     let acc = 0; // 누적 비율(0~1)
     const segs = items.map((r, i) => {
@@ -265,7 +265,7 @@ function Donut({ items }: { items: ChartRow[] }) {
                             strokeWidth={SW}
                             strokeDasharray={`${s.len} ${C - s.len}`}
                             strokeDashoffset={-(s.offset + GAP / 2)}
-                            strokeLinecap="round"
+                            strokeLinecap="butt"
                         />
                     ))}
                 </g>
