@@ -204,32 +204,35 @@ function LineArea({ items, area }: { items: ChartRow[]; area: boolean }) {
     );
 }
 
-/* ── 도넛 ────────────────────────────────── */
+/* ── 도넛 (부채꼴 path: 안팎 동일 폭 간격) ──── */
 function Donut({ items }: { items: ChartRow[] }) {
     const total = items.reduce((s, r) => s + Math.max(0, r.value), 0) || 1;
     const SIZE = 224;
     const CX = SIZE / 2;
-    const R = 66;
-    const SW = 32; // 더 굵게
-    const C = 2 * Math.PI * R;
-    const GAP = items.length > 1 ? 9 : 0; // 세그먼트 사이 간격(px) — butt 캡이라 이 값이 그대로 패딩
+    const Ro = 92; // 바깥 반지름
+    const Ri = 60; // 안쪽 반지름 (두께 = Ro-Ri = 32)
+    const GAP = items.length > 1 ? 8 : 0; // 세그먼트 사이 간격(px, 안팎 동일)
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
-    let acc = 0; // 누적 비율(0~1)
+    const pt = (r: number, a: number) => `${(CX + r * Math.cos(a)).toFixed(2)} ${(CX + r * Math.sin(a)).toFixed(2)}`;
+
+    let acc = 0;
     const segs = items.map((r, i) => {
         const frac = Math.max(0, r.value) / total;
-        const len = Math.max(0, frac * C - GAP);
-        const startFrac = acc;
+        const a0 = -Math.PI / 2 + acc * 2 * Math.PI; // 상단 기준 시계방향
+        const a1 = -Math.PI / 2 + (acc + frac) * 2 * Math.PI;
         acc += frac;
-        const midAng = -Math.PI / 2 + (startFrac + frac / 2) * 2 * Math.PI; // 상단에서 시계방향
-        const lr = R + SW / 2 + 16;
-        return {
-            color: r.color || colorAt(i),
-            len,
-            offset: startFrac * C,
-            pct: Math.round(frac * 100),
-            lx: CX + Math.cos(midAng) * lr,
-            ly: CX + Math.sin(midAng) * lr,
-        };
+        // 간격을 안팎 동일 폭으로: 각 반지름에서 (GAP/2)만큼의 각도로 안쪽/바깥쪽을 따로 인셋
+        const dOut = GAP / 2 / Ro;
+        const dIn = GAP / 2 / Ri;
+        const os = a0 + dOut, oe = a1 - dOut, isg = a1 - dIn, ie = a0 + dIn;
+        const large = a1 - a0 > Math.PI ? 1 : 0;
+        const drawable = oe > os && isg > ie;
+        const d = drawable
+            ? `M ${pt(Ro, os)} A ${Ro} ${Ro} 0 ${large} 1 ${pt(Ro, oe)} L ${pt(Ri, isg)} A ${Ri} ${Ri} 0 ${large} 0 ${pt(Ri, ie)} Z`
+            : "";
+        const mid = (a0 + a1) / 2;
+        const lr = Ro + 16;
+        return { color: r.color || colorAt(i), d, pct: Math.round(frac * 100), lx: CX + Math.cos(mid) * lr, ly: CX + Math.sin(mid) * lr };
     });
     return (
         <div className="flex flex-wrap items-center gap-6">
@@ -242,33 +245,17 @@ function Donut({ items }: { items: ChartRow[] }) {
                     </div>
                 ))}
             </div>
-            {/* 도넛 (가운데 비움) */}
+            {/* 도넛 (가운데 비움, 트랙 없음 → 간격은 배경색) */}
             <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} className="shrink-0">
                 <defs>
                     {segs.map((s, i) => (
                         <linearGradient key={i} id={`dg-${i}`} x1="0" y1="0" x2="1" y2="1">
                             <stop offset="0%" stopColor={s.color} />
-                            <stop offset="100%" stopColor={s.color} stopOpacity="0.7" />
+                            <stop offset="100%" stopColor={s.color} stopOpacity="0.72" />
                         </linearGradient>
                     ))}
                 </defs>
-                <g transform={`rotate(-90 ${CX} ${CX})`}>
-                    <circle cx={CX} cy={CX} r={R} fill="none" stroke="var(--hover-bg)" strokeWidth={SW} />
-                    {segs.map((s, i) => (
-                        <circle
-                            key={i}
-                            cx={CX}
-                            cy={CX}
-                            r={R}
-                            fill="none"
-                            stroke={`url(#dg-${i})`}
-                            strokeWidth={SW}
-                            strokeDasharray={`${s.len} ${C - s.len}`}
-                            strokeDashoffset={-(s.offset + GAP / 2)}
-                            strokeLinecap="butt"
-                        />
-                    ))}
-                </g>
+                {segs.map((s, i) => (s.d ? <path key={i} d={s.d} fill={`url(#dg-${i})`} /> : null))}
                 {/* 값 라벨: 가장 큰 값만 검은 알약, 나머지는 진한 숫자 */}
                 {segs.map((s, i) => {
                     if (s.pct < 3) return null;
