@@ -211,7 +211,8 @@ function Donut({ items }: { items: ChartRow[] }) {
     const CX = SIZE / 2;
     const Ro = 92; // 바깥 반지름
     const Ri = 60; // 안쪽 반지름 (두께 = Ro-Ri = 32)
-    const GAP = items.length > 1 ? 8 : 0; // 세그먼트 사이 간격(px, 안팎 동일)
+    const GAP = items.length > 1 ? 12 : 0; // 세그먼트 사이 간격(px, 안팎 동일; stroke 라운드분 보정 포함)
+    const CORNER = 4; // 모서리 라운드용 stroke 두께
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
     const pt = (r: number, a: number) => `${(CX + r * Math.cos(a)).toFixed(2)} ${(CX + r * Math.sin(a)).toFixed(2)}`;
 
@@ -255,7 +256,11 @@ function Donut({ items }: { items: ChartRow[] }) {
                         </linearGradient>
                     ))}
                 </defs>
-                {segs.map((s, i) => (s.d ? <path key={i} d={s.d} fill={`url(#dg-${i})`} /> : null))}
+                {segs.map((s, i) =>
+                    s.d ? (
+                        <path key={i} d={s.d} fill={`url(#dg-${i})`} stroke={`url(#dg-${i})`} strokeWidth={CORNER} strokeLinejoin="round" />
+                    ) : null,
+                )}
                 {/* 값 라벨: 가장 큰 값만 검은 알약, 나머지는 진한 숫자 */}
                 {segs.map((s, i) => {
                     if (s.pct < 3) return null;
