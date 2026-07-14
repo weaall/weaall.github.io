@@ -66,17 +66,20 @@ interface BarChartProps {
     /** 에디터에서는 배열을 직접 전달 */
     rows?: ChartRow[];
     title?: string;
+    subtitle?: string;
 }
 
-export default function BarChart({ type, orient, data, rows, title }: BarChartProps) {
+export default function BarChart({ type, orient, data, rows, title, subtitle }: BarChartProps) {
     let items: ChartRow[] = [];
     let ttl = title ?? "";
+    let sub = subtitle ?? "";
     let resolvedType: ChartType | undefined = type;
     if (data) {
         try {
             const parsed = JSON.parse(decodeURIComponent(data));
             items = normalizeRows(parsed.rows ?? []);
             ttl = parsed.title ?? ttl;
+            sub = parsed.subtitle ?? sub;
             if (parsed.type) resolvedType = parsed.type;
         } catch {
             items = [];
@@ -93,7 +96,12 @@ export default function BarChart({ type, orient, data, rows, title }: BarChartPr
 
     return (
         <div className="my-2 rounded-xl border border-(--border) px-5 py-4">
-            {ttl && <div className="mb-4 text-sm font-semibold text-(--text-strong)">{ttl}</div>}
+            {(ttl || sub) && (
+                <div className="mb-4">
+                    {ttl && <div className="text-sm font-semibold text-(--text-strong)">{ttl}</div>}
+                    {sub && <div className="mt-0.5 text-xs text-(--text-muted)">{sub}</div>}
+                </div>
+            )}
             {chartType === "barH" && <BarsH items={items} />}
             {chartType === "barV" && <BarsV items={items} />}
             {(chartType === "line" || chartType === "area") && <LineArea items={items} area={chartType === "area"} />}
@@ -208,11 +216,11 @@ function LineArea({ items, area }: { items: ChartRow[]; area: boolean }) {
 /* ── 도넛 (부채꼴 path: 안팎 동일 폭 간격) ──── */
 function Donut({ items }: { items: ChartRow[] }) {
     const total = items.reduce((s, r) => s + Math.max(0, r.value), 0) || 1;
-    const SIZE = 224;
+    const SIZE = 168; // 절대 크기 축소
     const CX = SIZE / 2;
-    const Ro = 92; // 바깥 반지름
-    const Ri = 60; // 안쪽 반지름 (두께 = Ro-Ri = 32)
-    const CORNER = 11; // 모서리 라운드용 stroke 두께 (클수록 더 둥글게)
+    const Ro = 70; // 바깥 반지름
+    const Ri = 46; // 안쪽 반지름 (두께 24)
+    const CORNER = 9; // 모서리 라운드용 stroke 두께 (클수록 더 둥글게)
     const GAP = items.length > 1 ? 8 + CORNER : 0; // 실제 간격 ≈ GAP-CORNER 이 되도록 보정
     const pt = (r: number, a: number) => `${(CX + r * Math.cos(a)).toFixed(2)} ${(CX + r * Math.sin(a)).toFixed(2)}`;
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
@@ -244,12 +252,12 @@ function Donut({ items }: { items: ChartRow[] }) {
         };
     });
     return (
-        <div className="flex flex-wrap items-center gap-6">
-            {/* 범례: 색점 + 이름만 (왼쪽) */}
-            <div className="flex min-w-[150px] flex-1 flex-col gap-2.5">
+        <div className="flex items-end justify-between gap-4">
+            {/* 범례: 색점 + 이름만 (좌하단, 작은 폰트) */}
+            <div className="flex min-w-0 flex-col gap-1.5">
                 {items.map((r, i) => (
-                    <div key={i} className="flex items-center gap-2.5 text-[13px]">
-                        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: r.color || colorAt(i) }} />
+                    <div key={i} className="flex items-center gap-2 text-[11px]">
+                        <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: r.color || colorAt(i) }} />
                         <span className="min-w-0 truncate text-(--text-muted)">{r.label || "-"}</span>
                     </div>
                 ))}
@@ -274,18 +282,18 @@ function Donut({ items }: { items: ChartRow[] }) {
                     if (s.pct < 6) return null;
                     const txt = String(items[i].value);
                     if (s.max) {
-                        const w = txt.length * 8.5 + 16;
+                        const w = txt.length * 7 + 12;
                         return (
                             <g key={i}>
-                                <rect x={s.lx - w / 2} y={s.ly - 11} width={w} height={22} rx={7} fill="#1a1a1f" />
-                                <text x={s.lx} y={s.ly + 4} textAnchor="middle" fontSize="13" fontWeight="700" className="tabular-nums" fill="#ffffff">
+                                <rect x={s.lx - w / 2} y={s.ly - 9} width={w} height={18} rx={6} fill="#1a1a1f" />
+                                <text x={s.lx} y={s.ly + 3.5} textAnchor="middle" fontSize="11" fontWeight="700" className="tabular-nums" fill="#ffffff">
                                     {txt}
                                 </text>
                             </g>
                         );
                     }
                     return (
-                        <text key={i} x={s.lx} y={s.ly + 4} textAnchor="middle" fontSize="13" fontWeight="600" className="tabular-nums" fill="#9a97a3">
+                        <text key={i} x={s.lx} y={s.ly + 3.5} textAnchor="middle" fontSize="11" fontWeight="600" className="tabular-nums" fill="#9a97a3">
                             {txt}
                         </text>
                     );
