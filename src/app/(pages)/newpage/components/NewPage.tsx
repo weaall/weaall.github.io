@@ -948,7 +948,15 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         const newBlockId = crypto.randomUUID();
         setBlocks((prev) => {
             const newBlocks = [...prev];
-            const newBlock = { id: newBlockId, type: "p", content: "", indentationLevel: prev[idx]?.indentationLevel ?? 0 };
+            const cur = prev[idx];
+            // 2칸 안에서 Enter → 새 블록도 같은 칸(colGroup/col)에 남는다
+            const newBlock: Block = {
+                id: newBlockId,
+                type: "p",
+                content: "",
+                indentationLevel: cur?.indentationLevel ?? 0,
+                ...(cur?.colGroup ? { colGroup: cur.colGroup, col: cur.col ?? 0 } : {}),
+            };
             newBlocks.splice(idx + 1, 0, newBlock);
             return newBlocks;
         });
@@ -965,7 +973,13 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         setBlocks((prev) => {
             const newBlocks = [...prev];
             const currentBlock = prev[idx];
-            const newBlock = { id: newBlockId, type: currentBlock.type, content: "", indentationLevel: currentBlock.indentationLevel };
+            const newBlock: Block = {
+                id: newBlockId,
+                type: currentBlock.type,
+                content: "",
+                indentationLevel: currentBlock.indentationLevel,
+                ...(currentBlock.colGroup ? { colGroup: currentBlock.colGroup, col: currentBlock.col ?? 0 } : {}),
+            };
             newBlocks.splice(idx + 1, 0, newBlock);
             return newBlocks;
         });
@@ -984,11 +998,12 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             const newBlocks = [...prev];
             const parent = prev[idx];
             if (parent?.collapsed) newBlocks[idx] = { ...parent, collapsed: false };
-            const newBlock = {
+            const newBlock: Block = {
                 id: newBlockId,
                 type: "p",
                 content: "",
                 indentationLevel: (parent?.indentationLevel ?? 0) + 1,
+                ...(parent?.colGroup ? { colGroup: parent.colGroup, col: parent.col ?? 0 } : {}),
             };
             newBlocks.splice(idx + 1, 0, newBlock);
             return newBlocks;
