@@ -1238,11 +1238,6 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                             {colBlocks.map(([bl, bi]) => (
                                 <React.Fragment key={bl.id}>{renderBlockRow(bl, bi)}</React.Fragment>
                             ))}
-                            {colBlocks.length === 0 && (
-                                <div className="rounded-lg border border-dashed border-(--border) px-3 py-6 text-center text-xs text-(--text-muted)">
-                                    여기로 블록을 끌어다 놓기
-                                </div>
-                            )}
                         </div>
                     ))}
                 </div>,
