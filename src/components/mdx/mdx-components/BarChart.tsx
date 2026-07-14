@@ -235,11 +235,11 @@ function LineArea({ items, area }: { items: ChartRow[]; area: boolean }) {
 function Donut({ items }: { items: ChartRow[] }) {
     const uid = React.useId().replace(/:/g, "");
     const total = items.reduce((s, r) => s + Math.max(0, r.value), 0) || 1;
-    const Ro = 70; // 바깥 반지름
-    const Ri = 46; // 안쪽 반지름 (두께 24)
+    const Ro = 82; // 바깥 반지름
+    const Ri = 54; // 안쪽 반지름 (두께 28)
     const SIZE = Ro * 2 + 8; // svg 여백 최소화 → 도넛이 오른쪽에 딱 붙음
     const CX = SIZE / 2;
-    const CORNER = 9; // 모서리 라운드용 stroke 두께 (클수록 더 둥글게)
+    const CORNER = 13; // 모서리 라운드용 stroke 두께 (클수록 더 둥글게)
     const GAP = items.length > 1 ? 5 + CORNER : 0; // 실제 간격 ≈ GAP-CORNER 이 되도록 보정 (조금 더 좁게)
     const pt = (r: number, a: number) => `${(CX + r * Math.cos(a)).toFixed(2)} ${(CX + r * Math.sin(a)).toFixed(2)}`;
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
@@ -294,7 +294,8 @@ function Donut({ items }: { items: ChartRow[] }) {
                         s.max && s.d ? (
                             <linearGradient key={i} id={s.gradId} gradientUnits="userSpaceOnUse" x1={s.g.x1} y1={s.g.y1} x2={s.g.x2} y2={s.g.y2}>
                                 <stop offset="0%" stopColor={s.gEnd} />
-                                <stop offset="50%" stopColor={s.color} />
+                                <stop offset="25%" stopColor={s.color} />
+                                <stop offset="75%" stopColor={s.color} />
                                 <stop offset="100%" stopColor={s.gEnd} />
                             </linearGradient>
                         ) : null,
