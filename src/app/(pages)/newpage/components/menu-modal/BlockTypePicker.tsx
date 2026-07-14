@@ -60,7 +60,7 @@ export default function BlockTypePicker({ open, position, onSelect, onClose }: P
                         className="editor-field h-8 w-full rounded-md bg-(--hover-bg) px-2.5 text-[13px] outline-none placeholder:text-(--text-muted)"
                     />
                 </div>
-                <div className="overflow-y-auto px-1 pb-1">
+                <div data-scroll-allow className="overflow-y-auto px-1 pb-1">
                     {filtered.map((el) => (
                         <button
                             key={el.type}
