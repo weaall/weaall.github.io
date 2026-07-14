@@ -277,25 +277,31 @@ function Donut({ items }: { items: ChartRow[] }) {
         // 최댓값: 각도 기준으로 색을 보간해 "각(angular) 그라데이션"을 만든다.
         // 선형 그라데이션은 곡선을 직선으로 투영해 안/밖 페이드 시작점이 어긋나므로,
         // 부채꼴을 각도로 잘게 쪼개 각 조각을 보간색으로 채운다(안/밖 동일 각도에서 페이드).
-        const EDGE = 0.08; // 양끝 페이드 구간 비율 (작을수록 끝에서만 하얘짐)
+        const EDGE = 0.16; // 양끝 페이드 구간 비율 (작을수록 끝에서만 하얘짐)
+        // 끝에서만 살짝 밝아지도록 ease. t=0/1 → gEnd, EDGE 안쪽부터는 원색
         const colorAtT = (t: number) => {
-            if (t < EDGE) return mixHex(gEnd, color, t / EDGE);
-            if (t > 1 - EDGE) return mixHex(gEnd, color, (1 - t) / EDGE);
-            return color;
+            const edgeT = t < 0.5 ? t : 1 - t;
+            if (edgeT >= EDGE) return color;
+            const k = edgeT / EDGE; // 0(끝)~1(안쪽)
+            return mixHex(gEnd, color, k * k); // ease-in: 끝 근처에서만 확 밝게
         };
-        let slices: { d: string; color: string }[] = [];
+        let slices: { d: string; color: string; t: number }[] = [];
         if (isMax && drawable) {
-            const N = 40;
+            const N = 120; // 촘촘히 쪼개 매끄러운 그라데이션
             const oa = (f: number) => os + (oe - os) * f;
             const ia = (f: number) => ie + (isg - ie) * f;
-            const OV = (oe - os) / N / 2; // 조각 간 미세 겹침(솔기 방지)
+            const OV = (oe - os) / N * 0.6; // 좌우 대칭 미세 겹침(솔기 방지)
             for (let k = 0; k < N; k++) {
                 const f0 = k / N, f1 = (k + 1) / N;
+                const lo = k > 0 ? OV : 0, hi = k < N - 1 ? OV : 0;
                 slices.push({
-                    d: sector(oa(f0) - (k > 0 ? OV : 0), oa(f1) + (k < N - 1 ? OV : 0), ia(f0) - (k > 0 ? OV : 0), ia(f1) + (k < N - 1 ? OV : 0)),
+                    d: sector(oa(f0) - lo, oa(f1) + hi, ia(f0) - lo, ia(f1) + hi),
                     color: colorAtT((f0 + f1) / 2),
+                    t: (f0 + f1) / 2,
                 });
             }
+            // 페인트 순서: 가운데(비비드)부터 → 양끝(페이드)이 위로. 좌우 대칭 보장.
+            slices.sort((p, q) => Math.abs(p.t - 0.5) - Math.abs(q.t - 0.5));
         }
         const d = drawable ? sector(os, oe, ie, isg) : "";
         return {
