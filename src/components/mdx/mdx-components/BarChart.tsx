@@ -293,7 +293,8 @@ function Donut({ items }: { items: ChartRow[] }) {
                     {segs.map((s, i) =>
                         s.max && s.d ? (
                             <linearGradient key={i} id={s.gradId} gradientUnits="userSpaceOnUse" x1={s.g.x1} y1={s.g.y1} x2={s.g.x2} y2={s.g.y2}>
-                                <stop offset="0%" stopColor={s.color} />
+                                <stop offset="0%" stopColor={s.gEnd} />
+                                <stop offset="50%" stopColor={s.color} />
                                 <stop offset="100%" stopColor={s.gEnd} />
                             </linearGradient>
                         ) : null,
