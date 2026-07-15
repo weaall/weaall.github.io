@@ -118,9 +118,10 @@ export function blocksToMDX(
         return result;
     };
 
-    // 내보내기 대상 블록만
+    // 내보내기 대상 블록만. 빈 텍스트(p) 블록은 "간격용"으로 남겨 <br/> 스페이서로 내보낸다.
     const keep = (b: Block) =>
         b.content.trim() !== "" ||
+        b.type === "p" ||
         b.type === "divider" ||
         b.type === "image" ||
         b.type === "table" ||
@@ -128,11 +129,18 @@ export function blocksToMDX(
         b.type === "chart" ||
         b.type.startsWith("barChart") ||
         b.type.startsWith("toggle");
+    // 브라우저가 빈 편집영역에 남기는 <br> 필러가 content로 새어들어온 경우 감지
+    const isBlankContent = (s: string) => s.trim() === "" || /^<br\s*\/?>$/i.test(s.trim());
     const isToggle = (t: string) => t === "toggleText" || t === "toggleH1" || t === "toggleH2" || t === "toggleH3";
 
     // 토글이 아닌 한 블록의 MDX 라인 (num: 번호목록 번호)
     const lineFor = (b: Block, num: number): string => {
         const indentation = "  ".repeat(b.indentationLevel);
+        // 빈 텍스트 블록 → 실제 줄바꿈(<br/>)으로 내보내 간격을 만든다.
+        // (escMdx를 거치지 않으므로 포스트에서 리터럴 "<br />" 텍스트로 보이지 않고 진짜 줄바꿈이 됨)
+        if ((b.type === "p" || b.type === "h1" || b.type === "h2" || b.type === "h3") && isBlankContent(b.content)) {
+            return "<br />";
+        }
         const formattedContent = applyFormattingToText(b.content, b.formattedRanges);
         const contentWithColor = b.color ? `<span style={{ color: '${b.color}' }}>${formattedContent}</span>` : formattedContent;
         switch (b.type) {
