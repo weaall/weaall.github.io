@@ -7,10 +7,16 @@ export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatte
     // 커버가 data URL(webp)이면 그대로, 아니면 기존처럼 상대경로
     const coverSrc = frontmatter.imageUrl?.startsWith("data:") ? frontmatter.imageUrl : `../../${frontmatter.imageUrl}`;
     const label = frontmatter.label && frontmatter.label !== "none" ? frontmatter.label : "";
+    const date = frontmatter.date && frontmatter.date !== "none" ? frontmatter.date : "";
 
-    const CategoryChip = () =>
-        label ? (
-            <span className="flex items-center gap-1 rounded-[6px] bg-(--hover-bg) px-2 py-1 text-xs font-medium text-(--text-muted)">📁 {label}</span>
+    // 에디터의 카테고리/날짜 칩과 동일 디자인
+    const chipCls = "flex items-center gap-1 rounded-[6px] bg-(--hover-bg) px-2 py-1 text-xs font-medium text-(--text-muted)";
+    const MetaChips = () =>
+        label || date ? (
+            <div className="flex flex-wrap items-center gap-2">
+                {label && <span className={chipCls}>📁 {label}</span>}
+                {date && <span className={chipCls}>📅 {date}</span>}
+            </div>
         ) : null;
 
     return (
@@ -32,18 +38,18 @@ export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatte
                                 </div>
                             )}
                         </div>
-                        {label && (
+                        {(label || date) && (
                             <div className="mb-1">
-                                <CategoryChip />
+                                <MetaChips />
                             </div>
                         )}
                     </>
                 ) : (
-                    // 커버 없을 때: 아이콘 + 카테고리 한 줄 (에디터와 동일)
-                    (frontmatter.icon || label) && (
+                    // 커버 없을 때: 아이콘 + 카테고리 + 날짜 한 줄 (에디터와 동일)
+                    (frontmatter.icon || label || date) && (
                         <div className="mb-1 flex items-center gap-2">
                             {frontmatter.icon && <PageIcon icon={frontmatter.icon} size={44} />}
-                            <CategoryChip />
+                            <MetaChips />
                         </div>
                     )
                 )}

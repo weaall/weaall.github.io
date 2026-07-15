@@ -214,6 +214,23 @@ export function blocksToMDX(
         let prevNumIndent = -1;
         for (let i = 0; i < list.length; i++) {
             const b = list[i];
+            // 2칸(컬럼) 그룹: 연속된 같은 colGroup을 <Columns><Column>좌</Column><Column>우</Column></Columns> 로 내보냄
+            if (b.colGroup) {
+                const g = b.colGroup;
+                let j = i;
+                const run: Block[] = [];
+                while (j < list.length && list[j].colGroup === g) {
+                    run.push(list[j]);
+                    j++;
+                }
+                const strip = (x: Block) => ({ ...x, colGroup: undefined, col: undefined });
+                const left = renderRange(run.filter((x) => (x.col ?? 0) === 0).map(strip));
+                const right = renderRange(run.filter((x) => (x.col ?? 0) === 1).map(strip));
+                parts.push(`<Columns>\n<Column>\n\n${left}\n\n</Column>\n<Column>\n\n${right}\n\n</Column>\n</Columns>`);
+                prevNumIndent = -1;
+                i = j - 1;
+                continue;
+            }
             if (isToggle(b.type)) {
                 let j = i + 1;
                 while (j < list.length && list[j].indentationLevel > b.indentationLevel) j++;

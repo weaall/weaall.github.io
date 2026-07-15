@@ -175,6 +175,15 @@ export function Img({
     );
 }
 
+// 2열(컬럼) 레이아웃: 에디터의 2칸과 동일(50/50, gap-12, 각 칸 min-w-0 flex-1). 모바일은 세로 스택.
+export function Columns({ children }: { children?: React.ReactNode }) {
+    return <div className="my-2 flex gap-12 m:flex-col m:gap-2">{children}</div>;
+}
+
+export function Column({ children }: { children?: React.ReactNode }) {
+    return <div className="min-w-0 flex-1">{children}</div>;
+}
+
 export function Table({ children }: { children?: React.ReactNode }) {
     return <tw.Table>{children}</tw.Table>;
 }
