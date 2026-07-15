@@ -1292,16 +1292,32 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             }
             const left = run.filter(([bl]) => (bl.col ?? 0) === 0);
             const right = run.filter(([bl]) => (bl.col ?? 0) === 1);
+            const groupStart = i;
+            const groupEnd = j;
+            // 그룹 위/아래 전체폭 드롭 존: 여기에 놓으면 1열(전체폭)로 그룹 밖에 삽입.
+            // (드래그 중에만 높이를 키워 잡기 쉽게, 평소엔 얇게)
+            const dropZone = (at: number, key: string) => (
+                <div
+                    key={key}
+                    className={`rounded transition-[height] ${draggingIdx !== null ? "h-5" : "h-1"} ${insertLineIdx === at ? "bg-[#e0edfb]" : "bg-transparent"}`}
+                    onDragEnter={(e) => handleDragEnter(e, at, true)}
+                    onDragOver={handleDragOver}
+                />
+            );
             renderUnits.push(
-                <div key={`colrun-${run[0][0].id}`} className="flex gap-12" data-col-group={g}>
-                    {[left, right].map((colBlocks, c) => (
-                        <div key={c} className="min-w-0 flex-1">
-                            {colBlocks.map(([bl, bi]) => (
-                                <React.Fragment key={bl.id}>{renderBlockRow(bl, bi)}</React.Fragment>
-                            ))}
-                        </div>
-                    ))}
-                </div>,
+                <React.Fragment key={`colrun-${run[0][0].id}`}>
+                    {groupStart === 0 && dropZone(groupStart, `coltop-${g}`)}
+                    <div className="flex gap-12" data-col-group={g}>
+                        {[left, right].map((colBlocks, c) => (
+                            <div key={c} className="min-w-0 flex-1">
+                                {colBlocks.map(([bl, bi]) => (
+                                    <React.Fragment key={bl.id}>{renderBlockRow(bl, bi)}</React.Fragment>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                    {dropZone(groupEnd, `colend-${g}`)}
+                </React.Fragment>,
             );
             i = j;
         } else {
