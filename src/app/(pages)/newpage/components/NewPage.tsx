@@ -901,6 +901,23 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         setMenuPos(null);
     };
 
+    // 블록 복제: 해당 블록과 내용(+색/서식)을 새 id로 복제해 바로 아래에 삽입.
+    const handleDuplicateBlock = (idx: number) => {
+        const src = blocks[idx];
+        if (!src) return;
+        const nid = crypto.randomUUID();
+        const copy = { ...src, id: nid };
+        setBlocks((prev) => {
+            const arr = [...prev];
+            arr.splice(idx + 1, 0, copy);
+            return arr;
+        });
+        setBlockFormattedRanges((prev) => (prev[src.id] ? { ...prev, [nid]: prev[src.id] } : prev));
+        setBlockColors((prev) => (prev[src.id] ? { ...prev, [nid]: prev[src.id] } : prev));
+        setMenuId(null);
+        setMenuPos(null);
+    };
+
     const handleDeleteBlockAndFocusPrevious = (idx: number) => {
         if (blocks.length <= 1) return;
         
@@ -1518,6 +1535,10 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                     onDeleteBlock={() => {
                         const idx = blocks.findIndex((b) => b.id === menuId);
                         if (idx !== -1) handleDeleteBlock(idx);
+                    }}
+                    onDuplicateBlock={() => {
+                        const idx = blocks.findIndex((b) => b.id === menuId);
+                        if (idx !== -1) handleDuplicateBlock(idx);
                     }}
                     onClose={() => {
                         setMenuId(null);
