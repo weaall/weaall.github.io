@@ -901,23 +901,6 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         setMenuPos(null);
     };
 
-    // 블록 복제: 해당 블록과 내용(+색/서식)을 새 id로 복제해 바로 아래에 삽입.
-    const handleDuplicateBlock = (idx: number) => {
-        const src = blocks[idx];
-        if (!src) return;
-        const nid = crypto.randomUUID();
-        const copy = { ...src, id: nid };
-        setBlocks((prev) => {
-            const arr = [...prev];
-            arr.splice(idx + 1, 0, copy);
-            return arr;
-        });
-        setBlockFormattedRanges((prev) => (prev[src.id] ? { ...prev, [nid]: prev[src.id] } : prev));
-        setBlockColors((prev) => (prev[src.id] ? { ...prev, [nid]: prev[src.id] } : prev));
-        setMenuId(null);
-        setMenuPos(null);
-    };
-
     const handleDeleteBlockAndFocusPrevious = (idx: number) => {
         if (blocks.length <= 1) return;
         
@@ -958,6 +941,9 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
 
     const handlePlusClick = (id: string) => {
         setMenuId(id);
+        // 메뉴로 활성화된(파란색) 블록은 선택 상태로 취급 → Ctrl+C/X/V 로 복사·붙여넣기 가능
+        const idx = blocks.findIndex((b) => b.id === id);
+        if (idx !== -1) setSelRange({ a: idx, b: idx });
         setTimeout(() => {
             const btn = dotRefs.current[id];
             if (btn) {
@@ -1524,6 +1510,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                 <TypeMenuModal
                     open={menuId !== null}
                     position={menuPos}
+                    canColor={!["divider", "image", "table", "code", "barChartH", "barChartV", "chart"].includes(blocks.find((b) => b.id === menuId)?.type ?? "")}
                     onSelect={(type) => {
                         const idx = blocks.findIndex((b) => b.id === menuId);
                         if (idx !== -1) changeBlockType(idx, type);
@@ -1535,10 +1522,6 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                     onDeleteBlock={() => {
                         const idx = blocks.findIndex((b) => b.id === menuId);
                         if (idx !== -1) handleDeleteBlock(idx);
-                    }}
-                    onDuplicateBlock={() => {
-                        const idx = blocks.findIndex((b) => b.id === menuId);
-                        if (idx !== -1) handleDuplicateBlock(idx);
                     }}
                     onClose={() => {
                         setMenuId(null);

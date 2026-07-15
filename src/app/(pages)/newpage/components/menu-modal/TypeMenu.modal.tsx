@@ -1,4 +1,4 @@
-import { ColorPainterIcon, CopyIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
+import { ColorPainterIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
 import * as tw from "./TypeMenu.modal.styles";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { TypeMenuElement } from "./TypeElement";
@@ -10,9 +10,9 @@ interface TypeMenuModalProps {
     onSelect: (type: string) => void;
     onColorSelect?: (color: string) => void;
     onDeleteBlock?: () => void;
-    onDuplicateBlock?: () => void;
     onClose: () => void;
     elements: TypeMenuElement[];
+    canColor?: boolean; // 텍스트 블록만 색 설정 노출 (차트/코드/표/이미지/구분선 제외)
 }
 
 export const TEXT_COLORS = [
@@ -28,7 +28,7 @@ export const TEXT_COLORS = [
     { color: "#ff7b7b", label: "빨간색 텍스트" },
 ];
 
-export default function TypeMenuModal({ open, position, onSelect, onColorSelect, onDeleteBlock, onDuplicateBlock, onClose, elements }: TypeMenuModalProps) {
+export default function TypeMenuModal({ open, position, onSelect, onColorSelect, onDeleteBlock, onClose, elements, canColor = true }: TypeMenuModalProps) {
     useEffect(() => {
         if (!open) return;
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -36,17 +36,12 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                 e.preventDefault();
                 onDeleteBlock();
             }
-            // Ctrl/Cmd + D 로 복제
-            if ((e.ctrlKey || e.metaKey) && (e.key === "d" || e.key === "D") && onDuplicateBlock) {
-                e.preventDefault();
-                onDuplicateBlock();
-            }
         };
         window.addEventListener("keydown", handleKeyDown);
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
         };
-    }, [open, onDeleteBlock, onDuplicateBlock]);
+    }, [open, onDeleteBlock]);
     const [showDrawer, setShowDrawer] = useState<"전환" | "색" | null>(null);
     const [deleteHover, setDeleteHover] = useState(false);
 
@@ -120,26 +115,19 @@ export default function TypeMenuModal({ open, position, onSelect, onColorSelect,
                             <RightIcon color="#5f5e5b" />
                         </tw.SvgWrap>
                     </tw.MenuButton>
-                    <tw.MenuButton onMouseEnter={() => handleMenuButtonMouseEnter("색")} className={showDrawer === "색" ? "bg-(--menu-hover-bg)" : ""}>
-                        <tw.LabelWrap>
+                    {canColor && (
+                        <tw.MenuButton onMouseEnter={() => handleMenuButtonMouseEnter("색")} className={showDrawer === "색" ? "bg-(--menu-hover-bg)" : ""}>
+                            <tw.LabelWrap>
+                                <tw.SvgWrap>
+                                    <ColorPainterIcon color="#5f5e5b" />
+                                </tw.SvgWrap>
+                                색
+                            </tw.LabelWrap>
                             <tw.SvgWrap>
-                                <ColorPainterIcon color="#5f5e5b" />
+                                <RightIcon color="#5f5e5b" />
                             </tw.SvgWrap>
-                            색
-                        </tw.LabelWrap>
-                        <tw.SvgWrap>
-                            <RightIcon color="#5f5e5b" />
-                        </tw.SvgWrap>
-                    </tw.MenuButton>
-                    <tw.MenuButton onMouseEnter={() => handleMenuButtonMouseEnter("복사")} onClick={onDuplicateBlock}>
-                        <tw.LabelWrap>
-                            <tw.SvgWrap>
-                                <CopyIcon color="#5f5e5b" />
-                            </tw.SvgWrap>
-                            복사
-                        </tw.LabelWrap>
-                        <tw.ExpLabel>Ctrl+D</tw.ExpLabel>
-                    </tw.MenuButton>
+                        </tw.MenuButton>
+                    )}
                     <tw.MenuButton
                         onMouseEnter={() => {
                             handleMenuButtonMouseEnter("삭제");
