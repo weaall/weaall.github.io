@@ -22,6 +22,13 @@ export const LoopIcon = ({ color = "#000", width = "100%", height = "100%" }) =>
     </svg>
 );
 
+export const ColumnsIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="4" width="7.5" height="16" rx="1.5" stroke={color} strokeWidth="2" />
+        <rect x="13.5" y="4" width="7.5" height="16" rx="1.5" stroke={color} strokeWidth="2" />
+    </svg>
+);
+
 export const CopyIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
     <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="8" y="8" width="12" height="12" rx="2" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

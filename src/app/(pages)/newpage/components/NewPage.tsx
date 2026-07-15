@@ -601,8 +601,8 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             });
             setSelRange(null);
         },
-        // 대상이 이미 2칸 안이면 사이드 드롭 금지
-        (idx) => !!blocksRef.current[idx]?.colGroup,
+        // 대상 블록의 컬럼 정보(사이드 드롭 금지 + 상/하 드롭 시 그 칸에 합류)
+        (idx) => ({ gid: blocksRef.current[idx]?.colGroup, col: blocksRef.current[idx]?.col }),
     );
 
     const getListNumber = (currentIndex: number): number => {
@@ -922,6 +922,25 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         
         setMenuId(null);
         setMenuPos(null);
+    };
+
+    // 현재 블록을 왼쪽 열로, 오른쪽에 빈 칸을 추가해 2열로 전환.
+    const makeTwoColumn = (idx: number) => {
+        const src = blocks[idx];
+        if (!src || src.colGroup) return; // 이미 2칸이면 무시
+        const gid = crypto.randomUUID();
+        const rightId = crypto.randomUUID();
+        setBlocks((prev) => {
+            const arr = [...prev];
+            const b = arr[idx];
+            if (!b || b.colGroup) return prev;
+            arr[idx] = { ...b, colGroup: gid, col: 0, indentationLevel: 0 };
+            arr.splice(idx + 1, 0, { id: rightId, type: "p", content: "", indentationLevel: 0, colGroup: gid, col: 1 });
+            return arr;
+        });
+        setMenuId(null);
+        setMenuPos(null);
+        setTimeout(() => document.getElementById(rightId)?.focus(), 0);
     };
 
     const handleDeleteBlockAndFocusPrevious = (idx: number) => {
@@ -1536,7 +1555,9 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                     canColor={!["divider", "image", "table", "code", "barChartH", "barChartV", "chart"].includes(blocks.find((b) => b.id === menuId)?.type ?? "")}
                     onSelect={(type) => {
                         const idx = blocks.findIndex((b) => b.id === menuId);
-                        if (idx !== -1) changeBlockType(idx, type);
+                        if (idx === -1) return;
+                        if (type === "columns") makeTwoColumn(idx);
+                        else changeBlockType(idx, type);
                     }}
                     onColorSelect={(color) => {
                         const idx = blocks.findIndex((b) => b.id === menuId);
@@ -1561,7 +1582,9 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                         if (!typePicker) return;
                         const idx = blocks.findIndex((b) => b.id === typePicker.blockId);
                         setTypePicker(null);
-                        if (idx !== -1) changeBlockType(idx, type);
+                        if (idx === -1) return;
+                        if (type === "columns") makeTwoColumn(idx);
+                        else changeBlockType(idx, type);
                     }}
                     onClose={() => setTypePicker(null)}
                 />

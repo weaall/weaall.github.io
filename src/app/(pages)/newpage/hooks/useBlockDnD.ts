@@ -19,13 +19,15 @@ export function useBlockDnD(
     onCopy?: (rangeStart: number, count: number, dropIdx: number) => void,
     // 블록을 다른 블록의 좌/우 가장자리에 드롭 → 2칸(컬럼) 구성. 상위에 위임.
     onSideDrop?: (targetIdx: number, side: "left" | "right", fromIdx: number) => void,
-    // 대상 블록이 이미 2칸(컬럼) 안이면 좌/우 사이드 드롭 금지(최대 2칸, 사이 세로선 불필요).
-    isColumnTarget?: (idx: number) => boolean,
+    // 대상 블록의 컬럼 정보(gid/col). 이미 2칸 안이면 사이드 드롭 금지 + 상/하 드롭 시 그 칸에 합류.
+    colInfo?: (idx: number) => { gid?: string; col?: number },
 ) {
     const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
     const [insertLineIdx, setInsertLineIdx] = useState<number | null>(null);
     // 좌/우 가장자리에 드롭할 때 표시할 세로 인디케이터 대상
     const [sideDrop, setSideDrop] = useState<{ idx: number; side: "left" | "right" } | null>(null);
+    // 상/하 삽입 지점이 2칸 안이면 그 칸(gid/col)에 합류시킬 대상
+    const colDropRef = useRef<{ gid: string; col: number } | null>(null);
     const copyModeRef = useRef(false);
     // 2칸 컬럼 드롭 등 외부에서 이동을 처리했으면, 이어지는 handleDragEnd의 평면 이동을 건너뛴다.
     const externalDropRef = useRef(false);
@@ -106,6 +108,7 @@ export function useBlockDnD(
     const handleDragEnter = (e: React.DragEvent<HTMLDivElement>, idx: number, isIndicator: boolean) => {
         e.preventDefault();
         setInsertLineIdx(isIndicator ? idx : null);
+        colDropRef.current = null;
     };
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -117,22 +120,27 @@ export function useBlockDnD(
         e.preventDefault();
         const rect = e.currentTarget.getBoundingClientRect();
         const EDGE = Math.min(70, rect.width * 0.28); // 가장자리 감지 폭
+        const ci = colInfo?.(idx);
         // 대상이 이미 2칸 안이면 사이드 드롭(세로선) 없이 상/하 삽입만
-        if (draggingIdx !== idx && !isColumnTarget?.(idx)) {
+        if (draggingIdx !== idx && !ci?.gid) {
             if (e.clientX > rect.right - EDGE) {
                 setSideDrop({ idx, side: "right" });
                 setInsertLineIdx(null);
+                colDropRef.current = null;
                 return;
             }
             if (e.clientX < rect.left + EDGE) {
                 setSideDrop({ idx, side: "left" });
                 setInsertLineIdx(null);
+                colDropRef.current = null;
                 return;
             }
         }
         setSideDrop(null);
         const isBottom = e.clientY > rect.top + rect.height / 2;
         setInsertLineIdx(isBottom ? idx + 1 : idx);
+        // 삽입 지점이 2칸 안이면 그 칸에 합류(일반 1열 블록을 열 안으로 드롭)
+        colDropRef.current = ci?.gid ? { gid: ci.gid, col: ci.col ?? 0 } : null;
     };
 
     // 컬럼 드롭 등 외부에서 이동 처리 시 호출 → 다음 handleDragEnd의 평면 이동 스킵
@@ -196,12 +204,13 @@ export function useBlockDnD(
                 const prevIsToggle = !!prevBlock && (prevBlock.type === "toggleText" || prevBlock.type.startsWith("toggleH"));
                 const baseIndent = prevBlock ? prevBlock.indentationLevel + (prevIsToggle ? 1 : 0) : 0;
                 const minIndent = Math.min(...moving.map((b) => b.indentationLevel));
+                const cd = colDropRef.current;
                 const adjusted = moving.map((b) => ({
                     ...b,
-                    indentationLevel: Math.max(0, baseIndent + (b.indentationLevel - minIndent)),
-                    // 일반 재정렬로 옮기면 컬럼에서 빠져나온 것 → 칸 정보 제거(한 줄 복귀)
-                    colGroup: undefined,
-                    col: undefined,
+                    // 2칸 안으로 드롭이면 그 칸에 합류, 아니면 한 줄로 복귀
+                    indentationLevel: cd ? 0 : Math.max(0, baseIndent + (b.indentationLevel - minIndent)),
+                    colGroup: cd ? cd.gid : undefined,
+                    col: cd ? cd.col : undefined,
                 }));
 
                 newBlocks.splice(targetIdx, 0, ...adjusted);
@@ -213,6 +222,7 @@ export function useBlockDnD(
         setDraggingIdx(null);
         setInsertLineIdx(null);
         setSideDrop(null);
+        colDropRef.current = null;
     };
 
     return { draggingIdx, insertLineIdx, sideDrop, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd, notifyExternalDrop };

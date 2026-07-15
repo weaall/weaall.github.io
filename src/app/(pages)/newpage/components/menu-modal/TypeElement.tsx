@@ -3,6 +3,7 @@ import {
     BulletedListIcon,
     CheckedListIcon,
     CodeBlockIcon,
+    ColumnsIcon,
     DividerIcon,
     H1BlockIcon,
     H2BlockIcon,
@@ -35,4 +36,6 @@ export const ELEMENTS: TypeMenuElement[] = [
     { label: "코드", type: "code", icon: <CodeBlockIcon color="#5f5e5b" /> },
     { label: "표", type: "table", icon: <TableIcon color="#5f5e5b" /> },
     { label: "그래프", type: "chart", icon: <BarChartVIcon color="#5f5e5b" /> },
+    { divider: true },
+    { label: "2열", type: "columns", icon: <ColumnsIcon color="#5f5e5b" /> },
 ];
