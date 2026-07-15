@@ -318,7 +318,8 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         const newBlocks = payload.blocks.map((b) => {
             const id = crypto.randomUUID();
             idMap[b.id] = id;
-            return { ...b, id };
+            // 붙여넣기는 항상 단일 열로: 2칸에서 복사했더라도 열 정보를 제거한다.
+            return { ...b, id, colGroup: undefined, col: undefined };
         });
         const newColors: { [id: string]: string } = {};
         const newRanges: { [id: string]: FormattedRange[] } = {};
