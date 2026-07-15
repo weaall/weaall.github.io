@@ -1,6 +1,6 @@
 import { ColorPainterIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
 import * as tw from "./TypeMenu.modal.styles";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { TypeMenuElement } from "./TypeElement";
 import { useScrollLock } from "../../hooks/useScrollLock";
 
@@ -29,19 +29,7 @@ export const TEXT_COLORS = [
 ];
 
 export default function TypeMenuModal({ open, position, onSelect, onColorSelect, onDeleteBlock, onClose, elements, canColor = true }: TypeMenuModalProps) {
-    useEffect(() => {
-        if (!open) return;
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Delete" && onDeleteBlock) {
-                e.preventDefault();
-                onDeleteBlock();
-            }
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [open, onDeleteBlock]);
+    // 삭제 단축키(Delete)는 NewPage의 전역 핸들러가 처리한다(선택 블록 삭제 + 메뉴 닫힘).
     const [showDrawer, setShowDrawer] = useState<"전환" | "색" | null>(null);
     const [deleteHover, setDeleteHover] = useState(false);
 

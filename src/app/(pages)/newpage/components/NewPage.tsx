@@ -303,6 +303,9 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             return n;
         });
         setSelRange(null);
+        // 메뉴로 활성화한 블록을 지우는 경우 메뉴 모달도 함께 닫는다.
+        setMenuId(null);
+        setMenuPos(null);
     };
 
     // targetIdx 블록 "아래"에 붙여넣기 (새 id 발급 + 색상/서식 이전)
