@@ -336,7 +336,7 @@ function Donut({ items }: { items: ChartRow[] }) {
                             ))}
                         </g>
                     ) : s.d ? (
-                        <path key={i} d={s.d} fill={s.color} stroke={s.color} strokeWidth={CORNER} strokeLinejoin="round" opacity={0.5} />
+                        <path key={i} d={s.d} fill={s.color} stroke={s.color} strokeWidth={CORNER} strokeLinejoin="round" opacity={0.18} />
                     ) : null,
                 )}
                 {/* 값 라벨: 링 안(두께 가운데). 흐린 조각은 회색빛, 최댓값은 검은 알약 + 흰 숫자 */}
