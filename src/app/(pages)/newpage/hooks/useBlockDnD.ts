@@ -19,6 +19,8 @@ export function useBlockDnD(
     onCopy?: (rangeStart: number, count: number, dropIdx: number) => void,
     // 블록을 다른 블록의 좌/우 가장자리에 드롭 → 2칸(컬럼) 구성. 상위에 위임.
     onSideDrop?: (targetIdx: number, side: "left" | "right", fromIdx: number) => void,
+    // 대상 블록이 이미 2칸(컬럼) 안이면 좌/우 사이드 드롭 금지(최대 2칸, 사이 세로선 불필요).
+    isColumnTarget?: (idx: number) => boolean,
 ) {
     const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
     const [insertLineIdx, setInsertLineIdx] = useState<number | null>(null);
@@ -115,7 +117,8 @@ export function useBlockDnD(
         e.preventDefault();
         const rect = e.currentTarget.getBoundingClientRect();
         const EDGE = Math.min(70, rect.width * 0.28); // 가장자리 감지 폭
-        if (draggingIdx !== idx) {
+        // 대상이 이미 2칸 안이면 사이드 드롭(세로선) 없이 상/하 삽입만
+        if (draggingIdx !== idx && !isColumnTarget?.(idx)) {
             if (e.clientX > rect.right - EDGE) {
                 setSideDrop({ idx, side: "right" });
                 setInsertLineIdx(null);

@@ -339,7 +339,13 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             if (payload.colors?.[b.id]) newColors[nid] = payload.colors[b.id];
             if (payload.ranges?.[b.id]) newRanges[nid] = payload.ranges[b.id];
         });
-        const insertAt = targetIdx + 1;
+        // 대상이 2칸 안이면 그룹 전체 끝 뒤에 삽입 → 그룹을 쪼개지 않고 아래에 붙는다.
+        let anchor = targetIdx;
+        const tg = blocks[targetIdx]?.colGroup;
+        if (tg) {
+            while (anchor + 1 < blocks.length && blocks[anchor + 1].colGroup === tg) anchor++;
+        }
+        const insertAt = anchor + 1;
         setBlocks((prev) => {
             const arr = [...prev];
             arr.splice(insertAt, 0, ...newBlocks);
@@ -595,6 +601,8 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             });
             setSelRange(null);
         },
+        // 대상이 이미 2칸 안이면 사이드 드롭 금지
+        (idx) => !!blocksRef.current[idx]?.colGroup,
     );
 
     const getListNumber = (currentIndex: number): number => {
