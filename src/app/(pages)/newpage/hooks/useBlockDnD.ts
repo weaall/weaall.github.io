@@ -115,28 +115,12 @@ export function useBlockDnD(
         e.preventDefault();
     };
 
-    // 블록 위 드롭 히트: 좌/우 가장자리면 2칸(세로 인디케이터), 아니면 상/하 절반으로 위/아래 삽입.
+    // 블록 위 드롭 히트: 상/하 절반으로 위/아래 삽입. 대상이 2칸 안이면 그 칸에 합류(세로 스택).
+    // (열 생성은 "2열" 메뉴로만 → 드래그-투-사이드 세로바는 제거)
     const handleBlockDragOver = (e: React.DragEvent<HTMLDivElement>, idx: number) => {
         e.preventDefault();
         const rect = e.currentTarget.getBoundingClientRect();
-        const EDGE = Math.min(70, rect.width * 0.28); // 가장자리 감지 폭
         const ci = colInfo?.(idx);
-        // 대상이 이미 2칸 안이면 사이드 드롭(세로선) 없이 상/하 삽입만
-        if (draggingIdx !== idx && !ci?.gid) {
-            if (e.clientX > rect.right - EDGE) {
-                setSideDrop({ idx, side: "right" });
-                setInsertLineIdx(null);
-                colDropRef.current = null;
-                return;
-            }
-            if (e.clientX < rect.left + EDGE) {
-                setSideDrop({ idx, side: "left" });
-                setInsertLineIdx(null);
-                colDropRef.current = null;
-                return;
-            }
-        }
-        setSideDrop(null);
         const isBottom = e.clientY > rect.top + rect.height / 2;
         setInsertLineIdx(isBottom ? idx + 1 : idx);
         // 삽입 지점이 2칸 안이면 그 칸에 합류(일반 1열 블록을 열 안으로 드롭)
