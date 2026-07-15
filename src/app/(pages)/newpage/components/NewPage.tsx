@@ -314,11 +314,22 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         payload: { blocks: Block[]; colors?: { [id: string]: string }; ranges?: { [id: string]: FormattedRange[] } },
     ) => {
         if (!payload.blocks?.length) return;
+        // 복사본에 어떤 colGroup이 "양쪽 칸(col 0·1) 모두" 포함하는지 확인.
+        // 그룹 전체를 복사했으면 2열 유지(새 id로 remap), 일부/단일 블록이면 단일 열로 변환.
+        const groupCols: { [g: string]: Set<number> } = {};
+        payload.blocks.forEach((b) => {
+            if (b.colGroup) (groupCols[b.colGroup] ??= new Set()).add(b.col ?? 0);
+        });
+        const groupIdMap: { [old: string]: string } = {};
         const idMap: { [old: string]: string } = {};
         const newBlocks = payload.blocks.map((b) => {
             const id = crypto.randomUUID();
             idMap[b.id] = id;
-            // 붙여넣기는 항상 단일 열로: 2칸에서 복사했더라도 열 정보를 제거한다.
+            // 그룹 전체(양쪽 칸) 복사 → 새 colGroup으로 remap해 2열 유지, 아니면 열 정보 제거
+            if (b.colGroup && (groupCols[b.colGroup]?.size ?? 0) >= 2) {
+                const g = (groupIdMap[b.colGroup] ??= crypto.randomUUID());
+                return { ...b, id, colGroup: g, col: b.col };
+            }
             return { ...b, id, colGroup: undefined, col: undefined };
         });
         const newColors: { [id: string]: string } = {};
