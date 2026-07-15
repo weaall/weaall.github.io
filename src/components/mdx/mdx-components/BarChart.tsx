@@ -272,16 +272,16 @@ function Donut({ items }: { items: ChartRow[] }) {
         const lr = (Ro + Ri) / 2; // 링 두께 가운데 → 숫자를 그래프 안에
         const color = r.color || colorAt(i);
         const isMax = i === maxIdx;
-        const gEnd = lighten(color, 0.5);
+        const gEnd = lighten(color, 0.36);
 
         // 최댓값: 각도 기준으로 색을 보간해 "각(angular) 그라데이션"을 만든다.
         // 선형 그라데이션은 곡선을 직선으로 투영해 안/밖 페이드 시작점이 어긋나므로,
         // 부채꼴을 각도로 잘게 쪼개 각 조각을 보간색으로 채운다(안/밖 동일 각도에서 페이드).
-        // 가운데(진함)→양끝(연함)으로 전 구간에 걸쳐 부드럽게 퍼지는 그라데이션.
-        // ease-out(1-(1-k)^2): 가운데는 진한 색을 넓게 유지하고 끝으로 갈수록 부드럽게 밝아짐.
+        // 가운데(진함)→양끝(연함)으로 전 구간에 걸쳐 연속적으로 변하는 자연스러운 그라데이션.
+        // raised-cosine: 평평한 구간(덩어리 느낌) 없이 부드럽게 계속 변한다.
         const colorAtT = (t: number) => {
             const k = 2 * (t < 0.5 ? t : 1 - t); // 0(끝)~1(가운데)
-            const e = 1 - (1 - k) * (1 - k);
+            const e = (1 - Math.cos(k * Math.PI)) / 2;
             return mixHex(gEnd, color, e);
         };
         let slices: { d: string; color: string; t: number }[] = [];
@@ -348,14 +348,14 @@ function Donut({ items }: { items: ChartRow[] }) {
                         return (
                             <g key={i}>
                                 <rect x={s.lx - w / 2} y={s.ly - 9} width={w} height={18} rx={6} fill="#1a1a1f" />
-                                <text x={s.lx} y={s.ly + 3.5} textAnchor="middle" fontSize="11" fontWeight="700" className="tabular-nums" fill="#ffffff">
+                                <text x={s.lx} y={s.ly + 3.5} textAnchor="middle" fontSize="11" className="tabular-nums" fill="#ffffff">
                                     {txt}
                                 </text>
                             </g>
                         );
                     }
                     return (
-                        <text key={i} x={s.lx} y={s.ly + 3.5} textAnchor="middle" fontSize="11" fontWeight="600" className="tabular-nums" fill="#9a97a3">
+                        <text key={i} x={s.lx} y={s.ly + 3.5} textAnchor="middle" fontSize="11" className="tabular-nums" fill="#333333" opacity={0.4}>
                             {txt}
                         </text>
                     );
