@@ -1,6 +1,7 @@
 import * as tw from "./PostTitle.styles";
 import { PostFrontmatter } from "@/types/PostData";
 import { PageIcon } from "@/app/(pages)/newpage/lib/pageIcon";
+import { FolderIcon, CalendarIcon } from "@/components/ui/icons/MetaSvg";
 
 export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatter }) {
     const hasCover = frontmatter.imageUrl && frontmatter.imageUrl !== "none";
@@ -14,8 +15,8 @@ export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatte
     const MetaChips = () =>
         label || date ? (
             <div className="flex flex-wrap items-center gap-2">
-                {label && <span className={chipCls}>📁 {label}</span>}
-                {date && <span className={chipCls}>📅 {date}</span>}
+                {label && <span className={chipCls}><FolderIcon /> {label}</span>}
+                {date && <span className={chipCls}><CalendarIcon /> {date}</span>}
             </div>
         ) : null;
 

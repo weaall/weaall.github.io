@@ -21,6 +21,7 @@ import CategoryPicker from "./category-picker/CategoryPicker";
 import DatePicker from "./date-picker/DatePicker";
 import { parseImageContent, serializeImageContent } from "../lib/imageContent";
 import { PageIcon, fileToWebp } from "../lib/pageIcon";
+import { FolderIcon, CalendarIcon, CoverImageIcon, SubtitleIcon, TagIcon, FaceIcon } from "@/components/ui/icons/MetaSvg";
 import IconPicker from "./icon-picker/IconPicker";
 
 import { formatPostDate } from "@/utils/date";
@@ -1396,7 +1397,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                         setCatPicker({ top: r.bottom + 6, left: r.left });
                                     }}
                                 >
-                                    📁 {meta.label}
+                                    <FolderIcon /> {meta.label}
                                 </button>
                             )}
                             {meta.date && (
@@ -1407,7 +1408,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                         setDatePicker({ top: r.bottom + 6, left: r.left });
                                     }}
                                 >
-                                    📅 {meta.date}
+                                    <CalendarIcon /> {meta.date}
                                 </button>
                             )}
                             <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover/title:opacity-100">
@@ -1419,7 +1420,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                             setIconPicker({ top: r.bottom + 6, left: r.left });
                                         }}
                                     >
-                                        <span className="text-base">😀</span> 아이콘 추가
+                                        <FaceIcon /> 아이콘 추가
                                     </button>
                                 )}
                                 {!meta.label && (
@@ -1430,7 +1431,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                             setCatPicker({ top: r.bottom + 6, left: r.left });
                                         }}
                                     >
-                                        📁 카테고리 추가
+                                        <FolderIcon /> 카테고리 추가
                                     </button>
                                 )}
                                 {!meta.imageUrl && (
@@ -1438,7 +1439,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                         className="flex items-center gap-1 rounded-[6px] px-2 py-1 text-sm text-(--text-muted) hover:bg-(--hover-bg)"
                                         onClick={() => coverInputRef.current?.click()}
                                     >
-                                        🖼️ 커버 추가
+                                        <CoverImageIcon /> 커버 추가
                                     </button>
                                 )}
                                 {!showSubtitle && (
@@ -1446,7 +1447,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                         className="flex items-center gap-1 rounded-[6px] px-2 py-1 text-sm text-(--text-muted) hover:bg-(--hover-bg)"
                                         onClick={() => setShowSubtitle(true)}
                                     >
-                                        📝 부제목 추가
+                                        <SubtitleIcon /> 부제목 추가
                                     </button>
                                 )}
                                 {!showTags && (
@@ -1454,7 +1455,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                         className="flex items-center gap-1 rounded-[6px] px-2 py-1 text-sm text-(--text-muted) hover:bg-(--hover-bg)"
                                         onClick={() => setShowTags(true)}
                                     >
-                                        🏷️ 태그 추가
+                                        <TagIcon /> 태그 추가
                                     </button>
                                 )}
                                 {!meta.date && (
@@ -1465,7 +1466,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                             setDatePicker({ top: r.bottom + 6, left: r.left });
                                         }}
                                     >
-                                        📅 날짜 추가
+                                        <CalendarIcon /> 날짜 추가
                                     </button>
                                 )}
                             </div>
