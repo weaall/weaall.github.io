@@ -24,7 +24,7 @@ function whiteOutline(w = 2): string {
 // outline=true 면 아이콘 둘레에 흰 테두리를 그린다(커버 위 오버레이용).
 export function PageIcon({ icon, size = 20, outline = false }: { icon?: string; size?: number; outline?: boolean }) {
     if (!icon) return null;
-    const filter = outline ? whiteOutline(Math.max(1.5, Math.round(size * 0.045))) : undefined;
+    const filter = outline ? whiteOutline(Math.max(1, Math.round(size * 0.022))) : undefined;
     if (isImageIcon(icon)) {
         // eslint-disable-next-line @next/next/no-img-element
         return <img src={icon} alt="" style={{ width: size, height: size, objectFit: "cover", borderRadius: size * 0.18, display: "block", filter }} />;
