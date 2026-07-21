@@ -90,9 +90,27 @@ export function getDoc(id: string): LocalDoc | null {
 // 같은 id로 문서를 되살리는 것을 막는다. id는 UUID라 재사용되지 않는다.
 const tombstones = new Set<string>();
 
+// updatedAt을 제외한 실제 내용이 동일한지 비교 (열기만 했는데 재정렬되는 것 방지)
+function sameContent(a: LocalDoc, b: LocalDoc): boolean {
+    return (
+        a.title === b.title &&
+        a.icon === b.icon &&
+        a.label === b.label &&
+        a.subTitle === b.subTitle &&
+        a.imageUrl === b.imageUrl &&
+        a.sourceSlug === b.sourceSlug &&
+        JSON.stringify(a.tags ?? []) === JSON.stringify(b.tags ?? []) &&
+        JSON.stringify(a.blocks) === JSON.stringify(b.blocks) &&
+        JSON.stringify(a.blockColors) === JSON.stringify(b.blockColors) &&
+        JSON.stringify(a.blockFormattedRanges) === JSON.stringify(b.blockFormattedRanges)
+    );
+}
+
 export function saveDoc(doc: LocalDoc) {
     if (tombstones.has(doc.id)) return; // 삭제된 문서는 되살리지 않음
     const all = readAll();
+    // 내용 변화가 없으면 updatedAt 갱신/재정렬을 하지 않는다 (단순 열람 시 순서 유지)
+    if (all[doc.id] && sameContent(all[doc.id], doc)) return;
     all[doc.id] = doc;
     writeAll(all);
     notifyDocsChanged();
