@@ -86,7 +86,12 @@ export function getDoc(id: string): LocalDoc | null {
     return readAll()[id] ?? null;
 }
 
+// 삭제된 문서 id (세션 내). 삭제 직후 언마운트되는 에디터의 자동저장이
+// 같은 id로 문서를 되살리는 것을 막는다. id는 UUID라 재사용되지 않는다.
+const tombstones = new Set<string>();
+
 export function saveDoc(doc: LocalDoc) {
+    if (tombstones.has(doc.id)) return; // 삭제된 문서는 되살리지 않음
     const all = readAll();
     all[doc.id] = doc;
     writeAll(all);
@@ -94,6 +99,7 @@ export function saveDoc(doc: LocalDoc) {
 }
 
 export function deleteDoc(id: string) {
+    tombstones.add(id);
     const all = readAll();
     delete all[id];
     writeAll(all);

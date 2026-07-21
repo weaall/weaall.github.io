@@ -69,10 +69,10 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
     };
     const removeDoc = (id: string) => {
         deleteDoc(id);
-        // 지운 게 현재 활성 문서면 최근 문서로 포인터 이동
+        // 지운 게 현재 활성 문서면 최근 문서로, 남은 게 없으면 새 빈 문서로 포인터 이동
         if (id === getActivePointer()) {
-            const next = listDocs()[0]?.id;
-            if (next) setActivePointer(next);
+            const next = listDocs()[0]?.id ?? crypto.randomUUID();
+            setActivePointer(next);
         }
     };
     const activeCategory = posts.find((post) => post.postUrl === pathname)?.label || null;
@@ -211,7 +211,15 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                             <tw.Label>검색</tw.Label>
                         </tw.LabelWrap>
                     </tw.PostLink>
-                    <tw.PostLink href="/newpage" $active={pathname === "/newpage"}>
+                    <tw.PostLink
+                        href="/newpage"
+                        $active={pathname === "/newpage"}
+                        onClick={(e) => {
+                            // 항상 새 빈 문서로 시작 (마지막 초안 복원 방지)
+                            e.preventDefault();
+                            newDoc();
+                        }}
+                    >
                         <tw.SvgWrap>
                             <AddDockIcon color="currentColor" width="20" height="20" />
                         </tw.SvgWrap>
