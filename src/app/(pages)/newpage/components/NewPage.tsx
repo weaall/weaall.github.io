@@ -1364,14 +1364,13 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
                                 </div>
                                 {meta.icon && (
                                     <button
-                                        className="absolute -bottom-5 left-1 flex h-[72px] w-[72px] items-center justify-center"
-                                        style={{ background: "radial-gradient(closest-side, rgba(255,255,255,0.95) 55%, rgba(255,255,255,0) 100%)" }}
+                                        className="absolute -bottom-5 left-2 flex items-center justify-center"
                                         onClick={(e) => {
                                             const r = e.currentTarget.getBoundingClientRect();
                                             setIconPicker({ top: r.bottom + 6, left: r.left });
                                         }}
                                     >
-                                        <PageIcon icon={meta.icon} size={56} />
+                                        <PageIcon icon={meta.icon} size={56} outline />
                                     </button>
                                 )}
                             </div>

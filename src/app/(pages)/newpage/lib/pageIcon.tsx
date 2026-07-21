@@ -5,15 +5,32 @@ export function isImageIcon(icon?: string): boolean {
     return !!icon && icon.startsWith("data:");
 }
 
+// 아이콘 모양을 따라 흰색 테두리를 만드는 필터(이모지 글리프/이미지 알파 외곽선).
+// 커버 위에 올릴 때 하얀 배경 박스 대신 아이콘을 감싸는 흰 테두리로 분리감을 준다.
+function whiteOutline(w = 2): string {
+    return [
+        `drop-shadow(${w}px 0 0 #fff)`,
+        `drop-shadow(-${w}px 0 0 #fff)`,
+        `drop-shadow(0 ${w}px 0 #fff)`,
+        `drop-shadow(0 -${w}px 0 #fff)`,
+        `drop-shadow(${w}px ${w}px 0 #fff)`,
+        `drop-shadow(-${w}px -${w}px 0 #fff)`,
+        `drop-shadow(${w}px -${w}px 0 #fff)`,
+        `drop-shadow(-${w}px ${w}px 0 #fff)`,
+    ].join(" ");
+}
+
 // 아이콘 렌더러 (이모지는 텍스트, 커스텀은 img). 드로워·타이틀 공용.
-export function PageIcon({ icon, size = 20 }: { icon?: string; size?: number }) {
+// outline=true 면 아이콘 둘레에 흰 테두리를 그린다(커버 위 오버레이용).
+export function PageIcon({ icon, size = 20, outline = false }: { icon?: string; size?: number; outline?: boolean }) {
     if (!icon) return null;
+    const filter = outline ? whiteOutline(Math.max(1.5, Math.round(size * 0.045))) : undefined;
     if (isImageIcon(icon)) {
         // eslint-disable-next-line @next/next/no-img-element
-        return <img src={icon} alt="" style={{ width: size, height: size, objectFit: "cover", borderRadius: size * 0.18, display: "block" }} />;
+        return <img src={icon} alt="" style={{ width: size, height: size, objectFit: "cover", borderRadius: size * 0.18, display: "block", filter }} />;
     }
     return (
-        <span style={{ fontSize: Math.round(size * 0.92), lineHeight: 1, display: "inline-block" }} className="select-none">
+        <span style={{ fontSize: Math.round(size * 0.92), lineHeight: 1, display: "inline-block", filter }} className="select-none">
             {icon}
         </span>
     );
