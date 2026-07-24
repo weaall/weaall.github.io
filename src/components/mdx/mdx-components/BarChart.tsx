@@ -15,10 +15,6 @@ export type ChartType = "barV" | "barH" | "line" | "area" | "donut";
 export const CHART_COLORS = ["#8b5cf6", "#38bdf8", "#a3e635", "#f472b6", "#fb923c", "#f87171", "#facc15", "#34d399"];
 export const colorAt = (i: number) => CHART_COLORS[((i % CHART_COLORS.length) + CHART_COLORS.length) % CHART_COLORS.length];
 
-// 색 → 부드러운 그라데이션 배경
-const grad = (c: string, deg = 180) => `linear-gradient(${deg}deg, ${c} 0%, ${c}cc 100%)`;
-// 연한 라벤더(기본 세로막대용)
-const SOFT = "linear-gradient(180deg, #efeafe 0%, #e2d8fb 100%)";
 function hexToRgb(hex: string): [number, number, number] {
     const m = hex.replace("#", "");
     const n = m.length === 3 ? m.split("").map((c) => c + c).join("") : m;
@@ -135,45 +131,78 @@ export default function BarChart({ type, orient, data, rows, title, subtitle, ic
     );
 }
 
-/* ── 가로 막대 (알약형 + 트랙) ─────────────── */
+// 값 라벨(도넛과 동일): 최댓값은 검은 알약+흰 숫자, 나머지는 회색빛(#333, 흐리게)
+function MaxPill({ v }: { v: number }) {
+    return (
+        <span className="rounded-md px-2 py-[2px] text-[11px] font-medium tabular-nums text-white" style={{ background: "#1a1a1f" }}>
+            {v}
+        </span>
+    );
+}
+function DimVal({ v }: { v: number }) {
+    return (
+        <span className="text-[11px] tabular-nums" style={{ color: "#333333", opacity: 0.4 }}>
+            {v}
+        </span>
+    );
+}
+
+/* ── 가로 막대 (도넛과 동일 톤: 최댓값만 진하게, 나머지 흐리게) ── */
 function BarsH({ items }: { items: ChartRow[] }) {
     const max = Math.max(1, ...items.map((r) => r.value));
-    const LABEL_W = 80;
+    const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
+    const LABEL_W = 84;
     return (
-        <div className="flex flex-col gap-3.5">
-            {items.map((r, i) => (
-                <div key={i} className="flex items-center gap-3">
-                    <div className="shrink-0 truncate text-right text-xs text-(--text-muted)" style={{ width: LABEL_W }} title={r.label}>
-                        {r.label}
+        <div className="flex flex-col gap-3">
+            {items.map((r, i) => {
+                const color = r.color || colorAt(i);
+                const isMax = i === maxIdx;
+                return (
+                    <div key={i} className="flex items-center gap-3">
+                        <div className="shrink-0 truncate text-right text-xs" style={{ width: LABEL_W }} title={r.label}>
+                            <span className={isMax ? "font-semibold text-(--text)" : "text-(--text-muted)"}>{r.label}</span>
+                        </div>
+                        <div className="relative h-7 flex-1 overflow-hidden rounded-full bg-(--hover-bg)">
+                            <div
+                                className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-300"
+                                style={{
+                                    width: `${(r.value / max) * 100}%`,
+                                    minWidth: 12,
+                                    background: `linear-gradient(90deg, ${lighten(color, 0.32)} 0%, ${color} 100%)`,
+                                    opacity: isMax ? 1 : 0.3,
+                                }}
+                            />
+                        </div>
+                        <div className="w-11 shrink-0 text-right">{isMax ? <MaxPill v={r.value} /> : <DimVal v={r.value} />}</div>
                     </div>
-                    {/* 트랙 */}
-                    <div className="relative h-6 flex-1 overflow-hidden rounded-full bg-(--hover-bg)">
-                        <div
-                            className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-300"
-                            style={{ width: `${(r.value / max) * 100}%`, minWidth: 10, background: r.color ? grad(r.color, 90) : "linear-gradient(90deg,#a78bfa,#7c3aed)" }}
-                        />
-                    </div>
-                    <div className="w-12 shrink-0 text-right text-xs font-semibold tabular-nums text-(--text)">{r.value}</div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 }
 
-/* ── 세로 막대 (라운드 + 최댓값 강조) ───────── */
+/* ── 세로 막대 (도넛과 동일 톤: 라운드 + 최댓값만 진하게, 나머지 흐리게) ── */
 function BarsV({ items }: { items: ChartRow[] }) {
     const max = Math.max(1, ...items.map((r) => r.value));
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
     return (
-        <div className="flex h-56 items-end justify-around gap-3">
+        <div className="flex h-56 items-end justify-around gap-4">
             {items.map((r, i) => {
-                const isMax = i === maxIdx && !r.color;
-                const bg = r.color ? grad(r.color) : isMax ? "linear-gradient(180deg,#8b5cf6,#7c3aed)" : SOFT;
+                const color = r.color || colorAt(i);
+                const isMax = i === maxIdx;
                 return (
                     <div key={i} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-2">
-                        <span className={`text-sm font-semibold tabular-nums ${isMax ? "text-(--text)" : "text-(--text-muted)"}`}>{r.value}</span>
-                        <div className="w-full max-w-[56px] rounded-[14px] transition-[height] duration-300" style={{ height: `${(r.value / max) * 100}%`, minHeight: 10, background: bg }} />
-                        <span className={`min-w-0 max-w-full truncate text-xs ${isMax ? "font-bold text-(--text)" : "text-(--text-muted)"}`} title={r.label}>
+                        <div className="flex h-[20px] items-end">{isMax ? <MaxPill v={r.value} /> : <DimVal v={r.value} />}</div>
+                        <div
+                            className="w-full max-w-[52px] rounded-[10px] transition-[height] duration-300"
+                            style={{
+                                height: `${(r.value / max) * 100}%`,
+                                minHeight: 10,
+                                background: `linear-gradient(180deg, ${color} 0%, ${lighten(color, 0.32)} 100%)`,
+                                opacity: isMax ? 1 : 0.28,
+                            }}
+                        />
+                        <span className={`min-w-0 max-w-full truncate text-xs ${isMax ? "font-semibold text-(--text)" : "text-(--text-muted)"}`} title={r.label}>
                             {r.label}
                         </span>
                     </div>
