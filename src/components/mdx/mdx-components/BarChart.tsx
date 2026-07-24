@@ -178,11 +178,16 @@ function BarsH({ items }: { items: ChartRow[] }) {
                 const on = colored(i);
                 const isMax = i === maxIdx;
                 return (
-                    <div key={i} className="flex items-center gap-3" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}>
+                    <div key={i} className="flex items-center gap-3">
                         <div className="shrink-0 truncate text-right text-xs" style={{ width: LABEL_W }} title={r.label}>
                             <span className={isMax ? "font-semibold text-(--text)" : "text-(--text-muted)"}>{r.label}</span>
                         </div>
-                        <div className="relative flex-1 overflow-hidden bg-(--hover-bg)" style={{ height: BAR_H_H, borderRadius: BAR_RADIUS }}>
+                        <div
+                            className="relative flex-1 cursor-pointer overflow-hidden bg-(--hover-bg)"
+                            style={{ height: BAR_H_H, borderRadius: BAR_RADIUS }}
+                            onMouseEnter={() => setHover(i)}
+                            onMouseLeave={() => setHover(null)}
+                        >
                             <div
                                 className="absolute inset-y-0 left-0 transition-all duration-300"
                                 style={{
@@ -214,16 +219,11 @@ function BarsV({ items }: { items: ChartRow[] }) {
                     const on = colored(i);
                     const isMax = i === maxIdx;
                     return (
-                        <div
-                            key={i}
-                            className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1.5"
-                            onMouseEnter={() => setHover(i)}
-                            onMouseLeave={() => setHover(null)}
-                        >
+                        <div key={i} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1.5">
                             <div className="flex h-[20px] shrink-0 items-end">{isMax ? <MaxPill v={r.value} /> : <DimVal v={r.value} />}</div>
-                            {/* 값 알약 높이만큼 여유를 두고 88%까지만 차게 */}
+                            {/* 값 알약 높이만큼 여유를 두고 88%까지만 차게. 호버는 막대 위에서만 */}
                             <div
-                                className="transition-all duration-300"
+                                className="cursor-pointer transition-all duration-300"
                                 style={{
                                     width: "100%",
                                     maxWidth: BAR_V_W,
@@ -232,6 +232,8 @@ function BarsV({ items }: { items: ChartRow[] }) {
                                     borderRadius: BAR_RADIUS,
                                     background: on ? `linear-gradient(180deg, ${color} 0%, ${lighten(color, 0.32)} 100%)` : GRAY_V,
                                 }}
+                                onMouseEnter={() => setHover(i)}
+                                onMouseLeave={() => setHover(null)}
                             />
                         </div>
                     );
