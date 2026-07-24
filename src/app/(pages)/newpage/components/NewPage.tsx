@@ -1312,12 +1312,13 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             onDragOver={handleFileDragOver}
             onDragLeave={handleFileDragLeave}
             onDrop={handleFileDrop}
+            className="m:pl-0!"
             style={{
                 paddingLeft: collapsed ? 50 : 350,
                 transition: "padding-left 0.2s",
             }}
         >
-            <div data-editor-col className="max-w-[712px] min-w-[712px] w-[712px] mx-10" style={{ position: "relative" }}>
+            <div data-editor-col className="max-w-[712px] min-w-[712px] w-[712px] mx-10 m:min-w-0 m:w-full m:max-w-full m:mx-0 m:px-4" style={{ position: "relative" }}>
                 <tw.BlockWrap>
                     <div className="group/title mb-8">
                         {/* 커버 사진: 상단 배너, 아이콘이 하단에 겹쳐 표시 */}

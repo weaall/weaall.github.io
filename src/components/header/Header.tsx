@@ -13,8 +13,14 @@ export default function Header() {
     const router = useRouter();
     const [scrolled, setScrolled] = useState(false);
     
-    const [isMenuOpenInternal, setIsMenuOpenInternal] = useState(false); 
-    const [isMenuClicked, setIsMenuClicked] = useState(false); 
+    const [isMenuOpenInternal, setIsMenuOpenInternal] = useState(false);
+    const [isMenuClicked, setIsMenuClicked] = useState(false);
+    const [mobileNavOpen, setMobileNavOpen] = useState(false); // 모바일 햄버거 메뉴
+
+    // 경로 이동 시 모바일 메뉴 닫기
+    useEffect(() => {
+        setMobileNavOpen(false);
+    }, [pathname]);
     
     // ⭐ TimeOut ID를 저장할 ref (렌더링에 영향을 주지 않음)
     const leaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -121,8 +127,18 @@ export default function Header() {
                 </tw.Nav>
             </tw.NavWrap>
 
-            {/* 우측 컬럼: 중앙 내비 정렬용 스페이서 (로그인/이용하기 라우트 준비 전까지 비움) */}
-            <tw.RearWrap />
+            {/* 우측 컬럼: 데스크탑은 스페이서, 모바일은 햄버거 버튼 */}
+            <tw.RearWrap>
+                <button
+                    className="hidden m:flex h-9 w-9 items-center justify-center rounded-md hover:bg-gray-100"
+                    aria-label="메뉴 열기"
+                    onClick={() => setMobileNavOpen((v) => !v)}
+                >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        {mobileNavOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+                    </svg>
+                </button>
+            </tw.RearWrap>
 
             {/* 2. 메뉴 렌더링 래퍼 */}
             {isMenuOpen && (
@@ -134,7 +150,18 @@ export default function Header() {
                     <WeHubHoverMenu />
                 </div>
             )}
-            
+
+            {/* 모바일 드롭다운 메뉴 */}
+            {mobileNavOpen && (
+                <div className="hidden m:flex absolute left-0 top-full w-full flex-col border-b border-gray-200 bg-white py-2 shadow-lg animate-fadeIn">
+                    {navItems.map((item, i) => (
+                        <tw.NavDirectP key={i} href={item.path} className="mx-2 my-0.5 px-4 py-3 text-base">
+                            {item.p}
+                        </tw.NavDirectP>
+                    ))}
+                </div>
+            )}
+
         </tw.Container>
     );
 }
