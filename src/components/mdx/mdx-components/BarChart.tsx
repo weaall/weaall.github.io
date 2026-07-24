@@ -247,19 +247,21 @@ function BarsV({ items }: { items: ChartRow[] }) {
     );
 }
 
-/* ── 라인 / 영역 (부드러운 곡선) ──────────── */
+/* ── 라인 / 영역 (부드러운 곡선 + 기준선 + 최대·최소 강조) ── */
 function LineArea({ items, area }: { items: ChartRow[]; area: boolean }) {
-    const W = 600;
-    const H = 200;
-    const padL = 34;
-    const padB = 22;
-    const padT = 10;
-    const padR = 10;
+    const W = 620;
+    const H = 240;
+    const padL = 36;
+    const padB = 28;
+    const padT = 26; // 최댓값 라벨 공간
+    const padR = 14;
     const plotW = W - padL - padR;
     const plotH = H - padT - padB;
     const { niceMax, ticks } = niceScale(Math.max(0, ...items.map((r) => r.value)));
     const n = items.length;
     const stroke = items[0]?.color || colorAt(0);
+    const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
+    const minIdx = items.reduce((m, r, i) => (r.value < items[m].value ? i : m), 0);
     const pts = items.map((r, i) => ({
         x: padL + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW),
         y: padT + plotH - (r.value / niceMax) * plotH,
@@ -268,33 +270,46 @@ function LineArea({ items, area }: { items: ChartRow[]; area: boolean }) {
     const areaPath = area && pts.length ? `${line} L ${pts[pts.length - 1].x} ${padT + plotH} L ${pts[0].x} ${padT + plotH} Z` : "";
     const gid = `area-${stroke.replace("#", "")}`;
     return (
-        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 220 }} preserveAspectRatio="none">
+        <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full">
             <defs>
                 <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={stroke} stopOpacity="0.28" />
+                    <stop offset="0%" stopColor={stroke} stopOpacity="0.24" />
                     <stop offset="100%" stopColor={stroke} stopOpacity="0" />
                 </linearGradient>
             </defs>
-            {/* 가로 기준선 + y 눈금 */}
+            {/* 가로 기준선(점선) + y 눈금 */}
             {ticks.map((t, i) => {
                 const y = padT + plotH - (t / niceMax) * plotH;
                 return (
                     <g key={i}>
-                        <line x1={padL} y1={y} x2={W - padR} y2={y} stroke="var(--border)" strokeWidth="1" />
-                        <text x={padL - 6} y={y + 3} textAnchor="end" fontSize="10" fill="var(--text-faint)">
+                        <line x1={padL} y1={y} x2={W - padR} y2={y} stroke="var(--border)" strokeWidth="1" strokeDasharray="3 4" opacity="0.7" />
+                        <text x={padL - 8} y={y + 3.5} textAnchor="end" fontSize="10" className="tabular-nums" fill="var(--text-faint)">
                             {t}
                         </text>
                     </g>
                 );
             })}
             {area && <path d={areaPath} fill={`url(#${gid})`} />}
-            <path d={line} fill="none" stroke={stroke} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-            {pts.map((p, i) => (
-                <circle key={i} cx={p.x} cy={p.y} r="3" fill="#fff" stroke={stroke} strokeWidth="2" vectorEffect="non-scaling-stroke" />
-            ))}
+            <path d={line} fill="none" stroke={stroke} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            {/* 점: 최대·최소는 색으로 강조, 나머지는 흰 점 */}
+            {pts.map((p, i) => {
+                const emp = i === maxIdx || i === minIdx;
+                return (
+                    <circle key={i} cx={p.x} cy={p.y} r={emp ? 4.5 : 3} fill={emp ? stroke : "#fff"} stroke={stroke} strokeWidth="2" />
+                );
+            })}
+            {/* 값 라벨: 최댓값은 진하게(위), 최솟값은 옅게(아래) */}
+            <text x={pts[maxIdx].x} y={pts[maxIdx].y - 10} textAnchor="middle" fontSize="12" fontWeight="700" className="tabular-nums" fill="var(--text-strong)">
+                {items[maxIdx].value}
+            </text>
+            {minIdx !== maxIdx && (
+                <text x={pts[minIdx].x} y={pts[minIdx].y + 16} textAnchor="middle" fontSize="10" className="tabular-nums" fill="var(--text-faint)">
+                    {items[minIdx].value}
+                </text>
+            )}
             {/* x 라벨 */}
             {items.map((r, i) => (
-                <text key={i} x={pts[i].x} y={H - 6} textAnchor="middle" fontSize="10" fill="var(--text-muted)">
+                <text key={i} x={pts[i].x} y={H - 8} textAnchor="middle" fontSize="10" fill="var(--text-muted)">
                     {r.label}
                 </text>
             ))}
