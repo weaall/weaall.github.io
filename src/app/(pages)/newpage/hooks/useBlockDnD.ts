@@ -17,20 +17,14 @@ export function useBlockDnD(
     buildDragImage?: (fromIdx: number) => HTMLElement | null,
     // Alt/Ctrl 누르고 드래그하면 이동 대신 복제(복사). 색/서식까지 복제하려고 상위에 위임.
     onCopy?: (rangeStart: number, count: number, dropIdx: number) => void,
-    // 블록을 다른 블록의 좌/우 가장자리에 드롭 → 2칸(컬럼) 구성. 상위에 위임.
-    onSideDrop?: (targetIdx: number, side: "left" | "right", fromIdx: number) => void,
-    // 대상 블록의 컬럼 정보(gid/col). 이미 2칸 안이면 사이드 드롭 금지 + 상/하 드롭 시 그 칸에 합류.
+    // 대상 블록의 컬럼 정보(gid/col). 상/하 드롭 지점이 2칸 안이면 그 칸에 합류시킨다.
     colInfo?: (idx: number) => { gid?: string; col?: number },
 ) {
     const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
     const [insertLineIdx, setInsertLineIdx] = useState<number | null>(null);
-    // 좌/우 가장자리에 드롭할 때 표시할 세로 인디케이터 대상
-    const [sideDrop, setSideDrop] = useState<{ idx: number; side: "left" | "right" } | null>(null);
     // 상/하 삽입 지점이 2칸 안이면 그 칸(gid/col)에 합류시킬 대상
     const colDropRef = useRef<{ gid: string; col: number } | null>(null);
     const copyModeRef = useRef(false);
-    // 2칸 컬럼 드롭 등 외부에서 이동을 처리했으면, 이어지는 handleDragEnd의 평면 이동을 건너뛴다.
-    const externalDropRef = useRef(false);
 
     // 커서를 따라다니는 커스텀 미리보기 요소 + 이동 핸들러(정리를 위해 ref 보관)
     const previewRef = useRef<HTMLElement | null>(null);
@@ -127,31 +121,7 @@ export function useBlockDnD(
         colDropRef.current = ci?.gid ? { gid: ci.gid, col: ci.col ?? 0 } : null;
     };
 
-    // 컬럼 드롭 등 외부에서 이동 처리 시 호출 → 다음 handleDragEnd의 평면 이동 스킵
-    const notifyExternalDrop = () => {
-        externalDropRef.current = true;
-    };
-
     const handleDragEnd = () => {
-        // 좌/우 가장자리 드롭 → 2칸 구성 (평면 이동 대신)
-        if (draggingIdx !== null && sideDrop && onSideDrop && draggingIdx !== sideDrop.idx) {
-            onSideDrop(sideDrop.idx, sideDrop.side, draggingIdx);
-            copyModeRef.current = false;
-            teardownPreview();
-            setDraggingIdx(null);
-            setInsertLineIdx(null);
-            setSideDrop(null);
-            return;
-        }
-        if (externalDropRef.current) {
-            externalDropRef.current = false;
-            copyModeRef.current = false;
-            teardownPreview();
-            setDraggingIdx(null);
-            setInsertLineIdx(null);
-            setSideDrop(null);
-            return;
-        }
         if (draggingIdx !== null && insertLineIdx !== null) {
             const fromIdx = draggingIdx;
             const dropIdx = insertLineIdx;
@@ -205,9 +175,8 @@ export function useBlockDnD(
         teardownPreview();
         setDraggingIdx(null);
         setInsertLineIdx(null);
-        setSideDrop(null);
         colDropRef.current = null;
     };
 
-    return { draggingIdx, insertLineIdx, sideDrop, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd, notifyExternalDrop };
+    return { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd };
 }

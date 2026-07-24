@@ -520,7 +520,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
         setMeta((prev) => ({ ...prev, imageUrl: webp }));
     };
 
-    const { draggingIdx, insertLineIdx, sideDrop, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd } = useBlockDnD(
+    const { draggingIdx, insertLineIdx, handleDragStart, handleDragEnter, handleDragOver, handleBlockDragOver, handleDragEnd } = useBlockDnD(
         setBlocks,
         () => selectionRef.current,
         (targetIdx, count) => setSelRange({ a: targetIdx, b: targetIdx + count - 1 }),
@@ -577,32 +577,7 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             });
             setSelRange({ a: at, b: at + count - 1 });
         },
-        // 좌/우 가장자리 드롭 → 2칸 구성: 대상 블록과 드래그 블록을 같은 colGroup으로
-        (targetIdx, side, fromIdx) => {
-            setBlocks((prev) => {
-                const arr = [...prev];
-                const dragged = arr[fromIdx];
-                const target = arr[targetIdx];
-                if (!dragged || !target || dragged.id === target.id) return prev;
-                const draggedCol = side === "right" ? 1 : 0;
-                let gid = target.colGroup;
-                if (!gid) {
-                    gid = crypto.randomUUID();
-                    const ti = arr.findIndex((b) => b.id === target.id);
-                    arr[ti] = { ...target, colGroup: gid, col: side === "right" ? 0 : 1, indentationLevel: 0 };
-                }
-                // 드래그 블록 제거 후 그룹 연속 구간 끝에 삽입
-                const di = arr.findIndex((b) => b.id === dragged.id);
-                arr.splice(di, 1);
-                let end = arr.findIndex((b) => b.colGroup === gid);
-                if (end === -1) return prev;
-                while (end < arr.length && arr[end].colGroup === gid) end++;
-                arr.splice(end, 0, { ...dragged, colGroup: gid, col: draggedCol, indentationLevel: 0 });
-                return arr;
-            });
-            setSelRange(null);
-        },
-        // 대상 블록의 컬럼 정보(사이드 드롭 금지 + 상/하 드롭 시 그 칸에 합류)
+        // 대상 블록의 컬럼 정보 → 상/하 드롭 지점이 2칸 안이면 그 칸에 합류
         (idx) => ({ gid: blocksRef.current[idx]?.colGroup, col: blocksRef.current[idx]?.col }),
     );
 
@@ -1275,7 +1250,6 @@ export default function NewPage({ collapsed, docId, categories = [] }: { collaps
             onClearSelection={clearSelection}
             animateIn={revealedIds.has(block.id)}
             inColumn={!!block.colGroup}
-            sideDropSide={sideDrop && sideDrop.idx === idx ? sideDrop.side : null}
         />
     );
 

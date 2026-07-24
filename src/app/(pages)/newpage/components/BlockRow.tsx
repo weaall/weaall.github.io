@@ -43,7 +43,6 @@ interface BlockRowProps {
     onClearSelection: () => void;
     animateIn?: boolean;
     inColumn?: boolean;
-    sideDropSide?: "left" | "right" | null;
 }
 
 export default function BlockRow({
@@ -81,7 +80,6 @@ export default function BlockRow({
     selected,
     onClearSelection,
     animateIn,
-    sideDropSide,
 }: BlockRowProps) {
     // 손잡이 갓터: 블록에 가깝게(버튼은 오른쪽 정렬로 블록에 붙임). 칸일 때 이 폭이 칸 사이 gap에 들어감
     const GUT = 44;
@@ -107,13 +105,6 @@ export default function BlockRow({
                 onDragEnter={(e: React.DragEvent<HTMLDivElement>) => onBlockDragOver(e, idx)}
                 onDragOver={(e: React.DragEvent<HTMLDivElement>) => onBlockDragOver(e, idx)}
             >
-                {/* 좌/우 가장자리 2칸 드롭 인디케이터 (세로 파란 선) */}
-                {sideDropSide && (
-                    <div
-                        className="pointer-events-none absolute top-1 bottom-1 z-20 w-[3px] rounded bg-[#3b82f6]"
-                        style={sideDropSide === "right" ? { right: -8 } : { left: -8 }}
-                    />
-                )}
                 {/* 왼쪽 갓터: 핸들 호버 영역 (여기서 빈 채로 드래그하면 상위에서 마퀴 선택 시작) */}
                 <div
                     style={{
