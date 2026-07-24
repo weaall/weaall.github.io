@@ -147,8 +147,10 @@ function DimVal({ v }: { v: number }) {
     );
 }
 
-// 막대 두께: 도넛 링 두께(Ro-Ri=28)와 동일하게
-const BAR_THICK = 28;
+// 막대 두께(세로막대 폭 / 가로막대 높이). 도넛 톤과 어울리되 너무 얇지 않게.
+const BAR_V_W = 48; // 세로막대 최대 폭
+const BAR_H_H = 34; // 가로막대 높이
+const BAR_RADIUS = 12; // 모서리(완전 pill 아님)
 // 회색(중간값 기본 상태) 그라데이션
 const GRAY_V = "linear-gradient(180deg, #cfcfd6 0%, #e6e6ec 100%)";
 const GRAY_H = "linear-gradient(90deg, #e6e6ec 0%, #cfcfd6 100%)";
@@ -179,12 +181,13 @@ function BarsH({ items }: { items: ChartRow[] }) {
                         <div className="shrink-0 truncate text-right text-xs" style={{ width: LABEL_W }} title={r.label}>
                             <span className={isMax ? "font-semibold text-(--text)" : "text-(--text-muted)"}>{r.label}</span>
                         </div>
-                        <div className="relative flex-1 overflow-hidden rounded-full bg-(--hover-bg)" style={{ height: BAR_THICK }}>
+                        <div className="relative flex-1 overflow-hidden bg-(--hover-bg)" style={{ height: BAR_H_H, borderRadius: BAR_RADIUS }}>
                             <div
-                                className="absolute inset-y-0 left-0 rounded-full transition-all duration-300"
+                                className="absolute inset-y-0 left-0 transition-all duration-300"
                                 style={{
                                     width: `${(r.value / max) * 100}%`,
-                                    minWidth: BAR_THICK,
+                                    minWidth: BAR_H_H,
+                                    borderRadius: BAR_RADIUS,
                                     background: on ? `linear-gradient(90deg, ${lighten(color, 0.32)} 0%, ${color} 100%)` : GRAY_H,
                                 }}
                             />
@@ -219,12 +222,13 @@ function BarsV({ items }: { items: ChartRow[] }) {
                             <div className="flex h-[20px] shrink-0 items-end">{isMax ? <MaxPill v={r.value} /> : <DimVal v={r.value} />}</div>
                             {/* 값 알약 높이만큼 여유를 두고 88%까지만 차게 */}
                             <div
-                                className="rounded-full transition-all duration-300"
+                                className="transition-all duration-300"
                                 style={{
                                     width: "100%",
-                                    maxWidth: BAR_THICK,
+                                    maxWidth: BAR_V_W,
                                     height: `${(r.value / max) * 88}%`,
-                                    minHeight: BAR_THICK,
+                                    minHeight: 16,
+                                    borderRadius: BAR_RADIUS,
                                     background: on ? `linear-gradient(180deg, ${color} 0%, ${lighten(color, 0.32)} 100%)` : GRAY_V,
                                 }}
                             />
