@@ -432,16 +432,26 @@ function Donut({ items }: { items: ChartRow[] }) {
                         />
                     );
                 })}
-                {/* 가운데: 강조 조각(호버 또는 최댓값)의 이름 + 값 + 비율 */}
-                <text x={CX} y={CX - 14} textAnchor="middle" fontSize="12" fill="var(--text-muted)">
-                    {items[empIdx]?.label || "-"}
-                </text>
-                <text x={CX} y={CX + 12} textAnchor="middle" fontSize="32" fontWeight="700" className="tabular-nums" fill="var(--text-strong)">
-                    {Math.round((Math.max(0, items[empIdx]?.value ?? 0) / total) * 100)}%
-                </text>
-                <text x={CX} y={CX + 30} textAnchor="middle" fontSize="12" className="tabular-nums" fill="var(--text-faint)">
-                    {items[empIdx]?.value ?? ""}
-                </text>
+                {/* 값 라벨: 각 조각의 링 안(두께 가운데)에 숫자. 강조=흰색 볼드, 나머지=진회색 */}
+                {segs.map((s, i) => {
+                    if (s.pct < 6) return null;
+                    const emp = i === empIdx;
+                    return (
+                        <text
+                            key={i}
+                            x={s.lx}
+                            y={s.ly + 4}
+                            textAnchor="middle"
+                            fontSize={emp ? 13 : 11}
+                            fontWeight={emp ? 700 : 500}
+                            className="tabular-nums"
+                            fill={emp ? "#ffffff" : "#5a5a60"}
+                            style={{ pointerEvents: "none" }}
+                        >
+                            {items[i].value}
+                        </text>
+                    );
+                })}
             </svg>
         </div>
     );
