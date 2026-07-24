@@ -27,6 +27,18 @@ function Highlight({ text, q }: { text: string; q: string }) {
 
 function ResultCard({ post, q }: { post: PostData; q: string }) {
     const tags = cleanTags(post.tags);
+    // 본문에서만 매칭되면 매칭 주변 스니펫을 보여준다
+    const snippet = (() => {
+        if (!q || !post.body) return null;
+        const lc = post.body.toLowerCase();
+        const idx = lc.indexOf(q.toLowerCase());
+        if (idx === -1) return null;
+        const inMeta = `${post.title} ${post.subTitle || ""} ${post.label || ""} ${(post.tags || []).join(" ")}`.toLowerCase().includes(q.toLowerCase());
+        if (inMeta) return null;
+        const start = Math.max(0, idx - 40);
+        const end = Math.min(post.body.length, idx + q.length + 90);
+        return `${start > 0 ? "…" : ""}${post.body.slice(start, end)}${end < post.body.length ? "…" : ""}`;
+    })();
     return (
         <Link
             href={post.postUrl}
@@ -43,6 +55,11 @@ function ResultCard({ post, q }: { post: PostData; q: string }) {
             {post.subTitle && post.subTitle !== "none" && (
                 <p className="line-clamp-2 text-sm text-(--text-muted)">
                     <Highlight text={post.subTitle} q={q} />
+                </p>
+            )}
+            {snippet && (
+                <p className="line-clamp-2 text-xs text-(--text-faint)">
+                    <Highlight text={snippet} q={q} />
                 </p>
             )}
             {tags.length > 0 && (
@@ -80,7 +97,7 @@ export default function SearchLayout({ postsData }: { postsData: PostData[] }) {
         const sorted = [...postsData].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         if (!q) return sorted;
         return sorted.filter((p) => {
-            const hay = [p.title, p.subTitle, p.label, ...(p.tags || [])].filter(Boolean).join(" ").toLowerCase();
+            const hay = [p.title, p.subTitle, p.label, p.body, ...(p.tags || [])].filter(Boolean).join(" ").toLowerCase();
             return hay.includes(q);
         });
     }, [postsData, q]);
