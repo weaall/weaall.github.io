@@ -161,7 +161,8 @@ function useEmphasis(items: ChartRow[]) {
     const [hover, setHover] = React.useState<number | null>(null);
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
     const minIdx = items.reduce((m, r, i) => (r.value < items[m].value ? i : m), 0);
-    const colored = (i: number) => i === maxIdx || i === minIdx || hover === i;
+    // 호버 중이면 호버한 것만 색(나머지 회색), 호버 없으면 최대·최소만 색
+    const colored = (i: number) => (hover !== null ? hover === i : i === maxIdx || i === minIdx);
     return { hover, setHover, maxIdx, minIdx, colored };
 }
 
@@ -319,6 +320,10 @@ function Donut({ items }: { items: ChartRow[] }) {
     const GAP = items.length > 1 ? 5 + CORNER : 0; // 실제 간격 ≈ GAP-CORNER 이 되도록 보정 (조금 더 좁게)
     const pt = (r: number, a: number) => `${(CX + r * Math.cos(a)).toFixed(2)} ${(CX + r * Math.sin(a)).toFixed(2)}`;
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
+    // 호버한 조각을 강조(색), 없으면 최댓값. 호버 중이면 나머지는 회색.
+    const [hover, setHover] = React.useState<number | null>(null);
+    const empIdx = hover ?? maxIdx;
+    const DIM_GRAY = "#d9d9de";
 
     // 한 부채꼴(annular sector) path 생성: 바깥[oStart→oEnd] + 안쪽[iEnd→iStart]
     const sector = (oStart: number, oEnd: number, iStart: number, iEnd: number) => {
@@ -340,7 +345,7 @@ function Donut({ items }: { items: ChartRow[] }) {
         const mid = (a0 + a1) / 2;
         const lr = (Ro + Ri) / 2; // 링 두께 가운데 → 숫자를 그래프 안에
         const color = r.color || colorAt(i);
-        const isMax = i === maxIdx;
+        const isEmp = i === empIdx;
         const gEnd = lighten(color, 0.36);
 
         // 최댓값: 각도 기준으로 색을 보간해 "각(angular) 그라데이션"을 만든다.
@@ -354,7 +359,7 @@ function Donut({ items }: { items: ChartRow[] }) {
             return mixHex(gEnd, color, e);
         };
         let slices: { d: string; color: string; t: number }[] = [];
-        if (isMax && drawable) {
+        if (isEmp && drawable) {
             const N = 120; // 촘촘히 쪼개 매끄러운 그라데이션
             const oa = (f: number) => os + (oe - os) * f;
             const ia = (f: number) => ie + (isg - ie) * f;
@@ -375,7 +380,7 @@ function Donut({ items }: { items: ChartRow[] }) {
         return {
             color,
             gEnd,
-            max: isMax, // 최댓값 조각은 full opacity(비비드), 나머지는 더 흐리게
+            max: isEmp, // 강조 조각(호버 또는 최댓값)은 비비드, 나머지는 흐리게/회색
             d,
             slices,
             pct: Math.round(frac * 100),
@@ -385,29 +390,54 @@ function Donut({ items }: { items: ChartRow[] }) {
     });
     return (
         <div className="flex items-end justify-between gap-4">
-            {/* 범례: 색점 + 이름만 (좌하단, 작은 폰트) */}
+            {/* 범례: 색점 + 이름만 (좌하단, 작은 폰트). 호버로 조각 강조 */}
             <div className="flex min-w-0 flex-col gap-1.5">
                 {items.map((r, i) => (
-                    <div key={i} className="flex items-center gap-2 text-[11px]">
-                        <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: r.color || colorAt(i) }} />
-                        <span className="min-w-0 truncate text-(--text-muted)">{r.label || "-"}</span>
+                    <div
+                        key={i}
+                        className="flex cursor-pointer items-center gap-2 text-[11px]"
+                        onMouseEnter={() => setHover(i)}
+                        onMouseLeave={() => setHover(null)}
+                    >
+                        <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: hover !== null && hover !== i ? DIM_GRAY : r.color || colorAt(i) }} />
+                        <span className={`min-w-0 truncate ${i === empIdx ? "font-medium text-(--text)" : "text-(--text-muted)"}`}>{r.label || "-"}</span>
                     </div>
                 ))}
             </div>
             {/* 도넛 (가운데 비움, 트랙 없음 → 간격은 배경색). 단색이라 라운드 모서리도 같은 색. */}
             <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} className="shrink-0">
-                {segs.map((s, i) =>
-                    s.max && s.slices.length ? (
-                        // 최댓값: 각도 보간 슬라이스들 (양끝이 안팎 동일하게 페이드)
-                        <g key={i}>
-                            {s.slices.map((sl, k) => (
-                                <path key={k} d={sl.d} fill={sl.color} stroke={sl.color} strokeWidth={CORNER} strokeLinejoin="round" />
-                            ))}
-                        </g>
-                    ) : s.d ? (
-                        <path key={i} d={s.d} fill={s.color} stroke={s.color} strokeWidth={CORNER} strokeLinejoin="round" opacity={0.18} />
-                    ) : null,
-                )}
+                {segs.map((s, i) => {
+                    const enter = () => setHover(i);
+                    const leave = () => setHover(null);
+                    if (s.max && s.slices.length) {
+                        // 강조 조각: 각도 보간 슬라이스들 (양끝이 안팎 동일하게 페이드)
+                        return (
+                            <g key={i} onMouseEnter={enter} onMouseLeave={leave} style={{ cursor: "pointer" }}>
+                                {s.slices.map((sl, k) => (
+                                    <path key={k} d={sl.d} fill={sl.color} stroke={sl.color} strokeWidth={CORNER} strokeLinejoin="round" />
+                                ))}
+                            </g>
+                        );
+                    }
+                    if (!s.d) return null;
+                    // 나머지: 호버 중이면 회색, 아니면 자기 색 흐리게
+                    const dim = hover !== null;
+                    const fill = dim ? DIM_GRAY : s.color;
+                    return (
+                        <path
+                            key={i}
+                            d={s.d}
+                            fill={fill}
+                            stroke={fill}
+                            strokeWidth={CORNER}
+                            strokeLinejoin="round"
+                            opacity={dim ? 1 : 0.18}
+                            onMouseEnter={enter}
+                            onMouseLeave={leave}
+                            style={{ cursor: "pointer" }}
+                        />
+                    );
+                })}
                 {/* 값 라벨: 링 안(두께 가운데). 흐린 조각은 회색빛, 최댓값은 검은 알약 + 흰 숫자 */}
                 {segs.map((s, i) => {
                     if (s.pct < 6) return null;
