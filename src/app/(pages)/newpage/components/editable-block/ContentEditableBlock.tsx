@@ -370,7 +370,8 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         setEmojiSearch("");
 
         const trimmedContent = newContent.trim();
-        if (trimmedContent === "---" && type !== "divider") {
+        if (trimmedContent === "---" && type === "p") {
+            // 구분선 변환도 일반 텍스트(p)일 때만
             onTypeChange("divider");
             onContentChange("");
             onAddBlock();
@@ -525,20 +526,21 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
                     onDeleteBlock();
                 }
             }
-        } else if (e.key === " " && ["-", "*", "+"].includes((ref.current?.innerText ?? "").trim())) {
+        } else if (type === "p" && e.key === " " && ["-", "*", "+"].includes((ref.current?.innerText ?? "").trim())) {
+            // 마크다운 단축 변환은 일반 텍스트(p)일 때만 — 제목 등에서 "1." "-" 를 그대로 쓸 수 있게
             e.preventDefault();
             onTypeChange("ul");
             onContentChange("");
-        } else if (e.key === " " && /^\d+\.$/.test((ref.current?.innerText ?? "").trim())) {
+        } else if (type === "p" && e.key === " " && /^\d+\.$/.test((ref.current?.innerText ?? "").trim())) {
             e.preventDefault();
             onTypeChange("numberedList");
             onContentChange("");
-        } else if (e.key === " " && (ref.current?.innerText ?? "").replace(/\s+/g, "") === "[]") {
+        } else if (type === "p" && e.key === " " && (ref.current?.innerText ?? "").replace(/\s+/g, "") === "[]") {
             // "[]" 또는 "[ ]" (브라우저가 붙이는 후행 개행/공백까지 허용)
             e.preventDefault();
             onTypeChange("checkedList");
             onContentChange("");
-        } else if (e.key === " " && (ref.current?.innerText ?? "").replace(/\s+/g, "") === "<>") {
+        } else if (type === "p" && e.key === " " && (ref.current?.innerText ?? "").replace(/\s+/g, "") === "<>") {
             // "<>" + space → 코드 블록
             e.preventDefault();
             onTypeChange("code");
