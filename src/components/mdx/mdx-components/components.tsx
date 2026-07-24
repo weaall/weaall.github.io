@@ -185,7 +185,12 @@ export function Column({ children }: { children?: React.ReactNode }) {
 }
 
 export function Table({ children }: { children?: React.ReactNode }) {
-    return <tw.Table>{children}</tw.Table>;
+    // 넓은 표는 페이지를 밀지 않고 자체 가로 스크롤 (모바일 오버플로우 방지)
+    return (
+        <div className="my-3 w-full max-w-full overflow-x-auto">
+            <tw.Table>{children}</tw.Table>
+        </div>
+    );
 }
 
 export function Thead({ children }: { children?: React.ReactNode }) {
