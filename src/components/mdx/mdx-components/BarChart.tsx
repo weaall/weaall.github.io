@@ -131,20 +131,12 @@ export default function BarChart({ type, orient, data, rows, title, subtitle, ic
     );
 }
 
-// 값 라벨(도넛과 동일): 최댓값은 검은 알약+흰 숫자, 나머지는 회색빛(#333, 흐리게)
+// 값 라벨: 강조는 진한 볼드 숫자, 나머지는 옅은 숫자 (알약 없이 깔끔하게)
 function MaxPill({ v }: { v: number }) {
-    return (
-        <span className="rounded-md px-2 py-[2px] text-[11px] font-medium tabular-nums text-white" style={{ background: "#1a1a1f" }}>
-            {v}
-        </span>
-    );
+    return <span className="text-[15px] font-bold tabular-nums text-(--text-strong)">{v}</span>;
 }
 function DimVal({ v }: { v: number }) {
-    return (
-        <span className="text-[11px] tabular-nums" style={{ color: "#333333", opacity: 0.4 }}>
-            {v}
-        </span>
-    );
+    return <span className="text-[12px] tabular-nums text-(--text-faint)">{v}</span>;
 }
 
 // 막대 두께(세로막대 폭 / 가로막대 높이). 도넛 톤과 어울리되 너무 얇지 않게.
@@ -440,27 +432,16 @@ function Donut({ items }: { items: ChartRow[] }) {
                         />
                     );
                 })}
-                {/* 값 라벨: 링 안(두께 가운데). 흐린 조각은 회색빛, 최댓값은 검은 알약 + 흰 숫자 */}
-                {segs.map((s, i) => {
-                    if (s.pct < 6) return null;
-                    const txt = String(items[i].value);
-                    if (s.max) {
-                        const w = txt.length * 7 + 12;
-                        return (
-                            <g key={i}>
-                                <rect x={s.lx - w / 2} y={s.ly - 9} width={w} height={18} rx={6} fill="#1a1a1f" />
-                                <text x={s.lx} y={s.ly + 3.5} textAnchor="middle" fontSize="11" className="tabular-nums" fill="#ffffff">
-                                    {txt}
-                                </text>
-                            </g>
-                        );
-                    }
-                    return (
-                        <text key={i} x={s.lx} y={s.ly + 3.5} textAnchor="middle" fontSize="11" className="tabular-nums" fill="#333333" opacity={0.4}>
-                            {txt}
-                        </text>
-                    );
-                })}
+                {/* 가운데: 강조 조각(호버 또는 최댓값)의 이름 + 값 + 비율 */}
+                <text x={CX} y={CX - 12} textAnchor="middle" fontSize="12" fill="var(--text-muted)">
+                    {items[empIdx]?.label || "-"}
+                </text>
+                <text x={CX} y={CX + 15} textAnchor="middle" fontSize="30" fontWeight="700" className="tabular-nums" fill="var(--text-strong)">
+                    {items[empIdx]?.value ?? ""}
+                </text>
+                <text x={CX} y={CX + 32} textAnchor="middle" fontSize="11" className="tabular-nums" fill="var(--text-faint)">
+                    {Math.round((Math.max(0, items[empIdx]?.value ?? 0) / total) * 100)}%
+                </text>
             </svg>
         </div>
     );
