@@ -186,28 +186,41 @@ function BarsV({ items }: { items: ChartRow[] }) {
     const max = Math.max(1, ...items.map((r) => r.value));
     const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
     return (
-        <div className="flex h-56 items-end justify-around gap-4">
-            {items.map((r, i) => {
-                const color = r.color || colorAt(i);
-                const isMax = i === maxIdx;
-                return (
-                    <div key={i} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-2">
-                        <div className="flex h-[20px] items-end">{isMax ? <MaxPill v={r.value} /> : <DimVal v={r.value} />}</div>
-                        <div
-                            className="w-full max-w-[52px] rounded-[10px] transition-[height] duration-300"
-                            style={{
-                                height: `${(r.value / max) * 100}%`,
-                                minHeight: 10,
-                                background: `linear-gradient(180deg, ${color} 0%, ${lighten(color, 0.32)} 100%)`,
-                                opacity: isMax ? 1 : 0.28,
-                            }}
-                        />
-                        <span className={`min-w-0 max-w-full truncate text-xs ${isMax ? "font-semibold text-(--text)" : "text-(--text-muted)"}`} title={r.label}>
-                            {r.label}
-                        </span>
-                    </div>
-                );
-            })}
+        <div>
+            {/* 막대 + 값 (라벨은 아래 별도 행으로 분리 → 잘리지 않음) */}
+            <div className="flex h-56 items-end justify-around gap-4">
+                {items.map((r, i) => {
+                    const color = r.color || colorAt(i);
+                    const isMax = i === maxIdx;
+                    return (
+                        <div key={i} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1.5">
+                            <div className="flex h-[20px] shrink-0 items-end">{isMax ? <MaxPill v={r.value} /> : <DimVal v={r.value} />}</div>
+                            {/* 값 알약 높이만큼 여유를 두고 88%까지만 차게 */}
+                            <div
+                                className="w-full max-w-[52px] rounded-[10px] transition-[height] duration-300"
+                                style={{
+                                    height: `${(r.value / max) * 88}%`,
+                                    minHeight: 10,
+                                    background: `linear-gradient(180deg, ${color} 0%, ${lighten(color, 0.32)} 100%)`,
+                                    opacity: isMax ? 1 : 0.28,
+                                }}
+                            />
+                        </div>
+                    );
+                })}
+            </div>
+            {/* 카테고리 라벨: 잘림 없이 줄바꿈 허용 */}
+            <div className="mt-2 flex justify-around gap-4">
+                {items.map((r, i) => (
+                    <span
+                        key={i}
+                        className={`min-w-0 flex-1 text-center text-xs leading-tight break-keep ${i === maxIdx ? "font-semibold text-(--text)" : "text-(--text-muted)"}`}
+                        title={r.label}
+                    >
+                        {r.label}
+                    </span>
+                ))}
+            </div>
         </div>
     );
 }
