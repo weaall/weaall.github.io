@@ -147,29 +147,45 @@ function DimVal({ v }: { v: number }) {
     );
 }
 
-/* ── 가로 막대 (도넛과 동일 톤: 최댓값만 진하게, 나머지 흐리게) ── */
+// 막대 두께: 도넛 링 두께(Ro-Ri=28)와 동일하게
+const BAR_THICK = 28;
+// 회색(중간값 기본 상태) 그라데이션
+const GRAY_V = "linear-gradient(180deg, #cfcfd6 0%, #e6e6ec 100%)";
+const GRAY_H = "linear-gradient(90deg, #e6e6ec 0%, #cfcfd6 100%)";
+
+// 강조 인덱스(최댓값·최솟값)와 호버 여부로 색을 결정.
+// 기본: 최대·최소만 색, 중간은 회색. 호버하면 그 막대의 색이 보인다.
+function useEmphasis(items: ChartRow[]) {
+    const [hover, setHover] = React.useState<number | null>(null);
+    const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
+    const minIdx = items.reduce((m, r, i) => (r.value < items[m].value ? i : m), 0);
+    const colored = (i: number) => i === maxIdx || i === minIdx || hover === i;
+    return { hover, setHover, maxIdx, minIdx, colored };
+}
+
+/* ── 가로 막대 (도넛 톤: 최대·최소 색, 중간 회색, 호버 시 색) ── */
 function BarsH({ items }: { items: ChartRow[] }) {
     const max = Math.max(1, ...items.map((r) => r.value));
-    const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
+    const { setHover, maxIdx, colored } = useEmphasis(items);
     const LABEL_W = 84;
     return (
         <div className="flex flex-col gap-3">
             {items.map((r, i) => {
                 const color = r.color || colorAt(i);
+                const on = colored(i);
                 const isMax = i === maxIdx;
                 return (
-                    <div key={i} className="flex items-center gap-3">
+                    <div key={i} className="flex items-center gap-3" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}>
                         <div className="shrink-0 truncate text-right text-xs" style={{ width: LABEL_W }} title={r.label}>
                             <span className={isMax ? "font-semibold text-(--text)" : "text-(--text-muted)"}>{r.label}</span>
                         </div>
-                        <div className="relative h-7 flex-1 overflow-hidden rounded-full bg-(--hover-bg)">
+                        <div className="relative flex-1 overflow-hidden rounded-full bg-(--hover-bg)" style={{ height: BAR_THICK }}>
                             <div
-                                className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-300"
+                                className="absolute inset-y-0 left-0 rounded-full transition-all duration-300"
                                 style={{
                                     width: `${(r.value / max) * 100}%`,
-                                    minWidth: 12,
-                                    background: `linear-gradient(90deg, ${lighten(color, 0.32)} 0%, ${color} 100%)`,
-                                    opacity: isMax ? 1 : 0.3,
+                                    minWidth: BAR_THICK,
+                                    background: on ? `linear-gradient(90deg, ${lighten(color, 0.32)} 0%, ${color} 100%)` : GRAY_H,
                                 }}
                             />
                         </div>
@@ -181,28 +197,35 @@ function BarsH({ items }: { items: ChartRow[] }) {
     );
 }
 
-/* ── 세로 막대 (도넛과 동일 톤: 라운드 + 최댓값만 진하게, 나머지 흐리게) ── */
+/* ── 세로 막대 (도넛 톤: 최대·최소 색, 중간 회색, 호버 시 색) ── */
 function BarsV({ items }: { items: ChartRow[] }) {
     const max = Math.max(1, ...items.map((r) => r.value));
-    const maxIdx = items.reduce((m, r, i) => (r.value > items[m].value ? i : m), 0);
+    const { setHover, maxIdx, colored } = useEmphasis(items);
     return (
         <div>
             {/* 막대 + 값 (라벨은 아래 별도 행으로 분리 → 잘리지 않음) */}
             <div className="flex h-56 items-end justify-around gap-4">
                 {items.map((r, i) => {
                     const color = r.color || colorAt(i);
+                    const on = colored(i);
                     const isMax = i === maxIdx;
                     return (
-                        <div key={i} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1.5">
+                        <div
+                            key={i}
+                            className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1.5"
+                            onMouseEnter={() => setHover(i)}
+                            onMouseLeave={() => setHover(null)}
+                        >
                             <div className="flex h-[20px] shrink-0 items-end">{isMax ? <MaxPill v={r.value} /> : <DimVal v={r.value} />}</div>
                             {/* 값 알약 높이만큼 여유를 두고 88%까지만 차게 */}
                             <div
-                                className="w-full max-w-[52px] rounded-[10px] transition-[height] duration-300"
+                                className="rounded-full transition-all duration-300"
                                 style={{
+                                    width: "100%",
+                                    maxWidth: BAR_THICK,
                                     height: `${(r.value / max) * 88}%`,
-                                    minHeight: 10,
-                                    background: `linear-gradient(180deg, ${color} 0%, ${lighten(color, 0.32)} 100%)`,
-                                    opacity: isMax ? 1 : 0.28,
+                                    minHeight: BAR_THICK,
+                                    background: on ? `linear-gradient(180deg, ${color} 0%, ${lighten(color, 0.32)} 100%)` : GRAY_V,
                                 }}
                             />
                         </div>
