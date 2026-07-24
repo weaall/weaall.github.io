@@ -1,22 +1,22 @@
-"use client"
+import Link from "next/link";
 
-export default function Home() {
+export default function NotFound() {
     return (
-        <>
-            <div className="text-center text-t-main">
-                <br />
-                <br />
-                <br />
-                <br />
-                <h1>404</h1>
-                <br />
-                <p>이런! 해당 페이지를 찾을 수 없어요.</p>
-                <p>주소가 변경되었을 수 있으니 &apos;/&apos; 키로 검색해보세요.</p> <br />
-                <br />
-                <br />
-                <br />
-                <br />
+        <div className="flex min-h-[60vh] w-full flex-col items-center justify-center px-6 text-center">
+            <p className="text-[64px] font-extrabold leading-none tracking-tight text-(--text)">404</p>
+            <h1 className="mt-4 text-xl font-semibold text-(--text)">페이지를 찾을 수 없어요</h1>
+            <p className="mt-2 max-w-md text-(--text-muted)">주소가 변경되었거나 삭제된 페이지일 수 있어요.</p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+                <Link href="/" className="rounded-lg bg-(--text) px-4 py-2 text-sm font-medium text-(--page-bg) transition-opacity hover:opacity-90">
+                    홈으로
+                </Link>
+                <Link href="/post" className="rounded-lg border border-(--border) px-4 py-2 text-sm font-medium text-(--text) transition-colors hover:bg-(--hover-bg)">
+                    게시물
+                </Link>
+                <Link href="/search" className="rounded-lg border border-(--border) px-4 py-2 text-sm font-medium text-(--text) transition-colors hover:bg-(--hover-bg)">
+                    검색
+                </Link>
             </div>
-        </>
-    )
+        </div>
+    );
 }

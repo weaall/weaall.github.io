@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
@@ -62,6 +62,18 @@ export default function SearchLayout({ postsData }: { postsData: PostData[] }) {
     const [collapsed, setCollapsed] = useState(false);
     const showHeader = useHoverHeader();
     const [query, setQuery] = useState("");
+
+    // URL ?q= 와 동기화 (정적 export: window 사용)
+    useEffect(() => {
+        const p = new URLSearchParams(window.location.search).get("q");
+        if (p) setQuery(p);
+    }, []);
+    useEffect(() => {
+        const u = new URL(window.location.href);
+        if (query.trim()) u.searchParams.set("q", query.trim());
+        else u.searchParams.delete("q");
+        window.history.replaceState(null, "", u.toString());
+    }, [query]);
 
     const q = query.trim().toLowerCase();
     const results = useMemo(() => {

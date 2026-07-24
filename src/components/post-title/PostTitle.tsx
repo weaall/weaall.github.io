@@ -63,9 +63,13 @@ export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatte
                     return (
                         <div className="mt-2 flex flex-wrap gap-1 px-[2px]">
                             {tags.map((t, i) => (
-                                <span key={`${t}-${i}`} className="rounded-[6px] bg-(--hover-bg) px-2 py-0.5 text-xs text-(--text-muted)">
+                                <a
+                                    key={`${t}-${i}`}
+                                    href={`/search?q=${encodeURIComponent(t)}`}
+                                    className="rounded-[6px] bg-(--hover-bg) px-2 py-0.5 text-xs text-(--text-muted) transition-colors hover:bg-(--menu-hover-bg) hover:text-(--text)"
+                                >
                                     #{t}
-                                </span>
+                                </a>
                             ))}
                         </div>
                     );
