@@ -28,7 +28,7 @@ export default function HoverHeader({ visible, collapsed, onEdit }: HoverHeaderP
                 paddingLeft: collapsed ? 50 : 260,
             }}
         >
-            <tw.LeftWrap>{onEdit && <tw.LabelBtn onClick={onEdit}>편집</tw.LabelBtn>}</tw.LeftWrap>
+            <tw.LeftWrap>{onEdit && <span className="m:hidden"><tw.LabelBtn onClick={onEdit}>편집</tw.LabelBtn></span>}</tw.LeftWrap>
             <tw.RightWrap>
                 <tw.LabelBtn onClick={() => window.dispatchEvent(new Event("newpage:share"))}>공유</tw.LabelBtn>
             </tw.RightWrap>

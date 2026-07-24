@@ -214,6 +214,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                     <tw.PostLink
                         href="/newpage"
                         $active={pathname === "/newpage"}
+                        className="m:hidden"
                         onClick={(e) => {
                             // 항상 새 빈 문서로 시작 (마지막 초안 복원 방지)
                             e.preventDefault();
@@ -229,9 +230,9 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                     </tw.PostLink>
                 </tw.Fixedwrap>
 
-                {/* 로컬 저장 문서 (에디터 초안) — 어느 페이지에서든 표시 */}
+                {/* 로컬 저장 문서 (에디터 초안) — 데스크탑에서만(모바일은 편집 비활성) */}
                 {!collapsed && (
-                    <div>
+                    <div className="m:hidden">
                         <tw.CategoryButton onClick={newDoc} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <span>로컬 저장</span>
                             <span title="새 문서" className="flex items-center opacity-60 hover:opacity-100">

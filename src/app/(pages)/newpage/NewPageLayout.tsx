@@ -20,6 +20,16 @@ export default function NewPageLayout({ postsData }: { postsData: PostData[] }) 
     // 현재 편집 문서 id. 드로어에서 선택한 활성 포인터(localStorage)를 따라간다.
     const [activeDocId, setActiveDocId] = useState<string | null>(null);
 
+    // 모바일에선 에디터(작성/편집)를 비활성화 — 데스크탑 전용 안내만 표시
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const mq = window.matchMedia("(max-width: 1024px)");
+        const apply = () => setIsMobile(mq.matches);
+        apply();
+        mq.addEventListener("change", apply);
+        return () => mq.removeEventListener("change", apply);
+    }, []);
+
     useEffect(() => {
         const resolve = () => {
             const pointer = getActivePointer();
@@ -48,7 +58,15 @@ export default function NewPageLayout({ postsData }: { postsData: PostData[] }) 
         <div id="main-bg-container" data-theme="light" className="w-full h-full flex flex-col bg-(--page-bg) relative">
             <HoverHeader visible={showHeader} collapsed={collapsed} />
             <PostListDrawer posts={postsData} collapsed={collapsed} setCollapsed={setCollapsed} />
-            {activeDocId ? (
+            {isMobile ? (
+                <div className="flex min-h-[70vh] w-full flex-col items-center justify-center px-8 text-center">
+                    <p className="text-lg font-semibold text-(--text)">글쓰기는 데스크탑에서 이용해 주세요</p>
+                    <p className="mt-2 text-sm text-(--text-muted)">작성·편집 기능은 큰 화면에 최적화되어 있어요. PC에서 열어 주세요.</p>
+                    <a href="/post" className="mt-6 rounded-lg border border-(--border) px-4 py-2 text-sm text-(--text-muted) hover:bg-(--hover-bg) hover:text-(--text)">
+                        게시물 보기
+                    </a>
+                </div>
+            ) : activeDocId ? (
                 <NewPage key={activeDocId} collapsed={collapsed} docId={activeDocId} categories={postCategories} />
             ) : (
                 <EditorSkeleton collapsed={collapsed} />
