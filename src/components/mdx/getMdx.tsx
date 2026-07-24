@@ -32,6 +32,7 @@ export default async function getPostsData(dir: string) {
                 postUrl,
                 imageUrl: frontmatter.imageUrl,
                 icon: frontmatter.icon,
+                mins: frontmatter.mins,
             };
         }),
     );
@@ -75,6 +76,7 @@ export async function getPostsSearchIndex(dir: string): Promise<PostData[]> {
                 postUrl: `/${lowerDir}/${slug}`,
                 imageUrl: frontmatter.imageUrl,
                 icon: frontmatter.icon,
+                mins: frontmatter.mins,
                 body: toPlainText(mdxContent),
             };
         }),

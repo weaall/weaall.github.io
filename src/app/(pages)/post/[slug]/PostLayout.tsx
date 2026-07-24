@@ -71,7 +71,7 @@ export default function PostLayout({ postsData, content, frontmatter, slug }: MD
         >
             <HoverHeader visible={showHeader} collapsed={collapsed} onEdit={editPost} />
             <PostListDrawer posts={postsData} collapsed={collapsed} setCollapsed={setCollapsed} />
-            <MDXContent content={content} frontmatter={frontmatter} collapsed={collapsed} />
+            <MDXContent content={content} frontmatter={frontmatter} collapsed={collapsed} postsData={postsData} slug={slug} />
         </div>
     );
 }

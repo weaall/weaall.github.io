@@ -33,6 +33,7 @@ function Meta({ post, size = "sm" }: { post: PostData; size?: "sm" | "xs" }) {
         <div className={`flex items-center gap-2 text-(--text-muted) ${size === "xs" ? "text-xs" : "text-sm"}`}>
             {post.icon && <PageIcon icon={post.icon} size={size === "xs" ? 16 : 18} />}
             {post.label && <span className="font-medium">{post.label}</span>}
+            {post.mins && <span className="tabular-nums">· {post.mins}분</span>}
             <span className="ml-auto tabular-nums">{post.date}</span>
         </div>
     );

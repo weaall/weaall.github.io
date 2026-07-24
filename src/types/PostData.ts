@@ -23,5 +23,6 @@ export interface PostData {
     postUrl: string;
     imageUrl: string;
     icon?: string;
+    mins?: string; // 예상 읽기 시간(분)
     body?: string; // 검색용 본문 플레인 텍스트(검색 인덱스에서만 채움)
 }
