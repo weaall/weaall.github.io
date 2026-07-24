@@ -90,7 +90,7 @@ export const Strong = tw.strong`font-bold`;
 export const Em = tw.em`text-sm font-semibold not-italic px-2 py-0.5 bg-(--text) rounded-xl text-(--page-bg)`;
 
 export const ImgWrap = tw.span`w-full mx-auto py-6 text-center flex flex-col`;
-export const Img = tw.img`mx-auto`;
+export const Img = tw.img`mx-auto max-w-full h-auto rounded-lg`;
 export const ImgTitle = tw.span`w-full text-center text-xs text-gray-400`;
 
 // 표: 에디터 TableBlock과 동일한 노션풍 보더 테이블 (내용 폭에 맞춤, 셀 보더 + 헤더 음영)
