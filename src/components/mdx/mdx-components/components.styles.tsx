@@ -53,7 +53,7 @@ export const A = tw.a`
   cursor-text
   text-[16px]`;
 
-export const Hr = tw.hr`my-1.5 w-full h-[2px] rounded border-0 bg-[#d0cfca]`;
+export const Hr = tw.hr`my-1.5 w-full h-[1px] rounded border-0 bg-[#d8d7d2]`;
 
 export const Pre = tw.pre`my-0`;
 
