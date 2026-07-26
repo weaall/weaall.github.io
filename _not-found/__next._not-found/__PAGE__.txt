@@ -1,9 +1,6 @@
 1:"$Sreact.fragment"
-2:I[47257,["/_next/static/chunks/1tfx2920p1ijr.js","/_next/static/chunks/0jubty45h__ir.js","/_next/static/chunks/2b0mblx_b1dn6.js"],"ClientPageRoot"]
-3:I[29306,["/_next/static/chunks/1tfx2920p1ijr.js","/_next/static/chunks/0jubty45h__ir.js","/_next/static/chunks/2b0mblx_b1dn6.js","/_next/static/chunks/34fkr9ivekfqy.js"],"default"]
-6:I[97367,["/_next/static/chunks/1tfx2920p1ijr.js","/_next/static/chunks/0jubty45h__ir.js","/_next/static/chunks/2b0mblx_b1dn6.js"],"OutletBoundary"]
-7:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"Component":"$3","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@4","$@5"]}}],[["$","script","script-0",{"src":"/_next/static/chunks/34fkr9ivekfqy.js","async":true}]],["$","$L6",null,{"children":["$","$7",null,{"name":"Next.MetadataOutlet","children":"$@8"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"TUKBvWrwdEpo5s8R14RSh"}
-4:{}
-5:"$0:rsc:props:children:0:props:serverProvidedParams:params"
-8:null
+2:I[22016,["/_next/static/chunks/2x_19xgdzfej0.js","/_next/static/chunks/0jubty45h__ir.js","/_next/static/chunks/2b0mblx_b1dn6.js"],""]
+3:I[97367,["/_next/static/chunks/2x_19xgdzfej0.js","/_next/static/chunks/0jubty45h__ir.js","/_next/static/chunks/2b0mblx_b1dn6.js"],"OutletBoundary"]
+4:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"flex min-h-[60vh] w-full flex-col items-center justify-center px-6 text-center","children":[["$","p",null,{"className":"text-[64px] font-extrabold leading-none tracking-tight text-(--text)","children":"404"}],["$","h1",null,{"className":"mt-4 text-xl font-semibold text-(--text)","children":"페이지를 찾을 수 없어요"}],["$","p",null,{"className":"mt-2 max-w-md text-(--text-muted)","children":"주소가 변경되었거나 삭제된 페이지일 수 있어요."}],["$","div",null,{"className":"mt-8 flex flex-wrap items-center justify-center gap-2","children":[["$","$L2",null,{"href":"/","className":"rounded-lg bg-(--text) px-4 py-2 text-sm font-medium text-(--page-bg) transition-opacity hover:opacity-90","children":"홈으로"}],["$","$L2",null,{"href":"/post","className":"rounded-lg border border-(--border) px-4 py-2 text-sm font-medium text-(--text) transition-colors hover:bg-(--hover-bg)","children":"게시물"}],["$","$L2",null,{"href":"/search","className":"rounded-lg border border-(--border) px-4 py-2 text-sm font-medium text-(--text) transition-colors hover:bg-(--hover-bg)","children":"검색"}]]}]]}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"kzfyjbcDbHqwFNG5ge3xt"}
+5:null
