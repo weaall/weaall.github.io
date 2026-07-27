@@ -1,71 +1,95 @@
 ---
 label: MindsNAVI - AI
-title: 의료기기 사이버보안 시험 — SaMD는 무엇을 검증받나
-subTitle: KS X IEC 62443-4-2로 본 MindsNAVI AI 시험성적서
+title: 의료기기 사이버보안 시험
+subTitle: SaMD가 검증받는 36개 항목
 date: 2026.07.22
-mins: 7
-tags: [사이버보안, 의료기기, SaMD, IEC62443, 시험성적서]
+mins: 8
+tags: [사이버보안, 의료기기, SaMD, IEC62443]
 icon: "🔐"
 ---
 
-소프트웨어가 의료기기(SaMD)가 되는 순간, 보안은 "있으면 좋은 것"이 아니라 <span style={{ color: '#2f6fe0' }}>허가 요건</span>이 된다. MindsNAVI AI는 의료기기 사이버보안 기준(식약처)에 따라 시험성적서(MAI-CSIC-VC)를 작성했고, 그 뼈대는 <span style={{ color: '#2f6fe0' }}>KS X IEC 62443-4-2</span>의 6개 요구사항 패밀리다.
+SaMD(소프트웨어 의료기기)에서 보안은 <span style={{ color: '#2f6fe0' }}>허가 요건</span>이다. MindsNAVI AI의 사이버보안 시험성적서를 <span style={{ color: '#2f6fe0' }}>KS X IEC 62443-4-2</span> 6개 패밀리·36개 항목으로 정리했다 — 각 항목의 요구사항과 해소 방안까지.
 
 <br />
 
 ---
 
-# 6개 요구사항 패밀리
+# 6개 패밀리
 
-보안 요구사항을 6개 계열(IA·UC·SI·DC·TRE·RA)로 나눠 설계·검증한다. 총 **36개 항목** 중 33개 적용, 3개는 SaMD 특성상 해당 없음.
+33개 적용, 3개는 SaMD 특성상 해당 없음.
 
-<BarChart data="%7B%22type%22%3A%22barV%22%2C%22title%22%3A%22%EC%82%AC%EC%9D%B4%EB%B2%84%EB%B3%B4%EC%95%88%20%EC%8B%9C%ED%97%98%20%ED%95%AD%EB%AA%A9%22%2C%22subtitle%22%3A%22KS%20X%20IEC%2062443-4-2%20%C2%B7%20%ED%8C%A8%EB%B0%80%EB%A6%AC%EB%B3%84%20%ED%95%AD%EB%AA%A9%20%EC%88%98%22%2C%22rows%22%3A%5B%7B%22label%22%3A%22IA%22%2C%22value%22%3A8%7D%2C%7B%22label%22%3A%22UC%22%2C%22value%22%3A7%7D%2C%7B%22label%22%3A%22SI%22%2C%22value%22%3A11%7D%2C%7B%22label%22%3A%22DC%22%2C%22value%22%3A3%7D%2C%7B%22label%22%3A%22TRE%22%2C%22value%22%3A1%7D%2C%7B%22label%22%3A%22RA%22%2C%22value%22%3A5%7D%5D%7D" />
+<BarChart data="%7B%22type%22%3A%22barV%22%2C%22title%22%3A%22%EC%82%AC%EC%9D%B4%EB%B2%84%EB%B3%B4%EC%95%88%20%EC%8B%9C%ED%97%98%20%ED%95%AD%EB%AA%A9%22%2C%22subtitle%22%3A%22IEC%2062443-4-2%20%C2%B7%20%ED%8C%A8%EB%B0%80%EB%A6%AC%EB%B3%84%22%2C%22rows%22%3A%5B%7B%22label%22%3A%22IA%22%2C%22value%22%3A8%7D%2C%7B%22label%22%3A%22UC%22%2C%22value%22%3A7%7D%2C%7B%22label%22%3A%22SI%22%2C%22value%22%3A11%7D%2C%7B%22label%22%3A%22DC%22%2C%22value%22%3A3%7D%2C%7B%22label%22%3A%22TRE%22%2C%22value%22%3A1%7D%2C%7B%22label%22%3A%22RA%22%2C%22value%22%3A5%7D%5D%7D" />
 
 <br />
 
 ---
 
-# IA — 식별·인증
+# 전체 항목
 
-- 인터페이스별 사용자·관리자 인증, 계정 생성·활성·비활성·삭제 관리
-- 고유 식별자 <span style={{ color: '#2f6fe0' }}>Seq + UUID</span>
-- 자격증명 관리 — 최초 로그인 시 + <span style={{ color: '#2f6fe0' }}>90일마다</span> 비밀번호 재설정 강제
-- 비밀번호 강도 — 영문·숫자·특수문자 <span style={{ color: '#2f6fe0' }}>8자 이상</span>
-- <span style={{ color: '#2f6fe0' }}>5회 실패 → 30분 잠금</span>, 실패 메시지는 일반화(계정 존재 노출 방지)
-- 시스템 사용 고지 배너(설정 가능)
+## IA · 식별·인증
 
-# UC — 사용통제
+| ID | 요구사항 | 판정 | 해소 |
+| --- | --- | --- | --- |
+| IA-01 | 인터페이스별 식별·인증 | 적용 | 설문·대시보드 ID/비밀번호 인증 |
+| IA-02 | 계정 관리 | 적용 | 대시보드에서 관리자 계정 CRUD |
+| IA-03 | 계정 유일 식별 | 적용 | Seq + UUID 자동 부여 |
+| IA-04 | 인증정보 주기 변경·보호 | 적용 | 최초·90일마다 재설정, 저장·전송 암호화 |
+| IA-05 | 비밀번호 강도 | 적용 | 영문+숫자+특문 8자 이상 |
+| IA-06 | 피드백 미노출 | 적용 | 입력 마스킹, 실패 원인 미구분 |
+| IA-07 | 실패 시 접근 제한 | 적용 | 5회 실패 → 30분 잠금 |
+| IA-08 | 시스템 사용 고지 | 적용 | 로그인 시 안내 문구 표시 |
 
-- 최소권한 역할기반 접근 <span style={{ color: '#2f6fe0' }}>PBAC</span>
-- 모바일 코드 통제 — <span style={{ color: '#2f6fe0' }}>CSP</span> 헤더
-- 비활성 시 세션 잠금·자동 만료
-- 감사로그 생성(시각·출처·분류·유형·이벤트ID·결과), 부인방지 <span style={{ color: '#2f6fe0' }}>userSeq</span>
-- 감사 실패 대비 — Cloud DB(MySQL) 자동 failover
+## UC · 사용통제
 
-# SI — 시스템 무결성
+| ID | 요구사항 | 판정 | 해소 |
+| --- | --- | --- | --- |
+| UC-01 | 최소권한 부여 | 적용 | 역할 기반 최소권한(PBAC) |
+| UC-02 | 모바일 코드 통제 | 적용 | CSP 헤더로 실행 제어 |
+| UC-03 | 세션 잠금 | 적용 | 미입력 시 자동 세션 만료 |
+| UC-04 | 감사기록 생성 | 적용 | 감사로그(시각·출처·유형·결과) 실시간 |
+| UC-05 | 감사 실패 대비 | 적용 | Cloud DB 자동 페일오버 |
+| UC-06 | 타임스탬프 | 적용 | 감사로그에 타임스탬프 포함 |
+| UC-07 | 부인 방지 | 적용 | userSeq 포함 행동 로그 |
 
-- 전송 무결성 <span style={{ color: '#2f6fe0' }}>TLS 1.3</span>
-- 악성코드 ClamAV / 실시간 위협 <span style={{ color: '#2f6fe0' }}>Falco(IDS)</span> · <span style={{ color: '#2f6fe0' }}>WAF(ModSecurity)</span>
-- 무결성 — 컨테이너 이미지 <span style={{ color: '#2f6fe0' }}>SHA-256 다이제스트 검증</span> + GitOps(ArgoCD) 드리프트 복구 + Falco 런타임 변조 탐지
-- 입력 검증(MIME 스니핑·클릭재킹·SQLi/XSS 방어), 정보 미노출 오류 처리
-- 이미지 진본성 — NCR + IAM
-- SI-06 · SI-10 · SI-11 은 **해당 없음** (SaMD · 무자동화 연계 · 무물리장치)
+## SI · 시스템 무결성
 
-# DC — 데이터 기밀성
+| ID | 요구사항 | 판정 | 해소 |
+| --- | --- | --- | --- |
+| SI-01 | 전송 무결성 | 적용 | HTTPS · TLS 1.3 |
+| SI-02 | 악성코드 방지 | 적용 | 서버 ClamAV 상시 검사 |
+| SI-03 | 보안 기능 검증 | 적용 | Falco(IDS) · WAF(ModSecurity) |
+| SI-04 | 무결성 점검 | 적용 | 이미지 SHA-256 검증 · ArgoCD 복원 · Falco |
+| SI-05 | 입력 검증 | 적용 | 클릭재킹·SQLi·XSS 방어 |
+| SI-06 | fail-safe 출력 | 해당 없음 | 자동화 프로세스 미연결 |
+| SI-07 | 정보 미노출 오류 처리 | 적용 | 예외별 메시지, 원인 미노출 |
+| SI-08 | 업데이트 기능 | 적용 | NKS 무중단 패치 |
+| SI-09 | 업데이트 진본성 | 적용 | NCR + IAM, SHA-256 digest |
+| SI-10 | 물리 변조 방지 | 해당 없음 | 소프트웨어 의료기기 |
+| SI-11 | 부트·런타임 무결성 | 해당 없음 | 소프트웨어 의료기기 |
 
-- 저장·전송 기밀성, TLS 1.3 (Wireshark로 검증)
-- <span style={{ color: '#2f6fe0' }}>보건의료정보 비식별화</span> — 환자 신원 미도출
-- 안전한 암호 — 비밀번호 <span style={{ color: '#2f6fe0' }}>SHA-256 + salt</span>, 그 외 데이터 <span style={{ color: '#2f6fe0' }}>AES-256</span>, 키 안전 보관
+## DC · 데이터 기밀성
 
-# TRE — 적시 대응
+| ID | 요구사항 | 판정 | 해소 |
+| --- | --- | --- | --- |
+| DC-01 | 저장·전송 기밀성 | 적용 | 개인정보 AES-256, 전송 TLS 1.3 |
+| DC-02 | 비식별화 | 적용 | 환자 신원 미도출 처리 |
+| DC-03 | 권고 암호·키 관리 | 적용 | 비밀번호 SHA-256+salt, 그 외 AES-256 |
 
-- 감사로그는 종합관리자만 <span style={{ color: '#2f6fe0' }}>읽기 전용</span>으로 접근, 수정 기능 없음
+## TRE · 적시 대응
 
-# RA — 자원 가용성
+| ID | 요구사항 | 판정 | 해소 |
+| --- | --- | --- | --- |
+| TRE-01 | 감사로그 읽기전용 | 적용 | 종합관리자만 조회, 수정 불가 |
 
-- DoS/DDoS 방어 <span style={{ color: '#2f6fe0' }}>NCP Anti-DDoS</span>
-- 백업 — Cloud DB 자동 백업 + <span style={{ color: '#2f6fe0' }}>PITR</span> (민감 백업 암호화, 키 분리)
-- 복구 — NKS self-healing + 선언적 재적용 + 다이제스트 고정 이미지 + Cloud DB HA
-- 네트워크·보안 설정 — ACG 방화벽 + Cloud Activity Tracer, 불필요 포트 차단(HTTPS 443만)
+## RA · 자원 가용성
+
+| ID | 요구사항 | 판정 | 해소 |
+| --- | --- | --- | --- |
+| RA-01 | DoS/DDoS 대응 | 적용 | NCP Anti-DDoS |
+| RA-02 | 안전 백업 | 적용 | 자동 백업·PITR, 암호화, 키 분리 |
+| RA-03 | 장애 복구 | 적용 | NKS self-healing · Cloud DB HA |
+| RA-04 | 설정 변경 관리 | 적용 | ACG 방화벽 · Activity Tracer |
+| RA-05 | 불필요 포트 차단 | 적용 | ACG로 필수 포트(443)만 허용 |
 
 <br />
 
@@ -73,20 +97,9 @@ icon: "🔐"
 
 # 적용 현황
 
-<BarChart data="%7B%22type%22%3A%22donut%22%2C%22title%22%3A%22%EC%8B%9C%ED%97%98%20%ED%95%AD%EB%AA%A9%20%EC%A0%81%EC%9A%A9%20%ED%98%84%ED%99%A9%22%2C%22subtitle%22%3A%22%EC%B4%9D%2036%EA%B0%9C%20%ED%95%AD%EB%AA%A9%20%EC%A4%91%22%2C%22rows%22%3A%5B%7B%22label%22%3A%22%EC%A0%81%EC%9A%A9%22%2C%22value%22%3A33%7D%2C%7B%22label%22%3A%22%ED%95%B4%EB%8B%B9%20%EC%97%86%EC%9D%8C%22%2C%22value%22%3A3%7D%5D%7D" />
+<BarChart data="%7B%22type%22%3A%22donut%22%2C%22title%22%3A%22%EC%A0%81%EC%9A%A9%20%ED%98%84%ED%99%A9%22%2C%22subtitle%22%3A%22%EC%B4%9D%2036%EA%B0%9C%20%ED%95%AD%EB%AA%A9%22%2C%22rows%22%3A%5B%7B%22label%22%3A%22%EC%A0%81%EC%9A%A9%22%2C%22value%22%3A33%7D%2C%7B%22label%22%3A%22%ED%95%B4%EB%8B%B9%20%EC%97%86%EC%9D%8C%22%2C%22value%22%3A3%7D%5D%7D" />
 
-**33 / 36 적용**. 나머지 3개(SI-06·10·11)는 SaMD 특성상 해당 없음 — 물리 변조·부팅 무결성·자동화 프로세스 연계가 없기 때문.
-
-<br />
-
-| 패밀리 | 핵심 통제 | 근거·구현 |
-| --- | --- | --- |
-| IA | 인증·계정·잠금 | UUID · 90일 재설정 · 5회 30분 잠금 |
-| UC | 최소권한·감사 | PBAC · CSP · userSeq 부인방지 |
-| SI | 무결성·탐지 | TLS 1.3 · Falco · WAF · 이미지 SHA-256 |
-| DC | 기밀성·비식별 | AES-256 · SHA-256+salt · 비식별화 |
-| TRE | 로그 보호 | 종합관리자 읽기 전용 |
-| RA | 가용성·복구 | Anti-DDoS · PITR · NKS self-healing |
+**33 / 36 적용.** 나머지 3개(SI-06·10·11)는 물리·부팅 무결성·자동화 연계가 없는 SaMD라 해당 없음.
 
 <br />
 
@@ -94,6 +107,4 @@ icon: "🔐"
 
 # 정리
 
-시험성적서(MAI-CSIC-VC)는 제조사 자기적합성 문서로, KS X IEC 62443-4-2 기준을 SaMD에 매핑해 6개 패밀리 전 항목을 적용/해당없음으로 판정한다(품질책임자 검토·경영진 승인). 밑바탕에는 <span style={{ color: '#2f6fe0' }}>CSAP 인증 네이버 클라우드</span> 위의 인프라·GitOps·관측성이 근거로 깔린다.
-
-보안이 곧 허가의 일부인 의료 소프트웨어에서, 이 매핑은 <span style={{ color: '#2f6fe0' }}>인허가 기술문서의 핵심 근거</span>가 된다.
+제조사 자기적합성 시험성적서로, 각 항목을 <span style={{ color: '#2f6fe0' }}>CSAP 네이버 클라우드</span> 위 인프라·GitOps·관측성으로 해소했다. 보안이 곧 허가의 일부인 의료 소프트웨어에서, 이 항목별 매핑이 <span style={{ color: '#2f6fe0' }}>인허가 기술문서의 근거</span>가 된다.
