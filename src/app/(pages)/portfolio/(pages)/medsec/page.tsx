@@ -33,7 +33,7 @@ const CASES = [
         status: "임상시험 허가",
         done: true,
         logo: "/assets/portfolio/medsec/varabom-logo.png",
-        logoW: "56%",
+        logoW: "60%",
         color: "#2f5aa8",
     },
     {
