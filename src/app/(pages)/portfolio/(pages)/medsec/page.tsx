@@ -32,9 +32,11 @@ const CASES = [
         applied: "35개 중 29개 적용",
         status: "임상시험 허가",
         done: true,
+        mark: "/assets/posts/varabom/icon.ico",
         logo: "/assets/portfolio/medsec/varabom-logo.png",
         logoW: "60%",
-        color: "#2f5aa8",
+        color: "#7ba62b", // VARABOM 라임(포인트)
+        titleColor: "#26303a", // VARABOM 워드마크 블랙
     },
     {
         href: "/post/chiyu-forest-security",
@@ -44,9 +46,11 @@ const CASES = [
         applied: "35개 중 27개 적용",
         status: "의료기기 변경 허가",
         done: true,
+        mark: "/assets/posts/chiyu/icon.ico",
         logo: "/assets/portfolio/medsec/cheeu-logo.png",
         logoW: "66%",
-        color: "#3f7d4e",
+        color: "#2f7d46", // CHEEU. Forest 그린
+        titleColor: "#2f7d46",
     },
     {
         href: "/post/mnai-security-test",
@@ -56,9 +60,11 @@ const CASES = [
         applied: "35개 중 32개 적용",
         status: "GMP · 임상 · 인허가 진행 중",
         done: false,
+        mark: "/assets/portfolio/medsec/mnai-mark.png",
         logo: "/assets/portfolio/medsec/mindsnavi-logo.png",
         logoW: "74%",
-        color: "#1a8f7a",
+        color: "#1d6f8f", // Minds. NAVI 딥틸
+        titleColor: "#1d6f8f",
     },
 ];
 
@@ -76,6 +82,28 @@ export default function MedSecPortfolioPage() {
                     <b className="text-[#191918]">인프라 설계·운영</b>을 직접 담당한 작업들입니다.
                 </p>
             </header>
+
+            {/* 배경 · 왜 필요한가 (식약처 가이드라인 근거) */}
+            <section className="mt-16">
+                <h2 className="mb-4 text-2xl font-bold text-[#191918]">왜 사이버보안 자체 시험성적서인가</h2>
+                <p className="max-w-[52rem] text-[15px] leading-relaxed text-gray-600 m:text-sm">
+                    유·무선 통신 경로가 있는 의료기기(펌웨어 포함 기기·SaMD)와 「디지털의료제품법」상 디지털의료기기는 허가·심사 단계에서{" "}
+                    <b className="text-[#191918]">사이버보안 검증 자료</b> 제출이 요구됩니다. 저는 이 검증 자료를 제조자{" "}
+                    <b className="text-[#191918]">자체 시험성적서</b>로 작성하고, 그 근거가 되는 시스템·인프라를 설계·구현해 인허가를 통과시키는 일을 담당했습니다.
+                </p>
+                <figure className="mt-5 max-w-[52rem] rounded-xl border-l-[3px] border-l-[#2f5aa8] bg-[#f4f3f1] px-5 py-4">
+                    <blockquote className="text-[14px] leading-relaxed text-gray-700">
+                        “의료기기의 해킹, 정보 유출 등 사이버보안 위협사례가 꾸준히 보고되고 있고, 이러한 위협사례는 재산적 손실뿐만 아니라 환자 생명에 직접적인 위해를 줄 수 있어 의료기기의 사이버보안에 대한 중요성이 부각되고 있다.”
+                    </blockquote>
+                    <figcaption className="mt-2 text-[13px] text-gray-500">
+                        — 식품의약품안전처 「의료기기의 사이버보안 허가·심사 가이드라인」(민원인 안내서, 2025.1)
+                    </figcaption>
+                </figure>
+                <p className="mt-5 max-w-[52rem] text-[15px] leading-relaxed text-gray-600 m:text-sm">
+                    검증 기준은 <b className="text-[#191918]">KS X IEC 62443-4-2</b>의 6개 영역(식별·인증 / 사용통제 / 시스템 무결성 / 데이터 기밀성 / 적시 대응 / 자원 가용성) 35개 항목이며,{" "}
+                    <b className="text-[#191918]">가용성·기밀성·무결성(CIA)</b>을 <b className="text-[#191918]">ISO 14971</b> 위험관리 프로세스 안에서 설계 단계부터 반영해야 합니다. 서류를 채우는 일이 아니라 제품을 그렇게 설계했음을 증명하는 일이고, 그 설계·구현을 제가 담당했습니다.
+                </p>
+            </section>
 
             {/* 담당 영역 */}
             <section className="mt-20">
@@ -105,9 +133,15 @@ export default function MedSecPortfolioPage() {
                             {/* 상단: 텍스트 */}
                             <div className="flex flex-col gap-2 p-8 pb-6">
                                 <span className="text-sm text-gray-500">{c.tag}</span>
-                                <h3 className="text-[1.75rem] font-bold leading-tight text-[#191918]" style={{ color: c.color }}>
-                                    {c.title}
-                                </h3>
+                                {/* 로고 마크 + 타이틀(로고색) */}
+                                <div className="flex items-center gap-2.5">
+                                    <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[9px] bg-white ring-1 ring-black/5">
+                                        <img className="h-full w-full object-contain p-1" src={c.mark} alt="" />
+                                    </span>
+                                    <h3 className="text-[1.75rem] font-bold leading-tight" style={{ color: c.titleColor }}>
+                                        {c.title}
+                                    </h3>
+                                </div>
                                 <p className="text-[15px] leading-relaxed text-gray-600">{c.desc}</p>
                                 {/* 상태: 무엇이 허가됐는지 + 적용 항목 수 */}
                                 <div className="mt-2 flex flex-wrap items-center gap-2">
