@@ -28,27 +28,36 @@ const CASES = [
         href: "/post/varabom-ce-security",
         tag: "VR 인지기능 훈련 · 로컬 설치형 SaMD",
         title: "바라봄 CE",
-        desc: "폐쇄망 PC 설치형 SaMD. 인증·감사로그(varabom_log)·암호화·업데이트 절차를 설계 단계부터 구현해 임상시험 허가까지 완료.",
-        result: "임상시험 허가 · 성공",
-        success: true,
+        desc: "폐쇄망 PC 설치형 SaMD. 인증·감사로그·암호화·업데이트 절차를 설계 단계부터 구현해 시험성적서로 갈음.",
+        applied: "35개 중 29개 적용",
+        status: "임상시험 허가",
+        done: true,
+        logo: "/assets/portfolio/medsec/varabom-logo.png",
+        logoW: "56%",
         color: "#2f5aa8",
     },
     {
         href: "/post/chiyu-forest-security",
         tag: "폐쇄망 설치형 SaMD",
         title: "치유포레스트",
-        desc: "폐쇄망 범용 PC 설치형 SaMD. 인증·무결성·암호화·백업·복구를 자체 구현해 의료기기 변경 허가까지 완료. 35개 항목 중 27개 적용.",
-        result: "변경 허가 · 성공",
-        success: true,
+        desc: "폐쇄망 범용 PC 설치형 SaMD. 인증·무결성·암호화·백업·복구를 자체 구현해 시험성적서로 갈음.",
+        applied: "35개 중 27개 적용",
+        status: "의료기기 변경 허가",
+        done: true,
+        logo: "/assets/portfolio/medsec/cheeu-logo.png",
+        logoW: "66%",
         color: "#3f7d4e",
     },
     {
         href: "/post/mnai-security-test",
         tag: "클라우드 SaMD",
         title: "마인즈내비 AI",
-        desc: "CSAP 네이버 클라우드 위 인프라·GitOps·관측성이 그대로 보안 요구사항의 근거. 35개 항목 중 32개 적용. GMP·임상·인허가 진행.",
-        result: "GMP · 임상 · 인허가 진행",
-        success: false,
+        desc: "CSAP 네이버 클라우드 위 인프라·GitOps·관측성이 그대로 보안 요구사항의 근거가 되는 클라우드형 SaMD.",
+        applied: "35개 중 32개 적용",
+        status: "GMP · 임상 · 인허가 진행",
+        done: false,
+        logo: "/assets/portfolio/medsec/mindsnavi-logo.png",
+        logoW: "74%",
         color: "#1a8f7a",
     },
 ];
@@ -90,24 +99,46 @@ export default function MedSecPortfolioPage() {
                         <Link
                             key={c.href}
                             href={c.href}
-                            className="group flex min-h-[15rem] flex-col gap-3 rounded-2xl border border-[#ededeb] bg-white p-9 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg m:min-h-0 m:p-7"
+                            className="group flex h-[26rem] flex-col overflow-hidden rounded-2xl border-2 border-transparent bg-[#f6f5f4] transition-colors duration-300 hover:border-[color:var(--c)] m:h-auto"
+                            style={{ ["--c" as string]: c.color }}
                         >
-                            <span className="text-sm text-gray-500">{c.tag}</span>
-                            <h3 className="text-[2rem] font-bold leading-tight text-[#191918] transition-colors m:text-2xl" style={{ color: c.color }}>
-                                {c.title}
-                            </h3>
-                            <p className="text-base leading-relaxed text-gray-600">{c.desc}</p>
-                            <span
-                                className="mt-auto flex w-fit items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold text-white"
-                                style={{ background: c.success ? "#3f7d4e" : c.color }}
-                            >
-                                {c.success && (
-                                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 10.5l4 4 8-9" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                )}
-                                {c.result}
-                            </span>
+                            {/* 상단: 텍스트 */}
+                            <div className="flex flex-col gap-2 p-8 pb-6">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-gray-500">{c.tag}</span>
+                                    {c.done ? (
+                                        <span
+                                            className="flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-white"
+                                            style={{ background: c.color }}
+                                        >
+                                            <svg width="12" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M4 10.5l4 4 8-9" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                            허가 완료
+                                        </span>
+                                    ) : (
+                                        <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-gray-300 px-2.5 py-1 text-xs font-medium text-gray-500">
+                                            <span className="h-1.5 w-1.5 rounded-full bg-gray-400" />
+                                            진행 중
+                                        </span>
+                                    )}
+                                </div>
+                                <h3 className="text-[1.75rem] font-bold leading-tight text-[#191918]" style={{ color: c.color }}>
+                                    {c.title}
+                                </h3>
+                                <p className="text-[15px] leading-relaxed text-gray-600">{c.desc}</p>
+                                <div className="mt-1 flex items-center gap-2 text-sm">
+                                    <span className="font-semibold" style={{ color: c.color }}>{c.status}</span>
+                                    <span className="text-gray-300">·</span>
+                                    <span className="text-gray-500">{c.applied}</span>
+                                </div>
+                            </div>
+                            {/* 하단: 로고 패널 */}
+                            <div className="mt-auto w-full flex-1 overflow-hidden pl-8">
+                                <div className="flex h-full w-full items-center justify-center rounded-tl-xl border-2 border-[#ededeb] bg-white shadow-lg transition-transform duration-300 group-hover:scale-105 origin-top-left">
+                                    <img className="object-contain" style={{ width: c.logoW }} src={c.logo} alt={c.title} />
+                                </div>
+                            </div>
                         </Link>
                     ))}
                 </div>
