@@ -10,52 +10,28 @@ export const metadata: Metadata = getBaseMetadata({
 
 const DUTIES = [
     {
-        t: "시험성적서 문서 작성",
-        d: "35개 보안 항목을 제품 기능에 대응시켜 충족 근거를 문서화",
+        t: "시험성적서 · 규제 대응",
+        d: "KS X IEC 62443-4-2 시험성적서 작성, 식약처 가이드라인 준거, ISO 14971 위험관리",
     },
     {
-        t: "식약처 가이드라인 준거",
-        d: "허가·심사 기준(안내서-0995-05, 2025.1)에 맞춰 자료 구성",
+        t: "클라우드 인프라",
+        d: "CSAP 인증 네이버 클라우드 기반, Kubernetes(NKS)로 무중단·자동 복구",
     },
     {
-        t: "위험관리 (ISO 14971)",
-        d: "보안 위험을 식별·통제하고 잔여 위험을 안전 수준으로 관리",
+        t: "배포 · 무결성",
+        d: "GitOps(ArgoCD)로 배포를 코드화하고 이미지 다이제스트를 고정해 추적성 확보",
     },
     {
-        t: "네이버 클라우드 (NCP)",
-        d: "CSAP 인증을 받은 국내 클라우드, 규제 대응의 기반 인프라",
-    },
-    {
-        t: "Kubernetes (NKS)",
-        d: "자동 복구와 무중단 배포로 서비스 가용성 확보",
-    },
-    {
-        t: "GitOps (ArgoCD)",
-        d: "배포를 코드로 관리하고 이미지를 고정해 무결성·추적성 확보",
-    },
-    {
-        t: "WAF · IDS",
-        d: "ModSecurity·Falco로 웹 공격과 이상 행위를 탐지·차단",
+        t: "보안 방어",
+        d: "WAF·IDS(ModSecurity·Falco)로 공격 탐지·차단, 취약점·공급망(Trivy·SBOM) 관리",
     },
     {
         t: "암호화 · 인증 · 감사로그",
-        d: "전송·저장 암호화와 접근 통제, 모든 행위를 감사로그로 기록",
+        d: "TLS·AES·SHA 암호화와 접근 통제, 전 과정 감사로그로 기밀성·부인방지",
     },
     {
-        t: "백업 · 복구 (PITR)",
-        d: "정기 백업과 시점 복구로 장애 시 데이터 손실 최소화",
-    },
-    {
-        t: "메시지 큐 (Kafka)",
-        d: "이벤트·로그를 안정적으로 처리해 부하 상황에서도 기록 유실 방지",
-    },
-    {
-        t: "관측성 (Grafana · Loki)",
-        d: "로그·지표·알림을 한곳에서 모니터링해 이상 징후를 조기 감지",
-    },
-    {
-        t: "취약점 · 공급망 (Trivy · SBOM)",
-        d: "컨테이너 이미지와 오픈소스 의존성의 취약점을 스캔·관리",
+        t: "데이터 · 관측",
+        d: "백업·복구(PITR), Kafka 로그 파이프라인, Grafana·Loki 모니터링",
     },
 ];
 
@@ -136,30 +112,24 @@ export default function MedSecPortfolioPage() {
 
             {/* 배경 · 왜 필요한가 (식약처 가이드라인 근거) */}
             <section className="mt-16">
-                <h2 className="mb-5 text-[2rem] font-bold tracking-tight text-[#191918] m:text-[1.6rem]">사이버보안은 설계에서 결정된다</h2>
+                <h2 className="mb-6 text-[2.625rem] font-bold tracking-[-0.09375rem] text-[#191918] m:text-[2rem]">사이버보안은 설계에서 결정된다</h2>
                 <ul className="max-w-[52rem] space-y-2.5 text-[15px] leading-relaxed text-gray-700 m:text-sm">
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
                         <span>
-                            통신하고 환자 데이터를 다루는 의료기기는 해킹·유출이 곧 <b className="text-[#191918]">환자 안전 문제</b>로 이어진다. 그래서 허가 단계에서 사이버보안을 검증한다.
+                            의료기기가 통신·네트워크로 연결되면서, <b className="text-[#191918]">해킹·정보 유출이 곧 환자 안전 문제</b>가 됐다.
                         </span>
                     </li>
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
                         <span>
-                            검증 기준은 국제표준 <b className="text-[#191918]">KS X IEC 62443-4-2</b>로, 인증·사용통제·무결성·기밀성·대응·가용성 6개 영역 35개 항목이다.
+                            보안은 나중에 붙이는 기능이 아니다. 인증·데이터·로그 <b className="text-[#191918]">설계 단계부터</b> 녹여야 실제로 지켜진다.
                         </span>
                     </li>
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
                         <span>
-                            관건은 <b className="text-[#191918]">시점</b>이다. 다 만든 뒤 서류로 맞추면 실제 구현과 어긋난다. 인증·데이터·로그 설계에 요구사항을 처음부터 반영해야 한다.
-                        </span>
-                    </li>
-                    <li className="flex gap-2.5">
-                        <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
-                        <span>
-                            그래서 시험성적서의 근거는 문서가 아니라 <b className="text-[#191918]">실제로 구현된 인프라와 코드</b>다. 나는 그 둘을 함께 만든다.
+                            검증은 국제표준 <b className="text-[#191918]">KS X IEC 62443-4-2</b>(6개 영역 35개 항목)를 기준으로 한다.
                         </span>
                     </li>
                 </ul>
@@ -176,7 +146,7 @@ export default function MedSecPortfolioPage() {
 
             {/* 담당 영역 */}
             <section className="mt-20">
-                <h2 className="mb-6 text-[2rem] font-bold tracking-tight text-[#191918] m:text-[1.6rem]">담당 영역</h2>
+                <h2 className="mb-6 text-[2.625rem] font-bold tracking-[-0.09375rem] text-[#191918] m:text-[2rem]">담당 영역</h2>
                 <div className="grid grid-cols-3 gap-5 m:grid-cols-1">
                     {DUTIES.map((x, i) => (
                         <div key={i} className="flex flex-col gap-2 rounded-2xl bg-[#f6f5f4] p-7">
