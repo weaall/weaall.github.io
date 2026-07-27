@@ -44,7 +44,7 @@ const CASES = [
         title: "치유포레스트",
         desc: "폐쇄망 범용 PC 설치형 SaMD. 인증·무결성·암호화·백업·복구를 자체 구현해 시험성적서로 갈음.",
         applied: "35개 중 27개 적용",
-        status: "의료기기 변경 허가",
+        status: "의료기기 중대한 변경 허가",
         done: true,
         mark: "/assets/posts/chiyu/icon.ico",
         logo: "/assets/portfolio/medsec/cheeu-logo.png",
@@ -58,7 +58,7 @@ const CASES = [
         title: "마인즈내비 AI",
         desc: "CSAP 네이버 클라우드 위 인프라·GitOps·관측성이 그대로 보안 요구사항의 근거가 되는 클라우드형 SaMD.",
         applied: "35개 중 32개 적용",
-        status: "GMP · 임상 · 인허가 진행 중",
+        status: "GMP 임상시험, 인허가 진행중",
         done: false,
         mark: "/assets/portfolio/medsec/mnai-mark.png",
         logo: "/assets/portfolio/medsec/mindsnavi-logo.png",
@@ -137,51 +137,36 @@ export default function MedSecPortfolioPage() {
                         <Link
                             key={c.href}
                             href={c.href}
-                            className="group flex h-[26rem] flex-col overflow-hidden rounded-2xl border-2 border-transparent bg-[#f6f5f4] transition-colors duration-300 hover:border-[color:var(--c)] m:h-auto"
+                            className="group flex flex-col gap-5 rounded-2xl border-2 border-transparent bg-[#f6f5f4] p-8 transition-colors duration-300 hover:border-[color:var(--c)] m:p-6"
                             style={{ ["--c" as string]: c.color }}
                         >
-                            {/* 상단: 텍스트 */}
-                            <div className="flex flex-col gap-2 p-8 pb-6">
-                                <span className="text-sm text-gray-500">{c.tag}</span>
-                                {/* 로고 마크 + 타이틀(로고색) — 마크는 배경 없이 그대로 */}
-                                <div className="flex items-center gap-2.5">
-                                    <img className="h-9 w-9 shrink-0 object-contain" src={c.mark} alt="" />
-                                    <h3 className="text-[1.75rem] font-bold leading-tight" style={{ color: c.titleColor }}>
-                                        {c.title}
-                                    </h3>
-                                </div>
-                                <p className="text-[15px] leading-relaxed text-gray-600">{c.desc}</p>
-                                {/* 상태: 무엇이 허가됐는지 + 적용 항목 수 */}
-                                <div className="mt-2 flex flex-wrap items-center gap-2">
-                                    <span
-                                        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13px] font-semibold"
-                                        style={
-                                            c.done
-                                                ? { background: `color-mix(in srgb, ${c.color} 13%, #fff)`, color: c.color }
-                                                : { background: "#eceae7", color: "#6b6a67" }
-                                        }
-                                    >
-                                        {c.done ? (
-                                            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
-                                                <path d="M4 10.5l4 4 8-9" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                        ) : (
-                                            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
-                                                <circle cx="10" cy="10" r="7.25" stroke="currentColor" strokeWidth="1.6" />
-                                                <path d="M10 6.3V10l2.6 1.7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                        )}
-                                        {c.status}
-                                    </span>
-                                    <span className="text-[13px] text-gray-500">{c.applied}</span>
-                                </div>
+                            {/* 로고 (위로) */}
+                            <div className="flex h-12 items-center transition-transform duration-300 group-hover:scale-[1.03] origin-left">
+                                <img className="max-h-11 w-auto max-w-[80%] object-contain" src={c.logo} alt={c.title} />
                             </div>
-                            {/* 하단: 로고 패널 */}
-                            <div className="mt-auto w-full flex-1 overflow-hidden pl-8">
-                                <div className="flex h-full w-full items-center justify-center rounded-tl-xl border-2 border-[#ededeb] bg-white shadow-lg transition-transform duration-300 group-hover:scale-105 origin-top-left">
-                                    <img className="object-contain" style={{ width: c.logoW }} src={c.logo} alt={c.title} />
-                                </div>
-                            </div>
+                            {/* 설명 */}
+                            <p className="text-[15px] leading-relaxed text-gray-600">{c.desc}</p>
+                            {/* 상태 라벨 */}
+                            <span
+                                className="mt-auto inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-semibold"
+                                style={
+                                    c.done
+                                        ? { background: `color-mix(in srgb, ${c.color} 13%, #fff)`, color: c.color }
+                                        : { background: "#eceae7", color: "#6b6a67" }
+                                }
+                            >
+                                {c.done ? (
+                                    <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
+                                        <path d="M4 10.5l4 4 8-9" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                ) : (
+                                    <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
+                                        <circle cx="10" cy="10" r="7.25" stroke="currentColor" strokeWidth="1.6" />
+                                        <path d="M10 6.3V10l2.6 1.7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                )}
+                                {c.status}
+                            </span>
                         </Link>
                     ))}
                 </div>
