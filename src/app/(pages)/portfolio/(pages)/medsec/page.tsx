@@ -140,31 +140,33 @@ export default function MedSecPortfolioPage() {
                             className="group flex h-[26rem] flex-col overflow-hidden rounded-2xl border-2 border-transparent bg-[#f6f5f4] transition-colors duration-300 hover:border-[color:var(--c)] m:h-auto"
                             style={{ ["--c" as string]: c.color }}
                         >
-                            {/* 상단: 조그만 마크(위로) + 이름 + 설명 + 상태 (PROVE Lite 카드 구조) */}
+                            {/* 상단: 마크 + 진행상태(같은 레벨) → 이름 → 설명 */}
                             <div className="flex flex-col gap-2 p-8 pb-6">
-                                <img className="mb-1 h-9 w-9 object-contain" src={c.mark} alt="" />
+                                <div className="mb-1 flex items-center justify-between gap-2">
+                                    <img className="h-9 w-9 object-contain" src={c.mark} alt="" />
+                                    <span
+                                        className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-semibold"
+                                        style={
+                                            c.done
+                                                ? { background: `color-mix(in srgb, ${c.color} 13%, #fff)`, color: c.color }
+                                                : { background: "#eceae7", color: "#6b6a67" }
+                                        }
+                                    >
+                                        {c.done ? (
+                                            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
+                                                <path d="M4 10.5l4 4 8-9" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        ) : (
+                                            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
+                                                <circle cx="10" cy="10" r="7.25" stroke="currentColor" strokeWidth="1.6" />
+                                                <path d="M10 6.3V10l2.6 1.7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        )}
+                                        {c.status}
+                                    </span>
+                                </div>
                                 <h3 className="text-lg font-bold" style={{ color: c.titleColor }}>{c.title}</h3>
                                 <p className="text-[15px] leading-relaxed text-gray-600">{c.desc}</p>
-                                <span
-                                    className="inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-semibold"
-                                    style={
-                                        c.done
-                                            ? { background: `color-mix(in srgb, ${c.color} 13%, #fff)`, color: c.color }
-                                            : { background: "#eceae7", color: "#6b6a67" }
-                                    }
-                                >
-                                    {c.done ? (
-                                        <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
-                                            <path d="M4 10.5l4 4 8-9" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                    ) : (
-                                        <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
-                                            <circle cx="10" cy="10" r="7.25" stroke="currentColor" strokeWidth="1.6" />
-                                            <path d="M10 6.3V10l2.6 1.7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                    )}
-                                    {c.status}
-                                </span>
                             </div>
                             {/* 하단: 로고 패널(사진) */}
                             <div className="mt-auto w-full flex-1 overflow-hidden pl-8">
