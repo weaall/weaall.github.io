@@ -11,39 +11,39 @@ export const metadata: Metadata = getBaseMetadata({
 const DUTIES = [
     {
         t: "시험성적서 문서 작성",
-        d: "KS X IEC 62443-4-2 35개 항목을 제품에 매핑해 검증 자료로 작성",
+        d: "35개 보안 항목을 제품 기능에 하나씩 연결해, 무엇이 어떻게 지켜지는지 문서로 증명",
     },
     {
         t: "식약처 가이드라인 준거",
-        d: "「의료기기의 사이버보안 허가·심사 가이드라인」 안내서-0995-05 (2025.1) 기준",
+        d: "허가·심사가 요구하는 최신 기준(안내서-0995-05, 2025.1)에 맞춰 작성",
     },
     {
         t: "위험관리 (ISO 14971)",
-        d: "가용성·기밀성·무결성(CIA) 위험분석 · 위험통제 · 잔여위험 평가",
+        d: "보안 위험을 미리 찾아 통제하고, 남은 위험이 안전한 수준인지 평가",
     },
     {
         t: "네이버 클라우드 (NCP)",
-        d: "공공·의료용 CSAP 인증을 받은 국내 클라우드라 인프라 기반으로 채택",
+        d: "공공·의료용 보안인증(CSAP)을 받은 국내 클라우드 — 인프라 자체가 보안의 출발점",
     },
     {
         t: "Kubernetes (NKS)",
-        d: "무중단 배포·self-healing·격리로 가용성(RA) 요구사항 충족",
+        d: "장애가 나도 자동 복구·무중단 — 서비스가 멈추지 않는 「가용성」 확보",
     },
     {
         t: "GitOps (ArgoCD)",
-        d: "변경 이력 · 이미지 SHA-256 다이제스트 고정으로 무결성·추적성 확보",
+        d: "배포를 코드로 남기고 이미지를 고정 — 몰래 바뀌지 않는 「무결성·추적성」",
     },
     {
         t: "WAF · IDS",
-        d: "ModSecurity · Falco로 침입 탐지·차단 — 시스템 무결성의 실제 근거",
+        d: "외부 공격을 실시간 탐지·차단 — 시스템을 지켜냈다는 실제 증거",
     },
     {
         t: "암호화 · 인증 · 감사로그",
-        d: "TLS 1.3 · AES-256 · SHA-256, 감사로그로 기밀성·부인방지",
+        d: "데이터는 암호화해 지키고, 누가 무엇을 했는지 로그로 남겨 「기밀성·부인방지」",
     },
     {
         t: "백업 · 복구 (PITR)",
-        d: "자동 백업 · 시점 복구로 자원 가용성·복구 요구사항 충족",
+        d: "문제가 생겨도 원하는 시점으로 되돌릴 수 있게 — 「복구·가용성」",
     },
 ];
 
@@ -105,7 +105,8 @@ export default function MedSecPortfolioPage() {
                     </h1>
                     <p className="break-keep text-[1.3rem] font-medium leading-none tracking-[-0.07em] text-[#191918] m:text-center m:text-[1rem] m:leading-normal">
                         의료기기 <span className="text-[#416bac]">사이버보안 시험성적서</span>를 위한
-                        <br />인프라 설계·구축 · 시스템 아키텍처 · 인증·암호화·감사로그·백업/복구 구현
+                        <br />
+                        <span>인프라 설계·구축 · 시스템 아키텍처 · 인증·암호화·감사로그·백업/복구 구현 </span>
                     </p>
                     {/* 버튼 위치: 준거 가이드라인 버전 (작은 회색, 한 줄) */}
                     <p className="w-fit text-[11px] font-normal tracking-tight text-gray-400 m:mx-auto m:text-center">
@@ -127,24 +128,35 @@ export default function MedSecPortfolioPage() {
                 <ul className="max-w-[52rem] space-y-2.5 text-[15px] leading-relaxed text-gray-700 m:text-sm">
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
-                        <span>통신 기능이 있는 의료기기·SaMD·디지털의료기기는 허가·심사 때 <b className="text-[#191918]">사이버보안 검증 자료를 내야 한다.</b></span>
+                        <span>
+                            통신 기능이 있는 의료기기·SaMD·디지털의료기기는 허가·심사 때 <b className="text-[#191918]">사이버보안 검증 자료를 내야 한다.</b>
+                        </span>
                     </li>
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
-                        <span>검증 기준은 <b className="text-[#191918]">KS X IEC 62443-4-2</b>의 6개 영역·35개 항목이다. (식별·인증 / 사용통제 / 무결성 / 기밀성 / 대응 / 가용성)</span>
+                        <span>
+                            검증 기준은 <b className="text-[#191918]">KS X IEC 62443-4-2</b>의 6개 영역·35개 항목이다. (식별·인증 / 사용통제 / 무결성 / 기밀성 /
+                            대응 / 가용성)
+                        </span>
                     </li>
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
-                        <span><b className="text-[#191918]">가용성·기밀성·무결성(CIA)</b>을 <b className="text-[#191918]">ISO 14971</b> 위험관리 안에서 설계 단계부터 반영해야 한다.</span>
+                        <span>
+                            <b className="text-[#191918]">가용성·기밀성·무결성(CIA)</b>을 <b className="text-[#191918]">ISO 14971</b> 위험관리 안에서 설계
+                            단계부터 반영해야 한다.
+                        </span>
                     </li>
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
-                        <span>결국 서류가 아니라 <b className="text-[#191918]">제품을 그렇게 설계했다는 증명</b>이고, 문서 작성과 실제 구현이 곧 그 근거가 된다.</span>
+                        <span>
+                            결국 서류가 아니라 <b className="text-[#191918]">제품을 그렇게 설계했다는 증명</b>이고, 문서 작성과 실제 구현이 곧 그 근거가 된다.
+                        </span>
                     </li>
                 </ul>
-                <figure className="mt-6 max-w-[52rem] rounded-2xl bg-[#f6f5f4] p-8 m:p-6">
+                <figure className="mt-6 w-full rounded-2xl bg-[#f6f5f4] p-8 m:p-6">
                     <blockquote className="text-[1.0625rem] leading-[1.8] text-gray-700 m:text-[15px]">
-                        “의료기기의 해킹, 정보 유출 등 사이버보안 위협사례가 꾸준히 보고되고 있고, 이러한 위협사례는 재산적 손실뿐만 아니라 환자 생명에 직접적인 위해를 줄 수 있어 의료기기의 사이버보안에 대한 중요성이 부각되고 있다.”
+                        “의료기기의 해킹, 정보 유출 등 사이버보안 위협사례가 꾸준히 보고되고 있고, 이러한 위협사례는 재산적 손실뿐만 아니라 환자 생명에 직접적인
+                        위해를 줄 수 있어 의료기기의 사이버보안에 대한 중요성이 부각되고 있다.”
                     </blockquote>
                     <figcaption className="mt-4 text-[13px] text-gray-500">
                         식품의약품안전처 「의료기기의 사이버보안 허가·심사 가이드라인」 · 민원인 안내서 2025.1
@@ -191,18 +203,32 @@ export default function MedSecPortfolioPage() {
                                     >
                                         {c.done ? (
                                             <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
-                                                <path d="M4 10.5l4 4 8-9" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path
+                                                    d="M4 10.5l4 4 8-9"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2.6"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                />
                                             </svg>
                                         ) : (
                                             <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
                                                 <circle cx="10" cy="10" r="7.25" stroke="currentColor" strokeWidth="1.6" />
-                                                <path d="M10 6.3V10l2.6 1.7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path
+                                                    d="M10 6.3V10l2.6 1.7"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.6"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                />
                                             </svg>
                                         )}
                                         {c.status}
                                     </span>
                                 </div>
-                                <h3 className="text-lg font-bold" style={{ color: c.titleColor }}>{c.title}</h3>
+                                <h3 className="text-lg font-bold" style={{ color: c.titleColor }}>
+                                    {c.title}
+                                </h3>
                                 <p className="text-[15px] leading-relaxed text-gray-600">{c.desc}</p>
                             </div>
                             {/* 하단: 로고 패널(사진) */}
