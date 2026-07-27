@@ -137,36 +137,40 @@ export default function MedSecPortfolioPage() {
                         <Link
                             key={c.href}
                             href={c.href}
-                            className="group flex flex-col gap-5 rounded-2xl border-2 border-transparent bg-[#f6f5f4] p-8 transition-colors duration-300 hover:border-[color:var(--c)] m:p-6"
+                            className="group flex h-[26rem] flex-col overflow-hidden rounded-2xl border-2 border-transparent bg-[#f6f5f4] transition-colors duration-300 hover:border-[color:var(--c)] m:h-auto"
                             style={{ ["--c" as string]: c.color }}
                         >
-                            {/* 로고 (위로) */}
-                            <div className="flex h-12 items-center transition-transform duration-300 group-hover:scale-[1.03] origin-left">
-                                <img className="max-h-11 w-auto max-w-[80%] object-contain" src={c.logo} alt={c.title} />
+                            {/* 상단: 조그만 마크(위로) + 설명 + 상태 */}
+                            <div className="flex flex-col gap-3 p-8 pb-6">
+                                <img className="h-9 w-9 object-contain" src={c.mark} alt="" />
+                                <p className="text-[15px] leading-relaxed text-gray-600">{c.desc}</p>
+                                <span
+                                    className="inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-semibold"
+                                    style={
+                                        c.done
+                                            ? { background: `color-mix(in srgb, ${c.color} 13%, #fff)`, color: c.color }
+                                            : { background: "#eceae7", color: "#6b6a67" }
+                                    }
+                                >
+                                    {c.done ? (
+                                        <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
+                                            <path d="M4 10.5l4 4 8-9" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    ) : (
+                                        <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
+                                            <circle cx="10" cy="10" r="7.25" stroke="currentColor" strokeWidth="1.6" />
+                                            <path d="M10 6.3V10l2.6 1.7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    )}
+                                    {c.status}
+                                </span>
                             </div>
-                            {/* 설명 */}
-                            <p className="text-[15px] leading-relaxed text-gray-600">{c.desc}</p>
-                            {/* 상태 라벨 */}
-                            <span
-                                className="mt-auto inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-semibold"
-                                style={
-                                    c.done
-                                        ? { background: `color-mix(in srgb, ${c.color} 13%, #fff)`, color: c.color }
-                                        : { background: "#eceae7", color: "#6b6a67" }
-                                }
-                            >
-                                {c.done ? (
-                                    <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
-                                        <path d="M4 10.5l4 4 8-9" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                ) : (
-                                    <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
-                                        <circle cx="10" cy="10" r="7.25" stroke="currentColor" strokeWidth="1.6" />
-                                        <path d="M10 6.3V10l2.6 1.7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                )}
-                                {c.status}
-                            </span>
+                            {/* 하단: 로고 패널(사진) */}
+                            <div className="mt-auto w-full flex-1 overflow-hidden pl-8">
+                                <div className="flex h-full w-full items-center justify-center rounded-tl-xl border-2 border-[#ededeb] bg-white shadow-lg transition-transform duration-300 group-hover:scale-105 origin-top-left">
+                                    <img className="object-contain" style={{ width: c.logoW }} src={c.logo} alt={c.title} />
+                                </div>
+                            </div>
                         </Link>
                     ))}
                 </div>
