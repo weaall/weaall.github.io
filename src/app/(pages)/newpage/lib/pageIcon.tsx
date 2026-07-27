@@ -2,7 +2,10 @@
 
 // 페이지 아이콘 값: 이모지 문자열("😀") 또는 커스텀 이미지(webp data URL).
 export function isImageIcon(icon?: string): boolean {
-    return !!icon && icon.startsWith("data:");
+    return (
+        !!icon &&
+        (icon.startsWith("data:") || icon.startsWith("/") || icon.startsWith("http") || /\.(png|jpe?g|webp|svg|ico|gif)$/i.test(icon))
+    );
 }
 
 // 아이콘 모양을 따라 흰색 테두리를 만드는 필터(이모지 글리프/이미지 알파 외곽선).
