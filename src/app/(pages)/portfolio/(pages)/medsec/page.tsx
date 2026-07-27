@@ -54,7 +54,7 @@ const CASES = [
         title: "마인즈내비 AI",
         desc: "CSAP 네이버 클라우드 위 인프라·GitOps·관측성이 그대로 보안 요구사항의 근거가 되는 클라우드형 SaMD.",
         applied: "35개 중 32개 적용",
-        status: "GMP · 임상 · 인허가 진행",
+        status: "GMP · 임상 · 인허가 진행 중",
         done: false,
         logo: "/assets/portfolio/medsec/mindsnavi-logo.png",
         logoW: "74%",
@@ -104,33 +104,34 @@ export default function MedSecPortfolioPage() {
                         >
                             {/* 상단: 텍스트 */}
                             <div className="flex flex-col gap-2 p-8 pb-6">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-500">{c.tag}</span>
-                                    {c.done ? (
-                                        <span
-                                            className="flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-white"
-                                            style={{ background: c.color }}
-                                        >
-                                            <svg width="12" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M4 10.5l4 4 8-9" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                            허가 완료
-                                        </span>
-                                    ) : (
-                                        <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-gray-300 px-2.5 py-1 text-xs font-medium text-gray-500">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-gray-400" />
-                                            진행 중
-                                        </span>
-                                    )}
-                                </div>
+                                <span className="text-sm text-gray-500">{c.tag}</span>
                                 <h3 className="text-[1.75rem] font-bold leading-tight text-[#191918]" style={{ color: c.color }}>
                                     {c.title}
                                 </h3>
                                 <p className="text-[15px] leading-relaxed text-gray-600">{c.desc}</p>
-                                <div className="mt-1 flex items-center gap-2 text-sm">
-                                    <span className="font-semibold" style={{ color: c.color }}>{c.status}</span>
-                                    <span className="text-gray-300">·</span>
-                                    <span className="text-gray-500">{c.applied}</span>
+                                {/* 상태: 무엇이 허가됐는지 + 적용 항목 수 */}
+                                <div className="mt-2 flex flex-wrap items-center gap-2">
+                                    <span
+                                        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13px] font-semibold"
+                                        style={
+                                            c.done
+                                                ? { background: `color-mix(in srgb, ${c.color} 13%, #fff)`, color: c.color }
+                                                : { background: "#eceae7", color: "#6b6a67" }
+                                        }
+                                    >
+                                        {c.done ? (
+                                            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
+                                                <path d="M4 10.5l4 4 8-9" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        ) : (
+                                            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden>
+                                                <circle cx="10" cy="10" r="7.25" stroke="currentColor" strokeWidth="1.6" />
+                                                <path d="M10 6.3V10l2.6 1.7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        )}
+                                        {c.status}
+                                    </span>
+                                    <span className="text-[13px] text-gray-500">{c.applied}</span>
                                 </div>
                             </div>
                             {/* 하단: 로고 패널 */}
