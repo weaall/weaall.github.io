@@ -4,14 +4,14 @@ import { getBaseMetadata } from "@/utils/seo";
 
 export const metadata: Metadata = getBaseMetadata({
     title: "의료기기 사이버보안 및 인프라",
-    description: "임상시험 허가·품목 인허가·디지털의료기기 GMP를 위한 사이버보안 자체 시험성적서 작성과 인프라 설계·운영.",
+    description: "임상시험 허가·품목 인허가·디지털의료기기 GMP를 위한 사이버보안 시험성적서 작성과 인프라 설계·운영.",
     path: "/portfolio/medsec",
 });
 
 const DUTIES = [
     {
         t: "시험성적서 문서 작성 담당",
-        d: "KS X IEC 62443-4-2 35개 항목 제품 매핑 · 제조자 자체 시험성적서화",
+        d: "KS X IEC 62443-4-2 35개 항목 제품 매핑 · 제조자 시험성적서화",
     },
     {
         t: "실제 시스템·인프라 구현 담당",
@@ -77,15 +77,16 @@ export default function MedSecPortfolioPage() {
                 <h1 className="text-[3rem] font-bold leading-tight tracking-tight text-[#191918] m:text-[2rem]">
                     의료기기 사이버보안 및 인프라 담당
                 </h1>
-                <p className="max-w-[46rem] text-[1.15rem] leading-relaxed text-gray-600 m:text-base">
-                    임상시험 허가 · 품목 인허가 · 디지털의료기기 GMP를 위한 <b className="text-[#191918]">사이버보안 자체 시험성적서</b> 작성과, 그 근거가 되는{" "}
-                    <b className="text-[#191918]">인프라 설계·운영</b>을 직접 담당한 작업들입니다.
+                <p className="max-w-[48rem] text-[1.15rem] leading-relaxed text-gray-600 m:text-base">
+                    서류로 채우는 사이버보안이 아니라, 제품을 실제로 그렇게 <b className="text-[#191918]">설계·구현해 증명</b>합니다.{" "}
+                    KS X IEC 62443-4-2 <b className="text-[#191918]">시험성적서 작성</b>과 그 근거가 되는 <b className="text-[#191918]">시스템·인프라 구현</b>을 직접 담당해,{" "}
+                    임상시험 허가 · 의료기기 변경 허가를 통과시킨 작업들입니다.
                 </p>
             </header>
 
             {/* 배경 · 왜 필요한가 (식약처 가이드라인 근거) */}
             <section className="mt-16">
-                <h2 className="mb-4 text-2xl font-bold text-[#191918]">왜 사이버보안 자체 시험성적서인가</h2>
+                <h2 className="mb-4 text-2xl font-bold text-[#191918]">왜 사이버보안 시험성적서인가</h2>
                 <ul className="max-w-[52rem] space-y-2 text-[15px] leading-relaxed text-gray-700 m:text-sm">
                     <li className="flex gap-2">
                         <span className="text-[#2f5aa8]">·</span>
@@ -104,12 +105,14 @@ export default function MedSecPortfolioPage() {
                         <span>서류가 아니라 <b className="text-[#191918]">제품을 그렇게 설계했음의 증명</b> → 문서 작성 + 실제 구현이 곧 근거</span>
                     </li>
                 </ul>
-                <figure className="mt-5 max-w-[52rem] rounded-xl border-l-[3px] border-l-[#2f5aa8] bg-[#f4f3f1] px-5 py-4">
-                    <blockquote className="text-[14px] leading-relaxed text-gray-700">
-                        “의료기기의 해킹, 정보 유출 등 사이버보안 위협사례가 꾸준히 보고되고 있고, 이러한 위협사례는 재산적 손실뿐만 아니라 환자 생명에 직접적인 위해를 줄 수 있어 의료기기의 사이버보안에 대한 중요성이 부각되고 있다.”
+                <figure className="relative mt-7 max-w-[52rem] overflow-hidden rounded-2xl bg-[#0f2f4a] px-9 py-8 m:px-6 m:py-6">
+                    <span aria-hidden className="pointer-events-none absolute -top-3 left-5 select-none font-serif text-[110px] leading-none text-white/10">“</span>
+                    <blockquote className="relative text-[1.15rem] font-medium leading-[1.75] tracking-[-0.01em] text-white m:text-[1rem]">
+                        의료기기의 해킹, 정보 유출 등 사이버보안 위협사례가 꾸준히 보고되고 있고, 이러한 위협사례는 재산적 손실뿐만 아니라 <span className="text-[#7fd4c1]">환자 생명에 직접적인 위해</span>를 줄 수 있어 의료기기의 사이버보안에 대한 중요성이 부각되고 있다.
                     </blockquote>
-                    <figcaption className="mt-2 text-[13px] text-gray-500">
-                        — 식품의약품안전처 「의료기기의 사이버보안 허가·심사 가이드라인」(민원인 안내서, 2025.1)
+                    <figcaption className="relative mt-6 flex items-center gap-2.5 text-[13px] text-white/55">
+                        <span className="h-px w-6 bg-white/30" />
+                        식품의약품안전처 「의료기기의 사이버보안 허가·심사 가이드라인」 · 민원인 안내서 2025.1
                     </figcaption>
                 </figure>
             </section>

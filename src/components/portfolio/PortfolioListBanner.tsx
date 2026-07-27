@@ -21,11 +21,11 @@ export default function PortfolioListBanner() {
                             </button>
                             <div className="w-full flex flex-col mt-auto">
                                 <label className="text-gray text-base font-bold">의료기기 임상시험 허가 · 품목 인허가</label>
-                                <p className="text-gray-500 text-base">사이버보안 요건을 자체 시험성적서로 갈음해 인허가까지 대응합니다.</p>
+                                <p className="text-gray-500 text-base">사이버보안 요건을 시험성적서로 갈음해 인허가까지 대응합니다.</p>
                                 <hr className="my-4"></hr>
                                 <label className="text-gray text-base font-bold">디지털의료기기 GMP (별표3) 대응</label>
                                 <hr className="my-4"></hr>
-                                <label className="text-gray text-base font-bold">KS X IEC 62443-4-2 자체 시험성적서 작성</label>
+                                <label className="text-gray text-base font-bold">KS X IEC 62443-4-2 시험성적서 작성</label>
                             </div>
                         </div>
                     </div>
