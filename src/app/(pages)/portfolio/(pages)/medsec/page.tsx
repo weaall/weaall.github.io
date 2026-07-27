@@ -40,6 +40,14 @@ const CASES = [
         result: "GMP · 임상 · 인허가",
         color: "#1a8f7a",
     },
+    {
+        href: "/post/chiyu-forest-security",
+        tag: "폐쇄망 설치형 SaMD",
+        title: "치유포레스트",
+        desc: "폐쇄망 범용 PC 설치형 SaMD. 인증·무결성·암호화·백업·복구를 자체 구현해 의료기기 변경 허가. 35개 항목 중 27개 적용.",
+        result: "변경 허가",
+        color: "#3f7d4e",
+    },
 ];
 
 const STACK = [
@@ -97,7 +105,7 @@ export default function MedSecPortfolioPage() {
             {/* 사례 */}
             <section className="mt-20">
                 <h2 className="mb-6 text-2xl font-bold text-[#191918]">사례</h2>
-                <div className="grid grid-cols-2 gap-5 m:grid-cols-1">
+                <div className="grid grid-cols-3 gap-5 m:grid-cols-1">
                     {CASES.map((c) => (
                         <Link
                             key={c.href}
