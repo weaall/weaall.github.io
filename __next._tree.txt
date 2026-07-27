@@ -13,4 +13,4 @@
 :HL["/assets/portfolio/prove-lite/prove_l_logo.png","image"]
 :HL["/assets/portfolio/minds-navi/dashboard.png","image"]
 :HL["/assets/portfolio/minds-navi/minds-navi-logo-horizontal.png","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"(main)","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"BFn7I9kpHEjRsxfaiK5Cl"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"(main)","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"gpttXDWUZuKAU5yA7DAKT"}

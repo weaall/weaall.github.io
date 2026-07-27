@@ -7,4 +7,4 @@
 :HL["/_next/static/media/fca78c2ee6cec166-s.p.1sn26-iqxrgtp.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/styles/atom-one-dark.css","style"]
 :HL["/posts/deep/gp3-iops-setting/arch.png","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":24,"slots":{"children":{"name":"(pages)","param":null,"prefetchHints":8,"slots":{"children":{"name":"post","param":null,"prefetchHints":12,"slots":{"children":{"name":"slug","param":{"type":"d","key":"gp3-iops-setting","siblings":null},"prefetchHints":4,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}}}},"staleTime":300,"buildId":"BFn7I9kpHEjRsxfaiK5Cl"}
+0:{"tree":{"name":"","param":null,"prefetchHints":24,"slots":{"children":{"name":"(pages)","param":null,"prefetchHints":8,"slots":{"children":{"name":"post","param":null,"prefetchHints":12,"slots":{"children":{"name":"slug","param":{"type":"d","key":"gp3-iops-setting","siblings":null},"prefetchHints":4,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}}}},"staleTime":300,"buildId":"gpttXDWUZuKAU5yA7DAKT"}
