@@ -778,7 +778,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
         case "quote":
             // 감싸는 콜아웃 박스 (포스트에서 blockquote 로 렌더)
             return (
-                <div className="my-1 rounded-lg border border-(--border) bg-(--hover-bg) px-4 py-3">
+                <div className="my-1 rounded-lg border border-[#d3d2ce] bg-[#f4f3f1] px-4 py-3">
                     <tw.EditablePBlock {...commonProps} style={{ color: color }} />
                     {renderEmojiModal()}
                     {renderFormattingModal()}
