@@ -187,7 +187,7 @@ export function Column({ children }: { children?: React.ReactNode }) {
 // 인용/근거 등 감싸는 콜아웃 박스 (코드블록처럼 은은한 박스)
 export function Blockquote({ children }: { children?: React.ReactNode }) {
     return (
-        <blockquote className="my-3 rounded-lg border border-[#d3d2ce] bg-[#f4f3f1] px-4 py-3 text-[14px] leading-relaxed text-(--text-muted) [&>p]:my-0">
+        <blockquote className="my-3 rounded-lg bg-[#f4f3f1] px-4 py-3 text-[14px] leading-relaxed text-(--text-muted) [&>p]:my-0">
             {children}
         </blockquote>
     );
