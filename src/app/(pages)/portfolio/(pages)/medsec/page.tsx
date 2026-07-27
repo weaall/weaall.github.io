@@ -83,16 +83,28 @@ const CASES = [
 export default function MedSecPortfolioPage() {
     return (
         <div className="mx-auto max-w-[1080px] px-6 pt-40 pb-24 m:px-4 m:pt-28">
-            {/* 히어로 */}
-            <header className="flex flex-col gap-5">
-                <span className="text-sm font-medium text-[#2f5aa8]">포트폴리오 · 의료기기</span>
-                <h1 className="text-[3.25rem] font-bold leading-[1.1] tracking-[-0.03em] text-[#191918] m:text-[2.25rem]">
-                    의료기기 사이버보안 및 인프라 담당
-                </h1>
-                <p className="max-w-[46rem] text-[1.15rem] leading-relaxed text-gray-600 m:text-base">
-                    의료기기 사이버보안을 서류가 아니라 <span className="font-semibold text-[#2f5aa8]">실제 설계·구현</span>으로 증명합니다.
-                    시험성적서 작성부터 그 근거가 되는 <b className="text-[#191918]">시스템·인프라</b>까지 직접 담당했습니다.
-                </p>
+            {/* 히어로 (PROVE Lite 배너와 동일: 좌 텍스트 / 우 비주얼) */}
+            <header className="flex items-center gap-10 m:flex-col m:items-start m:gap-8">
+                {/* 좌: 텍스트 */}
+                <div className="flex w-1/2 flex-col gap-5 m:w-full">
+                    <span className="text-sm font-medium text-[#2f5aa8]">포트폴리오 · 의료기기</span>
+                    <h1 className="text-[3.25rem] font-bold leading-[1.1] tracking-[-0.03em] text-[#191918] m:text-[2.25rem]">
+                        의료기기 사이버보안 및 인프라 담당
+                    </h1>
+                    <p className="text-[1.15rem] leading-relaxed text-gray-600 m:text-base">
+                        의료기기 사이버보안을 서류가 아니라 <span className="font-semibold text-[#2f5aa8]">실제 설계·구현</span>으로 증명합니다.
+                        시험성적서 작성부터 그 근거가 되는 <b className="text-[#191918]">시스템·인프라</b>까지 직접 담당했습니다.
+                    </p>
+                </div>
+                {/* 우: 식약처 로고 (가이드라인 준거) */}
+                <div className="flex w-1/2 flex-col items-center gap-4 m:mt-2 m:w-full m:items-start">
+                    <img className="h-20 w-auto max-w-full object-contain m:h-14" src="/assets/portfolio/medsec/mfds-logo.svg" alt="식품의약품안전처" />
+                    <div className="h-px w-4/5 bg-[#e5e4e1] m:hidden" />
+                    <p className="text-center text-[13px] leading-relaxed text-gray-500 m:text-left">
+                        「의료기기의 사이버보안 허가·심사 가이드라인」 준거<br className="m:hidden" />
+                        <span className="text-gray-400"> · 안내서-0995-05 (2025.1.10)</span>
+                    </p>
+                </div>
             </header>
 
             {/* 배경 · 왜 필요한가 (식약처 가이드라인 근거) */}
