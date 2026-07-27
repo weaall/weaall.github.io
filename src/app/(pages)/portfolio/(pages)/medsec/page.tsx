@@ -136,7 +136,7 @@ export default function MedSecPortfolioPage() {
 
             {/* 배경 · 왜 필요한가 (식약처 가이드라인 근거) */}
             <section className="mt-16">
-                <h2 className="mb-4 text-2xl font-bold text-[#191918]">왜 사이버보안 시험성적서인가</h2>
+                <h2 className="mb-5 text-[2rem] font-bold tracking-tight text-[#191918] m:text-[1.6rem]">사이버보안은 설계에서 결정된다</h2>
                 <ul className="max-w-[52rem] space-y-2.5 text-[15px] leading-relaxed text-gray-700 m:text-sm">
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
@@ -176,7 +176,7 @@ export default function MedSecPortfolioPage() {
 
             {/* 담당 영역 */}
             <section className="mt-20">
-                <h2 className="mb-6 text-2xl font-bold text-[#191918]">담당 영역</h2>
+                <h2 className="mb-6 text-[2rem] font-bold tracking-tight text-[#191918] m:text-[1.6rem]">담당 영역</h2>
                 <div className="grid grid-cols-3 gap-5 m:grid-cols-1">
                     {DUTIES.map((x, i) => (
                         <div key={i} className="flex flex-col gap-2 rounded-2xl bg-[#f6f5f4] p-7">
