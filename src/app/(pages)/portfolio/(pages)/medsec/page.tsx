@@ -140,9 +140,10 @@ export default function MedSecPortfolioPage() {
                             className="group flex h-[26rem] flex-col overflow-hidden rounded-2xl border-2 border-transparent bg-[#f6f5f4] transition-colors duration-300 hover:border-[color:var(--c)] m:h-auto"
                             style={{ ["--c" as string]: c.color }}
                         >
-                            {/* 상단: 조그만 마크(위로) + 설명 + 상태 */}
-                            <div className="flex flex-col gap-3 p-8 pb-6">
-                                <img className="h-9 w-9 object-contain" src={c.mark} alt="" />
+                            {/* 상단: 조그만 마크(위로) + 이름 + 설명 + 상태 (PROVE Lite 카드 구조) */}
+                            <div className="flex flex-col gap-2 p-8 pb-6">
+                                <img className="mb-1 h-9 w-9 object-contain" src={c.mark} alt="" />
+                                <h3 className="text-lg font-bold" style={{ color: c.titleColor }}>{c.title}</h3>
                                 <p className="text-[15px] leading-relaxed text-gray-600">{c.desc}</p>
                                 <span
                                     className="inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-semibold"
