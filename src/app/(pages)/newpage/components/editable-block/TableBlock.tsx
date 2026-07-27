@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { TableData, cellBg, cellText, headerShadow } from "@/components/mdx/mdx-components/DataTable";
+import { TableData, cellBg, cellText } from "@/components/mdx/mdx-components/DataTable";
 import * as tm from "../menu-modal/TypeMenu.modal.styles";
 import { TEXT_COLORS } from "../menu-modal/TypeMenu.modal";
 import { RightIcon, FontIcon, ColorPainterIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
@@ -358,6 +358,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                         <tr key={r}>
                             {row.map((cell, c) => {
                                 const isHeader = (!!d.headerRow && r === 0) || (!!d.headerCol && c === 0);
+                                const strong = isHeader || c === 0; // 헤더 + 첫 열은 볼드·강조색(마크다운 표와 동일)
                                 const bg = cellBg(d, r, c, isHeader);
                                 const cw = d.colWidths![c] || undefined;
                                 return (
@@ -366,7 +367,7 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                         data-r={r}
                                         data-c={c}
                                         className="relative border border-[#d3d2ce] p-0 align-top"
-                                        style={{ background: bg, boxShadow: headerShadow(d, r, c), width: cw, minWidth: cw ? undefined : 120 }}
+                                        style={{ background: bg, width: cw, minWidth: cw ? undefined : 120 }}
                                     >
                                         <div
                                             ref={(el) => {
@@ -376,12 +377,12 @@ export default function TableBlock({ id, content }: { id: string; content: strin
                                             }}
                                             contentEditable
                                             suppressContentEditableWarning
-                                            className={`editor-field min-h-[20px] px-[8px] py-[5px] text-[14px] leading-[20px] text-(--text) outline-none ${
+                                            className={`editor-field min-h-[20px] px-[10px] py-[7px] text-[14px] leading-[20px] text-(--text) outline-none ${
                                                 cw ? "" : "min-w-[120px] break-words"
                                             }`}
                                             style={{
-                                                fontWeight: isHeader ? 600 : undefined,
-                                                color: cellText(d, r, c),
+                                                fontWeight: strong ? 600 : undefined,
+                                                color: cellText(d, r, c) ?? (strong ? "var(--text-strong)" : undefined),
                                                 // 너비를 지정한 열은 그 폭으로 고정하고 내용은 줄바꿈(→ 세로로 늘어남, 폭 불변)
                                                 width: cw ? cw : undefined,
                                                 overflowWrap: cw ? "anywhere" : undefined,
