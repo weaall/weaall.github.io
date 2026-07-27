@@ -11,11 +11,23 @@ export const metadata: Metadata = getBaseMetadata({
 const DUTIES = [
     {
         t: "시험성적서 문서 작성 담당",
-        d: "KS X IEC 62443-4-2 35개 항목 제품 매핑 · 제조자 시험성적서화",
+        d: "KS X IEC 62443-4-2 35개 항목을 제품에 매핑해 검증 자료로 작성",
     },
     {
-        t: "실제 시스템·인프라 구현 담당",
-        d: "인증 · 암호화 · 감사로그 · 백업/복구 · NCP NKS · GitOps · 관측성 · WAF · IDS",
+        t: "식약처 가이드라인 준거",
+        d: "식품의약품안전처 「의료기기의 사이버보안 허가·심사 가이드라인」 안내서-0995-05 (2025.1.10) 기준",
+    },
+    {
+        t: "위험관리 (ISO 14971) 담당",
+        d: "가용성·기밀성·무결성(CIA) 위험분석 · 위험통제 · 잔여위험 평가",
+    },
+    {
+        t: "시스템·인프라 구현 담당",
+        d: "인증 · 암호화 · 감사로그 · 백업/복구 설계·구현",
+    },
+    {
+        t: "클라우드 보안 운영 담당",
+        d: "NCP NKS · GitOps · 관측성 · WAF · IDS · 이미지 다이제스트 검증",
     },
     {
         t: "인허가 대응 담당",
@@ -71,39 +83,16 @@ const CASES = [
 export default function MedSecPortfolioPage() {
     return (
         <div className="mx-auto max-w-[1080px] px-6 pt-40 pb-24 m:px-4 m:pt-28">
-            {/* 히어로 (PROVE Lite 배너와 동일: 좌 제목·부제 / 우 비주얼) */}
-            <header className="flex items-center gap-10 m:flex-col-reverse m:items-stretch m:gap-8">
-                {/* 좌: 텍스트 */}
-                <div className="flex w-1/2 flex-col gap-6 m:w-full m:gap-4">
-                    <span className="text-sm font-medium text-[#2f5aa8]">포트폴리오 · 의료기기</span>
-                    <h1 className="text-[3.25rem] font-bold leading-[1.08] tracking-[-0.03em] text-[#191918] m:text-[2.25rem]">
-                        의료기기 사이버보안
-                        <br />및 인프라 담당
-                    </h1>
-                    <p className="text-[1.15rem] leading-relaxed text-gray-600 m:text-base">
-                        서류로 채우는 사이버보안이 아니라, 제품을 실제로 그렇게 <span className="font-semibold text-[#2f5aa8]">설계·구현해 증명</span>합니다.
-                        KS X IEC 62443-4-2 <b className="text-[#191918]">시험성적서 작성</b>과 그 근거가 되는 <b className="text-[#191918]">시스템·인프라 구현</b>을 직접 담당해,{" "}
-                        <span className="font-semibold text-[#191918]">임상시험 허가 · 의료기기 변경 허가</span>를 통과시킨 작업들입니다.
-                    </p>
-                </div>
-                {/* 우: 준거 기준 카드 (기준·가이드라인 버전) */}
-                <div className="flex w-1/2 justify-center m:w-full">
-                    <div className="flex w-full max-w-[380px] flex-col gap-5 rounded-2xl border border-[#ededeb] bg-[#f6f5f4] p-8">
-                        <span className="text-xs font-semibold tracking-wide text-[#2f5aa8]">준거 기준</span>
-                        <div>
-                            <div className="text-[1.5rem] font-bold leading-tight text-[#191918]">KS X IEC 62443-4-2</div>
-                            <div className="mt-1.5 text-sm text-gray-500">산업제어시스템 보안 · 기술 보안 요구사항 (6영역 35항목)</div>
-                        </div>
-                        <div className="h-px w-full bg-[#e5e4e1]" />
-                        <div>
-                            <div className="text-[15px] font-semibold text-[#191918]">식품의약품안전처</div>
-                            <div className="mt-1 text-[13px] leading-relaxed text-gray-500">「의료기기의 사이버보안 허가·심사 가이드라인」</div>
-                            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-[#e5e4e1] bg-white px-3 py-1 text-[12px] font-medium text-gray-600">
-                                안내서-0995-05 · 2025.1.10 기준
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            {/* 히어로 */}
+            <header className="flex flex-col gap-5">
+                <span className="text-sm font-medium text-[#2f5aa8]">포트폴리오 · 의료기기</span>
+                <h1 className="text-[3.25rem] font-bold leading-[1.1] tracking-[-0.03em] text-[#191918] m:text-[2.25rem]">
+                    의료기기 사이버보안 및 인프라 담당
+                </h1>
+                <p className="max-w-[46rem] text-[1.15rem] leading-relaxed text-gray-600 m:text-base">
+                    의료기기 사이버보안을 서류가 아니라 <span className="font-semibold text-[#2f5aa8]">실제 설계·구현</span>으로 증명합니다.
+                    시험성적서 작성부터 그 근거가 되는 <b className="text-[#191918]">시스템·인프라</b>까지 직접 담당했습니다.
+                </p>
             </header>
 
             {/* 배경 · 왜 필요한가 (식약처 가이드라인 근거) */}
