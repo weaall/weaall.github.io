@@ -105,13 +105,11 @@ export default function MedSecPortfolioPage() {
                         <span>서류가 아니라 <b className="text-[#191918]">제품을 그렇게 설계했음의 증명</b> → 문서 작성 + 실제 구현이 곧 근거</span>
                     </li>
                 </ul>
-                <figure className="relative mt-7 max-w-[52rem] overflow-hidden rounded-2xl bg-[#0f2f4a] px-9 py-8 m:px-6 m:py-6">
-                    <span aria-hidden className="pointer-events-none absolute -top-3 left-5 select-none font-serif text-[110px] leading-none text-white/10">“</span>
-                    <blockquote className="relative text-[1.15rem] font-medium leading-[1.75] tracking-[-0.01em] text-white m:text-[1rem]">
-                        의료기기의 해킹, 정보 유출 등 사이버보안 위협사례가 꾸준히 보고되고 있고, 이러한 위협사례는 재산적 손실뿐만 아니라 <span className="text-[#7fd4c1]">환자 생명에 직접적인 위해</span>를 줄 수 있어 의료기기의 사이버보안에 대한 중요성이 부각되고 있다.
+                <figure className="mt-6 max-w-[52rem] rounded-2xl bg-[#f6f5f4] p-8 m:p-6">
+                    <blockquote className="text-[1.0625rem] leading-[1.8] text-gray-700 m:text-[15px]">
+                        “의료기기의 해킹, 정보 유출 등 사이버보안 위협사례가 꾸준히 보고되고 있고, 이러한 위협사례는 재산적 손실뿐만 아니라 환자 생명에 직접적인 위해를 줄 수 있어 의료기기의 사이버보안에 대한 중요성이 부각되고 있다.”
                     </blockquote>
-                    <figcaption className="relative mt-6 flex items-center gap-2.5 text-[13px] text-white/55">
-                        <span className="h-px w-6 bg-white/30" />
+                    <figcaption className="mt-4 text-[13px] text-gray-500">
                         식품의약품안전처 「의료기기의 사이버보안 허가·심사 가이드라인」 · 민원인 안내서 2025.1
                     </figcaption>
                 </figure>
