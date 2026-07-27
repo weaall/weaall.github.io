@@ -94,10 +94,10 @@ export const Img = tw.img`mx-auto max-w-full h-auto rounded-lg`;
 export const ImgTitle = tw.span`w-full text-center text-xs text-gray-400`;
 
 // 표: 에디터 TableBlock과 동일한 노션풍 보더 테이블 (내용 폭에 맞춤, 셀 보더 + 헤더 음영)
-export const Table = tw.table`my-3 border-collapse`;
+export const Table = tw.table`post-table my-3 w-full border-collapse`;
 export const Thead = tw.thead``;
 export const Tbody = tw.tbody``;
 export const Tr = tw.tr``;
-// 노션 심플 테이블 기본은 헤더 음영 없음 → th도 td와 동일 플레인 (에디터 표와 일치)
-export const Th = tw.th`border border-[#d3d2ce] px-[9px] py-[7px] text-left align-top text-[14px] font-normal text-(--text)`;
-export const Td = tw.td`border border-[#d3d2ce] px-[9px] py-[7px] text-left align-top text-[14px] text-(--text)`;
+// 헤더 행: 음영 + 볼드. 첫 열(헤더 열)은 globals.css에서 별도 강조.
+export const Th = tw.th`border border-[#d3d2ce] bg-[#f4f3f1] px-[10px] py-[8px] text-left align-top text-[14px] font-semibold text-(--text-strong)`;
+export const Td = tw.td`border border-[#d3d2ce] px-[10px] py-[7px] text-left align-top text-[14px] text-(--text)`;

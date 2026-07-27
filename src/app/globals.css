@@ -295,3 +295,15 @@
     transform: translateY(0);
   }
 }
+
+/* 포스트 표: 첫 열(ID/라벨)을 헤더 열처럼 강조 + 좁게 유지 */
+.post-content .post-table th:first-child,
+.post-content .post-table td:first-child {
+  white-space: nowrap;
+  width: 1%;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+.post-content .post-table td:first-child {
+  background: #faf9f8;
+}
