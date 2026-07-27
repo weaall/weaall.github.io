@@ -45,6 +45,18 @@ const DUTIES = [
         t: "백업 · 복구 (PITR)",
         d: "문제가 생겨도 원하는 시점으로 되돌릴 수 있게 — 「복구·가용성」",
     },
+    {
+        t: "메시지 큐 (Kafka)",
+        d: "이벤트·감사로그를 유실 없이 흘려보내 — 부하가 몰려도 기록이 빠지지 않게",
+    },
+    {
+        t: "관측성 (Grafana · Loki)",
+        d: "로그·지표·알림으로 이상 징후를 실시간 감지 — 「적시 대응」",
+    },
+    {
+        t: "취약점 · 공급망 (Trivy · SBOM)",
+        d: "이미지·오픈소스(SOUP) 취약점을 스캔·문서화 — 공급망까지 보안 관리",
+    },
 ];
 
 const CASES = [
@@ -106,7 +118,7 @@ export default function MedSecPortfolioPage() {
                     <p className="break-keep text-[1.3rem] font-medium leading-none tracking-[-0.07em] text-[#191918] m:text-center m:text-[1rem] m:leading-normal">
                         의료기기 <span className="text-[#416bac]">사이버보안 시험성적서</span>를 위한
                         <br />
-                        <span>인프라 설계·구축 · 시스템 아키텍처 · 인증·암호화·감사로그·백업/복구 구현 </span>
+                        <span className="tracking-[-0.18em]">인프라 설계·구축 · 시스템 아키텍처 · 인증·암호화·감사로그·백업/복구 구현 </span>
                     </p>
                     {/* 버튼 위치: 준거 가이드라인 버전 (작은 회색, 한 줄) */}
                     <p className="w-fit text-[11px] font-normal tracking-tight text-gray-400 m:mx-auto m:text-center">
@@ -129,27 +141,25 @@ export default function MedSecPortfolioPage() {
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
                         <span>
-                            통신 기능이 있는 의료기기·SaMD·디지털의료기기는 허가·심사 때 <b className="text-[#191918]">사이버보안 검증 자료를 내야 한다.</b>
+                            통신되는 의료기기는 <b className="text-[#191918]">해킹 한 번이 환자 안전 사고</b>로 이어질 수 있다. 그래서 허가 단계에서 사이버보안 자료를 요구한다.
                         </span>
                     </li>
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
                         <span>
-                            검증 기준은 <b className="text-[#191918]">KS X IEC 62443-4-2</b>의 6개 영역·35개 항목이다. (식별·인증 / 사용통제 / 무결성 / 기밀성 /
-                            대응 / 가용성)
+                            그 기준이 <b className="text-[#191918]">KS X IEC 62443-4-2</b> — 인증·사용통제·무결성·기밀성·대응·가용성, 6개 영역 35개 항목이다.
                         </span>
                     </li>
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
                         <span>
-                            <b className="text-[#191918]">가용성·기밀성·무결성(CIA)</b>을 <b className="text-[#191918]">ISO 14971</b> 위험관리 안에서 설계
-                            단계부터 반영해야 한다.
+                            핵심은 <b className="text-[#191918]">시점</b>이다. 다 만들고 서류만 끼워 맞추는 게 아니라, 설계·DB 단계부터 가용성·기밀성·무결성(CIA)을 넣어야 한다.
                         </span>
                     </li>
                     <li className="flex gap-2.5">
                         <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
                         <span>
-                            결국 서류가 아니라 <b className="text-[#191918]">제품을 그렇게 설계했다는 증명</b>이고, 문서 작성과 실제 구현이 곧 그 근거가 된다.
+                            그래서 시험성적서의 진짜 근거는 문서가 아니라 <b className="text-[#191918]">실제로 그렇게 구현한 인프라와 코드</b>다.
                         </span>
                     </li>
                 </ul>
