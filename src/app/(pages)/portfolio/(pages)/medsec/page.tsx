@@ -10,28 +10,40 @@ export const metadata: Metadata = getBaseMetadata({
 
 const DUTIES = [
     {
-        t: "시험성적서 문서 작성 담당",
+        t: "시험성적서 문서 작성",
         d: "KS X IEC 62443-4-2 35개 항목을 제품에 매핑해 검증 자료로 작성",
     },
     {
         t: "식약처 가이드라인 준거",
-        d: "식품의약품안전처 「의료기기의 사이버보안 허가·심사 가이드라인」 안내서-0995-05 (2025.1.10) 기준",
+        d: "「의료기기의 사이버보안 허가·심사 가이드라인」 안내서-0995-05 (2025.1) 기준",
     },
     {
-        t: "위험관리 (ISO 14971) 담당",
+        t: "위험관리 (ISO 14971)",
         d: "가용성·기밀성·무결성(CIA) 위험분석 · 위험통제 · 잔여위험 평가",
     },
     {
-        t: "시스템·인프라 구현 담당",
-        d: "인증 · 암호화 · 감사로그 · 백업/복구 설계·구현",
+        t: "네이버 클라우드 (NCP)",
+        d: "공공·의료용 CSAP 인증을 받은 국내 클라우드라 인프라 기반으로 채택",
     },
     {
-        t: "클라우드 보안 운영 담당",
-        d: "NCP NKS · GitOps · 관측성 · WAF · IDS · 이미지 다이제스트 검증",
+        t: "Kubernetes (NKS)",
+        d: "무중단 배포·self-healing·격리로 가용성(RA) 요구사항 충족",
     },
     {
-        t: "인허가 대응 담당",
-        d: "임상시험 허가 · 품목 인허가 · 디지털의료기기 GMP(별표3)",
+        t: "GitOps (ArgoCD)",
+        d: "변경 이력 · 이미지 SHA-256 다이제스트 고정으로 무결성·추적성 확보",
+    },
+    {
+        t: "WAF · IDS",
+        d: "ModSecurity · Falco로 침입 탐지·차단 — 시스템 무결성의 실제 근거",
+    },
+    {
+        t: "암호화 · 인증 · 감사로그",
+        d: "TLS 1.3 · AES-256 · SHA-256, 감사로그로 기밀성·부인방지",
+    },
+    {
+        t: "백업 · 복구 (PITR)",
+        d: "자동 백업 · 시점 복구로 자원 가용성·복구 요구사항 충족",
     },
 ];
 
@@ -88,12 +100,16 @@ export default function MedSecPortfolioPage() {
                 {/* StartWrap */}
                 <div className="flex w-1/2 flex-col gap-6 m:w-full m:items-center m:gap-4">
                     <h1 className="break-keep text-[4rem] font-semibold leading-[1.05] tracking-tighter text-gray-900 m:text-center m:text-[2.5rem]">
-                        의료기기 인프라 및
-                        <br />사이버보안 설계
+                        의료기기 인프라
+                        <br />및 사이버보안 설계
                     </h1>
-                    <p className="break-keep text-[1.15rem] font-medium leading-relaxed tracking-tight text-[#191918] m:text-center m:text-[0.95rem]">
+                    <p className="break-keep text-[1.3rem] font-medium leading-none tracking-[-0.07em] text-[#191918] m:text-center m:text-[1rem] m:leading-normal">
                         의료기기 <span className="text-[#416bac]">사이버보안 시험성적서</span>를 위한
                         <br />인프라 설계·구축 · 시스템 아키텍처 · 인증·암호화·감사로그·백업/복구 구현
+                    </p>
+                    {/* 버튼 위치: 준거 가이드라인 버전 (작은 회색, 한 줄) */}
+                    <p className="w-fit text-[11px] font-normal tracking-tight text-gray-400 m:mx-auto m:text-center">
+                        식품의약품안전처 「의료기기의 사이버보안 허가·심사 가이드라인」 · 2025.1 개정(안내서-0995-05)
                     </p>
                 </div>
                 {/* EndWrap */}
