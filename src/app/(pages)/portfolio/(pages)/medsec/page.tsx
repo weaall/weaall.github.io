@@ -10,16 +10,16 @@ export const metadata: Metadata = getBaseMetadata({
 
 const DUTIES = [
     {
-        t: "사이버보안 자체 시험성적서",
-        d: "KS X IEC 62443-4-2 35개 항목(식별·인증 / 사용통제 / 무결성 / 기밀성 / 대응 / 가용성)을 제품에 매핑해 제조자 자체 시험성적서를 작성.",
+        t: "시험성적서 문서 작성 담당",
+        d: "KS X IEC 62443-4-2 35개 항목 제품 매핑 · 제조자 자체 시험성적서화",
     },
     {
-        t: "인프라 설계·운영",
-        d: "NCP NKS·GitOps(ArgoCD) 기반 배포, 관측성(Loki·Grafana·Prometheus), WAF(ModSecurity)·IDS(Falco)·이미지 다이제스트 검증.",
+        t: "실제 시스템·인프라 구현 담당",
+        d: "인증 · 암호화 · 감사로그 · 백업/복구 · NCP NKS · GitOps · 관측성 · WAF · IDS",
     },
     {
-        t: "인허가 대응",
-        d: "의료기기 임상시험 허가 · 품목 인허가 · 디지털의료기기 GMP(별표3)를 사이버보안 자료로 뒷받침.",
+        t: "인허가 대응 담당",
+        d: "임상시험 허가 · 품목 인허가 · 디지털의료기기 GMP(별표3)",
     },
 ];
 
@@ -86,11 +86,24 @@ export default function MedSecPortfolioPage() {
             {/* 배경 · 왜 필요한가 (식약처 가이드라인 근거) */}
             <section className="mt-16">
                 <h2 className="mb-4 text-2xl font-bold text-[#191918]">왜 사이버보안 자체 시험성적서인가</h2>
-                <p className="max-w-[52rem] text-[15px] leading-relaxed text-gray-600 m:text-sm">
-                    유·무선 통신 경로가 있는 의료기기(펌웨어 포함 기기·SaMD)와 「디지털의료제품법」상 디지털의료기기는 허가·심사 단계에서{" "}
-                    <b className="text-[#191918]">사이버보안 검증 자료</b> 제출이 요구됩니다. 저는 이 검증 자료를 제조자{" "}
-                    <b className="text-[#191918]">자체 시험성적서</b>로 작성하고, 그 근거가 되는 시스템·인프라를 설계·구현해 인허가를 통과시키는 일을 담당했습니다.
-                </p>
+                <ul className="max-w-[52rem] space-y-2 text-[15px] leading-relaxed text-gray-700 m:text-sm">
+                    <li className="flex gap-2">
+                        <span className="text-[#2f5aa8]">·</span>
+                        <span>통신 경로가 있는 의료기기 · SaMD · 디지털의료기기 → 허가·심사 시 <b className="text-[#191918]">사이버보안 검증 자료 필수</b></span>
+                    </li>
+                    <li className="flex gap-2">
+                        <span className="text-[#2f5aa8]">·</span>
+                        <span>검증 기준 <b className="text-[#191918]">KS X IEC 62443-4-2</b> · 6개 영역 35개 항목 (식별·인증 / 사용통제 / 무결성 / 기밀성 / 대응 / 가용성)</span>
+                    </li>
+                    <li className="flex gap-2">
+                        <span className="text-[#2f5aa8]">·</span>
+                        <span><b className="text-[#191918]">가용성·기밀성·무결성(CIA)</b> · <b className="text-[#191918]">ISO 14971</b> 위험관리 안에서 설계 단계부터 반영</span>
+                    </li>
+                    <li className="flex gap-2">
+                        <span className="text-[#2f5aa8]">·</span>
+                        <span>서류가 아니라 <b className="text-[#191918]">제품을 그렇게 설계했음의 증명</b> → 문서 작성 + 실제 구현이 곧 근거</span>
+                    </li>
+                </ul>
                 <figure className="mt-5 max-w-[52rem] rounded-xl border-l-[3px] border-l-[#2f5aa8] bg-[#f4f3f1] px-5 py-4">
                     <blockquote className="text-[14px] leading-relaxed text-gray-700">
                         “의료기기의 해킹, 정보 유출 등 사이버보안 위협사례가 꾸준히 보고되고 있고, 이러한 위협사례는 재산적 손실뿐만 아니라 환자 생명에 직접적인 위해를 줄 수 있어 의료기기의 사이버보안에 대한 중요성이 부각되고 있다.”
@@ -99,10 +112,6 @@ export default function MedSecPortfolioPage() {
                         — 식품의약품안전처 「의료기기의 사이버보안 허가·심사 가이드라인」(민원인 안내서, 2025.1)
                     </figcaption>
                 </figure>
-                <p className="mt-5 max-w-[52rem] text-[15px] leading-relaxed text-gray-600 m:text-sm">
-                    검증 기준은 <b className="text-[#191918]">KS X IEC 62443-4-2</b>의 6개 영역(식별·인증 / 사용통제 / 시스템 무결성 / 데이터 기밀성 / 적시 대응 / 자원 가용성) 35개 항목이며,{" "}
-                    <b className="text-[#191918]">가용성·기밀성·무결성(CIA)</b>을 <b className="text-[#191918]">ISO 14971</b> 위험관리 프로세스 안에서 설계 단계부터 반영해야 합니다. 서류를 채우는 일이 아니라 제품을 그렇게 설계했음을 증명하는 일이고, 그 설계·구현을 제가 담당했습니다.
-                </p>
             </section>
 
             {/* 담당 영역 */}
@@ -133,11 +142,9 @@ export default function MedSecPortfolioPage() {
                             {/* 상단: 텍스트 */}
                             <div className="flex flex-col gap-2 p-8 pb-6">
                                 <span className="text-sm text-gray-500">{c.tag}</span>
-                                {/* 로고 마크 + 타이틀(로고색) */}
+                                {/* 로고 마크 + 타이틀(로고색) — 마크는 배경 없이 그대로 */}
                                 <div className="flex items-center gap-2.5">
-                                    <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[9px] bg-white ring-1 ring-black/5">
-                                        <img className="h-full w-full object-contain p-1" src={c.mark} alt="" />
-                                    </span>
+                                    <img className="h-9 w-9 shrink-0 object-contain" src={c.mark} alt="" />
                                     <h3 className="text-[1.75rem] font-bold leading-tight" style={{ color: c.titleColor }}>
                                         {c.title}
                                     </h3>
