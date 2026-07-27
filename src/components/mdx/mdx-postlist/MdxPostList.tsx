@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import * as tw from "./MdxPostList.styles";
 import { PostData } from "@/types/PostData";
-import { PageIcon } from "@/app/(pages)/newpage/lib/pageIcon";
+import { PageIcon, isImageIcon } from "@/app/(pages)/newpage/lib/pageIcon";
 
 interface PostListProps {
     latestPosts: PostData[];
@@ -31,7 +31,7 @@ function Tags({ tags }: { tags?: string[] }) {
 function Meta({ post, size = "sm" }: { post: PostData; size?: "sm" | "xs" }) {
     return (
         <div className={`flex items-center gap-2 text-(--text-muted) ${size === "xs" ? "text-xs" : "text-sm"}`}>
-            {post.icon && <PageIcon icon={post.icon} size={size === "xs" ? 16 : 18} />}
+            {post.icon && !isImageIcon(post.icon) && <PageIcon icon={post.icon} size={size === "xs" ? 16 : 18} />}
             {post.label && <span className="font-medium">{post.label}</span>}
             {post.mins && <span className="tabular-nums">· {post.mins}분</span>}
             <span className="ml-auto tabular-nums">{post.date}</span>
