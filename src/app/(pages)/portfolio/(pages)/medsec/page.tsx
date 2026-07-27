@@ -83,27 +83,25 @@ const CASES = [
 export default function MedSecPortfolioPage() {
     return (
         <div className="mx-auto max-w-[1080px] px-6 pt-40 pb-24 m:px-4 m:pt-28">
-            {/* 히어로 (PROVE Lite 배너와 동일: 좌 텍스트 / 우 비주얼) */}
-            <header className="flex items-center gap-10 m:flex-col m:items-start m:gap-8">
-                {/* 좌: 텍스트 */}
-                <div className="flex w-1/2 flex-col gap-5 m:w-full">
-                    <span className="text-sm font-medium text-[#2f5aa8]">포트폴리오 · 의료기기</span>
-                    <h1 className="text-[3.25rem] font-bold leading-[1.1] tracking-[-0.03em] text-[#191918] m:text-[2.25rem]">
-                        의료기기 사이버보안 및 인프라 담당
+            {/* 히어로 — PROVE Lite 배너 디자인 차용 (버튼 제외) */}
+            <header className="flex w-full m:flex-col-reverse">
+                {/* StartWrap */}
+                <div className="flex w-1/2 flex-col gap-6 m:w-full m:items-center m:gap-4">
+                    <h1 className="break-keep text-[4rem] font-semibold leading-[1.05] tracking-tighter text-gray-900 m:text-center m:text-[2.5rem]">
+                        의료기기 인프라 및
+                        <br />사이버보안 설계
                     </h1>
-                    <p className="text-[1.15rem] leading-relaxed text-gray-600 m:text-base">
-                        의료기기 사이버보안을 서류가 아니라 <span className="font-semibold text-[#2f5aa8]">실제 설계·구현</span>으로 증명합니다.
-                        시험성적서 작성부터 그 근거가 되는 <b className="text-[#191918]">시스템·인프라</b>까지 직접 담당했습니다.
+                    <p className="break-keep text-[1.15rem] font-medium leading-relaxed tracking-tight text-[#191918] m:text-center m:text-[0.95rem]">
+                        의료기기 <span className="text-[#416bac]">사이버보안 시험성적서</span>를 위한
+                        <br />인프라 설계·구축 · 시스템 아키텍처 · 인증·암호화·감사로그·백업/복구 구현
                     </p>
                 </div>
-                {/* 우: 식약처 로고 (가이드라인 준거) */}
-                <div className="flex w-1/2 flex-col items-center gap-4 m:mt-2 m:w-full m:items-start">
-                    <img className="h-20 w-auto max-w-full object-contain m:h-14" src="/assets/portfolio/medsec/mfds-logo.svg" alt="식품의약품안전처" />
-                    <div className="h-px w-4/5 bg-[#e5e4e1] m:hidden" />
-                    <p className="text-center text-[13px] leading-relaxed text-gray-500 m:text-left">
-                        「의료기기의 사이버보안 허가·심사 가이드라인」 준거<br className="m:hidden" />
-                        <span className="text-gray-400"> · 안내서-0995-05 (2025.1.10)</span>
-                    </p>
+                {/* EndWrap */}
+                <div className="flex w-1/2 flex-col items-center justify-start m:w-full m:pb-8">
+                    <div className="mx-auto my-auto flex w-full items-center justify-center gap-4">
+                        <img className="h-32 w-auto max-w-full object-contain m:h-20" src="/assets/portfolio/medsec/mfds-logo.svg" alt="식품의약품안전처" />
+                    </div>
+                    <div className="h-[1px] w-full bg-[#416bac] m:hidden" />
                 </div>
             </header>
 
