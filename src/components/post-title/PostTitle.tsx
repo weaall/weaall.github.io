@@ -47,7 +47,7 @@ export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatte
                     (frontmatter.icon || label || date) && (
                         <>
                             {frontmatter.icon && (
-                                <div className="mb-2">
+                                <div className="mb-3">
                                     <PageIcon icon={frontmatter.icon} size={56} />
                                 </div>
                             )}
