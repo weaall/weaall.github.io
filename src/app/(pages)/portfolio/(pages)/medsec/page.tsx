@@ -129,9 +129,9 @@ export default function MedSecPortfolioPage() {
                 </div>
             </section>
 
-            {/* 사례 */}
-            <section className="mt-20">
-                <h2 className="mb-6 text-2xl font-bold text-[#191918]">사례</h2>
+            {/* 관련 프로젝트 */}
+            <section className="mt-24">
+                <h2 className="mb-8 text-center text-[2.625rem] font-bold tracking-[-0.09375rem] text-[#191918] m:text-[2rem]">관련 프로젝트</h2>
                 <div className="grid grid-cols-2 gap-6 m:grid-cols-1">
                     {CASES.map((c) => (
                         <Link
