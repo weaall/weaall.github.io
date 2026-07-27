@@ -28,7 +28,7 @@ const CASES = [
         href: "/post/varabom-ce-security",
         tag: "VR 인지기능 훈련 · 로컬 설치형 SaMD",
         title: "바라봄 CE",
-        desc: "폐쇄망 PC 설치형 SaMD. 인증·감사로그·암호화·업데이트 절차를 설계 단계부터 구현해 시험성적서로 갈음.",
+        desc: "병원 PC에 설치해 쓰는 VR 인지훈련 프로그램. 로그인·기록·암호화를 처음부터 직접 만들어 보안 요건을 채웠다.",
         applied: "35개 중 29개 적용",
         status: "임상시험 허가",
         done: true,
@@ -42,7 +42,7 @@ const CASES = [
         href: "/post/chiyu-forest-security",
         tag: "폐쇄망 설치형 SaMD",
         title: "치유포레스트",
-        desc: "폐쇄망 범용 PC 설치형 SaMD. 인증·무결성·암호화·백업·복구를 자체 구현해 시험성적서로 갈음.",
+        desc: "폐쇄망 PC에 설치하는 프로그램. 로그인·데이터 보호·백업·복구까지 직접 구현했다.",
         applied: "35개 중 27개 적용",
         status: "의료기기 중대한 변경 허가",
         done: true,
@@ -56,7 +56,7 @@ const CASES = [
         href: "/post/mnai-security-test",
         tag: "클라우드 SaMD",
         title: "마인즈내비 AI",
-        desc: "CSAP 네이버 클라우드 위 인프라·GitOps·관측성이 그대로 보안 요구사항의 근거가 되는 클라우드형 SaMD.",
+        desc: "클라우드에서 돌아가는 AI 분석 서비스. 클라우드 보안 인프라가 곧 보안 요건의 근거가 된다.",
         applied: "35개 중 32개 적용",
         status: "GMP 임상시험, 인허가 진행중",
         done: false,
@@ -87,22 +87,22 @@ export default function MedSecPortfolioPage() {
             {/* 배경 · 왜 필요한가 (식약처 가이드라인 근거) */}
             <section className="mt-16">
                 <h2 className="mb-4 text-2xl font-bold text-[#191918]">왜 사이버보안 시험성적서인가</h2>
-                <ul className="max-w-[52rem] space-y-2 text-[15px] leading-relaxed text-gray-700 m:text-sm">
-                    <li className="flex gap-2">
-                        <span className="text-[#2f5aa8]">·</span>
-                        <span>통신 경로가 있는 의료기기 · SaMD · 디지털의료기기 → 허가·심사 시 <b className="text-[#191918]">사이버보안 검증 자료 필수</b></span>
+                <ul className="max-w-[52rem] space-y-2.5 text-[15px] leading-relaxed text-gray-700 m:text-sm">
+                    <li className="flex gap-2.5">
+                        <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
+                        <span>통신 기능이 있는 의료기기·SaMD·디지털의료기기는 허가·심사 때 <b className="text-[#191918]">사이버보안 검증 자료를 내야 한다.</b></span>
                     </li>
-                    <li className="flex gap-2">
-                        <span className="text-[#2f5aa8]">·</span>
-                        <span>검증 기준 <b className="text-[#191918]">KS X IEC 62443-4-2</b> · 6개 영역 35개 항목 (식별·인증 / 사용통제 / 무결성 / 기밀성 / 대응 / 가용성)</span>
+                    <li className="flex gap-2.5">
+                        <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
+                        <span>검증 기준은 <b className="text-[#191918]">KS X IEC 62443-4-2</b>의 6개 영역·35개 항목이다. (식별·인증 / 사용통제 / 무결성 / 기밀성 / 대응 / 가용성)</span>
                     </li>
-                    <li className="flex gap-2">
-                        <span className="text-[#2f5aa8]">·</span>
-                        <span><b className="text-[#191918]">가용성·기밀성·무결성(CIA)</b> · <b className="text-[#191918]">ISO 14971</b> 위험관리 안에서 설계 단계부터 반영</span>
+                    <li className="flex gap-2.5">
+                        <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
+                        <span><b className="text-[#191918]">가용성·기밀성·무결성(CIA)</b>을 <b className="text-[#191918]">ISO 14971</b> 위험관리 안에서 설계 단계부터 반영해야 한다.</span>
                     </li>
-                    <li className="flex gap-2">
-                        <span className="text-[#2f5aa8]">·</span>
-                        <span>서류가 아니라 <b className="text-[#191918]">제품을 그렇게 설계했음의 증명</b> → 문서 작성 + 실제 구현이 곧 근거</span>
+                    <li className="flex gap-2.5">
+                        <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#2f5aa8]" />
+                        <span>결국 서류가 아니라 <b className="text-[#191918]">제품을 그렇게 설계했다는 증명</b>이고, 문서 작성과 실제 구현이 곧 그 근거가 된다.</span>
                     </li>
                 </ul>
                 <figure className="mt-6 max-w-[52rem] rounded-2xl bg-[#f6f5f4] p-8 m:p-6">
@@ -143,7 +143,7 @@ export default function MedSecPortfolioPage() {
                             {/* 상단: 마크 + 진행상태(같은 레벨) → 이름 → 설명 */}
                             <div className="flex flex-col gap-2 p-8 pb-6">
                                 <div className="mb-1 flex items-center justify-between gap-2">
-                                    <img className="h-9 w-9 object-contain" src={c.mark} alt="" />
+                                    <img className="h-8 w-8 object-contain" src={c.mark} alt="" />
                                     <span
                                         className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-semibold"
                                         style={
