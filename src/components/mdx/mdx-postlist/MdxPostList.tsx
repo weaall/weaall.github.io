@@ -42,7 +42,7 @@ function Meta({ post, size = "sm" }: { post: PostData; size?: "sm" | "xs" }) {
 function Card({ post }: { post: PostData }) {
     return (
         <Link
-            href={post.postUrl}
+            prefetch={false} href={post.postUrl}
             className="group flex flex-col gap-2 rounded-2xl border border-(--border) bg-(--panel-bg) p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
         >
             <Meta post={post} size="xs" />
@@ -117,7 +117,7 @@ export default function MdxPostList({ latestPosts, collapsed }: PostListProps) {
                 {/* 최신글(히어로) — 전체 탭에서만 */}
                 {showHero && featured && (
                     <Link
-                        href={featured.postUrl}
+                        prefetch={false} href={featured.postUrl}
                         className="group mb-12 block overflow-hidden rounded-2xl border border-(--border) bg-(--panel-bg) transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                     >
                         {hasCover(featured.imageUrl) && (

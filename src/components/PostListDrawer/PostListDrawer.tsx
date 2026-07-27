@@ -145,7 +145,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                     </div>
                 </button>
 
-                <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+                <Link prefetch={false} href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5">
                     <img src="/assets/weaall-ui.png" alt="WeHub" className="h-6 w-6 object-contain" />
                     <span className={`${roboto.className} text-[1.05rem] font-semibold tracking-tight text-(--text-strong)`}>
                         WeHub
@@ -187,7 +187,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                             {collapsed ? <RightIcon color="currentColor" width="20" height="20" /> : <ReduceIcon color="currentColor" width="20" height="20" />}
                         </tw.IconBtn>
                     </div>
-                    <tw.PostLink href="/" $active={pathname === "/"}>
+                    <tw.PostLink prefetch={false} href="/" $active={pathname === "/"}>
                         <tw.SvgWrap>
                             <HomeIcon color="currentColor" width="20" height="20" />
                         </tw.SvgWrap>
@@ -195,7 +195,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                             <tw.Label>홈</tw.Label>
                         </tw.LabelWrap>
                     </tw.PostLink>
-                    <tw.PostLink href="/post">
+                    <tw.PostLink prefetch={false} href="/post">
                         <tw.SvgWrap>
                             <PostIcon color="currentColor" width="20" height="20" />
                         </tw.SvgWrap>
@@ -203,7 +203,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                             <tw.Label>게시물</tw.Label>
                         </tw.LabelWrap>
                     </tw.PostLink>
-                    <tw.PostLink href="/search" $active={pathname === "/search"}>
+                    <tw.PostLink prefetch={false} href="/search" $active={pathname === "/search"}>
                         <tw.SvgWrap>
                             <SearchIcon color="currentColor" width="20" height="20" />
                         </tw.SvgWrap>
@@ -212,7 +212,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                         </tw.LabelWrap>
                     </tw.PostLink>
                     <tw.PostLink
-                        href="/newpage"
+                        prefetch={false} href="/newpage"
                         $active={pathname === "/newpage"}
                         className="m:hidden"
                         onClick={(e) => {
@@ -304,7 +304,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                                                 onMouseEnter={() => setHoveredSlug(post.slug)}
                                                 onMouseLeave={() => setHoveredSlug(null)}
                                             >
-                                                <tw.PostLink href={post.postUrl} $active={isActive}>
+                                                <tw.PostLink prefetch={false} href={post.postUrl} $active={isActive}>
                                                     <tw.SvgWrap>
                                                         {post.icon ? (
                                                             <PageIcon icon={post.icon} size={18} />

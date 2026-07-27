@@ -14,7 +14,7 @@ export default function PostNav({ postsData, slug }: { postsData: PostData[]; sl
             <div className="grid grid-cols-2 gap-4 m:grid-cols-1">
                 {older ? (
                     <Link
-                        href={older.postUrl}
+                        prefetch={false} href={older.postUrl}
                         className="group flex flex-col gap-1 rounded-xl border border-(--border) bg-(--panel-bg) p-4 transition-all hover:-translate-y-0.5 hover:shadow-md"
                     >
                         <span className="text-xs text-(--text-muted)">← 이전 글</span>
@@ -25,7 +25,7 @@ export default function PostNav({ postsData, slug }: { postsData: PostData[]; sl
                 )}
                 {newer ? (
                     <Link
-                        href={newer.postUrl}
+                        prefetch={false} href={newer.postUrl}
                         className="group flex flex-col items-end gap-1 rounded-xl border border-(--border) bg-(--panel-bg) p-4 text-right transition-all hover:-translate-y-0.5 hover:shadow-md"
                     >
                         <span className="text-xs text-(--text-muted)">다음 글 →</span>
@@ -36,7 +36,7 @@ export default function PostNav({ postsData, slug }: { postsData: PostData[]; sl
                 )}
             </div>
             <div className="mt-6 text-center">
-                <Link href="/post" className="inline-flex items-center gap-1 rounded-lg border border-(--border) px-4 py-2 text-sm text-(--text-muted) transition-colors hover:bg-(--hover-bg) hover:text-(--text)">
+                <Link prefetch={false} href="/post" className="inline-flex items-center gap-1 rounded-lg border border-(--border) px-4 py-2 text-sm text-(--text-muted) transition-colors hover:bg-(--hover-bg) hover:text-(--text)">
                     목록으로 돌아가기
                 </Link>
             </div>
