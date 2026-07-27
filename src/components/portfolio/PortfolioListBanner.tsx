@@ -7,7 +7,7 @@ export default function PortfolioListBanner() {
             <h2 className="text-[3.25rem] text-[#191918] font-bold m:text-[2.25rem]">포트폴리오</h2>
 
             <div className="w-full flex gap-8 pt-6">
-                <a href="/post/varabom-ce-security" className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex bg-white m:flex-col m:h-auto overflow-hidden group">
+                <a href="/portfolio/medsec" className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex bg-white m:flex-col m:h-auto overflow-hidden group">
                     <div className="flex p-6 justify-between w-1/3 m:w-full">
                         <div className="w-full flex flex-col gap-2">
                             <div>
