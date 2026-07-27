@@ -43,12 +43,20 @@ export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatte
                         )}
                     </>
                 ) : (
-                    // 커버 없을 때: 아이콘 + 카테고리 + 날짜 한 줄 (에디터와 동일)
+                    // 커버 없을 때도 동일 레이아웃: 아이콘(56) 단독 → 그 아래 카테고리·날짜 칩
                     (frontmatter.icon || label || date) && (
-                        <div className="mb-1 flex items-center gap-2">
-                            {frontmatter.icon && <PageIcon icon={frontmatter.icon} size={44} />}
-                            <MetaChips />
-                        </div>
+                        <>
+                            {frontmatter.icon && (
+                                <div className="mb-2">
+                                    <PageIcon icon={frontmatter.icon} size={56} />
+                                </div>
+                            )}
+                            {(label || date) && (
+                                <div className="mb-1">
+                                    <MetaChips />
+                                </div>
+                            )}
+                        </>
                     )
                 )}
                 <tw.Title>{frontmatter.title}</tw.Title>
