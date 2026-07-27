@@ -1,6 +1,6 @@
 import {
     Hr, H1, H2, Code, Strong, Pre, H3, A, Li, Ul, Ol, Em, Img,
-    Table, Thead, Tbody, Tr, Th, Td, H4, P, Span, ToggleText, Columns, Column,
+    Table, Thead, Tbody, Tr, Th, Td, H4, P, Span, ToggleText, Columns, Column, Blockquote,
 } from "@/components/mdx/mdx-components/components";
 import BarChart from "@/components/mdx/mdx-components/BarChart";
 import DataTable from "@/components/mdx/mdx-components/DataTable";
@@ -17,6 +17,7 @@ const components = {
     h1: H1, h2: H2, h3: H3, h4: H4, a: A, p: P, li: Li, ul: Ul, ol: Ol, hr: Hr, pre: Pre,
     code: Code, strong: Strong, em: Em, img: Img,
     table: Table, thead: Thead, tbody: Tbody, tr: Tr, th: Th, td: Td, span: Span,
+    blockquote: Blockquote,
     ToggleText, BarChart, DataTable, Columns, Column,
 };
 

@@ -184,6 +184,15 @@ export function Column({ children }: { children?: React.ReactNode }) {
     return <div className="min-w-0 flex-1">{children}</div>;
 }
 
+// 인용/근거 등 감싸는 콜아웃 박스 (코드블록처럼 은은한 박스)
+export function Blockquote({ children }: { children?: React.ReactNode }) {
+    return (
+        <blockquote className="my-3 rounded-lg border border-(--border) bg-(--hover-bg) px-4 py-3 text-[14px] leading-relaxed text-(--text-muted) [&>p]:my-0">
+            {children}
+        </blockquote>
+    );
+}
+
 export function Table({ children }: { children?: React.ReactNode }) {
     // 넓은 표는 페이지를 밀지 않고 자체 가로 스크롤 (모바일 오버플로우 방지)
     return (

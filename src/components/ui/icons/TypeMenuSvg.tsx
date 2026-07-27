@@ -22,6 +22,13 @@ export const LoopIcon = ({ color = "#000", width = "100%", height = "100%" }) =>
     </svg>
 );
 
+export const QuoteIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="5" width="2.5" height="14" rx="1.25" fill={color} />
+        <path d="M10 8h9M10 12h9M10 16h6" stroke={color} strokeWidth="2" strokeLinecap="round" />
+    </svg>
+);
+
 export const ColumnsIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
     <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="3" y="4" width="7.5" height="16" rx="1.5" stroke={color} strokeWidth="2" />

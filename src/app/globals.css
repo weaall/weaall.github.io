@@ -305,5 +305,5 @@
   color: var(--text-strong);
 }
 .post-content .post-table td:first-child {
-  background: #faf9f8;
+  background: #f4f3f1; /* 헤더 행(Th)과 동일 색 */
 }

@@ -156,6 +156,8 @@ export function blocksToMDX(
                 return `${indentation}${num}. ${contentWithColor}`;
             case "checkedList":
                 return `${indentation}- [${b.isChecked ? "x" : " "}] ${contentWithColor}`;
+            case "quote":
+                return `> ${contentWithColor}`;
             case "divider":
                 return "---";
             case "image": {

@@ -399,6 +399,7 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             case "toggleH1": return "토글 제목1";
             case "toggleH2": return "토글 제목2";
             case "toggleH3": return "토글 제목3";
+            case "quote": return "인용";
             case "p": default: return "텍스트";
         }
     };
@@ -774,6 +775,15 @@ const ContentEditableBlock: React.FC<ContentEditableBlockProps & { color?: strin
             return <ChartBlock id={id} orient="v" content={content} />;
         case "chart":
             return <ChartBlock id={id} content={content} />;
+        case "quote":
+            // 감싸는 콜아웃 박스 (포스트에서 blockquote 로 렌더)
+            return (
+                <div className="my-1 rounded-lg border border-(--border) bg-(--hover-bg) px-4 py-3">
+                    <tw.EditablePBlock {...commonProps} style={{ color: color }} />
+                    {renderEmojiModal()}
+                    {renderFormattingModal()}
+                </div>
+            );
         case "p":
         default:
             return (

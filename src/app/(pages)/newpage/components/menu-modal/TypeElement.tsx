@@ -9,6 +9,7 @@ import {
     H2BlockIcon,
     H3BlockIcon,
     NumberedListIcon,
+    QuoteIcon,
     TableIcon,
     TextBlockIcon,
 } from "@/components/ui/icons/TypeMenuSvg";
@@ -27,6 +28,7 @@ export const ELEMENTS: TypeMenuElement[] = [
     { label: "글머리 기호 목록", type: "ul", icon: <BulletedListIcon color="#5f5e5b" /> },
     { label: "번호 매기기 목록", type: "numberedList", icon: <NumberedListIcon color="#5f5e5b" /> },
     { label: "할 일 목록", type: "checkedList", icon: <CheckedListIcon color="#5f5e5b" /> },
+    { label: "인용", type: "quote", icon: <QuoteIcon color="#5f5e5b" /> },
     { label: "구분선", type: "divider", icon: <DividerIcon color="#5f5e5b" /> },
     { label: "토글 목록", type: "toggleText", icon: <TextBlockIcon color="#5f5e5b" /> },
     { label: "토글 제목1", type: "toggleH1", icon: <H1BlockIcon color="#5f5e5b" /> },
