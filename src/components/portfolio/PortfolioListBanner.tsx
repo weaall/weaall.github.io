@@ -14,16 +14,16 @@ export default function PortfolioListBanner() {
                                 <label className="text-base">의료기기 인허가 · GMP</label>
                             </div>
                             <div className="w-full flex justify-between">
-                                <label className="text-2xl font-semibold">임상허가·인허가·GMP를 위한 사이버보안 전문</label>
+                                <label className="text-2xl font-semibold">의료기기 사이버보안 시험성적서 &amp; 인프라 설계</label>
                             </div>
                             <button className="w-8 h-8 p-1.5 bg-[#222222] rounded-full ml-auto">
                                 <RightIcon color="#ffffff" />
                             </button>
                             <div className="w-full flex flex-col mt-auto">
-                                <label className="text-gray text-base font-bold">의료기기 임상시험 허가 · 품목 인허가</label>
-                                <p className="text-gray-500 text-base">사이버보안 요건을 시험성적서로 갈음해 인허가까지 대응합니다.</p>
+                                <label className="text-gray text-base font-bold">임상시험 허가 · 품목 인허가 대응</label>
+                                <p className="text-gray-500 text-base">사이버보안 요건을 시험성적서로 갈음해 대응합니다.</p>
                                 <hr className="my-4"></hr>
-                                <label className="text-gray text-base font-bold">디지털의료기기 GMP (별표3) 대응</label>
+                                <label className="text-gray text-base font-bold">디지털의료기기 GMP (별표3)</label>
                                 <hr className="my-4"></hr>
                                 <label className="text-gray text-base font-bold">KS X IEC 62443-4-2 시험성적서 작성</label>
                             </div>
