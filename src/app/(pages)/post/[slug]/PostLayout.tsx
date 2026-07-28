@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
 import { MDXContent } from "@/components/mdx/mdx-content/MDXContent";
@@ -21,7 +20,6 @@ interface MDXContentProps {
 export default function PostLayout({ postsData, content, frontmatter, slug }: MDXContentProps) {
     const [collapsed, setCollapsed] = useState(false);
     const showHeader = useHoverHeader();
-    const router = useRouter();
 
     // 기존 게시물 수정: 원문 mdx에서 에디터 데이터를 꺼내 로컬 문서로 만들고 에디터로 이동
     const editPost = async () => {
@@ -54,7 +52,7 @@ export default function PostLayout({ postsData, content, frontmatter, slug }: MD
                 updatedAt: Date.now(),
             });
             setActivePointer(id);
-            router.push("/newpage");
+            window.location.href = "/newpage";
         } catch {
             alert("수정 진입 중 오류가 발생했습니다.");
         }

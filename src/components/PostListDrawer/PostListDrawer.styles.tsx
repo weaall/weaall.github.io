@@ -1,6 +1,4 @@
 import tw from "tailwind-styled-components";
-import Link from "next/link";
-
 export const Container = tw.div`flex px-10 relative border-r border-(--border) tracking-tight`;
 export const SideContainer = tw.div`
   h-auto mr-8 w-72 w-[260px] bg-(--panel-bg) py-1.5 px-2 text-(--text-faint) flex flex-col gap-1
@@ -18,7 +16,7 @@ export const CategoryButton = tw.button`
 `;
 export const CategoryList = tw.ul``;
 export const CategoryItem = tw.li`mb-[1px]`;
-export const PostLink = tw(Link)<{ $active?: boolean }>`
+export const PostLink = tw.a<{ $active?: boolean }>`
   flex items-center max-w-[244px] px-2 py-5px rounded-md hover:bg-(--hover-bg) font-medium overflow-hidden text-(--text-faint)
   ${({ $active }) => ($active ? "bg-(--hover-bg) text-(--text-strong)" : "")}
 `;

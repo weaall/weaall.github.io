@@ -1,7 +1,5 @@
 "use client";
-
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { roboto } from "@/utils/font";
 import * as tw from "./PostListDrawer.styles";
 import { DocIcon, DotListIcon, HomeIcon, ListIcon, PlusIcon, PostIcon, ReduceIcon, RightIcon, SearchIcon } from "./SvgDrawer";
@@ -20,7 +18,6 @@ interface PostsProps {
 
 export default function PostListDrawer({ posts, collapsed, setCollapsed }: PostsProps) {
     const pathname = usePathname();
-    const router = useRouter();
 
     // 모바일 드로어 열림 상태 (데스크톱에서는 사용하지 않음)
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -61,11 +58,11 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
     // 문서 선택: 활성 포인터를 바꾸고 /newpage로 이동(이미 있으면 이벤트로 전환)
     const openDoc = (id: string) => {
         setActivePointer(id);
-        if (pathname !== "/newpage") router.push("/newpage");
+        if (pathname !== "/newpage") window.location.href = "/newpage";
     };
     const newDoc = () => {
         setActivePointer(crypto.randomUUID());
-        if (pathname !== "/newpage") router.push("/newpage");
+        if (pathname !== "/newpage") window.location.href = "/newpage";
     };
     const removeDoc = (id: string) => {
         deleteDoc(id);
@@ -145,12 +142,12 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                     </div>
                 </button>
 
-                <Link prefetch={false} href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+                <a href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5">
                     <img src="/assets/weaall-ui.png" alt="WeHub" className="h-6 w-6 object-contain" />
                     <span className={`${roboto.className} text-[1.05rem] font-semibold tracking-tight text-(--text-strong)`}>
                         WeHub
                     </span>
-                </Link>
+                </a>
             </header>
 
             {/* 모바일 드로어 백드롭 */}
@@ -187,7 +184,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                             {collapsed ? <RightIcon color="currentColor" width="20" height="20" /> : <ReduceIcon color="currentColor" width="20" height="20" />}
                         </tw.IconBtn>
                     </div>
-                    <tw.PostLink prefetch={false} href="/" $active={pathname === "/"}>
+                    <tw.PostLink href="/" $active={pathname === "/"}>
                         <tw.SvgWrap>
                             <HomeIcon color="currentColor" width="20" height="20" />
                         </tw.SvgWrap>
@@ -195,7 +192,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                             <tw.Label>홈</tw.Label>
                         </tw.LabelWrap>
                     </tw.PostLink>
-                    <tw.PostLink prefetch={false} href="/post">
+                    <tw.PostLink href="/post">
                         <tw.SvgWrap>
                             <PostIcon color="currentColor" width="20" height="20" />
                         </tw.SvgWrap>
@@ -203,7 +200,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                             <tw.Label>게시물</tw.Label>
                         </tw.LabelWrap>
                     </tw.PostLink>
-                    <tw.PostLink prefetch={false} href="/search" $active={pathname === "/search"}>
+                    <tw.PostLink href="/search" $active={pathname === "/search"}>
                         <tw.SvgWrap>
                             <SearchIcon color="currentColor" width="20" height="20" />
                         </tw.SvgWrap>
@@ -212,10 +209,10 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                         </tw.LabelWrap>
                     </tw.PostLink>
                     <tw.PostLink
-                        prefetch={false} href="/newpage"
+                        href="/newpage"
                         $active={pathname === "/newpage"}
                         className="m:hidden"
-                        onClick={(e) => {
+                        onClick={(e: React.MouseEvent) => {
                             // 항상 새 빈 문서로 시작 (마지막 초안 복원 방지)
                             e.preventDefault();
                             newDoc();
@@ -304,7 +301,7 @@ export default function PostListDrawer({ posts, collapsed, setCollapsed }: Posts
                                                 onMouseEnter={() => setHoveredSlug(post.slug)}
                                                 onMouseLeave={() => setHoveredSlug(null)}
                                             >
-                                                <tw.PostLink prefetch={false} href={post.postUrl} $active={isActive}>
+                                                <tw.PostLink href={post.postUrl} $active={isActive}>
                                                     <tw.SvgWrap>
                                                         {post.icon ? (
                                                             <PageIcon icon={post.icon} size={18} />

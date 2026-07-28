@@ -1,4 +1,3 @@
-import Link from "next/link";
 import tw from "tailwind-styled-components";
 
 export const Container = tw.div`w-full justify-center items-center py-16
@@ -6,7 +5,7 @@ export const Container = tw.div`w-full justify-center items-center py-16
 `;
 
 
-export const MainPostWrap = tw(Link)`
+export const MainPostWrap = tw.a`
 space-y-2 h-auto w-[600px] m:w-full items-center px-6 py-4 shadow-custom rounded-2xl group bg-(--panel-bg)
 hover:shadow-custom-hover hover:translate-y-[6px] transition-all duration-300`;
 export const MainTitle = tw.p`text-3xl font-semibold text-(--text) truncate after:content-['.'] after:text-transparent group-hover:after:text-red-500`;
@@ -14,7 +13,7 @@ export const PostContainer = tw.div`
   flex flex-wrap w-full h-full gap-4 p-10 m:p-2 items-center justify-center
 `;
 
-export const PostWrap = tw(Link)`
+export const PostWrap = tw.a`
 space-y-2 h-auto w-[340px] m:w-full items-center px-6 py-4 shadow-custom rounded-2xl group bg-(--panel-bg)
 hover:shadow-custom-hover hover:translate-y-[6px] transition-all duration-300`;
 

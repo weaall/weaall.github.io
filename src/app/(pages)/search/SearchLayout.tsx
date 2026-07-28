@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import PostListDrawer from "@/components/PostListDrawer/PostListDrawer";
 import HoverHeader from "@/components/ui/hover-header/HoverHeader";
 import { useHoverHeader } from "@/hooks/useHoverHeader";
@@ -40,7 +39,7 @@ function ResultCard({ post, q }: { post: PostData; q: string }) {
         return `${start > 0 ? "…" : ""}${post.body.slice(start, end)}${end < post.body.length ? "…" : ""}`;
     })();
     return (
-        <Link
+        <a
             href={post.postUrl}
             className="group flex flex-col gap-2 rounded-2xl border border-(--border) bg-(--panel-bg) p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
         >
@@ -71,7 +70,7 @@ function ResultCard({ post, q }: { post: PostData; q: string }) {
                     ))}
                 </div>
             )}
-        </Link>
+        </a>
     );
 }
 

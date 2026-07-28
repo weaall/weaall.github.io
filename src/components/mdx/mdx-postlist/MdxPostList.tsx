@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import * as tw from "./MdxPostList.styles";
 import { PostData } from "@/types/PostData";
 import { PageIcon, isImageIcon } from "@/app/(pages)/newpage/lib/pageIcon";
@@ -41,8 +40,8 @@ function Meta({ post, size = "sm" }: { post: PostData; size?: "sm" | "xs" }) {
 
 function Card({ post }: { post: PostData }) {
     return (
-        <Link
-            prefetch={false} href={post.postUrl}
+        <a
+            href={post.postUrl}
             className="group flex flex-col gap-2 rounded-2xl border border-(--border) bg-(--panel-bg) p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
         >
             <Meta post={post} size="xs" />
@@ -51,7 +50,7 @@ function Card({ post }: { post: PostData }) {
             <div className="mt-auto">
                 <Tags tags={post.tags} />
             </div>
-        </Link>
+        </a>
     );
 }
 
@@ -116,8 +115,8 @@ export default function MdxPostList({ latestPosts, collapsed }: PostListProps) {
 
                 {/* 최신글(히어로) — 전체 탭에서만 */}
                 {showHero && featured && (
-                    <Link
-                        prefetch={false} href={featured.postUrl}
+                    <a
+                        href={featured.postUrl}
                         className="group mb-12 block overflow-hidden rounded-2xl border border-(--border) bg-(--panel-bg) transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                     >
                         {hasCover(featured.imageUrl) && (
@@ -139,7 +138,7 @@ export default function MdxPostList({ latestPosts, collapsed }: PostListProps) {
                             )}
                             <Tags tags={featured.tags} />
                         </div>
-                    </Link>
+                    </a>
                 )}
 
                 {/* 카드 그리드 */}

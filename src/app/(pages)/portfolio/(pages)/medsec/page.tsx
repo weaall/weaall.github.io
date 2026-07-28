@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Metadata } from "next";
 import { getBaseMetadata } from "@/utils/seo";
 
@@ -163,7 +162,7 @@ export default function MedSecPortfolioPage() {
                 <h2 className="mb-8 text-center text-[2.625rem] font-bold tracking-[-0.09375rem] text-[#191918] m:text-[2rem]">관련 프로젝트</h2>
                 <div className="grid grid-cols-2 gap-6 m:grid-cols-1">
                     {CASES.map((c) => (
-                        <Link
+                        <a
                             key={c.href}
                             href={c.href}
                             className="group flex h-[26rem] flex-col overflow-hidden rounded-2xl border-2 border-transparent bg-[#f6f5f4] transition-colors duration-300 hover:border-[color:var(--c)] m:h-auto"
@@ -217,7 +216,7 @@ export default function MedSecPortfolioPage() {
                                     <img className="object-contain" style={{ width: c.logoW }} src={c.logo} alt={c.title} />
                                 </div>
                             </div>
-                        </Link>
+                        </a>
                     ))}
                 </div>
             </section>
