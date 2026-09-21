@@ -76,7 +76,9 @@ export default function Footer() {
                         <tw.Index href="/prac">WeHub</tw.Index>
                         <tw.Index href="/portfolio/provelite">PROVE Lite</tw.Index>
                         <tw.Index href="/portfolio/mindsnavi">Minds. NAVI</tw.Index>
-                        <tw.Index href="/shallow">Travelo</tw.Index>
+                        <tw.Index href="/portfolio/mnai">Minds. NAVI AI</tw.Index>
+                        <tw.Index href="/portfolio/cheeu">CHEEU. Forest N</tw.Index>
+                        <tw.Index href="/portfolio/medsec">의료기기 사이버보안</tw.Index>
                     </tw.ColWrap>
                     <tw.ColWrap>
                         <tw.TopLabel>자료</tw.TopLabel>

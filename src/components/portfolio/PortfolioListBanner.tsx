@@ -94,23 +94,63 @@ export default function PortfolioListBanner() {
                 </a>
             </div>
 
-            <div className="w-full flex gap-8 pt-6">
-                <div className="w-full rounded-2xl h-[18rem] shadow cursor-pointer flex bg-white m:flex-col m:h-auto">
-                    <div className="flex p-6 justify-between w-1/3 m:w-full">
+            <div className="w-full flex gap-6 pt-6 m:flex-col">
+                <a href="/portfolio/mnai" className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex flex-col bg-white overflow-hidden group">
+                    <div className="flex p-6 justify-between">
                         <div className="w-full flex flex-col gap-2">
-                            <div>
-                                <label className="text-base">포트폴리오3에 대한 설명</label>
-                            </div>
+                            <label className="text-base">클라우드형 AI 판정 SaMD · GitOps · WAF · IDS</label>
                             <div className="w-full flex justify-between">
-                                <label className="text-2xl font-bold">포트폴리오3</label>
+                                <label className={`text-2xl font-bold ${roboto.className}`}>Minds. NAVI AI</label>
                                 <button className="w-8 h-8 p-1.5 bg-[#222222] rounded-full">
                                     <RightIcon color="#ffffff" />
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div className="flex-1 rounded-r-2xl bg-[#78736f] m:rounded-r-none m:rounded-b-2xl m:h-48 m:w-full"></div>
-                </div>
+                    <div className="pl-8 pt-6 w-full flex-1 overflow-hidden bg-[#1d6f8f]">
+                        <div className="relative w-full h-full rounded-tl-xl border-2 border-[#ededeb] bg-white shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left overflow-hidden">
+                            <img
+                                className="absolute inset-0 w-full h-full object-cover opacity-60 blur-[1px] scale-105"
+                                src="/assets/portfolio/minds-navi/dashboard.png"
+                                alt=""
+                            />
+                            <div className="absolute inset-0 bg-white/40"></div>
+                            <img
+                                className="absolute left-1/2 top-1/2 w-[86%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain"
+                                src="/assets/portfolio/medsec/mindsnavi-logo.png"
+                                alt="Minds. NAVI AI"
+                            />
+                        </div>
+                    </div>
+                </a>
+                <a href="/portfolio/cheeu" className="w-full rounded-2xl h-[28rem] shadow cursor-pointer flex flex-col bg-white overflow-hidden group">
+                    <div className="flex p-6 justify-between">
+                        <div className="w-full flex flex-col gap-2">
+                            <label className="text-base">폐쇄망 설치형 VR 훈련 SaMD · 변경 허가</label>
+                            <div className="w-full flex justify-between">
+                                <label className={`text-2xl font-bold ${roboto.className}`}>CHEEU. Forest N</label>
+                                <button className="w-8 h-8 p-1.5 bg-[#222222] rounded-full">
+                                    <RightIcon color="#ffffff" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="pl-8 pt-6 w-full flex-1 overflow-hidden bg-[#2f7d46]">
+                        <div className="relative w-full h-full rounded-tl-xl border-2 border-[#ededeb] bg-white shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left overflow-hidden">
+                            <img
+                                className="absolute inset-0 w-full h-full object-cover opacity-70 blur-[1px] scale-105"
+                                src="/assets/portfolio/cheeu/architecture.png"
+                                alt=""
+                            />
+                            <div className="absolute inset-0 bg-white/40"></div>
+                            <img
+                                className="absolute left-1/2 top-1/2 w-[70%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain"
+                                src="/assets/portfolio/medsec/cheeu-logo.png"
+                                alt="CHEEU. Forest N"
+                            />
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     );

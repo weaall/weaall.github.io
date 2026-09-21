@@ -63,3 +63,57 @@ export const EtcIcon = ({ color = "#000", width = "100%", height = "100%" }) => 
     </svg>
     );
 
+/* ---------- 포트폴리오 공용 아이콘 (stroke 기반) ---------- */
+
+export const CloudIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M7 18.5h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 6.9 9.2 4.65 4.65 0 0 0 7 18.5Z"
+            stroke={color}
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+        <path d="M9 14.5h6M12 12v5" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+);
+
+export const ShieldIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 3 4.5 6v5.2c0 4.3 3.1 8.1 7.5 9.8 4.4-1.7 7.5-5.5 7.5-9.8V6L12 3Z" stroke={color} strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="m8.8 12 2.2 2.2 4.4-4.6" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);
+
+export const PipelineIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="5" cy="6" r="2.2" stroke={color} strokeWidth="1.6" />
+        <circle cx="5" cy="18" r="2.2" stroke={color} strokeWidth="1.6" />
+        <circle cx="19" cy="12" r="2.2" stroke={color} strokeWidth="1.6" />
+        <path d="M7.2 6h4.3a3 3 0 0 1 3 3v0a3 3 0 0 0 2.3 2.9M7.2 18h4.3a3 3 0 0 0 3-3v0a3 3 0 0 1 2.3-2.9" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+);
+
+export const AIIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="14" height="14" rx="3" stroke={color} strokeWidth="1.6" />
+        <path d="M9 2.5v2.5M15 2.5v2.5M9 19v2.5M15 19v2.5M2.5 9H5M2.5 15H5M19 9h2.5M19 15h2.5" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+        <path d="m9 15 1.6-6h.8L13 15M9.7 12.6h2.6M15 9v6" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);
+
+export const PackageIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" stroke={color} strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="M4 7l8 4 8-4M12 11v10M8 5l8 4" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);
+
+export const DatabaseIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="12" cy="6" rx="7" ry="3" stroke={color} strokeWidth="1.6" />
+        <path d="M5 6v12c0 1.66 3.13 3 7 3s7-1.34 7-3V6" stroke={color} strokeWidth="1.6" />
+        <path d="M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3" stroke={color} strokeWidth="1.6" />
+    </svg>
+);
+

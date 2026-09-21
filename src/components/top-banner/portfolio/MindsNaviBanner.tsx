@@ -66,10 +66,12 @@ export default function MindsNaviBanner() {
                         >
                             기업 바로가기
                         </a>
-                        <a className="px-6 py-3 bg-[#e6f4f1] text-[#1a8f7a] rounded-lg hover:bg-[#d7eee9] transition-colors cursor-pointer">
-                            서비스 자세히 살펴보기
+                        <a className="px-6 py-3 bg-[#e6f4f1] text-[#1a8f7a] rounded-lg hover:bg-[#d7eee9] transition-colors cursor-pointer" href="/portfolio/mnai">
+                            Minds. NAVI AI 보기
                         </a>
                     </tw.BtnWrap>
+                    <p className="w-fit text-[11px] font-normal tracking-tight text-gray-400 m:mx-auto m:text-center break-keep">
+                        식약처 의료기기 품목허가 · 2등급 심리 평가 소프트웨어 (2025.04) · Google Cloud 운영</p>
                 </tw.StartWrap>
 
                 <tw.EndWrap>
