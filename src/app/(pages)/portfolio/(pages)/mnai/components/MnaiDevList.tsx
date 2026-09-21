@@ -8,64 +8,6 @@ const C = "#1d6f8f";
 
 /* ---------------- 다이어그램 데이터 ---------------- */
 
-const edgeGroups = [
-    {
-        title: "사용자",
-        nodes: [{ label: "수검자 · 임상진 · 기관", sub: "브라우저", tone: "dark" as const }],
-    },
-    {
-        title: "경계",
-        boxed: true,
-        nodes: [
-            { label: "Load Balancer" },
-            { label: "Ingress", sub: "TLS · 요청 제한", tone: "soft" as const },
-            { label: "WAF", sub: "공격 패턴 차단", tone: "brand" as const },
-        ],
-    },
-    {
-        title: "Kubernetes 워크로드",
-        boxed: true,
-        grow: 1.6,
-        direction: "row" as const,
-        nodes: [
-            { label: "설문 웹", tone: "soft" as const },
-            { label: "대시보드", tone: "soft" as const },
-            { label: "API", tone: "brand" as const },
-            { label: "리포트", tone: "brand" as const },
-            { label: "AI 추론", tone: "brand" as const },
-        ],
-    },
-    {
-        title: "관리형 데이터",
-        nodes: [{ label: "DB" }, { label: "캐시" }, { label: "오브젝트 스토리지" }, { label: "키 관리(KMS)" }],
-    },
-];
-
-const obsGroups = [
-    {
-        title: "탐지",
-        nodes: [
-            { label: "런타임 IDS", sub: "이상 행위 탐지", tone: "brand" as const },
-            { label: "WAF 감사 로그" },
-        ],
-    },
-    {
-        title: "수집",
-        nodes: [{ label: "로그 수집" }, { label: "메트릭 · 경보 규칙" }],
-    },
-    {
-        title: "저장 · 시각화",
-        nodes: [{ label: "로그 저장소", sub: "14일 보관" }, { label: "대시보드", tone: "soft" as const }],
-    },
-    {
-        title: "경보 · 증적",
-        nodes: [
-            { label: "Slack 경보" },
-            { label: "정기 작업", sub: "로그 보관 · 부품 목록 · 백신", tone: "ghost" as const },
-        ],
-    },
-];
-
 const gitopsSteps = [
     { label: "코드 push" },
     { label: "빌드 · 테스트" },
@@ -155,17 +97,7 @@ export default function MnaiDevList() {
                     title="시스템 아키텍처"
                     description="Kubernetes 위에 방화벽과 침입 탐지, 관측성을 갖춘 구성"
                     onClick={() => scrollTo(systemRef)}
-                    preview={
-                        <ArchDiagram
-                            compact
-                            color={C}
-                            groups={[
-                                { nodes: [{ label: "WAF", tone: "brand" }] },
-                                { boxed: true, grow: 1.6, nodes: [{ label: "웹 · API · AI", tone: "soft" }, { label: "탐지 · 관측" }] },
-                                { nodes: [{ label: "DB · 캐시" }, { label: "스토리지" }] },
-                            ]}
-                        />
-                    }
+                    preview={<img className="w-full object-contain" src="/assets/portfolio/mnai/mnai_ncp_arch.png" alt="NCP 아키텍처" />}
                 />
                 <OverviewCard
                     icon={PipelineIcon}
@@ -236,11 +168,8 @@ export default function MnaiDevList() {
             <div ref={systemRef} className="pt-20">
                 <SectionTitle>시스템 아키텍처</SectionTitle>
                 <div className="flex flex-col gap-6">
-                    <DiagramPanel title="경계 보호 · Kubernetes 워크로드 · 관리형 데이터">
-                        <ArchDiagram color={C} groups={edgeGroups} />
-                    </DiagramPanel>
-                    <DiagramPanel title="관측성 · 침입 탐지 · 증적 자동화">
-                        <ArchDiagram color={C} groups={obsGroups} />
+                    <DiagramPanel title="네이버 클라우드 Kubernetes(NKS) 구성">
+                        <img className="w-full object-contain" src="/assets/portfolio/mnai/mnai_ncp_arch_origin.png" alt="Minds. NAVI AI NCP 아키텍처" />
                     </DiagramPanel>
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
                         <TaskCard index={1} color={C} title="경보 체계" bullets={["서비스 · 파드 상태 감시", "AI 모듈 무결성 · 오류 감시", "탐지와 배포 알림을 한 경로로"]} />
