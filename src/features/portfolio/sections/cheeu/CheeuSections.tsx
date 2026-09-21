@@ -2,37 +2,12 @@
 
 import { useRef } from "react";
 import { AdminLayoutIcon, DatabaseIcon, PackageIcon, PipelineIcon, ShieldIcon } from "@/components/ui/icons/PortfolioIcons";
-import { ArchDiagram, CheckList, DiagramPanel, FactGrid, LinkCard, OverviewCard, SectionTitle, StepFlow, TaskCard } from "@/features/portfolio/components";
+import { ArchDiagram, CheckList, DiagramPanel, FactGrid, OverviewCard, SectionTitle, StepFlow, TaskCard } from "@/features/portfolio/components";
 
 const C = "#2f7d46";
 
 /* ---------------- 다이어그램 데이터 ---------------- */
 
-const systemGroups = [
-    {
-        title: "훈련 기기",
-        nodes: [{ label: "VR 헤드셋", sub: "훈련 앱 · 기기 키 인증", tone: "dark" as const }],
-    },
-    {
-        title: "CheeuForest.exe · 컨테이너 스택",
-        boxed: true,
-        grow: 2.2,
-        direction: "row" as const,
-        nodes: [
-            { label: "nginx + React", sub: "TLS · 관리자 웹", tone: "soft" as const },
-            { label: "NestJS API", sub: "인증 · 암호화 · 감사로그", tone: "brand" as const },
-            { label: "PostgreSQL", sub: "루프백 바인딩" },
-            { label: "Redis", sub: "세션 · 잠금" },
-        ],
-    },
-    {
-        title: "로컬 저장",
-        nodes: [
-            { label: "DB · 백업", sub: "7세대" },
-            { label: "음성 · 전사문", sub: "암호화 저장" },
-        ],
-    },
-];
 
 const buildSteps = [
     { label: "소스 스냅샷" },
@@ -52,14 +27,6 @@ const updateSteps = [
     { label: "불일치 → 자동 롤백" },
 ];
 
-const dataItems = [
-    { t: "봉투 암호화", d: "디스크의 키가 DB의 키를, 그 키가 데이터를 암호화" },
-    { t: "개인정보 투명 암호화", d: "저장 시 자동 암호화, VR 기기로는 마스킹 전송" },
-    { t: "음성 · 전사문 보호", d: "녹음과 전사 텍스트 암호화, 인증된 재생만 허용" },
-    { t: "검증된 백업 7세대", d: "매 실행 시 덤프 생성 후 복원 가능 여부 확인" },
-    { t: "손상 감지 · 복구", d: "손상 시점을 보여주고 동의를 받은 뒤 복구" },
-    { t: "감사로그 이중화", d: "DB 기록 실패 시 파일로 폴백" },
-];
 
 const securityItems = [
     { t: "식별 · 인증 (IA)", d: "관리자 · 사용자 · 기기 인증, 실패 잠금" },
@@ -171,17 +138,14 @@ export function CheeuSections() {
             <div ref={systemRef} className="pt-20">
                 <SectionTitle>시스템 아키텍처</SectionTitle>
                 <div className="flex flex-col gap-6">
-                    <DiagramPanel title="폐쇄망 노트북 1대 · 설치형 컨테이너 스택">
-                        <ArchDiagram color={C} groups={systemGroups} />
+                    <DiagramPanel title="폐쇄망 노트북 1대 · 설치형 컨테이너 스택" desc="변경허가 제출용 구성요소 모듈표.">
+                        <img className="w-full object-contain" src="/assets/portfolio/cheeu/architecture.png" alt="CHEEU. Forest N 소프트웨어 시스템 구성" />
                     </DiagramPanel>
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
                         <TaskCard index={1} color={C} title="폐쇄망 런타임 구성" bullets={["설치 파일 안 이미지만 사용", "DB · 캐시는 외부 비노출", "기기별 비밀값 생성 후 잠금", "비밀값 없으면 기동 차단"]} />
                         <TaskCard index={2} color={C} title="폐쇄망에서의 TLS" bullets={["사설 인증서를 설치 시 등록", "IP가 바뀌면 실행 시 재발급", "VR 기기용 평문 경로는 최소화"]} />
                         <TaskCard index={3} color={C} title="런처가 매 실행마다 하는 일" bullets={["설정 · 이미지 해시 검증", "인증서 재발급 · 환경 점검", "백업 후 서비스 기동"]} />
                     </div>
-                    <DiagramPanel title="구성요소 모듈표" desc="변경허가 제출용 소프트웨어 시스템 구성.">
-                        <img className="w-full object-contain" src="/assets/portfolio/cheeu/architecture.png" alt="CHEEU. Forest N 소프트웨어 시스템 구성" />
-                    </DiagramPanel>
                 </div>
             </div>
 
@@ -239,7 +203,11 @@ export function CheeuSections() {
                             ]}
                         />
                     </DiagramPanel>
-                    <CheckList color={C} items={dataItems} />
+                    <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
+                        <TaskCard index={1} color={C} title="봉투 암호화" bullets={["디스크의 키가 DB의 키를 감싼다", "환자 정보는 저장 시 자동 암호화", "VR 기기로는 마스킹해서 보낸다"]} />
+                        <TaskCard index={2} color={C} title="검증된 백업" bullets={["매 실행 시 덤프 생성", "복원 가능 여부까지 확인", "7세대 보관"]} />
+                        <TaskCard index={3} color={C} title="손상 감지 · 복구" bullets={["손상 시점을 보여주고 동의 후 복구", "감사로그는 DB 실패 시 파일로 폴백"]} />
+                    </div>
                 </div>
             </div>
 
@@ -257,10 +225,6 @@ export function CheeuSections() {
                         ]}
                     />
                     <CheckList color={C} items={securityItems} />
-                    <div className="grid grid-cols-2 gap-6 m:grid-cols-1">
-                        <LinkCard color={C} href="/post/chiyu-forest-security" tag="시험성적서" title="치유포레스트 사이버보안 시험성적서" desc="35개 항목별 판정과 구현 요약." />
-                        <LinkCard color={C} href="/portfolio/medsec" tag="포트폴리오" title="의료기기 사이버보안 & 인프라 설계" desc="세 제품의 시험성적서와 인프라 설계를 한 곳에서." />
-                    </div>
                 </div>
             </div>
 

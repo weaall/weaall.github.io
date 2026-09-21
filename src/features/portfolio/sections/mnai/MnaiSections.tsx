@@ -11,7 +11,6 @@ import {
     FlowIcon,
     IconFlow,
     IconRow,
-    LinkCard,
     OverviewCard,
     SectionTitle,
     StepFlow,
@@ -293,10 +292,6 @@ export function MnaiSections() {
                         ]}
                     />
                     <CheckList color={C} items={securityItems} />
-                    <div className="grid grid-cols-2 gap-6 m:grid-cols-1">
-                        <LinkCard color={C} href="/post/mnai-security-test" tag="시험성적서" title="마인즈내비 AI 사이버보안 시험성적서" desc="35개 항목별 판정과 구현 요약." />
-                        <LinkCard color={C} href="/portfolio/medsec" tag="포트폴리오" title="의료기기 사이버보안 & 인프라 설계" desc="세 제품의 시험성적서와 인프라 설계를 한 곳에서." />
-                    </div>
                 </div>
             </div>
 
