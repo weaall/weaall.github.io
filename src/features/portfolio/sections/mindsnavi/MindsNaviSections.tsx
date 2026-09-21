@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { AdminLayoutIcon, AIIcon, CloudIcon, CodeIcon, LogicIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
+import { AdminLayoutIcon, CloudIcon, CodeIcon, LogicIcon, PipelineIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
 import { ArchDiagram, CheckList, DiagramPanel, OverviewCard, SectionTitle, StepFlow, TaskCard } from "@/features/portfolio/components";
 
 const C = "#1a8f7a";
@@ -81,11 +81,22 @@ const flowSteps = [
 
 const surveySteps = [{ label: "인증 선택" }, { label: "본인인증" }, { label: "약관 동의" }, { label: "차원별 설문" }, { label: "응답 확인" }, { label: "키트 신청" }, { label: "완료" }];
 
-const analysisItems = [
-    { t: "RandomForest 파이프라인", d: "결측 대치 후 트리 앙상블, 교차검증으로 성능 확인" },
-    { t: "SHAP 기여도", d: "지표별 기여도를 수치화해 판정 근거 확인" },
-    { t: "지표 축소 연구", d: "호르몬 6회 → 3회 재현율과 고위험 누락률 검증" },
-    { t: "운영 로직 검증", d: "실서비스 판정은 결정론적 규칙, 분석은 그 근거" },
+const deliverySteps = [
+    { label: "판정 완료" },
+    { label: "템플릿 렌더", sub: "한 · 영" },
+    { label: "PDF · 이미지 변환", sub: "전용 렌더러" },
+    { label: "저장" },
+    { label: "알림톡 발송", sub: "실패 시 문자" },
+    { label: "수검자 열람" },
+];
+
+const deliveryItems = [
+    { t: "전용 렌더러", d: "결과지 변환만 떼어내 API 서버 부하와 분리" },
+    { t: "한 · 영 결과지", d: "템플릿을 나누고 결과지 API에 언어 파라미터 추가" },
+    { t: "발송 자동화", d: "스케줄러가 알림톡을 보내고 실패하면 문자로 대체" },
+    { t: "검사기관 수신", d: "허용한 IP에서만 타액 분석 결과를 받도록 제한" },
+    { t: "파트너 연계", d: "외부 서비스로 결과를 전달하고 연계 이력을 남김" },
+    { t: "발송 이력", d: "누구에게 언제 무엇이 나갔는지 기록" },
 ];
 
 /* ---------------- 컴포넌트 ---------------- */
@@ -96,7 +107,7 @@ export function MindsNaviSections() {
     const flowRef = useRef<HTMLDivElement>(null);
     const surveyRef = useRef<HTMLDivElement>(null);
     const adminRef = useRef<HTMLDivElement>(null);
-    const analysisRef = useRef<HTMLDivElement>(null);
+    const deliveryRef = useRef<HTMLDivElement>(null);
 
     const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
@@ -166,22 +177,12 @@ export function MindsNaviSections() {
                     preview={<img className="w-full rounded-md object-cover object-top-left" src="/assets/portfolio/minds-navi/dashboard.png" alt="Minds. NAVI 관리자 대시보드" />}
                 />
                 <OverviewCard
-                    icon={AIIcon}
+                    icon={PipelineIcon}
                     color={C}
-                    title="데이터 분석"
-                    description="판정 지표의 기여도 분석과 호르몬 측정 축소 가능성 검증"
-                    onClick={() => scrollTo(analysisRef)}
-                    preview={
-                        <ArchDiagram
-                            compact
-                            color={C}
-                            groups={[
-                                { nodes: [{ label: "심리 척도" }, { label: "호르몬" }] },
-                                { nodes: [{ label: "RandomForest", tone: "brand" }] },
-                                { nodes: [{ label: "SHAP 기여도", tone: "soft" }] },
-                            ]}
-                        />
-                    }
+                    title="결과지 · 외부 연계"
+                    description="결과지를 만들어 보내고 검사기관·파트너와 데이터를 주고받는 구간"
+                    onClick={() => scrollTo(deliveryRef)}
+                    preview={<StepFlow compact color={C} steps={[{ label: "판정" }, { label: "결과지" }, { label: "발송" }, { label: "연계" }]} />}
                 />
             </div>
 
@@ -209,7 +210,12 @@ export function MindsNaviSections() {
                     </DiagramPanel>
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
                         <TaskCard index={1} color={C} title="3계층 B2B 권한 모델" bullets={["총판 → 대리점 → 병원 계층", "기능 × 역할 권한 매트릭스", "발주 · 계약 · 정산 분리", "App Router · FSD 재작성"]} />
-                        <TaskCard index={2} color={C} title="심리 · 호르몬 통합 판정" bullets={["성별 × 시점 × 연령 참조범위", "심리 · 타액 등급 → 종합 판정", "검사기관 결과는 허용 IP로 수신"]} />
+                        <TaskCard
+                            index={2}
+                            color={C}
+                            title="규칙 기반 통합 판정"
+                            bullets={["성별 × 시점 × 연령 참조범위", "심리 · 타액 등급 → 종합 판정", "같은 입력이면 같은 결과가 나오는 고정 규칙"]}
+                        />
                         <TaskCard index={3} color={C} title="세션 · 알림 실시간 처리" bullets={["중복 로그인 강제 종료", "로그인 이력 · 비밀번호 정책", "알림톡 발송, 실패 시 문자 대체"]} />
                     </div>
                 </div>
@@ -259,22 +265,14 @@ export function MindsNaviSections() {
                 </DiagramPanel>
             </div>
 
-            {/* 데이터 분석 */}
-            <div ref={analysisRef} className="pt-20">
-                <SectionTitle>데이터 분석</SectionTitle>
+            {/* 결과지 · 외부 연계 */}
+            <div ref={deliveryRef} className="pt-20">
+                <SectionTitle>결과지 · 외부 연계</SectionTitle>
                 <div className="flex flex-col gap-6">
-                    <DiagramPanel title="지표 기여도 분석 · 측정 축소 연구">
-                        <ArchDiagram
-                            color={C}
-                            groups={[
-                                { title: "입력", nodes: [{ label: "심리 척도", sub: "우울 · 애착 · 회복탄력성" }, { label: "타액 호르몬", sub: "Cortisol · DHEA" }] },
-                                { title: "모델", nodes: [{ label: "RandomForest", sub: "교차검증", tone: "brand" }] },
-                                { title: "설명", nodes: [{ label: "SHAP 기여도", sub: "지표별 비중", tone: "soft" }] },
-                                { title: "산출", nodes: [{ label: "등급 재현율" }, { label: "6 → 3회 축소 검증" }] },
-                            ]}
-                        />
+                    <DiagramPanel title="판정 결과를 결과지로 만들어 보내기">
+                        <StepFlow color={C} steps={deliverySteps} />
                     </DiagramPanel>
-                    <CheckList color={C} items={analysisItems} />
+                    <CheckList color={C} items={deliveryItems} />
                 </div>
             </div>
         </div>
