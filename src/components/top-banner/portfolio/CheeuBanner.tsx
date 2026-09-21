@@ -5,7 +5,7 @@ const C = "#2f7d46";
 
 export default function CheeuBanner() {
     return (
-        <div className="w-full h-auto flex flex-col m:flex-col-reverse">
+        <div className="w-full h-auto flex flex-col">
             <div className="w-full h-auto flex m:flex-col-reverse">
                 <tw.StartWrap className="m:items-center m:text-center">
                     <tw.Title className="hidden m:flex m:flex-col m:text-center">
@@ -16,14 +16,13 @@ export default function CheeuBanner() {
                         <span className="block whitespace-nowrap text-[4rem] tracking-[-0.28rem]">VR 정신건강 훈련</span>
                         <span className={`block tracking-[0.02em] ${roboto.className}`}>CHEEU. Forest N</span>
                     </tw.Title>
-                    <p className="text-[1.3rem] leading-tight tracking-tighter font-medium text-[#191918] m:text-[1rem] m:leading-normal break-keep">
-                        {"인터넷 없는 기관 노트북에 설치되는"}
+                    <p className="text-[1.25rem] leading-relaxed tracking-tighter font-medium text-[#191918] m:text-[1rem] m:leading-normal break-keep">
+                        {"폐쇄망 노트북에 설치되는 "}
+                        <span style={{ color: C }}>VR 심리치료 훈련</span>
+                        {" 의료기기"}
                         <br />
-                        <span style={{ color: C }}>VR 기반 우울·자살위험 심리치료 훈련</span>
-                        {" 소프트웨어 의료기기"}
-                        <br />
-                        {"설치·업데이트·백업/복구·보안을 자체 구현해 "}
-                        <span className="text-[#ec4e25]">의료기기 변경 허가</span>
+                        {"설치·업데이트·백업·보안을 자체 구현해 "}
+                        <span className="text-[#ec4e25]">변경 허가</span>
                     </p>
                     <tw.BtnWrap className="m:flex-wrap m:justify-center">
                         <a
@@ -38,23 +37,20 @@ export default function CheeuBanner() {
                         {/* 저장소 규칙: 내부 링크는 하드 내비게이션(<a>) 사용 */}
                         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                         <a className="px-6 py-3 bg-[#e8f3ea] rounded-lg hover:bg-[#d9ebdd] transition-colors cursor-pointer" style={{ color: C }} href="/post/chiyu-forest-security">
-                            사이버보안 시험성적서 보기
+                            시험성적서 보기
                         </a>
                     </tw.BtnWrap>
+                    <p className="max-w-full text-[11px] font-normal tracking-tight text-gray-400 m:text-center break-keep">
+                        폐쇄망 설치형 SaMD · KS X IEC 62443-4-2 · 2026.04 의료기기 변경 허가
+                    </p>
                 </tw.StartWrap>
 
                 <tw.EndWrap>
                     <div className="flex w-full justify-center items-center my-auto mx-auto">
-                        <img className="h-28 object-contain m:h-20" src="/assets/portfolio/medsec/cheeu-logo.png" alt="CHEEU. Forest N" />
+                        <img className="w-full max-w-[24rem] object-contain m:max-w-[15rem]" src="/assets/portfolio/medsec/cheeu-logo.png" alt="CHEEU. Forest N" />
                     </div>
-                    <div className="w-full h-[1px] m:hidden" style={{ background: C }} />
+                    <div className="w-full h-px m:hidden" style={{ background: C }} />
                 </tw.EndWrap>
-            </div>
-
-            <div className="flex flex-col w-full mb-4 mt-24 m:mt-12">
-                <p className="font-normal text-xs leading-4 mx-auto mb-4 tracking-[-0.0078125rem] text-gray-500 text-center break-keep">
-                    폐쇄망 범용 PC 설치형 SaMD · 식약처 「의료기기의 사이버보안 허가·심사 가이드라인」 · KS X IEC 62443-4-2 · 2026.04 의료기기 중대한 변경 허가
-                </p>
             </div>
         </div>
     );

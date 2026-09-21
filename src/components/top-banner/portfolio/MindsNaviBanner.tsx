@@ -36,8 +36,8 @@ const partners = [
 
 export default function MindsNaviBanner() {
     return (
-        <div className="w-full h-auto flex flex-col m:flex-col-reverse">
-            <div className="w-full h-auto flex flex-reverse m:flex-col-reverse">
+        <div className="w-full h-auto flex flex-col">
+            <div className="w-full h-auto flex m:flex-col-reverse">
                 <tw.StartWrap className="m:items-center m:text-center">
                     <tw.Title className="hidden m:flex m:flex-col m:text-center">
                         <span className="whitespace-nowrap text-[4rem] tracking-[-0.28rem] m:text-[2.5rem]">정신건강 분석평가</span>
@@ -47,15 +47,15 @@ export default function MindsNaviBanner() {
                         <span className="block whitespace-nowrap text-[4rem] tracking-[-0.28rem] m:text-[2.5rem]">정신건강 분석평가</span>
                         <span className={`block tracking-[0.08em] ${roboto.className}`}>Minds. NAVI</span>
                     </tw.Title>
-                    <p className="text-[1.3rem] leading-none tracking-tighter font-medium text-[#191918] m:text-[1rem] m:leading-normal">
+                    <p className="text-[1.25rem] leading-relaxed tracking-tighter font-medium text-[#191918] m:text-[1rem] m:leading-normal break-keep">
                         <span className="text-[#1a8f7a]">심리평가</span>
-                        {"를 통해 우울 상태와 정신건강상의 취약 및 보호요인을 확인"}
+                        {"로 우울 상태와 정신건강 취약·보호요인을 확인"}
                         <br />
-                        {"타액의 "}
-                        <span className="text-[#ec4e25]">Cortisol·DHEA 호르몬 분석</span>
-                        {"으로 스트레스 지수를 파악하여"}
+                        {"타액 "}
+                        <span className="text-[#ec4e25]">Cortisol·DHEA 분석</span>
+                        {"으로 스트레스 지수를 파악"}
                         <br />
-                        {"종합결과 및 솔루션을 제시하는 우울증 진단 보조 의료기기"}
+                        {"종합결과와 솔루션을 제시하는 우울증 진단 보조 의료기기"}
                     </p>
                     <tw.BtnWrap>
                         <a
@@ -70,8 +70,6 @@ export default function MindsNaviBanner() {
                             Minds. NAVI AI 보기
                         </a>
                     </tw.BtnWrap>
-                    <p className="w-fit text-[11px] font-normal tracking-tight text-gray-400 m:mx-auto m:text-center break-keep">
-                        식약처 의료기기 품목허가 · 2등급 심리 평가 소프트웨어 (2025.04) · Google Cloud 운영</p>
                 </tw.StartWrap>
 
                 <tw.EndWrap>

@@ -4,7 +4,7 @@ import * as tw from "../MainBanner.styles";
 
 export default function ProveLiteBanner() {
     return (
-        <div className="w-full h-auto flex flex-col m:flex-col-reverse">
+        <div className="w-full h-auto flex flex-col">
             <div className="w-full h-auto flex m:flex-col-reverse">
                 <tw.StartWrap>
                     <tw.Title className="hidden m:block">{"PROVE LITE 설문"}</tw.Title>

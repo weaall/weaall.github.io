@@ -52,8 +52,8 @@ export function OverviewCard({
                 <p className="text-[#191918] text-base break-keep">{description}</p>
             </div>
             <div className="pl-8 w-full h-1/2 overflow-hidden">
-                <div className="w-full h-full rounded-tl-xl border-2 border-[#ededeb] bg-white shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left overflow-hidden p-5 flex items-start">
-                    {preview}
+                <div className="w-full h-full rounded-tl-xl border-2 border-[#ededeb] bg-white shadow-lg transition-transform duration-300 group-hover:scale-110 origin-top-left overflow-hidden p-5 flex items-center justify-center">
+                    <div className="w-full">{preview}</div>
                 </div>
             </div>
         </div>
