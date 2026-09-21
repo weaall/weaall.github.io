@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "predeploy": "npm run build",
-        "deploy": "echo. > out/.nojekyll && gh-pages -d out --dotfiles",
+        "deploy": "node scripts/deploy-pages.mjs",
         "build": "next build",
         "dev": "next dev -p 3003",
         "start": "next start -p 3003",
