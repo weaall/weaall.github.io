@@ -17,12 +17,15 @@ export default function MnaiBanner() {
                         <span className={`block tracking-[0.06em] ${roboto.className}`}>Minds. NAVI AI</span>
                     </tw.Title>
                     <p className="text-[1.25rem] leading-relaxed tracking-tighter font-medium text-[#191918] m:text-[1rem] m:leading-normal break-keep">
-                        {"심리 설문과 "}
-                        <span style={{ color: C }}>타액 호르몬</span>
-                        {"을 AI 모델이 판정하고"}
+                        <span style={{ color: C }}>심리평가</span>
+                        {"와 타액 코르티솔 분석으로 우울·스트레스 상태를 확인"}
                         <br />
+                        <span style={{ color: C }}>AI 모델</span>
+                        {"이 판정하고 "}
                         <span className="text-[#ec4e25]">SHAP 기여도</span>
-                        {"로 근거를 설명하는 클라우드형 의료기기"}
+                        {"로 근거까지 설명하여"}
+                        <br />
+                        {"종합결과와 솔루션을 제시하는 클라우드형 소프트웨어 의료기기"}
                     </p>
                     <tw.BtnWrap className="m:flex-wrap m:justify-center">
                         <a
