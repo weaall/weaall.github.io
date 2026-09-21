@@ -2,9 +2,49 @@
 
 import { useRef } from "react";
 import { AIIcon, CloudIcon, CodeIcon, LogicIcon, PipelineIcon, ShieldIcon } from "@/components/ui/icons/PortfolioSvg";
-import { ArchDiagram, CheckList, DiagramPanel, FactGrid, LinkCard, OverviewCard, SectionTitle, StepFlow, TaskCard } from "@/components/portfolio/PortfolioKit";
+import { WafIcon } from "@/components/ui/icons/NcpSvg";
+import {
+    ArchDiagram,
+    CheckList,
+    DiagramPanel,
+    FactGrid,
+    FlowIcon,
+    IconFlow,
+    IconRow,
+    LinkCard,
+    OverviewCard,
+    SectionTitle,
+    StepFlow,
+    TaskCard,
+} from "@/components/portfolio/PortfolioKit";
 
 const C = "#1d6f8f";
+
+/* ---------------- 네이버 클라우드 아이콘 ---------------- */
+
+const ncp = (f: string) => `/assets/portfolio/mnai/ncp/${f}.png`;
+
+/** 요청이 지나는 방어 계층 — 자체 아키텍처 문서의 보안 구성 그대로 */
+const defenseLayers: FlowIcon[] = [
+    { src: ncp("users"), label: "사용자" },
+    { src: ncp("anti-ddos"), label: "Anti-DDoS", sub: "네트워크 공격 차단" },
+    { node: <WafIcon color="#222" />, label: "WAF", sub: "ModSecurity · OWASP CRS" },
+    { src: ncp("ids"), label: "IDS", sub: "Trivy 취약점 스캔" },
+    { src: ncp("ips"), label: "IPS", sub: "Falco 런타임 탐지" },
+    { src: ncp("kubernetes-service"), label: "Kubernetes", sub: "서비스 워크로드" },
+];
+
+/** 실제 사용 중인 네이버 클라우드 서비스 */
+const ncpServices: FlowIcon[] = [
+    { src: ncp("kubernetes-service"), label: "Kubernetes Service", sub: "워크로드 운영" },
+    { src: ncp("container-registry"), label: "Container Registry", sub: "이미지 다이제스트 고정" },
+    { src: ncp("load-balancer"), label: "Load Balancer", sub: "공인 진입점" },
+    { src: ncp("cloud-db"), label: "Cloud DB", sub: "MySQL · Redis" },
+    { src: ncp("object-storage"), label: "Object Storage", sub: "리포트 · 로그 · 증적" },
+    { src: ncp("kms"), label: "KMS", sub: "봉투 암호화 키" },
+    { src: ncp("anti-ddos"), label: "Anti-DDoS", sub: "경계 방어" },
+    { src: ncp("security-monitoring"), label: "Security Monitoring", sub: "이벤트 감시" },
+];
 
 /* ---------------- 다이어그램 데이터 ---------------- */
 
@@ -148,19 +188,7 @@ export default function MnaiDevList() {
                     title="보안 · GMP"
                     description="35개 항목 중 32개 적용, 인프라가 그대로 근거가 되는 구조"
                     onClick={() => scrollTo(securityRef)}
-                    preview={
-                        <div className="flex flex-wrap gap-1.5">
-                            {["IA", "UC", "SI", "DC", "TRE", "RA"].map((x) => (
-                                <span key={x} className="rounded-md px-2 py-1 text-[10px] font-semibold" style={{ background: `color-mix(in srgb, ${C} 12%, #fff)`, color: C }}>
-                                    {x}
-                                </span>
-                            ))}
-                            <span className="rounded-md px-2 py-1 text-[10px] font-semibold text-white" style={{ background: C }}>
-                                32 / 35 적용
-                            </span>
-                            <span className="rounded-md px-2 py-1 text-[10px] font-semibold bg-[#191918] text-white">GMP 별표3</span>
-                        </div>
-                    }
+                    preview={<IconFlow compact color={C} items={defenseLayers.slice(1, 5)} />}
                 />
             </div>
 
@@ -170,6 +198,9 @@ export default function MnaiDevList() {
                 <div className="flex flex-col gap-6">
                     <DiagramPanel title="네이버 클라우드 Kubernetes(NKS) 구성">
                         <img className="w-full object-contain" src="/assets/portfolio/mnai/mnai_ncp_arch_origin.png" alt="Minds. NAVI AI NCP 아키텍처" />
+                    </DiagramPanel>
+                    <DiagramPanel title="사용 중인 네이버 클라우드 서비스">
+                        <IconRow items={ncpServices} color={C} />
                     </DiagramPanel>
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
                         <TaskCard index={1} color={C} title="경보 체계" bullets={["서비스 · 파드 상태 감시", "AI 모듈 무결성 · 오류 감시", "탐지와 배포 알림을 한 경로로"]} />
@@ -249,6 +280,9 @@ export default function MnaiDevList() {
             <div ref={securityRef} className="pt-20">
                 <SectionTitle>보안 · GMP</SectionTitle>
                 <div className="flex flex-col gap-6">
+                    <DiagramPanel title="요청이 지나는 방어 계층" desc="네이버 클라우드 보안 서비스와 오픈소스 도구를 단계로 배치했다.">
+                        <IconFlow items={defenseLayers} color={C} />
+                    </DiagramPanel>
                     <FactGrid
                         color={C}
                         facts={[

@@ -65,6 +65,23 @@ export const NcpCloudSecurityWatcherIcon = ({ color = "#000", width = "100%", he
     </svg>
 );
 
+/**
+ * WAF — 네이버 클라우드 아이콘 세트에 PNG 가 없어(EMF 뿐) 같은 선 스타일로 그렸다.
+ * 벽돌 벽 + 방패로 웹 방화벽을 나타낸다.
+ */
+export const WafIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M12 2.6 4.6 5.4v6c0 4.5 3.1 8.5 7.4 9.6 4.3-1.1 7.4-5.1 7.4-9.6v-6L12 2.6Z"
+            stroke={color}
+            strokeWidth="1.7"
+            strokeLinejoin="round"
+        />
+        <path d="M4.8 9.4h14.4M5.4 13.6h13.2" stroke={color} strokeWidth="1.3" />
+        <path d="M9.3 6.2v3.2M14.7 6.2v3.2M7.2 9.4v4.2M12 9.4v4.2M16.8 9.4v4.2M9.6 13.6v4.5M14.4 13.6v4.5" stroke={color} strokeWidth="1.3" />
+    </svg>
+);
+
 /** SourcePipeline — 중앙 처리 노드와 연결된 단계 노드 */
 export const NcpSourcePipelineIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
     <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
