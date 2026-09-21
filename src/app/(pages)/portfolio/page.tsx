@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import PortfolioListBanner from "@/components/portfolio/PortfolioListBanner";
-import PortfolioBanner from "@/components/top-banner/PortfolioBanner";
+import { PortfolioListBanner } from "@/features/portfolio/components";
+import PortfolioBanner from "@/components/banner/PortfolioBanner";
 import { getBaseMetadata } from "@/utils/seo";
 
 export const metadata: Metadata = getBaseMetadata({

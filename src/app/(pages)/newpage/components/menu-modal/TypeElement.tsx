@@ -12,7 +12,7 @@ import {
     QuoteIcon,
     TableIcon,
     TextBlockIcon,
-} from "@/components/ui/icons/TypeMenuSvg";
+} from "@/components/ui/icons/EditorIcons";
 import { ReactNode } from "react";
 
 // 전환 메뉴 항목. divider:true 인 항목은 메뉴에서 구분선으로 렌더된다.

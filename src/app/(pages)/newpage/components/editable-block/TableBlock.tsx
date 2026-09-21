@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { TableData, cellBg, cellText } from "@/components/mdx/mdx-components/DataTable";
 import * as tm from "../menu-modal/TypeMenu.modal.styles";
 import { TEXT_COLORS } from "../menu-modal/TypeMenu.modal";
-import { RightIcon, FontIcon, ColorPainterIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
+import { RightIcon, FontIcon, ColorPainterIcon, TrashBinIcon } from "@/components/ui/icons/EditorIcons";
 
 // 글자색: 전환(태그) 모달과 동일한 팔레트/아이콘 사용
 const TEXT_OPTS: { c: string | null; label: string }[] = TEXT_COLORS.map((t) => ({ c: t.color, label: t.label }));

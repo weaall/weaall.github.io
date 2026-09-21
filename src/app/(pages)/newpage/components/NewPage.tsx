@@ -21,7 +21,7 @@ import CategoryPicker from "./category-picker/CategoryPicker";
 import DatePicker from "./date-picker/DatePicker";
 import { parseImageContent, serializeImageContent } from "../lib/imageContent";
 import { PageIcon, fileToWebp } from "../lib/pageIcon";
-import { FolderIcon, CalendarIcon, CoverImageIcon, SubtitleIcon, TagIcon, FaceIcon } from "@/components/ui/icons/MetaSvg";
+import { FolderIcon, CalendarIcon, CoverImageIcon, SubtitleIcon, TagIcon, FaceIcon } from "@/components/ui/icons/PostMetaIcons";
 import IconPicker from "./icon-picker/IconPicker";
 
 import { formatPostDate } from "@/utils/date";

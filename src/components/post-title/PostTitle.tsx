@@ -1,7 +1,7 @@
 import * as tw from "./PostTitle.styles";
 import { PostFrontmatter } from "@/types/PostData";
 import { PageIcon } from "@/app/(pages)/newpage/lib/pageIcon";
-import { FolderIcon, CalendarIcon } from "@/components/ui/icons/MetaSvg";
+import { FolderIcon, CalendarIcon } from "@/components/ui/icons/PostMetaIcons";
 
 export default function PostTitle({ frontmatter }: { frontmatter: PostFrontmatter }) {
     const hasCover = frontmatter.imageUrl && frontmatter.imageUrl !== "none";

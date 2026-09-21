@@ -1,5 +1,5 @@
-import MainBanner from "@/components/top-banner/MainBanner"
-import PortfolioListBanner from "@/components/portfolio/PortfolioListBanner"
+import MainBanner from "@/components/banner/MainBanner"
+import { PortfolioListBanner } from "@/features/portfolio/components";
 
 export default function Home() {
     return (

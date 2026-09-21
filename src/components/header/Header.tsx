@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 import * as tw from "./Header.styles";
-import { DownIcon, UpIcon } from "../ui/icons/CommonSvg";
+import { DownIcon, UpIcon } from "../ui/icons/CommonIcons";
 import { roboto } from "@/utils/font";
 import WeHubHoverMenu from "./WeHubHoverMenu";
 

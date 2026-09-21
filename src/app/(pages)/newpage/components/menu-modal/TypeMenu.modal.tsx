@@ -1,4 +1,4 @@
-import { ColorPainterIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@/components/ui/icons/TypeMenuSvg";
+import { ColorPainterIcon, FontIcon, LoopIcon, RightIcon, TrashBinIcon } from "@/components/ui/icons/EditorIcons";
 import * as tw from "./TypeMenu.modal.styles";
 import { useLayoutEffect, useRef, useState } from "react";
 import { TypeMenuElement } from "./TypeElement";

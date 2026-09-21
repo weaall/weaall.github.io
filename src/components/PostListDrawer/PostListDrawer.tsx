@@ -4,7 +4,7 @@ import { roboto } from "@/utils/font";
 import * as tw from "./PostListDrawer.styles";
 import { DocIcon, DotListIcon, HomeIcon, ListIcon, PlusIcon, PostIcon, ReduceIcon, RightIcon, SearchIcon } from "./SvgDrawer";
 import { useEffect, useRef, useState } from "react";
-import { AddDockIcon } from "../ui/icons/CommonSvg";
+import { AddDockIcon } from "../ui/icons/CommonIcons";
 import { PostData } from "@/types/PostData";
 import { LocalDocMeta, listDocs, deleteDoc, getDoc, getActivePointer, setActivePointer, subscribeDocsChanged } from "@/app/(pages)/newpage/lib/localDocs";
 import { exportDoc } from "@/app/(pages)/newpage/lib/exportMdx";
