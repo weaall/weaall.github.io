@@ -254,13 +254,9 @@ export default function MindsNaviDevList() {
             {/* 관리자 대시보드 */}
             <div ref={adminRef} className="pt-20">
                 <SectionTitle>관리자 대시보드</SectionTitle>
-                <div className="w-full bg-[#f6f5f4] rounded-2xl p-8 flex flex-col gap-6">
-                    <div className="flex flex-col gap-1">
-                        <h3 className="text-lg font-bold text-[#191918]">본사 · 총판 · 대리점 · 병원 콘솔</h3>
-                        <p className="text-[15px] text-gray-600 break-keep">운영 현황, 월별 정산, QR 관리, 결과지 조회와 검체 데이터 업로드.</p>
-                    </div>
-                    <img className="w-full rounded-xl border-2 border-[#ededeb] shadow-lg" src="/assets/portfolio/minds-navi/dashboard.png" alt="Minds. NAVI 운영 대시보드" />
-                </div>
+                <DiagramPanel title="본사 · 총판 · 대리점 · 병원 콘솔" desc="운영 현황, 월별 정산, QR 관리, 결과지 조회와 검체 데이터 업로드.">
+                    <img className="w-full object-contain" src="/assets/portfolio/minds-navi/dashboard.png" alt="Minds. NAVI 운영 대시보드" />
+                </DiagramPanel>
             </div>
 
             {/* 데이터 분석 */}

@@ -278,16 +278,32 @@ export function StepFlow({ steps, color, compact = false }: { steps: { label: st
 /*  화이트 패널 (다이어그램 감싸기)                                      */
 /* ------------------------------------------------------------------ */
 
-export function DiagramPanel({ title, children, className = "" }: { title?: ReactNode; children: ReactNode; className?: string }) {
+/**
+ * PROVE Lite 의 이미지 패널과 같은 처리를 쓴다.
+ * 흰 상자는 왼쪽만 카드 안쪽으로 띄우고(pl-8) 오른쪽·아래는 카드 벽에 붙인다.
+ * 그래서 좌상단만 둥글고(rounded-tl-xl) 나머지 모서리는 카드 라운딩에 잘린다.
+ */
+export function DiagramPanel({
+    title,
+    desc,
+    children,
+    className = "",
+}: {
+    title?: ReactNode;
+    desc?: ReactNode;
+    children: ReactNode;
+    className?: string;
+}) {
     return (
         <div className={`w-full bg-[#f6f5f4] rounded-2xl flex flex-col border-2 border-transparent overflow-hidden ${className}`}>
             {title && (
                 <div className="w-full flex flex-col p-8 pb-4">
                     <h3 className="text-lg font-bold text-[#191918] break-keep">{title}</h3>
+                    {desc && <p className="text-[15px] text-gray-600 break-keep mt-1">{desc}</p>}
                 </div>
             )}
-            <div className={`px-8 pb-8 w-full ${title ? "" : "pt-8"}`}>
-                <div className="w-full rounded-xl bg-white shadow-lg p-6 border-2 border-[#ededeb] m:p-4">{children}</div>
+            <div className={`w-full pl-8 ${title ? "" : "pt-8"}`}>
+                <div className="w-full rounded-tl-xl bg-white shadow-lg p-6 border-2 border-[#ededeb] m:p-4">{children}</div>
             </div>
         </div>
     );
@@ -324,7 +340,7 @@ export function CheckList({ items, color }: { items: { t: string; d: string }[];
     return (
         <ul className="grid grid-cols-2 gap-3 m:grid-cols-1">
             {items.map((it) => (
-                <li key={it.t} className="flex gap-3 rounded-xl bg-white border border-[#e5e3e0] p-4">
+                <li key={it.t} className="flex gap-3 rounded-2xl bg-[#f6f5f4] p-5">
                     <span className="mt-0.5 shrink-0 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: `color-mix(in srgb, ${color} 14%, #fff)` }}>
                         <svg width="11" height="11" viewBox="0 0 20 20" fill="none" aria-hidden>
                             <path d="M4 10.5l4 4 8-9" stroke={color} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />

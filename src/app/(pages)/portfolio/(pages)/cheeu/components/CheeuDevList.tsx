@@ -179,14 +179,9 @@ export default function CheeuDevList() {
                         <TaskCard index={2} color={C} title="폐쇄망에서의 TLS" bullets={["사설 인증서를 설치 시 등록", "IP가 바뀌면 실행 시 재발급", "VR 기기용 평문 경로는 최소화"]} />
                         <TaskCard index={3} color={C} title="런처가 매 실행마다 하는 일" bullets={["설정 · 이미지 해시 검증", "인증서 재발급 · 환경 점검", "백업 후 서비스 기동"]} />
                     </div>
-                    <div className="w-full bg-[#f6f5f4] rounded-2xl p-8 flex flex-col gap-4">
-                        <h3 className="text-lg font-bold text-[#191918]">구성요소 모듈표</h3>
-                        <img
-                            className="w-full max-w-[52rem] mx-auto rounded-xl border-2 border-[#ededeb] bg-white shadow-lg"
-                            src="/assets/portfolio/cheeu/architecture.png"
-                            alt="CHEEU. Forest N 소프트웨어 시스템 구성"
-                        />
-                    </div>
+                    <DiagramPanel title="구성요소 모듈표" desc="변경허가 제출용 소프트웨어 시스템 구성.">
+                        <img className="w-full object-contain" src="/assets/portfolio/cheeu/architecture.png" alt="CHEEU. Forest N 소프트웨어 시스템 구성" />
+                    </DiagramPanel>
                 </div>
             </div>
 
@@ -273,14 +268,10 @@ export default function CheeuDevList() {
             <div ref={adminRef} className="pt-20">
                 <SectionTitle>관리자 웹 · AI 노트</SectionTitle>
                 <div className="flex gap-6 m:flex-col">
-                    <div className="w-3/5 m:w-full bg-[#f6f5f4] rounded-2xl p-8 flex flex-col gap-4">
-                        <h3 className="text-lg font-bold text-[#191918]">환자 · 기기 · 훈련 관리</h3>
-                        <img className="w-full rounded-xl border-2 border-[#ededeb] shadow-lg" src="/assets/portfolio/cheeu/login.png" alt="CHEEU. Forest N 로그인" />
-                        <ul className="text-[#191918] text-base list-disc pl-5 space-y-1 break-keep">
-                            <li>기기 페어링과 훈련 세션 실시간 제어</li>
-                            <li>훈련 · 설문 결과 조회, 비식별 인쇄 리포트</li>
-                            <li>유휴 잠금 · 계정 · 로그 · 의료기기 표시</li>
-                        </ul>
+                    <div className="w-3/5 m:w-full">
+                        <DiagramPanel title="환자 · 기기 · 훈련 관리" desc="기기 페어링과 훈련 세션 실시간 제어, 결과 조회, 비식별 인쇄 리포트.">
+                            <img className="w-full object-contain" src="/assets/portfolio/cheeu/login.png" alt="CHEEU. Forest N 로그인" />
+                        </DiagramPanel>
                     </div>
                     <div className="w-2/5 m:w-full flex">
                         <TaskCard index={1} color={C} title="오프라인 음성 전사" className="w-full">
