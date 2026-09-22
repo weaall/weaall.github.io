@@ -23,14 +23,14 @@ const C = "#1d6f8f";
 
 const ncp = (f: string) => `/assets/portfolio/mnai/ncp/${f}.png`;
 
-/** 요청이 지나는 방어 계층 — 자체 아키텍처 문서의 보안 구성 그대로 */
+/** 요청이 지나는 방어 계층 — 내부 인프라 문서(2026-09) 구성 그대로 */
 const defenseLayers: FlowIcon[] = [
-    { src: ncp("users"), label: "사용자" },
-    { src: ncp("anti-ddos"), label: "Anti-DDoS", sub: "네트워크 공격 차단" },
-    { node: <WafIcon color="#222" />, label: "WAF", sub: "ModSecurity · OWASP CRS" },
-    { src: ncp("ids"), label: "IDS", sub: "Trivy 취약점 스캔" },
-    { src: ncp("ips"), label: "IPS", sub: "Falco 런타임 탐지" },
-    { src: ncp("kubernetes-service"), label: "Kubernetes", sub: "서비스 워크로드" },
+    { src: ncp("users"), label: "사용자", sub: "브라우저" },
+    { src: ncp("load-balancer"), label: "Load Balancer", sub: "L4 단일 진입점" },
+    { node: <WafIcon color="#222" />, label: "WAF", sub: "ModSecurity · 차단 모드" },
+    { src: ncp("kubernetes-service"), label: "프론트엔드", sub: "API는 외부 비노출" },
+    { src: ncp("ips"), label: "런타임 탐지", sub: "Falco IDS · IPS" },
+    { src: ncp("ids"), label: "악성코드 점검", sub: "Trivy · ClamAV" },
 ];
 
 /** 실제 사용 중인 네이버 클라우드 서비스 */
@@ -47,14 +47,19 @@ const ncpServices: FlowIcon[] = [
 
 /* ---------------- 다이어그램 데이터 ---------------- */
 
-const gitopsSteps = [
-    { label: "코드 push" },
-    { label: "빌드 · 테스트" },
-    { label: "이미지 다이제스트 고정" },
-    { label: "서명 커밋" },
+/** 자동 레인 — 이미지를 만들어 레지스트리에 올리는 데서 끝난다 */
+const ciSteps = [
+    { label: "코드 머지", sub: "prod 브랜치" },
+    { label: "이미지 빌드", sub: "GitHub Actions" },
+    { label: "레지스트리 적재", sub: "여기서 끝" },
+];
+
+/** 수동 레인 — 서명된 매니페스트만 클러스터를 바꾼다 */
+const deploySteps = [
+    { label: "다이제스트 교체", sub: "매니페스트 수정" },
+    { label: "GPG 서명", sub: "지정 PC에서만" },
     { label: "서명 검증", sub: "미서명 거부" },
-    { label: "자동 동기화" },
-    { label: "무중단 배포" },
+    { label: "롤링 교체", sub: "무중단 반영" },
 ];
 
 const appGroups = [
@@ -202,9 +207,24 @@ export function MnaiSections() {
                         <IconRow items={ncpServices} color={C} />
                     </DiagramPanel>
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
-                        <TaskCard index={1} color={C} title="경보 체계" bullets={["서비스 · 파드 상태 감시", "AI 모듈 무결성 · 오류 감시", "탐지와 배포 알림을 한 경로로"]} />
-                        <TaskCard index={2} color={C} title="GMP 증적 자동화" bullets={["주간 취약점 스캔과 부품 목록", "백신 · 배포 기록 정기 생성", "일일 로그 아카이브 보관"]} />
-                        <TaskCard index={3} color={C} title="개발 · 운영 동일 구성" bullets={["설정은 같고 클라우드만 다름", "인프라 구성요소도 같은 방식 관리"]} />
+                        <TaskCard
+                            index={1}
+                            color={C}
+                            title="지표로 감지, 로그로 추적"
+                            bullets={["응답 시간 · 에러율 · 자원 · 방화벽 차단 현황", "전 서비스 로그를 한곳에서 검색", "판정 모델 이상과 배포 실패를 같은 경로로 알림"]}
+                        />
+                        <TaskCard
+                            index={2}
+                            color={C}
+                            title="증적을 사람이 만들지 않는다"
+                            bullets={["부품 목록 · 배포 매니페스트 · 오류코드 사전", "악성코드 검사와 로그 장기 보관", "실제 시스템에서 모아 문서로 남긴다"]}
+                        />
+                        <TaskCard
+                            index={3}
+                            color={C}
+                            title="개발 · 운영 동일 구성"
+                            bullets={["앱 코드는 같고 환경별 분기가 없다", "클라우드와 보안 설정만 다르다", "운영에만 방화벽 차단 모드와 관리형 DB"]}
+                        />
                     </div>
                 </div>
             </div>
@@ -213,13 +233,37 @@ export function MnaiSections() {
             <div ref={gitopsRef} className="pt-20">
                 <SectionTitle>GitOps 배포</SectionTitle>
                 <div className="flex flex-col gap-6">
-                    <DiagramPanel title="서명된 설정과 고정된 이미지만 클러스터에 도달">
-                        <StepFlow color={C} steps={gitopsSteps} />
+                    <DiagramPanel title="배포는 두 레인으로 나뉜다" desc="CI는 이미지를 만들 뿐이고, 클러스터를 바꾸는 것은 서명된 매니페스트뿐이다.">
+                        <div className="flex flex-col gap-5">
+                            <div>
+                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-400">자동 · CI</p>
+                                <StepFlow color="#9c9994" steps={ciSteps} />
+                            </div>
+                            <div>
+                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-400">수동 · 서명 필요</p>
+                                <StepFlow color={C} steps={deploySteps} />
+                            </div>
+                        </div>
                     </DiagramPanel>
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
-                        <TaskCard index={1} color={C} title="커밋 서명 검증" bullets={["미서명 커밋은 동기화 거부", "의도적 오염 커밋으로 실증", "검증 실패 시 즉시 경보"]} />
-                        <TaskCard index={2} color={C} title="배포 · 이관 절차 문서화" bullets={["설계 · 개발 절차서 개정", "배포와 이관을 구분해 정의", "다이제스트 기록과 롤백 절차"]} />
-                        <TaskCard index={3} color={C} title="시크릿 · 키 관리" bullets={["배포 시 암호화된 키 주입", "복호화 전용 · 접근 IP 제한"]} />
+                        <TaskCard
+                            index={1}
+                            color={C}
+                            title="관문 1 · 커밋 서명"
+                            bullets={["신뢰 키로 서명한 커밋만 통과", "미서명 · 오염 커밋은 거부하고 알림", "웹에서 고친 커밋도 서명 불일치로 거부"]}
+                        />
+                        <TaskCard
+                            index={2}
+                            color={C}
+                            title="관문 2 · 이미지 다이제스트"
+                            bullets={["태그가 아닌 내용 해시로 고정", "내용이 다르면 내려받기 자체가 실패", "이미지 줄이 둘인 서비스도 함께 교체"]}
+                        />
+                        <TaskCard
+                            index={3}
+                            color={C}
+                            title="CI 초록불이 배포는 아니다"
+                            bullets={["재시작해도 고정된 다이제스트 그대로", "새 이미지는 올라와 있지만 아무도 지목 안 함", "파드의 이미지 ID로 판별"]}
+                        />
                     </div>
                 </div>
             </div>
@@ -232,7 +276,12 @@ export function MnaiSections() {
                         <ArchDiagram color={C} groups={appGroups} />
                     </DiagramPanel>
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
-                        <TaskCard index={1} color={C} title="암호화된 개인정보 검색" bullets={["이름 · 연락처 필드 암호화", "암호화 상태에서 부분 검색", "데이터 키는 키 관리 서비스로"]} />
+                        <TaskCard
+                            index={1}
+                            color={C}
+                            title="꺼낼 수 없는 키로 감싼 개인정보"
+                            bullets={["이름 · 연락처를 필드 단위로 암호화", "그 키를 상위 키가 감싸고, 상위 키는 밖으로 못 꺼낸다", "기동 때 한 번만 풀어 메모리에 두고 디스크에 남기지 않는다", "암호화 상태로도 이름을 찾도록 검색용 키를 따로 둔다"]}
+                        />
                         <TaskCard index={2} color={C} title="감사로그 기본 적용" bullets={["모든 라우트에 기본 기록", "권한 · 계정 변경 이력 조회", "응답 · 오류 규격 통일"]} />
                         <TaskCard index={3} color={C} title="호르몬 데이터 파이프라인" bullets={["채취 시점별 결과 누적 보관", "엑셀 일괄 업로드 지원", "최신 값으로 채점"]} />
                     </div>
