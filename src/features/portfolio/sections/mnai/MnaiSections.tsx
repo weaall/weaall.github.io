@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { AIIcon, CloudIcon, CodeIcon, LogicIcon, PipelineIcon, ShieldIcon } from "@/components/ui/icons/PortfolioIcons";
+import { AIIcon, CodeIcon, LogicIcon, PipelineIcon, ShieldIcon } from "@/components/ui/icons/PortfolioIcons";
 import { WafIcon } from "@/components/ui/icons/NcpIcons";
 import {
     ArchDiagram,
@@ -11,6 +11,7 @@ import {
     FlowIcon,
     IconFlow,
     IconRow,
+    MaskIcon,
     OverviewCard,
     SectionTitle,
     StepFlow,
@@ -22,6 +23,9 @@ const C = "#1d6f8f";
 /* ---------------- 네이버 클라우드 아이콘 ---------------- */
 
 const ncp = (f: string) => `/assets/portfolio/mnai/ncp/${f}.png`;
+
+/** 시스템 아키텍처 카드 아이콘 — 일반 클라우드 모양 대신 NKS 서비스 마크를 쓴다. */
+const NksMark = (props: { color?: string; width?: string; height?: string }) => <MaskIcon src={ncp("kubernetes-service")} {...props} />;
 
 /** 요청이 지나는 방어 계층 — 내부 인프라 문서(2026-09) 구성 그대로 */
 const defenseLayers: FlowIcon[] = [
@@ -136,7 +140,7 @@ export function MnaiSections() {
 
             <div className="w-full grid grid-cols-3 gap-6 pt-2 m:grid-cols-1">
                 <OverviewCard
-                    icon={CloudIcon}
+                    icon={NksMark}
                     color={C}
                     title="시스템 아키텍처"
                     description="Kubernetes 위에 방화벽과 침입 탐지, 관측성을 갖춘 구성"

@@ -14,6 +14,7 @@ export { FactGrid } from "./FactGrid";
 export { IconFlow, IconRow } from "./IconFlow";
 export type { FlowIcon } from "./IconFlow";
 export { LinkCard } from "./LinkCard";
+export { MaskIcon } from "./MaskIcon";
 export { OverviewCard } from "./OverviewCard";
 export { PortfolioListBanner } from "./PortfolioListBanner";
 export { SectionTitle } from "./SectionTitle";
