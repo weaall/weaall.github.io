@@ -10,26 +10,31 @@ export default function UserLayout() {
         <>
             <div className="flex justify-between items-center m:flex-col m:items-start m:gap-4">
                 <h2 className="text-[2.625rem] text-[#191918] text-left font-bold tracking-[-0.09375rem] m:text-[1.9rem]">사용자 웹 레이아웃</h2>
-                {/* 데스크톱: 개선 전/후 슬라이딩 토글 */}
+                {/* 데스크톱: 개선 전/후 슬라이딩 토글.
+                    두 버튼은 완전히 같은 크기·여백을 쓰고, 알약만 자기 너비만큼 옆으로 움직인다. */}
                 <div className="relative flex items-center rounded-full bg-gray-100 p-1.5 m:hidden">
-                    <div
-                        className={`absolute top-1/2 left-1.5 w-1/2 h-10 rounded-full shadow-md transition-all duration-500 ease-in-out transform -translate-y-1/2 ${isToggled ? 'translate-x-[5.5rem] bg-[#416bac]' : 'translate-x-0 bg-gray-500'
-                            } ${isToggled ? 'translate-x-[5.5rem] bg-[#416bac]' : 'translate-x-0 bg-[#4da38d]'}`}
-                    ></div>
-                    <button
-                        onClick={() => setIsToggled(false)}
-                        className={`relative flex justify-center pr-5 pl-7 text-base font-semibold rounded-full transition-colors duration-500 w-22 ${!isToggled ? 'text-white' : 'text-gray-500'
-                            }`}
-                    >
-                        개선 전
-                    </button>
-                    <button
-                        onClick={() => setIsToggled(true)}
-                        className={`relative flex justify-center pr-7 pl-5 py-2 text-base font-semibold rounded-full transition-colors duration-500 w-22 ${isToggled ? 'text-white' : 'text-gray-500'
-                            }`}
-                    >
-                        개선 후
-                    </button>
+                    <span
+                        aria-hidden
+                        className={`absolute left-1.5 top-1.5 bottom-1.5 w-[calc(50%-0.375rem)] rounded-full bg-[#416bac] shadow-md transition-transform duration-500 ease-in-out ${
+                            isToggled ? "translate-x-full" : "translate-x-0"
+                        }`}
+                    />
+                    {(["개선 전", "개선 후"] as const).map((label, i) => {
+                        const isAfter = i === 1;
+                        const active = isToggled === isAfter;
+                        return (
+                            <button
+                                key={label}
+                                onClick={() => setIsToggled(isAfter)}
+                                aria-pressed={active}
+                                className={`relative z-10 w-28 rounded-full py-2 text-center text-base font-semibold transition-colors duration-500 ${
+                                    active ? "text-white" : "text-gray-500"
+                                }`}
+                            >
+                                {label}
+                            </button>
+                        );
+                    })}
                 </div>
                 {/* 모바일: 단일 활성화 버튼 (탭하면 개선 전/후 전환) */}
                 <button
