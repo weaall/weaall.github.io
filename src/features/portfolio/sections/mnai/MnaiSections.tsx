@@ -50,18 +50,25 @@ const ncpServices: FlowIcon[] = [
     { src: ncp("security-monitoring"), label: "Security Monitoring", sub: "이벤트 감시" },
 ];
 
+/**
+ * 설문 화면 주소.
+ * 파일명을 그대로 두고 그림만 바꾸면 브라우저·CDN 이 옛 그림을 계속 준다.
+ * 이미지를 다시 만들 때마다 v 를 올린다.
+ */
+const shot = (n: string) => `/assets/portfolio/mnai/survey/${n}.png?v=2`;
+
 /** 실제 설문 앱 화면 — 진입부터 타액 채취 안내까지 흐름 순서 */
 const surveyShots = [
-    { src: "/assets/portfolio/mnai/survey/01.png", label: "시작 안내" },
-    { src: "/assets/portfolio/mnai/survey/02.png", label: "본인인증" },
-    { src: "/assets/portfolio/mnai/survey/03.png", label: "약관 동의" },
-    { src: "/assets/portfolio/mnai/survey/04.png", label: "의료기기 정보" },
-    { src: "/assets/portfolio/mnai/survey/05.png", label: "평가 인트로" },
-    { src: "/assets/portfolio/mnai/survey/06.png", label: "조작 안내" },
-    { src: "/assets/portfolio/mnai/survey/07.png", label: "문항 응답" },
-    { src: "/assets/portfolio/mnai/survey/08.png", label: "진행 현황" },
-    { src: "/assets/portfolio/mnai/survey/09.png", label: "이어서 진행" },
-    { src: "/assets/portfolio/mnai/survey/10.png", label: "완료 · 타액 채취" },
+    { src: shot("01"), label: "시작 안내" },
+    { src: shot("02"), label: "본인인증" },
+    { src: shot("03"), label: "약관 동의" },
+    { src: shot("04"), label: "의료기기 정보" },
+    { src: shot("05"), label: "평가 인트로" },
+    { src: shot("06"), label: "조작 안내" },
+    { src: shot("07"), label: "문항 응답" },
+    { src: shot("08"), label: "진행 현황" },
+    { src: shot("09"), label: "이어서 진행" },
+    { src: shot("10"), label: "완료 · 타액 채취" },
 ];
 
 /* ---------------- 다이어그램 데이터 ---------------- */
@@ -195,7 +202,7 @@ export function MnaiSections() {
                     title="사용자 레이아웃"
                     description="178문항을 끝까지 답하게 만드는 설문 화면"
                     onClick={() => scrollTo(userRef)}
-                    preview={<img className="w-full object-cover object-top" src="/assets/portfolio/mnai/survey/07.png" alt="설문 문항 화면" />}
+                    preview={<img className="w-full object-cover object-top" src={shot("07")} alt="설문 문항 화면" />}
                 />
                 <OverviewCard
                     icon={ShieldIcon}

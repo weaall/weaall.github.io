@@ -79,13 +79,16 @@ const flowSteps = [
     { label: "발송 · 연계" },
 ];
 
+/** 설문 화면 주소. 그림을 다시 만들 때마다 v 를 올려 캐시를 끊는다. */
+const shot = (n: string) => `/assets/portfolio/minds-navi/survey/${n}.png?v=2`;
+
 /** 실제 설문 앱 화면 — 본인인증부터 타액 채취 안내까지 */
 const surveyShots = [
-    { src: "/assets/portfolio/minds-navi/survey/01.png", label: "본인인증" },
-    { src: "/assets/portfolio/minds-navi/survey/02.png", label: "평가 항목 안내" },
-    { src: "/assets/portfolio/minds-navi/survey/03.png", label: "문항 응답" },
-    { src: "/assets/portfolio/minds-navi/survey/04.png", label: "제출 완료" },
-    { src: "/assets/portfolio/minds-navi/survey/05.png", label: "타액 채취 안내" },
+    { src: shot("01"), label: "본인인증" },
+    { src: shot("02"), label: "평가 항목 안내" },
+    { src: shot("03"), label: "문항 응답" },
+    { src: shot("04"), label: "제출 완료" },
+    { src: shot("05"), label: "타액 채취 안내" },
 ];
 
 const deliverySteps = [
