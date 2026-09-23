@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { AIIcon, CodeIcon, LogicIcon, PipelineIcon, ShieldIcon } from "@/components/ui/icons/PortfolioIcons";
+import { CodeIcon, LogicIcon, PipelineIcon, ShieldIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
 import { WafIcon } from "@/components/ui/icons/NcpIcons";
 import {
     ArchDiagram,
@@ -13,6 +13,7 @@ import {
     IconRow,
     MaskIcon,
     OverviewCard,
+    ScreenRow,
     SectionTitle,
     StepFlow,
     TaskCard,
@@ -47,6 +48,16 @@ const ncpServices: FlowIcon[] = [
     { src: ncp("kms"), label: "KMS", sub: "봉투 암호화 키" },
     { src: ncp("anti-ddos"), label: "Anti-DDoS", sub: "경계 방어" },
     { src: ncp("security-monitoring"), label: "Security Monitoring", sub: "이벤트 감시" },
+];
+
+/** 실제 설문 앱 화면 — 시작 안내부터 타액 채취까지 */
+const surveyShots = [
+    { src: "/assets/portfolio/mnai/survey/01.png", label: "시작 안내" },
+    { src: "/assets/portfolio/mnai/survey/02.png", label: "본인인증" },
+    { src: "/assets/portfolio/mnai/survey/03.png", label: "의료기기 정보" },
+    { src: "/assets/portfolio/mnai/survey/04.png", label: "문항 응답" },
+    { src: "/assets/portfolio/mnai/survey/05.png", label: "진행 현황" },
+    { src: "/assets/portfolio/mnai/survey/06.png", label: "완료 · 타액 채취" },
 ];
 
 /* ---------------- 다이어그램 데이터 ---------------- */
@@ -93,14 +104,6 @@ const appGroups = [
     },
 ];
 
-const aiSteps = [
-    { label: "설문 · 호르몬" },
-    { label: "채점" },
-    { label: "25개 지표" },
-    { label: "모델 추론" },
-    { label: "기여도 상위 15" },
-    { label: "결과지 표시" },
-];
 
 const flowSteps = [
     { label: "기관 코드 진입" },
@@ -128,7 +131,7 @@ export function MnaiSections() {
     const systemRef = useRef<HTMLDivElement>(null);
     const gitopsRef = useRef<HTMLDivElement>(null);
     const appRef = useRef<HTMLDivElement>(null);
-    const aiRef = useRef<HTMLDivElement>(null);
+    const userRef = useRef<HTMLDivElement>(null);
     const flowRef = useRef<HTMLDivElement>(null);
     const securityRef = useRef<HTMLDivElement>(null);
 
@@ -183,12 +186,12 @@ export function MnaiSections() {
                     preview={<StepFlow compact color={C} steps={[{ label: "빌드" }, { label: "고정" }, { label: "서명" }, { label: "검증" }, { label: "배포" }]} />}
                 />
                 <OverviewCard
-                    icon={AIIcon}
+                    icon={UserLayoutIcon}
                     color={C}
-                    title="AI 판정 모듈"
-                    description="25개 지표로 판정하고 기여도로 근거까지 제시"
-                    onClick={() => scrollTo(aiRef)}
-                    preview={<StepFlow compact color={C} steps={[{ label: "채점" }, { label: "지표" }, { label: "추론" }, { label: "기여도" }, { label: "결과지" }]} />}
+                    title="사용자 레이아웃"
+                    description="178문항을 끝까지 답하게 만드는 설문 화면"
+                    onClick={() => scrollTo(userRef)}
+                    preview={<img className="w-full object-cover object-top" src="/assets/portfolio/mnai/survey/04.png" alt="설문 문항 화면" />}
                 />
                 <OverviewCard
                     icon={ShieldIcon}
@@ -313,17 +316,30 @@ export function MnaiSections() {
                 </div>
             </div>
 
-            {/* AI 모듈 */}
-            <div ref={aiRef} className="pt-20">
-                <SectionTitle>AI 판정 모듈</SectionTitle>
-                <div className="flex flex-col gap-6">
-                    <DiagramPanel title="채점 → 지표 → 추론 → 설명">
-                        <StepFlow color={C} steps={aiSteps} />
-                    </DiagramPanel>
+            {/* 사용자 레이아웃 */}
+            <div ref={userRef} className="pt-20">
+                <SectionTitle>사용자 레이아웃</SectionTitle>
+                <div className="flex flex-col gap-10">
+                    <ScreenRow shots={surveyShots} />
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
-                        <TaskCard index={1} color={C} title="모델 공급 계약" bullets={["모델과 서버 저장소 분리", "입출력 명세 문서화", "버전과 해시만 서버에 기록"]} />
-                        <TaskCard index={2} color={C} title="자가 치유 기동" bullets={["해시 불일치면 재다운로드", "샘플 검사 실패 시 트래픽 차단", "모델 상태를 지표로 노출"]} />
-                        <TaskCard index={3} color={C} title="장애 격리" bullets={["응답 지연 시 결과지에 표기", "대시보드에 상태 안내", "어떤 입력에도 중단되지 않음"]} />
+                        <TaskCard
+                            index={1}
+                            color={C}
+                            title="178문항을 끝까지"
+                            bullets={["응답은 실시간으로 저장된다", "중단해도 이어서 진행할 수 있다", "영역별로 몇 문항 남았는지 보여준다"]}
+                        />
+                        <TaskCard
+                            index={2}
+                            color={C}
+                            title="화면에 있는 의료기기 표시"
+                            bullets={["허가번호 · 표준코드 · 제조자 · 사용목적", "사용자 매뉴얼을 화면에서 내려받기", "전자문서로 제공하고 필요하면 종이로도"]}
+                        />
+                        <TaskCard
+                            index={3}
+                            color={C}
+                            title="응답 부담 줄이기"
+                            bullets={["처음 들어오면 조작 방법을 짚어준다", "보기를 고르면 다음 문항으로 넘어간다", "언제든 이전 답을 고칠 수 있다"]}
+                        />
                     </div>
                 </div>
             </div>
