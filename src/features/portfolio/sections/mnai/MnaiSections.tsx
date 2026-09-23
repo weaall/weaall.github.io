@@ -148,14 +148,6 @@ export function MnaiSections() {
                     preview={<img className="w-full object-contain" src="/assets/portfolio/mnai/mnai_ncp_arch.png" alt="NCP 아키텍처" />}
                 />
                 <OverviewCard
-                    icon={PipelineIcon}
-                    color={C}
-                    title="GitOps 배포"
-                    description="서명된 설정과 고정된 이미지만 클러스터에 반영"
-                    onClick={() => scrollTo(gitopsRef)}
-                    preview={<StepFlow compact color={C} steps={[{ label: "빌드" }, { label: "고정" }, { label: "서명" }, { label: "검증" }, { label: "배포" }]} />}
-                />
-                <OverviewCard
                     icon={CodeIcon}
                     color={C}
                     title="어플리케이션 아키텍처"
@@ -175,20 +167,28 @@ export function MnaiSections() {
                     }
                 />
                 <OverviewCard
-                    icon={AIIcon}
-                    color={C}
-                    title="AI 판정 모듈"
-                    description="25개 지표로 판정하고 기여도로 근거까지 제시"
-                    onClick={() => scrollTo(aiRef)}
-                    preview={<StepFlow compact color={C} steps={[{ label: "채점" }, { label: "지표" }, { label: "추론" }, { label: "기여도" }, { label: "결과지" }]} />}
-                />
-                <OverviewCard
                     icon={LogicIcon}
                     color={C}
                     title="서비스 플로우"
                     description="기관 진입부터 설문, 판정, 결과지 조회까지 한 흐름"
                     onClick={() => scrollTo(flowRef)}
                     preview={<StepFlow compact color={C} steps={[{ label: "진입" }, { label: "설문" }, { label: "호르몬" }, { label: "판정" }, { label: "결과지" }]} />}
+                />
+                <OverviewCard
+                    icon={PipelineIcon}
+                    color={C}
+                    title="GitOps 배포"
+                    description="서명된 설정과 고정된 이미지만 클러스터에 반영"
+                    onClick={() => scrollTo(gitopsRef)}
+                    preview={<StepFlow compact color={C} steps={[{ label: "빌드" }, { label: "고정" }, { label: "서명" }, { label: "검증" }, { label: "배포" }]} />}
+                />
+                <OverviewCard
+                    icon={AIIcon}
+                    color={C}
+                    title="AI 판정 모듈"
+                    description="25개 지표로 판정하고 기여도로 근거까지 제시"
+                    onClick={() => scrollTo(aiRef)}
+                    preview={<StepFlow compact color={C} steps={[{ label: "채점" }, { label: "지표" }, { label: "추론" }, { label: "기여도" }, { label: "결과지" }]} />}
                 />
                 <OverviewCard
                     icon={ShieldIcon}
@@ -233,6 +233,47 @@ export function MnaiSections() {
                 </div>
             </div>
 
+            {/* 어플리케이션 아키텍처 */}
+            <div ref={appRef} className="pt-20">
+                <SectionTitle>어플리케이션 아키텍처</SectionTitle>
+                <div className="flex flex-col gap-6">
+                    <DiagramPanel title="다섯 서비스 · 역할 분리">
+                        <ArchDiagram color={C} groups={appGroups} />
+                    </DiagramPanel>
+                    <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
+                        <TaskCard
+                            index={1}
+                            color={C}
+                            title="꺼낼 수 없는 키로 감싼 개인정보"
+                            bullets={["이름 · 연락처를 필드 단위로 암호화", "그 키를 상위 키가 감싸고, 상위 키는 밖으로 못 꺼낸다", "기동 때 한 번만 풀어 메모리에 두고 디스크에 남기지 않는다", "암호화 상태로도 이름을 찾도록 검색용 키를 따로 둔다"]}
+                        />
+                        <TaskCard index={2} color={C} title="감사로그 기본 적용" bullets={["모든 라우트에 기본 기록", "권한 · 계정 변경 이력 조회", "응답 · 오류 규격 통일"]} />
+                        <TaskCard index={3} color={C} title="호르몬 데이터 파이프라인" bullets={["채취 시점별 결과 누적 보관", "엑셀 일괄 업로드 지원", "최신 값으로 채점"]} />
+                    </div>
+                </div>
+            </div>
+
+            {/* 서비스 플로우 */}
+            <div ref={flowRef} className="pt-20">
+                <SectionTitle>서비스 플로우</SectionTitle>
+                <div className="flex gap-6 m:flex-col">
+                    <div className="w-3/4 m:w-full">
+                        <DiagramPanel title="기관 진입부터 결과지 조회까지">
+                            <StepFlow color={C} steps={flowSteps} />
+                        </DiagramPanel>
+                    </div>
+                    <div className="w-1/4 m:w-full bg-[#f6f5f4] rounded-2xl p-8 flex flex-col gap-3">
+                        <h3 className="text-lg font-bold text-[#191918] leading-tight">역할별 콘솔</h3>
+                        <ul className="text-[#191918] text-base list-disc pl-5 space-y-1 break-keep">
+                            <li>관리자: 기관 · 정산 · 감사로그</li>
+                            <li>임상진 · 기관: 수검자와 결과</li>
+                            <li>조회 · 다운로드 권한 분리</li>
+                            <li>QR로 기관 진입 링크 발급</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             {/* GitOps */}
             <div ref={gitopsRef} className="pt-20">
                 <SectionTitle>GitOps 배포</SectionTitle>
@@ -272,26 +313,6 @@ export function MnaiSections() {
                 </div>
             </div>
 
-            {/* 어플리케이션 아키텍처 */}
-            <div ref={appRef} className="pt-20">
-                <SectionTitle>어플리케이션 아키텍처</SectionTitle>
-                <div className="flex flex-col gap-6">
-                    <DiagramPanel title="다섯 서비스 · 역할 분리">
-                        <ArchDiagram color={C} groups={appGroups} />
-                    </DiagramPanel>
-                    <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
-                        <TaskCard
-                            index={1}
-                            color={C}
-                            title="꺼낼 수 없는 키로 감싼 개인정보"
-                            bullets={["이름 · 연락처를 필드 단위로 암호화", "그 키를 상위 키가 감싸고, 상위 키는 밖으로 못 꺼낸다", "기동 때 한 번만 풀어 메모리에 두고 디스크에 남기지 않는다", "암호화 상태로도 이름을 찾도록 검색용 키를 따로 둔다"]}
-                        />
-                        <TaskCard index={2} color={C} title="감사로그 기본 적용" bullets={["모든 라우트에 기본 기록", "권한 · 계정 변경 이력 조회", "응답 · 오류 규격 통일"]} />
-                        <TaskCard index={3} color={C} title="호르몬 데이터 파이프라인" bullets={["채취 시점별 결과 누적 보관", "엑셀 일괄 업로드 지원", "최신 값으로 채점"]} />
-                    </div>
-                </div>
-            </div>
-
             {/* AI 모듈 */}
             <div ref={aiRef} className="pt-20">
                 <SectionTitle>AI 판정 모듈</SectionTitle>
@@ -303,27 +324,6 @@ export function MnaiSections() {
                         <TaskCard index={1} color={C} title="모델 공급 계약" bullets={["모델과 서버 저장소 분리", "입출력 명세 문서화", "버전과 해시만 서버에 기록"]} />
                         <TaskCard index={2} color={C} title="자가 치유 기동" bullets={["해시 불일치면 재다운로드", "샘플 검사 실패 시 트래픽 차단", "모델 상태를 지표로 노출"]} />
                         <TaskCard index={3} color={C} title="장애 격리" bullets={["응답 지연 시 결과지에 표기", "대시보드에 상태 안내", "어떤 입력에도 중단되지 않음"]} />
-                    </div>
-                </div>
-            </div>
-
-            {/* 서비스 플로우 */}
-            <div ref={flowRef} className="pt-20">
-                <SectionTitle>서비스 플로우</SectionTitle>
-                <div className="flex gap-6 m:flex-col">
-                    <div className="w-3/4 m:w-full">
-                        <DiagramPanel title="기관 진입부터 결과지 조회까지">
-                            <StepFlow color={C} steps={flowSteps} />
-                        </DiagramPanel>
-                    </div>
-                    <div className="w-1/4 m:w-full bg-[#f6f5f4] rounded-2xl p-8 flex flex-col gap-3">
-                        <h3 className="text-lg font-bold text-[#191918] leading-tight">역할별 콘솔</h3>
-                        <ul className="text-[#191918] text-base list-disc pl-5 space-y-1 break-keep">
-                            <li>관리자: 기관 · 정산 · 감사로그</li>
-                            <li>임상진 · 기관: 수검자와 결과</li>
-                            <li>조회 · 다운로드 권한 분리</li>
-                            <li>QR로 기관 진입 링크 발급</li>
-                        </ul>
                     </div>
                 </div>
             </div>
