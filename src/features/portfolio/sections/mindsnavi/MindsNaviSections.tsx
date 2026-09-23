@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { AdminLayoutIcon, CloudIcon, CodeIcon, LogicIcon, PipelineIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
-import { ArchDiagram, CheckList, DiagramPanel, OverviewCard, SectionTitle, StepFlow, TaskCard } from "@/features/portfolio/components";
+import { ArchDiagram, CheckList, DiagramPanel, OverviewCard, ScreenRow, SectionTitle, StepFlow, TaskCard } from "@/features/portfolio/components";
 
 const C = "#1a8f7a";
 
@@ -79,7 +79,14 @@ const flowSteps = [
     { label: "발송 · 연계" },
 ];
 
-const surveySteps = [{ label: "인증 선택" }, { label: "본인인증" }, { label: "약관 동의" }, { label: "차원별 설문" }, { label: "응답 확인" }, { label: "키트 신청" }, { label: "완료" }];
+/** 실제 설문 앱 화면 — 본인인증부터 타액 채취 안내까지 */
+const surveyShots = [
+    { src: "/assets/portfolio/minds-navi/survey/01.png", label: "본인인증" },
+    { src: "/assets/portfolio/minds-navi/survey/02.png", label: "평가 항목 안내" },
+    { src: "/assets/portfolio/minds-navi/survey/03.png", label: "문항 응답" },
+    { src: "/assets/portfolio/minds-navi/survey/04.png", label: "제출 완료" },
+    { src: "/assets/portfolio/minds-navi/survey/05.png", label: "타액 채취 안내" },
+];
 
 const deliverySteps = [
     { label: "판정 완료" },
@@ -245,10 +252,8 @@ export function MindsNaviSections() {
             {/* 사용자 설문 앱 */}
             <div ref={surveyRef} className="pt-20">
                 <SectionTitle>사용자 설문 앱</SectionTitle>
-                <div className="flex flex-col gap-6">
-                    <DiagramPanel title="토큰 링크로 진입하는 설문 흐름">
-                        <StepFlow color={C} steps={surveySteps} />
-                    </DiagramPanel>
+                <div className="flex flex-col gap-10">
+                    <ScreenRow shots={surveyShots} />
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
                         <TaskCard index={1} color={C} title="인증 경로 이원화" bullets={["문자 인증 · 본인인증 선택", "진입 경로별 가드 분리"]} />
                         <TaskCard index={2} color={C} title="한 · 영 설문" bullets={["문항 · 안내 다국어", "영문 결과지와 연결"]} />
