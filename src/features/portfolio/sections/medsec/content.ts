@@ -6,8 +6,8 @@
 /** 담당 영역 카드 */
 export const DUTIES = [
     {
-        t: "시험성적서 · 규제 대응",
-        d: "KS X IEC 62443-4-2 시험성적서 작성, 식약처 가이드라인 준거, ISO 14971 위험관리",
+        t: "시험성적서 · DGMP 문서",
+        d: "KS X IEC 62443-4-2 시험성적서, 디지털의료기기 GMP 별표 3·4 문서 작성, ISO 14971 위험관리",
     },
     {
         t: "클라우드 인프라",
@@ -67,8 +67,8 @@ export const CASES = [
         title: "마인즈내비 AI",
         desc: "CSAP 네이버 클라우드 위 인프라·GitOps·관측성이 그대로 보안 요구사항의 근거가 되는 클라우드형 SaMD.",
         applied: "35개 중 32개 적용",
-        status: "GMP 임상시험, 인허가 진행중",
-        done: false,
+        status: "디지털의료기기 품목허가",
+        done: true,
         mark: "/assets/portfolio/medsec/mnai-mark.png",
         logo: "/assets/portfolio/medsec/mindsnavi-logo.png",
         logoW: "74%",

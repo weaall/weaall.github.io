@@ -44,7 +44,7 @@ export function MnaiBanner() {
                         </a>
                     </tw.BtnWrap>
                     <p className="max-w-full text-[11px] font-normal tracking-tight text-gray-400 m:text-center break-keep">
-                        클라우드형 SaMD · 네이버 클라우드 NKS · 디지털의료기기 GMP(별표3) · 인허가 진행중
+                        클라우드형 SaMD · 네이버 클라우드 NKS · 디지털의료기기 품목허가 D 제허 26-6호 · DGMP 별표 3·4
                     </p>
                 </tw.StartWrap>
 

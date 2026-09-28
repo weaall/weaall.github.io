@@ -23,7 +23,7 @@ export function PortfolioListBanner() {
                                 <label className="text-gray text-base font-bold">임상시험 허가 · 품목 인허가 대응</label>
                                 <p className="text-gray-500 text-base">사이버보안 요건을 자체 시험성적서로 충족해 대응합니다.</p>
                                 <hr className="my-4"></hr>
-                                <label className="text-gray text-base font-bold">디지털의료기기 GMP (별표3)</label>
+                                <label className="text-gray text-base font-bold">디지털의료기기 GMP 별표 3·4 문서 작성</label>
                                 <hr className="my-4"></hr>
                                 <label className="text-gray text-base font-bold">KS X IEC 62443-4-2 시험성적서 작성</label>
                             </div>

@@ -1,16 +1,14 @@
 "use client";
 
 import { useRef } from "react";
-import { CodeIcon, PipelineIcon, ShieldIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
-import { WafIcon } from "@/components/ui/icons/NcpIcons";
+import { CodeIcon, LicenseIcon, PipelineIcon, ShieldIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
 import {
     ArchDiagram,
-    CheckList,
     DiagramPanel,
     FactGrid,
     FlowIcon,
-    IconFlow,
     IconRow,
+    LinkCard,
     MaskIcon,
     OverviewCard,
     OverviewGrid,
@@ -28,16 +26,6 @@ const ncp = (f: string) => `/assets/portfolio/mnai/ncp/${f}.png`;
 
 /** 시스템 아키텍처 카드 아이콘 — 일반 클라우드 모양 대신 NKS 서비스 마크를 쓴다. */
 const NksMark = (props: { color?: string; width?: string; height?: string }) => <MaskIcon src={ncp("kubernetes-service")} {...props} />;
-
-/** 요청이 지나는 방어 계층 — 내부 인프라 문서(2026-09) 구성 그대로 */
-const defenseLayers: FlowIcon[] = [
-    { src: ncp("users"), label: "사용자", sub: "브라우저" },
-    { src: ncp("load-balancer"), label: "Load Balancer", sub: "L4 단일 진입점" },
-    { node: <WafIcon color="#222" />, label: "WAF", sub: "ModSecurity · 차단 모드" },
-    { src: ncp("kubernetes-service"), label: "프론트엔드", sub: "API는 외부 비노출" },
-    { src: ncp("ips"), label: "런타임 탐지", sub: "Falco IDS · IPS" },
-    { src: ncp("ids"), label: "악성코드 점검", sub: "Trivy · ClamAV" },
-];
 
 /** 실제 사용 중인 네이버 클라우드 서비스 */
 const ncpServices: FlowIcon[] = [
@@ -101,15 +89,6 @@ const appGroups = [
     },
 ];
 
-const securityItems = [
-    { t: "식별 · 인증 (IA)", d: "토큰 인증, 실패 잠금, 강제 비밀번호 변경" },
-    { t: "사용 통제 (UC)", d: "권한 매트릭스와 전 요청 감사로그" },
-    { t: "시스템 무결성 (SI)", d: "다이제스트 고정, 서명 검증, 모델 해시 확인" },
-    { t: "데이터 기밀성 (DC)", d: "개인정보 암호화와 키 관리 서비스 연동" },
-    { t: "적시 대응 (TRE)", d: "침입 · 공격 · 장애 경보를 즉시 알림" },
-    { t: "자원 가용성 (RA)", d: "요청 제한, 관리형 백업, 무중단 배포" },
-];
-
 /* ---------------- 컴포넌트 ---------------- */
 
 export function MnaiSections() {
@@ -118,6 +97,7 @@ export function MnaiSections() {
     const appRef = useRef<HTMLDivElement>(null);
     const userRef = useRef<HTMLDivElement>(null);
     const securityRef = useRef<HTMLDivElement>(null);
+    const licenseRef = useRef<HTMLDivElement>(null);
 
     const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
@@ -130,7 +110,7 @@ export function MnaiSections() {
                     icon={NksMark}
                     color={C}
                     title="시스템 아키텍처"
-                    description="Kubernetes 위에 방화벽과 침입 탐지, 관측성을 갖춘 구성"
+                    description="네이버 클라우드 NKS 기반, 보안과 관측성을 갖춘 시스템"
                     onClick={() => scrollTo(systemRef)}
                     preview={<img className="w-full object-contain" src="/assets/portfolio/mnai/mnai_ncp_arch.png" alt="NCP 아키텍처" />}
                 />
@@ -138,7 +118,7 @@ export function MnaiSections() {
                     icon={CodeIcon}
                     color={C}
                     title="어플리케이션 아키텍처"
-                    description="설문 · 대시보드 · API · 리포트 · AI 다섯 서비스로 분리"
+                    description="Next.js · NestJS 기반, 5개 서비스로 분리된 웹 애플리케이션"
                     onClick={() => scrollTo(appRef)}
                     preview={
                         <ArchDiagram
@@ -157,7 +137,7 @@ export function MnaiSections() {
                     icon={PipelineIcon}
                     color={C}
                     title="GitOps 배포"
-                    description="서명된 설정과 고정된 이미지만 클러스터에 반영"
+                    description="ArgoCD 기반, 서명 검증을 거치는 GitOps 배포 파이프라인"
                     onClick={() => scrollTo(gitopsRef)}
                     preview={<img className="w-full object-contain" src="/assets/portfolio/mnai/mnai_gitops_deploy.png" alt="GitOps 배포" />}
                 />
@@ -165,17 +145,39 @@ export function MnaiSections() {
                     icon={UserLayoutIcon}
                     color={C}
                     title="사용자 레이아웃"
-                    description="178문항을 끝까지 답하게 만드는 설문 화면"
+                    description="모바일 웹 기반 178문항 자가 설문 평가 서비스"
                     onClick={() => scrollTo(userRef)}
                     preview={<img className="w-full object-cover object-top" src={shot("07")} alt="설문 문항 화면" />}
                 />
                 <OverviewCard
                     icon={ShieldIcon}
                     color={C}
-                    title="보안 · GMP"
-                    description="35개 항목 중 32개 적용, 인프라가 그대로 근거가 되는 구조"
+                    title="사이버보안"
+                    description="KS X IEC 62443-4-2 35개 항목 기반 사이버보안 시험성적서"
                     onClick={() => scrollTo(securityRef)}
-                    preview={<IconFlow compact color={C} items={defenseLayers.slice(1, 5)} />}
+                    preview={
+                        <div className="flex h-full flex-col items-center justify-center gap-2 py-3 text-center">
+                            <span className="rounded-full border px-3 py-1 text-[13px] font-semibold" style={{ color: C, borderColor: C }}>
+                                사이버보안 시험성적서
+                            </span>
+                            <span className="text-[11px] text-gray-400">35개 항목 중 32개 적용</span>
+                        </div>
+                    }
+                />
+                <OverviewCard
+                    icon={LicenseIcon}
+                    color={C}
+                    title="품목허가 · DGMP"
+                    description="디지털의료기기 품목허가 및 별표 3·4 DGMP 문서"
+                    onClick={() => scrollTo(licenseRef)}
+                    preview={
+                        <div className="flex h-full flex-col items-center justify-center gap-2 py-3 text-center">
+                            <span className="rounded-full border px-3 py-1 text-[13px] font-semibold" style={{ color: C, borderColor: C }}>
+                                디지털의료기기 품목허가
+                            </span>
+                            <span className="text-[11px] text-gray-400">D 제허 26-6호 · D 제10017호</span>
+                        </div>
+                    }
                 />
             </OverviewGrid>
 
@@ -183,7 +185,7 @@ export function MnaiSections() {
             <div ref={systemRef} className="pt-20">
                 <SectionTitle>시스템 아키텍처</SectionTitle>
                 <div className="flex flex-col gap-6">
-                    <DiagramPanel title="네이버 클라우드 Kubernetes(NKS) 구성">
+                    <DiagramPanel title="네이버 클라우드 NKS 아키텍처">
                         <img className="w-full object-contain" src="/assets/portfolio/mnai/mnai_ncp_arch_origin.png" alt="Minds. NAVI AI NCP 아키텍처" />
                     </DiagramPanel>
                     <DiagramPanel title="사용 중인 네이버 클라우드 서비스">
@@ -193,20 +195,20 @@ export function MnaiSections() {
                         <TaskCard
                             index={1}
                             color={C}
-                            title="지표로 감지, 로그로 추적"
-                            bullets={["응답 시간 · 에러율 · 자원 · 방화벽 차단 현황", "전 서비스 로그를 한곳에서 검색", "판정 모델 이상과 배포 실패를 같은 경로로 알림"]}
+                            title="관측성 및 경보 체계"
+                            bullets={["응답 시간 · 에러율 · 자원 모니터링", "전 서비스 로그 통합 검색", "모델 이상 · 배포 실패 알림 통합"]}
                         />
                         <TaskCard
                             index={2}
                             color={C}
-                            title="증적을 사람이 만들지 않는다"
-                            bullets={["부품 목록 · 배포 매니페스트 · 오류코드 사전", "악성코드 검사와 로그 장기 보관", "실제 시스템에서 모아 문서로 남긴다"]}
+                            title="운영 증적 자동화"
+                            bullets={["악성코드 정기 검사", "로그 일일 아카이브 · 장기 보관", "배포 매니페스트 자동 기록"]}
                         />
                         <TaskCard
                             index={3}
                             color={C}
                             title="개발 · 운영 동일 구성"
-                            bullets={["앱 코드는 같고 환경별 분기가 없다", "클라우드와 보안 설정만 다르다", "운영에만 방화벽 차단 모드와 관리형 DB"]}
+                            bullets={["환경별 분기 없는 단일 코드", "클라우드 · 보안 설정만 분리", "운영 환경 방화벽 · 관리형 DB 적용"]}
                         />
                     </div>
                 </div>
@@ -216,18 +218,18 @@ export function MnaiSections() {
             <div ref={appRef} className="pt-20">
                 <SectionTitle>어플리케이션 아키텍처</SectionTitle>
                 <div className="flex flex-col gap-6">
-                    <DiagramPanel title="다섯 서비스 · 역할 분리">
+                    <DiagramPanel title="Next.js · NestJS 기반 서비스 분리 아키텍처">
                         <ArchDiagram color={C} groups={appGroups} />
                     </DiagramPanel>
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
                         <TaskCard
                             index={1}
                             color={C}
-                            title="꺼낼 수 없는 키로 감싼 개인정보"
-                            bullets={["이름 · 연락처를 필드 단위로 암호화", "그 키를 상위 키가 감싸고, 상위 키는 밖으로 못 꺼낸다", "기동 때 한 번만 풀어 메모리에 두고 디스크에 남기지 않는다", "암호화 상태로도 이름을 찾도록 검색용 키를 따로 둔다"]}
+                            title="개인정보 봉투 암호화"
+                            bullets={["이름 · 연락처 필드 단위 암호화", "KMS 상위 키 기반 키 보호", "기동 시 1회 복호 · 메모리 보관", "암호화 필드 검색용 인덱스"]}
                         />
-                        <TaskCard index={2} color={C} title="감사로그 기본 적용" bullets={["모든 라우트에 기본 기록", "권한 · 계정 변경 이력 조회", "응답 · 오류 규격 통일"]} />
-                        <TaskCard index={3} color={C} title="호르몬 데이터 파이프라인" bullets={["채취 시점별 결과 누적 보관", "엑셀 일괄 업로드 지원", "최신 값으로 채점"]} />
+                        <TaskCard index={2} color={C} title="감사로그 기본 적용" bullets={["전 라우트 감사로그 기본 적용", "권한 · 계정 변경 이력 관리", "응답 · 오류 규격 통일"]} />
+                        <TaskCard index={3} color={C} title="호르몬 데이터 파이프라인" bullets={["채취 시점별 결과 누적 보관", "엑셀 일괄 업로드 지원", "최신 측정값 기준 채점"]} />
                     </div>
                 </div>
             </div>
@@ -265,48 +267,65 @@ export function MnaiSections() {
             {/* 사용자 레이아웃 */}
             <div ref={userRef} className="pt-20">
                 <SectionTitle>사용자 레이아웃</SectionTitle>
-                <div className="flex flex-col gap-10">
-                    <ScreenRow shots={surveyShots} />
+                <ScreenRow shots={surveyShots} />
+            </div>
+
+            {/* 사이버보안 */}
+            <div ref={securityRef} className="pt-20">
+                <SectionTitle>사이버보안</SectionTitle>
+                <div className="flex flex-col gap-6">
+                    <FactGrid
+                        color={C}
+                        facts={[
+                            { value: "32 / 35", label: "적용 항목 · 3개 구조상 해당 없음" },
+                            { value: "6개 영역", label: "KS X IEC 62443-4-2 기준" },
+                            { value: "보완 0건", label: "제출 후 심사 보완사항 미지적" },
+                            { value: "자체 작성", label: "사이버보안 시험성적서" },
+                        ]}
+                    />
+                    <LinkCard
+                        color={C}
+                        href="/post/mnai-security-test"
+                        tag="시험성적서"
+                        title="마인즈내비 AI 사이버보안 시험성적서"
+                        desc="35개 항목별 요구사항 · 판정 · 구현 요약"
+                    />
+                </div>
+            </div>
+
+            {/* 품목허가 · DGMP */}
+            <div ref={licenseRef} className="pt-20">
+                <SectionTitle>품목허가 · DGMP</SectionTitle>
+                <div className="flex flex-col gap-6">
+                    <FactGrid
+                        color={C}
+                        facts={[
+                            { value: "D 제허 26-6호", label: "디지털의료기기 품목허가번호" },
+                            { value: "D 제10017호", label: "디지털의료기기 제조업허가번호" },
+                            { value: "별표 3 · 4", label: "DGMP 문서 작성" },
+                            { value: "DGMP", label: "디지털의료기기 제조 및 품질관리 기준" },
+                        ]}
+                    />
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
                         <TaskCard
                             index={1}
                             color={C}
-                            title="178문항을 끝까지"
-                            bullets={["응답은 실시간으로 저장된다", "중단해도 이어서 진행할 수 있다", "영역별로 몇 문항 남았는지 보여준다"]}
+                            title="별표 3 · 4 DGMP 문서 작성"
+                            bullets={["DGMP 절차서 · 양식 작성", "설계 · 개발부터 배포 · 이관까지 문서화", "클라우드 운영 방식 반영"]}
                         />
                         <TaskCard
                             index={2}
                             color={C}
-                            title="화면에 있는 의료기기 표시"
-                            bullets={["허가번호 · 표준코드 · 제조자 · 사용목적", "사용자 매뉴얼을 화면에서 내려받기", "전자문서로 제공하고 필요하면 종이로도"]}
+                            title="배포 · 이관 절차 분리"
+                            bullets={["검증 이미지 저장소 등록(배포)", "사용환경 반영 및 점검(이관)", "다이제스트 기록 · 롤백 · 문제 보고"]}
                         />
                         <TaskCard
                             index={3}
                             color={C}
-                            title="응답 부담 줄이기"
-                            bullets={["처음 들어오면 조작 방법을 짚어준다", "보기를 고르면 다음 문항으로 넘어간다", "언제든 이전 답을 고칠 수 있다"]}
+                            title="관리대장 자동 작성"
+                            bullets={["SOUP · SBOM 관리대장 주간 생성", "오류코드 문서 자동 갱신", "심사 기록과 운영 상태 일치"]}
                         />
                     </div>
-                </div>
-            </div>
-
-            {/* 보안 · GMP */}
-            <div ref={securityRef} className="pt-20">
-                <SectionTitle>보안 · GMP</SectionTitle>
-                <div className="flex flex-col gap-6">
-                    <DiagramPanel title="요청이 지나는 방어 계층" desc="네이버 클라우드 보안 서비스와 오픈소스 도구를 단계로 배치했다.">
-                        <IconFlow items={defenseLayers} color={C} />
-                    </DiagramPanel>
-                    <FactGrid
-                        color={C}
-                        facts={[
-                            { value: "32 / 35", label: "항목 적용, 3개는 구조상 해당 없음" },
-                            { value: "6종", label: "서비스 · 파드 · AI 경보 규칙" },
-                            { value: "주간", label: "취약점 스캔과 부품 목록 자동 생성" },
-                            { value: "보완 0건", label: "제출 후 심사 보완사항 미지적" },
-                        ]}
-                    />
-                    <CheckList color={C} items={securityItems} />
                 </div>
             </div>
 
