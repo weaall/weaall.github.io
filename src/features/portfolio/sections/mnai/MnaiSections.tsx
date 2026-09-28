@@ -50,12 +50,11 @@ const shot = (n: string) => `/assets/portfolio/mnai/survey/${n}.png?v=2`;
 /** 관리자 대시보드 화면 — 관리자 매뉴얼 캡처에서 번호 박스를 지운 그림. 환자 정보는 원본부터 가려져 있다. */
 const dash = (n: string) => `/assets/portfolio/mnai/dashboard/${n}.png?v=3`;
 
-/** 관리자 대시보드 화면 — 네 장 모두 1920×1080(캡처 원본 화면 비율)으로 맞춰 두었다(ScreenSwitcher 가 겹쳐 그린다) */
+/** 관리자 대시보드 화면 — 세 장 모두 1920×1080(캡처 원본 화면 비율)으로 맞춰 두었다(ScreenSwitcher 가 겹쳐 그린다) */
 const dashShots = [
     { src: dash("home"), label: "본사 대시보드" },
     { src: dash("progress"), label: "진행 현황" },
     { src: dash("report"), label: "결과지 관리" },
-    { src: dash("hospital"), label: "병원 대시보드" },
 ];
 
 /** 실제 설문 앱 화면 — 진입부터 타액 채취 안내까지 흐름 순서 */

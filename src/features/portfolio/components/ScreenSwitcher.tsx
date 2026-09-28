@@ -13,9 +13,9 @@ import { tone } from "./tokens";
  * 큰 화면과 썸네일 모두 DiagramPanel 과 같은 처리다. 흰 상자는 왼쪽 · 위만 띄우고 오른쪽 · 아래는 카드 벽에 붙인다.
  *
  * 큰 화면은 모든 이미지를 겹쳐 두고 opacity 만 바꾼다. 그래서 이미지 비율을 모두 같게 맞춰 둬야 한다.
- * 오른쪽 열은 absolute 로 띄워 높이를 갖지 않게 하고, 왼쪽 높이에 맞춰 네 칸을 나눈다.
+ * 오른쪽 열은 absolute 로 띄워 높이를 갖지 않게 하고, 왼쪽 높이를 장수만큼 나눈다.
  * (flex 안의 img 는 flex-basis 를 콘텐츠 높이로 잡아서, 그냥 두면 오른쪽이 왼쪽보다 길어진다.)
- * 모바일에서는 다시 흐름 안으로 넣어 두 장씩 놓는다.
+ * 모바일에서는 다시 흐름 안으로 넣어 한 줄에 놓는다(세 장이면 셋, 그 외에는 두 장씩).
  */
 export function ScreenSwitcher({ shots, color, interval = 2000 }: { shots: { src: string; label: string }[]; color: string; interval?: number }) {
     const [active, setActive] = useState(0);
@@ -49,7 +49,7 @@ export function ScreenSwitcher({ shots, color, interval = 2000 }: { shots: { src
             </div>
 
             <div className="relative">
-                <div className="absolute inset-0 flex flex-col gap-4 m:static m:grid m:grid-cols-2">
+                <div className={`absolute inset-0 flex flex-col gap-4 m:static m:grid ${shots.length === 3 ? "m:grid-cols-3 m:gap-3" : "m:grid-cols-2"}`}>
                     {shots.map((s, i) => {
                         const on = i === active;
                         return (
