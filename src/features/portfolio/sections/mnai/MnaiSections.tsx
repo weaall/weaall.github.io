@@ -294,24 +294,7 @@ export function MnaiSections() {
             {/* 관리자 대시보드 */}
             <div ref={adminRef} className="pt-20">
                 <SectionTitle>관리자 대시보드</SectionTitle>
-                <div className="flex flex-col gap-6">
-                    <ScreenSwitcher shots={dashShots} color={C} />
-                    <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
-                        <TaskCard
-                            index={1}
-                            color={C}
-                            title="역할별 콘솔 · 계정 권한"
-                            bullets={["본사 · CRO · 병원 · 기관 콘솔 분리", "계정별 기능 권한 · 역할별 기본 권한", "첫 로그인 비밀번호 변경 강제"]}
-                        />
-                        <TaskCard
-                            index={2}
-                            color={C}
-                            title="검사 진행 관리"
-                            bullets={["패키지 등록 · 번들 생성 · QR 출력", "검체 결과 엑셀 일괄 등록", "수검자 SMS 발송"]}
-                        />
-                        <TaskCard index={3} color={C} title="결과지 · 운영 기록" bullets={["결과지 PDF 일괄 다운로드", "감사 로그 조회 · 엑셀 내보내기", "기간 · 기관 · 상태별 필터"]} />
-                    </div>
-                </div>
+                <ScreenSwitcher shots={dashShots} color={C} />
             </div>
 
             {/* 사이버보안 */}
