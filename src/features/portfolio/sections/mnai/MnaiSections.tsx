@@ -13,6 +13,7 @@ import {
     OverviewCard,
     OverviewGrid,
     ScreenRow,
+    ScreenSwitcher,
     SectionTitle,
     StepFlow,
     TaskCard,
@@ -47,7 +48,15 @@ const ncpServices: FlowIcon[] = [
 const shot = (n: string) => `/assets/portfolio/mnai/survey/${n}.png?v=2`;
 
 /** 관리자 대시보드 화면 — 관리자 매뉴얼 캡처에서 번호 박스를 지운 그림. 환자 정보는 원본부터 가려져 있다. */
-const dash = (n: string) => `/assets/portfolio/mnai/dashboard/${n}.png?v=1`;
+const dash = (n: string) => `/assets/portfolio/mnai/dashboard/${n}.png?v=2`;
+
+/** 관리자 대시보드 화면 — 네 장 모두 1920×1314 로 맞춰 두었다(ScreenSwitcher 가 겹쳐 그린다) */
+const dashShots = [
+    { src: dash("home"), label: "본사 대시보드" },
+    { src: dash("progress"), label: "진행 현황" },
+    { src: dash("report"), label: "결과지 관리" },
+    { src: dash("hospital"), label: "병원 대시보드" },
+];
 
 /** 실제 설문 앱 화면 — 진입부터 타액 채취 안내까지 흐름 순서 */
 const surveyShots = [
@@ -286,17 +295,7 @@ export function MnaiSections() {
             <div ref={adminRef} className="pt-20">
                 <SectionTitle>관리자 대시보드</SectionTitle>
                 <div className="flex flex-col gap-6">
-                    <DiagramPanel title="본사 관리자 대시보드" desc="수검자 · 검사 건수 · 월별 추이 · 기관별 완료 현황">
-                        <img className="w-full object-contain" src={dash("home")} alt="Minds. NAVI AI 본사 관리자 대시보드" />
-                    </DiagramPanel>
-                    <div className="grid grid-cols-2 gap-6 m:grid-cols-1">
-                        <DiagramPanel title="진행 현황" desc="로그인 · 설문 · 검체 단계별 진행 상태">
-                            <img className="w-full object-contain" src={dash("progress")} alt="진행 현황 화면" />
-                        </DiagramPanel>
-                        <DiagramPanel title="결과지 관리" desc="종합 · 요약 · AI 결과지 조회">
-                            <img className="w-full object-contain" src={dash("report")} alt="결과지 관리 화면" />
-                        </DiagramPanel>
-                    </div>
+                    <ScreenSwitcher shots={dashShots} color={C} />
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
                         <TaskCard
                             index={1}
