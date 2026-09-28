@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { AdminLayoutIcon, DatabaseIcon, PackageIcon, PipelineIcon, ShieldIcon } from "@/components/ui/icons/PortfolioIcons";
-import { ArchDiagram, CheckList, DiagramPanel, FactGrid, OverviewCard, SectionTitle, StepFlow, TaskCard } from "@/features/portfolio/components";
+import { ArchDiagram, CheckList, DiagramPanel, FactGrid, OverviewCard, OverviewGrid, SectionTitle, StepFlow, TaskCard } from "@/features/portfolio/components";
 
 const C = "#2f7d46";
 
@@ -53,7 +53,7 @@ export function CheeuSections() {
         <div className="w-full flex flex-col">
             <SectionTitle center>프로젝트 오버뷰</SectionTitle>
 
-            <div className="w-full grid grid-cols-3 gap-6 pt-2 m:grid-cols-1">
+            <OverviewGrid>
                 <OverviewCard
                     icon={PackageIcon}
                     color={C}
@@ -132,7 +132,7 @@ export function CheeuSections() {
                     onClick={() => scrollTo(adminRef)}
                     preview={<img className="w-full rounded-md object-cover object-top" src="/assets/portfolio/cheeu/login.png" alt="CHEEU. Forest N 관리자 웹" />}
                 />
-            </div>
+            </OverviewGrid>
 
             {/* 시스템 아키텍처 */}
             <div ref={systemRef} className="pt-20">

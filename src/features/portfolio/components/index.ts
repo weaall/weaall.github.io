@@ -16,6 +16,7 @@ export type { FlowIcon } from "./IconFlow";
 export { LinkCard } from "./LinkCard";
 export { MaskIcon } from "./MaskIcon";
 export { OverviewCard } from "./OverviewCard";
+export { OverviewGrid } from "./OverviewGrid";
 export { PortfolioListBanner } from "./PortfolioListBanner";
 export { ScreenRow } from "./ScreenRow";
 export { SectionTitle } from "./SectionTitle";

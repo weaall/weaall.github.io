@@ -13,6 +13,7 @@ import {
     IconRow,
     MaskIcon,
     OverviewCard,
+    OverviewGrid,
     ScreenRow,
     SectionTitle,
     StepFlow,
@@ -124,7 +125,7 @@ export function MnaiSections() {
         <div className="w-full flex flex-col">
             <SectionTitle center>프로젝트 오버뷰</SectionTitle>
 
-            <div className="w-full grid grid-cols-3 gap-6 pt-2 m:grid-cols-1">
+            <OverviewGrid>
                 <OverviewCard
                     icon={NksMark}
                     color={C}
@@ -176,7 +177,7 @@ export function MnaiSections() {
                     onClick={() => scrollTo(securityRef)}
                     preview={<IconFlow compact color={C} items={defenseLayers.slice(1, 5)} />}
                 />
-            </div>
+            </OverviewGrid>
 
             {/* 시스템 아키텍처 */}
             <div ref={systemRef} className="pt-20">

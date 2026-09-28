@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { AdminLayoutIcon, CloudIcon, CodeIcon, LicenseIcon, LogicIcon, PipelineIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
-import { ArchDiagram, CheckList, DiagramPanel, FactGrid, OverviewCard, ScreenRow, SectionTitle, StepFlow, TaskCard } from "@/features/portfolio/components";
+import { ArchDiagram, CheckList, DiagramPanel, FactGrid, OverviewCard, OverviewGrid, ScreenRow, SectionTitle, StepFlow, TaskCard } from "@/features/portfolio/components";
 
 const C = "#1a8f7a";
 
@@ -126,7 +126,7 @@ export function MindsNaviSections() {
         <div className="w-full flex flex-col">
             <SectionTitle center>프로젝트 오버뷰</SectionTitle>
 
-            <div className="w-full grid grid-cols-3 gap-6 pt-2 m:grid-cols-1">
+            <OverviewGrid>
                 <OverviewCard
                     icon={CloudIcon}
                     color={C}
@@ -210,7 +210,7 @@ export function MindsNaviSections() {
                         </div>
                     }
                 />
-            </div>
+            </OverviewGrid>
 
             {/* 시스템 아키텍처 */}
             <div ref={systemRef} className="pt-20">
