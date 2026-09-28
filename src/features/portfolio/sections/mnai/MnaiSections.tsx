@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { CodeIcon, LicenseIcon, PipelineIcon, ShieldIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
+import { AdminLayoutIcon, CodeIcon, LicenseIcon, PipelineIcon, ShieldIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
 import {
     ArchDiagram,
     DiagramPanel,
@@ -45,6 +45,9 @@ const ncpServices: FlowIcon[] = [
  * 이미지를 다시 만들 때마다 v 를 올린다.
  */
 const shot = (n: string) => `/assets/portfolio/mnai/survey/${n}.png?v=2`;
+
+/** 관리자 대시보드 화면 — 관리자 매뉴얼 캡처에서 번호 박스를 지운 그림. 환자 정보는 원본부터 가려져 있다. */
+const dash = (n: string) => `/assets/portfolio/mnai/dashboard/${n}.png?v=1`;
 
 /** 실제 설문 앱 화면 — 진입부터 타액 채취 안내까지 흐름 순서 */
 const surveyShots = [
@@ -96,6 +99,7 @@ export function MnaiSections() {
     const gitopsRef = useRef<HTMLDivElement>(null);
     const appRef = useRef<HTMLDivElement>(null);
     const userRef = useRef<HTMLDivElement>(null);
+    const adminRef = useRef<HTMLDivElement>(null);
     const securityRef = useRef<HTMLDivElement>(null);
     const licenseRef = useRef<HTMLDivElement>(null);
 
@@ -148,6 +152,14 @@ export function MnaiSections() {
                     description="모바일 웹 기반 178문항 자가 설문 평가 서비스"
                     onClick={() => scrollTo(userRef)}
                     preview={<img className="w-full object-cover object-top" src={shot("07")} alt="설문 문항 화면" />}
+                />
+                <OverviewCard
+                    icon={AdminLayoutIcon}
+                    color={C}
+                    title="관리자 대시보드"
+                    description="역할별 권한 기반 검사 진행 · 결과지 관리 대시보드"
+                    onClick={() => scrollTo(adminRef)}
+                    preview={<img className="w-full rounded-md object-cover object-top-left" src={dash("home")} alt="Minds. NAVI AI 관리자 대시보드" />}
                 />
                 <OverviewCard
                     icon={ShieldIcon}
@@ -268,6 +280,39 @@ export function MnaiSections() {
             <div ref={userRef} className="pt-20">
                 <SectionTitle>사용자 레이아웃</SectionTitle>
                 <ScreenRow shots={surveyShots} />
+            </div>
+
+            {/* 관리자 대시보드 */}
+            <div ref={adminRef} className="pt-20">
+                <SectionTitle>관리자 대시보드</SectionTitle>
+                <div className="flex flex-col gap-6">
+                    <DiagramPanel title="본사 관리자 대시보드" desc="수검자 · 검사 건수 · 월별 추이 · 기관별 완료 현황">
+                        <img className="w-full object-contain" src={dash("home")} alt="Minds. NAVI AI 본사 관리자 대시보드" />
+                    </DiagramPanel>
+                    <div className="grid grid-cols-2 gap-6 m:grid-cols-1">
+                        <DiagramPanel title="진행 현황" desc="로그인 · 설문 · 검체 단계별 진행 상태">
+                            <img className="w-full object-contain" src={dash("progress")} alt="진행 현황 화면" />
+                        </DiagramPanel>
+                        <DiagramPanel title="결과지 관리" desc="종합 · 요약 · AI 결과지 조회">
+                            <img className="w-full object-contain" src={dash("report")} alt="결과지 관리 화면" />
+                        </DiagramPanel>
+                    </div>
+                    <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
+                        <TaskCard
+                            index={1}
+                            color={C}
+                            title="역할별 콘솔 · 계정 권한"
+                            bullets={["본사 · CRO · 병원 · 기관 콘솔 분리", "계정별 기능 권한 · 역할별 기본 권한", "첫 로그인 비밀번호 변경 강제"]}
+                        />
+                        <TaskCard
+                            index={2}
+                            color={C}
+                            title="검사 진행 관리"
+                            bullets={["패키지 등록 · 번들 생성 · QR 출력", "검체 결과 엑셀 일괄 등록", "수검자 SMS 발송"]}
+                        />
+                        <TaskCard index={3} color={C} title="결과지 · 운영 기록" bullets={["결과지 PDF 일괄 다운로드", "감사 로그 조회 · 엑셀 내보내기", "기간 · 기관 · 상태별 필터"]} />
+                    </div>
+                </div>
             </div>
 
             {/* 사이버보안 */}
