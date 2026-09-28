@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { CodeIcon, LogicIcon, PipelineIcon, ShieldIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
+import { CodeIcon, PipelineIcon, ShieldIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
 import { WafIcon } from "@/components/ui/icons/NcpIcons";
 import {
     ArchDiagram,
@@ -73,21 +73,6 @@ const surveyShots = [
 
 /* ---------------- 다이어그램 데이터 ---------------- */
 
-/** 자동 레인 — 이미지를 만들어 레지스트리에 올리는 데서 끝난다 */
-const ciSteps = [
-    { label: "코드 머지", sub: "prod 브랜치" },
-    { label: "이미지 빌드", sub: "GitHub Actions" },
-    { label: "레지스트리 적재", sub: "여기서 끝" },
-];
-
-/** 수동 레인 — 서명된 매니페스트만 클러스터를 바꾼다 */
-const deploySteps = [
-    { label: "다이제스트 교체", sub: "매니페스트 수정" },
-    { label: "GPG 서명", sub: "지정 PC에서만" },
-    { label: "서명 검증", sub: "미서명 거부" },
-    { label: "롤링 교체", sub: "무중단 반영" },
-];
-
 const appGroups = [
     {
         title: "프론트엔드",
@@ -115,18 +100,6 @@ const appGroups = [
     },
 ];
 
-
-const flowSteps = [
-    { label: "기관 코드 진입" },
-    { label: "본인인증" },
-    { label: "심리 설문" },
-    { label: "호르몬 등록" },
-    { label: "AI 판정" },
-    { label: "결과지 생성" },
-    { label: "대시보드 조회" },
-    { label: "알림 · 정산" },
-];
-
 const securityItems = [
     { t: "식별 · 인증 (IA)", d: "토큰 인증, 실패 잠금, 강제 비밀번호 변경" },
     { t: "사용 통제 (UC)", d: "권한 매트릭스와 전 요청 감사로그" },
@@ -143,7 +116,6 @@ export function MnaiSections() {
     const gitopsRef = useRef<HTMLDivElement>(null);
     const appRef = useRef<HTMLDivElement>(null);
     const userRef = useRef<HTMLDivElement>(null);
-    const flowRef = useRef<HTMLDivElement>(null);
     const securityRef = useRef<HTMLDivElement>(null);
 
     const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -181,20 +153,12 @@ export function MnaiSections() {
                     }
                 />
                 <OverviewCard
-                    icon={LogicIcon}
-                    color={C}
-                    title="서비스 플로우"
-                    description="기관 진입부터 설문, 판정, 결과지 조회까지 한 흐름"
-                    onClick={() => scrollTo(flowRef)}
-                    preview={<StepFlow compact color={C} steps={[{ label: "진입" }, { label: "설문" }, { label: "호르몬" }, { label: "판정" }, { label: "결과지" }]} />}
-                />
-                <OverviewCard
                     icon={PipelineIcon}
                     color={C}
                     title="GitOps 배포"
                     description="서명된 설정과 고정된 이미지만 클러스터에 반영"
                     onClick={() => scrollTo(gitopsRef)}
-                    preview={<StepFlow compact color={C} steps={[{ label: "빌드" }, { label: "고정" }, { label: "서명" }, { label: "검증" }, { label: "배포" }]} />}
+                    preview={<img className="w-full object-contain" src="/assets/portfolio/mnai/mnai_gitops_deploy.png" alt="GitOps 배포" />}
                 />
                 <OverviewCard
                     icon={UserLayoutIcon}
@@ -267,61 +231,31 @@ export function MnaiSections() {
                 </div>
             </div>
 
-            {/* 서비스 플로우 */}
-            <div ref={flowRef} className="pt-20">
-                <SectionTitle>서비스 플로우</SectionTitle>
-                <div className="flex gap-6 m:flex-col">
-                    <div className="w-3/4 m:w-full">
-                        <DiagramPanel title="기관 진입부터 결과지 조회까지">
-                            <StepFlow color={C} steps={flowSteps} />
-                        </DiagramPanel>
-                    </div>
-                    <div className="w-1/4 m:w-full bg-[#f6f5f4] rounded-2xl p-8 flex flex-col gap-3">
-                        <h3 className="text-lg font-bold text-[#191918] leading-tight">역할별 콘솔</h3>
-                        <ul className="text-[#191918] text-base list-disc pl-5 space-y-1 break-keep">
-                            <li>관리자: 기관 · 정산 · 감사로그</li>
-                            <li>임상진 · 기관: 수검자와 결과</li>
-                            <li>조회 · 다운로드 권한 분리</li>
-                            <li>QR로 기관 진입 링크 발급</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
             {/* GitOps */}
             <div ref={gitopsRef} className="pt-20">
                 <SectionTitle>GitOps 배포</SectionTitle>
                 <div className="flex flex-col gap-6">
-                    <DiagramPanel title="배포는 두 레인으로 나뉜다" desc="CI는 이미지를 만들 뿐이고, 클러스터를 바꾸는 것은 서명된 매니페스트뿐이다.">
-                        <div className="flex flex-col gap-5">
-                            <div>
-                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-400">자동 · CI</p>
-                                <StepFlow color="#9c9994" steps={ciSteps} />
-                            </div>
-                            <div>
-                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-400">수동 · 서명 필요</p>
-                                <StepFlow color={C} steps={deploySteps} />
-                            </div>
-                        </div>
+                    <DiagramPanel title="배포 파이프라인">
+                        <img className="w-full object-contain" src="/assets/portfolio/mnai/mnai_gitops_deploy_origin.png" alt="Minds. NAVI AI GitOps 배포 파이프라인" />
                     </DiagramPanel>
                     <div className="grid grid-cols-3 gap-6 m:grid-cols-1">
                         <TaskCard
                             index={1}
                             color={C}
-                            title="관문 1 · 커밋 서명"
-                            bullets={["신뢰 키로 서명한 커밋만 통과", "미서명 · 오염 커밋은 거부하고 알림", "웹에서 고친 커밋도 서명 불일치로 거부"]}
+                            title="진본성 · 서명된 변경만"
+                            bullets={["신뢰 키로 GPG 서명한 커밋·매니페스트만 통과", "누가 무엇을 바꿨는지 서명으로 보증", "미서명 · 위변조 커밋은 거부하고 알림"]}
                         />
                         <TaskCard
                             index={2}
                             color={C}
-                            title="관문 2 · 이미지 다이제스트"
-                            bullets={["태그가 아닌 내용 해시로 고정", "내용이 다르면 내려받기 자체가 실패", "이미지 줄이 둘인 서비스도 함께 교체"]}
+                            title="무결성 · 다이제스트 고정"
+                            bullets={["태그가 아닌 내용 해시(다이제스트)로 이미지 고정", "내용이 조금이라도 다르면 내려받기 자체가 실패", "동일 다이제스트만 클러스터에 반영"]}
                         />
                         <TaskCard
                             index={3}
                             color={C}
-                            title="CI 초록불이 배포는 아니다"
-                            bullets={["재시작해도 고정된 다이제스트 그대로", "새 이미지는 올라와 있지만 아무도 지목 안 함", "파드의 이미지 ID로 판별"]}
+                            title="검증 · 실제 배포 확인"
+                            bullets={["파드의 이미지 ID로 실제 무엇이 도는지 확인", "CI 초록불이 배포는 아니다 — 서명·검증까지 통과해야 반영", "재시작해도 고정된 다이제스트 그대로 진본 유지"]}
                         />
                     </div>
                 </div>

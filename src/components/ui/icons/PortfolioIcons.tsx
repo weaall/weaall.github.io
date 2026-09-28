@@ -117,3 +117,12 @@ export const DatabaseIcon = ({ color = "#000", width = "100%", height = "100%" }
     </svg>
 );
 
+
+/** 인증 배지 — 원 안의 체크와 리본. 인허가·인증 섹션 아이콘. */
+export const LicenseIcon = ({ color = "#000", width = "100%", height = "100%" }) => (
+    <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="9" r="6" stroke={color} strokeWidth="1.6" />
+        <path d="m9.2 9 2 2 3.6-3.7" stroke={color} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M8.5 14.2 6.5 21l3.5-2 2 2 2-2 3.5 2-2-6.8" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);

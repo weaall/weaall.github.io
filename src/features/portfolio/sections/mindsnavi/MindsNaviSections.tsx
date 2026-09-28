@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { AdminLayoutIcon, CloudIcon, CodeIcon, LogicIcon, PipelineIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
-import { ArchDiagram, CheckList, DiagramPanel, OverviewCard, ScreenRow, SectionTitle, StepFlow, TaskCard } from "@/features/portfolio/components";
+import { AdminLayoutIcon, CloudIcon, CodeIcon, LicenseIcon, LogicIcon, PipelineIcon, UserLayoutIcon } from "@/components/ui/icons/PortfolioIcons";
+import { ArchDiagram, CheckList, DiagramPanel, FactGrid, OverviewCard, ScreenRow, SectionTitle, StepFlow, TaskCard } from "@/features/portfolio/components";
 
 const C = "#1a8f7a";
 
@@ -118,6 +118,7 @@ export function MindsNaviSections() {
     const surveyRef = useRef<HTMLDivElement>(null);
     const adminRef = useRef<HTMLDivElement>(null);
     const deliveryRef = useRef<HTMLDivElement>(null);
+    const licenseRef = useRef<HTMLDivElement>(null);
 
     const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
@@ -193,6 +194,21 @@ export function MindsNaviSections() {
                     description="결과지를 만들어 보내고 검사기관·파트너와 데이터를 주고받는 구간"
                     onClick={() => scrollTo(deliveryRef)}
                     preview={<StepFlow compact color={C} steps={[{ label: "판정" }, { label: "결과지" }, { label: "발송" }, { label: "연계" }]} />}
+                />
+                <OverviewCard
+                    icon={LicenseIcon}
+                    color={C}
+                    title="의료기기 품목허가"
+                    description="식약처 2등급 디지털의료기기 품목허가 (제허 25-259호)"
+                    onClick={() => scrollTo(licenseRef)}
+                    preview={
+                        <div className="flex h-full flex-col items-center justify-center gap-2 py-3 text-center">
+                            <span className="rounded-full border px-3 py-1 text-[13px] font-semibold" style={{ color: C, borderColor: C }}>
+                                2등급 디지털의료기기
+                            </span>
+                            <span className="text-[11px] text-gray-400">제허 25-259호 · 2025-04-17</span>
+                        </div>
+                    }
                 />
             </div>
 
@@ -281,6 +297,43 @@ export function MindsNaviSections() {
                         <StepFlow color={C} steps={deliverySteps} />
                     </DiagramPanel>
                     <CheckList color={C} items={deliveryItems} />
+                </div>
+                        </div>
+
+            {/* 의료기기 품목허가 */}
+            <div ref={licenseRef} className="pt-20">
+                <SectionTitle>의료기기 품목허가</SectionTitle>
+                <div className="flex flex-col gap-6">
+                    <FactGrid
+                        color={C}
+                        facts={[
+                            { value: "2등급", label: "식약처 디지털의료기기 품목허가" },
+                            { value: "제허 25-259호", label: "품목허가번호 · 2025-04-17" },
+                            { value: "기술 + 임상", label: "기술문서·임상자료 심사 완료" },
+                            { value: "KCD-F32", label: "주요우울장애군 선별(screen)" },
+                        ]}
+                    />
+                    <div className="grid grid-cols-2 gap-6 m:grid-cols-1">
+                        <TaskCard
+                            index={1}
+                            color={C}
+                            title="심리 평가 소프트웨어"
+                            bullets={["품목분류 E06050.01 · 2등급 의료기기", "Psychological assessment software", "버전 1.0.0 · 독립형 소프트웨어(SaMD)"]}
+                        />
+                        <TaskCard
+                            index={2}
+                            color={C}
+                            title="선별 사용목적"
+                            bullets={[
+                                "6종 심리지표(성인애착·성장기부정경험·회복탄력성·마음헤아리기·우울증상·자살위험성)",
+                                "타액호르몬 Cortisol · DHEA 병용",
+                                "주요우울장애군(KCD-F32) 의심 대상자 선별",
+                            ]}
+                        />
+                    </div>
+                    <p className="text-[13px] text-gray-400 break-keep">
+                        주식회사 마인즈에이아이 제조 · 제조업 허가 제8769호(2025-01-16). 공개된 식약처 의료기기 품목정보 기준.
+                    </p>
                 </div>
             </div>
         </div>

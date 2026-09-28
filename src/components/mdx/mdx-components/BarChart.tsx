@@ -418,10 +418,13 @@ function Donut({ items }: { items: ChartRow[] }) {
                 {segs.map((s, i) => {
                     const enter = () => setHover(i);
                     const leave = () => setHover(null);
+                    // 마우스를 올리면 뜨는 기본 툴팁: "적용: 27 (77%)"
+                    const tip = `${items[i].label}: ${items[i].value} (${s.pct}%)`;
                     if (s.max && s.slices.length) {
                         // 강조 조각: 각도 보간 슬라이스들 (양끝이 안팎 동일하게 페이드)
                         return (
                             <g key={i} onMouseEnter={enter} onMouseLeave={leave} style={{ cursor: "pointer" }}>
+                                <title>{tip}</title>
                                 {s.slices.map((sl, k) => (
                                     <path key={k} d={sl.d} fill={sl.color} stroke={sl.color} strokeWidth={CORNER} strokeLinejoin="round" />
                                 ))}
@@ -444,7 +447,9 @@ function Donut({ items }: { items: ChartRow[] }) {
                             onMouseEnter={enter}
                             onMouseLeave={leave}
                             style={{ cursor: "pointer" }}
-                        />
+                        >
+                            <title>{tip}</title>
+                        </path>
                     );
                 })}
                 {/* 값 라벨: 각 조각의 링 안(두께 가운데)에 숫자. 강조=흰색 볼드, 나머지=진회색 */}
